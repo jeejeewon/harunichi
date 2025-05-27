@@ -1,4 +1,4 @@
-package com.spring.harunichi;
+package com.harunichi.main.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
