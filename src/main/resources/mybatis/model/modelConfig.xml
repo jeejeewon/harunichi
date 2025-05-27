@@ -6,25 +6,9 @@
 <configuration>
 	<!-- VO를 별칭으로 불러다 사용할수 있게 설정 하는 곳 -->
 	<typeAliases>
-		<!-- DAO에서 SQL문으로 값을 전달할떄 또는 SELECT SQL문을 실행한후 조회한 결과데이터를 DAO에 전달할때 사용할 
+			<!-- DAO에서 SQL문으로 값을 전달할떄 또는 SELECT SQL문을 실행한후 조회한 결과데이터를 DAO에 전달할때 사용할 
 			VO객체의 별칭 설정 -->
 		<typeAlias type="com.harunichi.board.vo.BoardVO"
 			alias="boardVO" />
 	</typeAliases>
-
 </configuration>  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  

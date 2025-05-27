@@ -7,18 +7,20 @@
 
 <mapper namespace="mapper.board">
 
-	<!-- resultMap태그의 역할 - select구문실행 후 조회한 한줄 단위의 열값들을 저장할 클래스 지정 하는 태그 - result태그 
-		를 내부에 작성 해서 조회된 열의 값을 저장할 VO의 변수명을 설정 합니다. - result태그의 property속성 값은 MemberVO의 
-		변수명 result태그의 column속성 값은 조회한 행의 열명을 작성합니다. -->
+	<!-- 
+		resultMap태그의 역할 - select구문실행 후 조회한 한줄 단위의 열값들을 저장할 클래스 지정 하는 태그 
+		- result태그를 내부에 작성 해서 조회된 열의 값을 저장할 VO의 변수명을 설정 합니다. 
+		- result태그의 property속성 값은 MemberVO의 변수명 result태그의 column속성 값은 조회한 행의 열명을 작성합니다. 
+	-->
 
 	<!-- type="조회한 한줄 내용을 저장할 변수들이 있는 VO의 별칭" -->
-
-	<resultMap id="boardResult" type=boardVO">
-
+	<resultMap id="boardResult" type="boardVO">
 		<result property="boardId" column="boardId" />	
-
+		<result property="boardCont" column="boardCont" />	
+		<result property="boardDate" column="boardDate" />	
+		<result property="boardImg" column="boardImg" />	
+		<result property="boardCount" column="boardCount" />	
+		<result property="boardRe" column="boardRe" />	
 	</resultMap>
-
-
-
+	
 </mapper>
