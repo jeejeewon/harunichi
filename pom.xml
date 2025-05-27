@@ -262,12 +262,20 @@
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.5.4</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.3</version>
-		</dependency>			    
+		</dependency>	
+		
+		<!-- ObjectMapper라이브러리 -->
+        <!-- https://mvnrepository.com/artifact/net.morimekta.providence/providence-core-jackson -->
+		<dependency>
+		    <groupId>net.morimekta.providence</groupId>
+		    <artifactId>providence-core-jackson</artifactId>
+		    <version>2.7.0</version>
+		</dependency>		 
+		   
 	</dependencies>
     <build>
         <plugins>
