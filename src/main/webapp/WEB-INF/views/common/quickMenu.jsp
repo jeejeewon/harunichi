@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-<body>
+<body style="background-color: pink;">
 	<%--
 			최근 상세페이지를 열어 본 도서상품 이미지를 표시하는 퀵메뉴 디자인을 나타내는 quickMenu.jsp파일입니다.
 			최근 본 상품은 상품목록(new ArrayList<GoodsVo>();)에서 상품목록을 가져온 다음 첫번째 상품 이미지만 표시하고

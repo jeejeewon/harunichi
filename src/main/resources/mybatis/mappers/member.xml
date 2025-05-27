@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace를 "mapper.member"로 꼭 맞춰주기 -->
+<mapper namespace="mapper.member"> 
+
+<select id="selectMemberById" parameterType="String" resultType="memberVo"> <!-- modelConfig.xml에 등록한 memberVo 별칭 -->
+    <![CDATA[
+        SELECT
+            id,
+            pass,
+            name,
+            nick,
+            contry,
+            year,
+            gender,
+            email,
+            tel,
+            address,
+            myLike,
+            profileImg,
+            follower,
+            joindate,
+            kakao_id
+        FROM
+            member
+		 WHERE
+            id = #{id}
+	]]>
+</select>
+
+
+</mapper>

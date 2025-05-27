@@ -24,6 +24,7 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="2" />
 	</beans:bean>
 	
 	<context:component-scan base-package="com.harunichi" />
@@ -79,7 +80,8 @@
 		이 클래스를 사용하여 뷰를 처리하면, tiles.xml 파일에서 정의한 타일(Tiles) 레이아웃을 사용하여 뷰를 구성할 수 있습니다.
 	-->
 	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
-		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/> 
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+		<beans:property name="order" value="1"/>
 	</beans:bean>
     
     
