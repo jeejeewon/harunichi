@@ -44,5 +44,43 @@
        <beans:property name="maxInMemorySize" value="52428800" />
        <beans:property name="defaultEncoding" value="utf-8" />
     </beans:bean>	
+    
+    <!-- 
+		요약 : 이 코드는 Spring MVC의 Tiles framework를 구성하는 데 사용됩니다.
+
+		id 속성은 이 bean의 고유 식별자입니다.
+		class 속성은 TilesConfigurer 클래스를 사용하고 있으며, 
+		Spring에서는 Tiles를 지원하는 다양한 ViewResolver 클래스가 있습니다.
+		definitions 속성은 Tiles에 대한 설정 파일의 위치를 지정합니다. 
+		classpath:tiles/*.xml로 설정되어 있으므로, tiles 폴더 안에 XML 파일들이 있어야 합니다.
+		preparerFactoryClass 속성은 Tiles의 preparerFactory에 대한 클래스를 지정합니다. 
+		이 속성은 선택 사항이며, Spring에서 기본값으로 제공하는 SpringBeanPreparerFactory를 사용합니다.
+		즉, 이 코드는 Tiles를 사용하여 뷰를 생성하기 위한 설정을 담고 있습니다. 
+		definitions 속성에서 지정된 XML 파일을 읽어들여 Tiles에서 사용되는 정의를 읽어들일 것입니다. 
+		Tiles는 이러한 정의를 기반으로 뷰를 생성합니다.
+	 -->
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>classpath:tiles/*.xml</beans:value>
+			</beans:list>
+		</beans:property>
+		<beans:property name="preparerFactoryClass" 
+		               value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory"/>
+	</beans:bean>
 	
+	<!-- 
+		이 코드는 스프링 MVC의 UrlBasedViewResolver 클래스를 사용하여 TilesView 클래스를 뷰 리졸버로 설정하는데 사용됩니다.
+		UrlBasedViewResolver 클래스는 뷰 이름을 기반으로 뷰 객체를 찾는 데 사용됩니다. 
+		이 클래스는 뷰 이름의 접두어 및 접미사를 설정하고, 뷰 객체를 생성하기 위해 필요한 설정값들을 설정할 수 있습니다.
+		여기서는 viewClass 속성을 사용하여 뷰 객체로 TilesView 클래스를 설정합니다. 
+		TilesView 클래스는 Apache Tiles 프레임워크를 사용하여 뷰를 처리하며, 
+		JSP, Freemarker, Velocity 등과 같은 다양한 뷰 템플릿 엔진과 호환됩니다. 
+		이 클래스를 사용하여 뷰를 처리하면, tiles.xml 파일에서 정의한 타일(Tiles) 레이아웃을 사용하여 뷰를 구성할 수 있습니다.
+	-->
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/> 
+	</beans:bean>
+    
+    
 </beans:beans>
