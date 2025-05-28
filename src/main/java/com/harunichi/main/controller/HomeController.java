@@ -27,12 +27,7 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "home";
-	}
-	
-	@RequestMapping(value = "/main", method = RequestMethod.GET)
-	public String mainPage(Locale locale, Model model) {
-
+//		return "home";
 		return "/main/main";
 	}
 	
