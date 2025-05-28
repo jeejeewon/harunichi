@@ -45,7 +45,7 @@
 <body>
 
 	<!-- 현재 채팅하는 사람의 대화명을 input에 표시 , 읽기전용으로 설정하여 수정 불가  -->
-	대화명 : <input type="text" id="chatId" value="${param.chatId}" readonly>
+	대화명 : <input type="text" id="chatId" value="${param.nick}" readonly>
 	
 	<!-- 채팅 종료 버튼 클릭시 disconnect()함수 호출 -->
 	<button id="closeBtn" onclick="disconnect();">채팅 종료</button>

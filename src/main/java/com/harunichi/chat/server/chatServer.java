@@ -30,7 +30,7 @@ public class chatServer {
 	public void onOpen(Session session) {		
 		//새로운 클라이언트 접속시 접속자 명단에 추가
 		clients.add(session); 
-		System.out.println("✅ [서버로그] 새로운 사용자 입장! ID:" + session.getId() + " (현재 총 " + clients.size() + "명 접속중");		
+		System.out.println("✅ [서버로그] 새로운 사용자 입장! ID:" + session.getId() + " (현재 총 " + clients.size() + "명 접속중)");		
 	}
 	
 	

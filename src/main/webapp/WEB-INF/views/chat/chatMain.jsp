@@ -1,42 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>      
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>채팅 메인 페이지</title>
 </head>
+<script type="text/javascript">
+	var id = "hong";
+	var nick = "홍반장";	
+</script>
 
 <body>
 
-	<h2>웹소켓 채팅 - 대화명 적용해서 채팅창 띄워주기</h2>
-
-	대화명 : <input type="text" id="chatId">
-
-	<button onclick="chatWinOpen();">채팅 참여</button>
+	<h2>채팅목록</h2>
+	
+	<!-- 로그인한 사용자의 id와 닉네임, 프로필 사진명을 가져옴 -->
+				
+	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window">
+		<!-- 나중에 세션에서 값 가져와야함 -->	
+		<c:set var="id" value="hong" />
+		<c:set var="nick" value="홍반장" />
+		<input type="hidden" name="id" value="${id}">
+		<input type="hidden" name="nick" value="${nick}">
+	</form>	
+	<button onclick="chatOpen();" type="button">채팅 참여</button>
 
 </body>
 
 <script type="text/javascript">
 
-	function chatWinOpen(){
+	function chatOpen(){
 		
-		var id = document.getElementById("chatId");
-	
-		//입력 필드가 비어 있을 경우, 대화명 입력 요청 알림
-		if(id.value == ""){
-			alert("대화명을 입력 후 채팅창을 열어 주세요");
-			id.focus();
-			return;
-		}
-		
+		var id = "${nick}";
+			
 		//입력한 대화명을 파라미터로전달한 ChatWindow.jsp를 새롭게 팝업창에 보여줌
-		window.open("chatWindow.jsp?chatId=" + id.value,
-				     "",
-				     "width=320,height=400");
+		//location.href = "window?chatId=" + id + "";
 		
-		//팝업 새채팅 창이 열리면  대화명 입력 <input>에 빈공백을 주어 초기화
-		id.value = "";		
+		document.getElementById("chatForm").submit();
+		
 	}	
 	
 </script>
