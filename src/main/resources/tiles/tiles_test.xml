@@ -5,7 +5,7 @@
 <tiles-definitions>
     <definition name="/test" extends="baseLayout">
        <put-attribute name="title" value="테스트 페이지" />
-       <put-attribute name="body" value="/WEB-INF/views/test.jsp" />
+       <put-attribute name="body" value="/WEB-INF/views/test.jsp" /> <!-- 이쪽 경로 설정 잘해두기 -->
     </definition>
 </tiles-definitions>
 

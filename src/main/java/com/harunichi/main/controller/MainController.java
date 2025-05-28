@@ -16,6 +16,7 @@ public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
+	//http://localhost:8090/harunichi/main 요청시 메인페이지
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String showMainPage(Locale locale, Model model) {
 		logger.info("메인페이지입니다.", locale);
