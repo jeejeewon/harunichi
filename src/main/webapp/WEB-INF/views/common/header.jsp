@@ -22,11 +22,18 @@
 	            <li>
 	                <label for="country-select">lang</label>
 	                <select id="country-select" name="country">
-	                    <option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png">한국</option>
-	                    <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">일본</option>
+	                    <option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png">Korea</option>
+	                    <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">Japan</option>
 	                </select>
 	            </li>
-	            <li><a href="#"><img src="${contextPath}/resources/image/user_icon.svg"></a></li>
+	            <li>
+		            <a href="#" class="profile-area">
+		            	<div class="profile-image">
+		            		<img src="${contextPath}/resources/image/basic_profile.jpg">
+		            	</div>
+		            	<span>user</span><!-- 세션에서 유저닉네임 가져와서 추가할 예정 -->
+		            </a>
+	            </li>
 	            <li><a href="#"><img src="${contextPath}/resources/image/chat_icon.svg"></a></li>
 	            <li><a href="#"><img src="${contextPath}/resources/image/bell_icon.svg"></a></li>
 	            <li><a href="#"><img src="${contextPath}/resources/image/grid_icon.svg"></a></li>
