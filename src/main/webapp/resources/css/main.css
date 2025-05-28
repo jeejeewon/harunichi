@@ -1,11 +1,14 @@
 @charset "UTF-8";
 
+/* 버튼색상 : #A3DAFF */
+
 *,
 *::before,
-*::after { 
+*::after {
 	padding: 0;
 	margin: 0;
-	box-sizing: border-box; 
+	box-sizing: border-box;
+	font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 }
 ul, ol {
 	list-style: none;
@@ -18,7 +21,7 @@ a {
 html, body {
     margin: 0;
     padding: 0;
-    height: 100vh
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -26,17 +29,146 @@ html, body {
     display: grid;
     height: 100%;
     width: 100%;
-
-    /* 세로 방향(행) 레이아웃 정하기: 헤더(고정)-내용영역(나머지)-푸터(고정) */
-    /* 헤더 높이 72px, 푸터 높이 150px, 1fr은 남은 공간 다 */
     grid-template-rows: 72px 1fr 150px;
     grid-template-columns: 1fr;
 }
 
-
 header {
     background-color: white;
     border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.header-inner{
+	max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-areas: "header-logo-area header-main-area";
+    align-items: center;
+}
+
+.header-logo{
+	grid-area: header-logo-area;
+}
+
+.header-logo img{
+	height: 20px;
+    vertical-align: middle;
+}
+
+.header-main-content {
+    grid-area: header-main-area;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-search-form{
+	display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #fff;
+    flex-grow: 1;
+    max-width: 300px;
+}
+
+.header-search-form:focus-within {
+    border: 2px solid #A3DAFF;
+}
+
+.header-search-form  input[type="text"] {
+    border: none;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+.header-search-form  button[type="submit"] {
+	background-color:white;
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-search-form button[type="submit"] img {
+    height: 20px;
+    width: auto;
+    vertical-align: middle;
+    filter: invert(81%) sepia(12%) saturate(2347%) hue-rotate(173deg) brightness(105%) contrast(101%);
+}
+
+.header-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-menu ul li {
+
+}
+
+
+.header-menu ul li a img {
+    height: 17px;
+    vertical-align: middle;
+}
+.header-inner .select2-container {
+    width: 120px !important;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.header-inner .select2-container .select2-selection--single {
+    height: auto !important;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    background-color: #fff;
+}
+
+.header-inner .select2-container .select2-selection__rendered {
+    color: #333;
+    line-height: normal;
+    padding-left: 0;
+}
+
+.header-inner .select2-container .select2-selection__arrow {
+    display: none !important;
+}
+
+.select2-dropdown {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.select2-results__option {
+    padding: 10px 15px;
+}
+
+img.country-icon {
+    width: 20px;
+    height: auto;
+    margin-right: 8px;
+    vertical-align: middle;
 }
 
 footer {
@@ -44,20 +176,16 @@ footer {
     color: white;
 }
 
-
 #inner-wrap {
     height: 100%;
     max-width: 1440px;
     width: 100%;
     margin: 0 auto;
     display: grid;
-    /* 사이드 너비 200px */
     grid-template-columns: 200px 1fr;
     grid-template-rows: 1fr;
-    /* #inner-wrap 내에서 스크롤이 넘치지 않도록 숨겨주기.*/
     overflow: hidden;
 }
-
 
 aside {
 	border-right:1px solid #eee;
