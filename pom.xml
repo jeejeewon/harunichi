@@ -268,6 +268,14 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.3</version>
 		</dependency>
+		
+		<!-- 웹소켓 -->
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.1</version> <!-- 톰캣 8 이상이면 이걸로 -->
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- ObjectMapper라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/net.morimekta.providence/providence-core-jackson -->
