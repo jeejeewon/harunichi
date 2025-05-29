@@ -19,9 +19,13 @@ public class TestController {
     public String showTestPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         logger.info("TestController - showTestPage() 메소드 시작! Request for /test");
+        
+        // 인터셉터가 넣어둔 viewName 가져오기
+        String viewName = (String) request.getAttribute("viewName");
+        System.out.println("컨트롤러에서 가져온 viewName: " + viewName); 
 
         logger.info("TestController - showTestPage() 메소드 종료. Returning view name: /test");
 
-        return "/test";
+        return viewName;
     }
 }

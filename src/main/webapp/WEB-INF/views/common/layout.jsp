@@ -10,12 +10,11 @@ request.setCharacterEncoding("utf-8");
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
-<link href="${contextPath}/resources/css/main.css" rel="stylesheet"
-	type="text/css" media="screen">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><!-- 구글아이콘 연결 -->
+<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+<link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <title><tiles:insertAttribute name="title" /></title>
-
 </head>
 <body>
 	<div id="wrap">
@@ -34,5 +33,30 @@ request.setCharacterEncoding("utf-8");
 			<tiles:insertAttribute name="footer" />
 		</footer>
 	</div>
-</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 제이쿼리 -->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
+	<script>
+		//국가선택 로직
+		$(document).ready(function() {
+			$('#country-select').select2({
+				minimumResultsForSearch: -1,
+				templateResult: formatState,
+				templateSelection: formatState 
+			});
 
+			
+			function formatState (state) {
+				if (!state.id) {
+					return state.text;
+				}
+				var $state = $(
+					'<span><img src="' + state.element.dataset.image + '" class="country-icon" style="width: 18px; height: auto; margin-right: 5px; vertical-align: middle;" /> ' + state.text + '</span>'
+				);
+				return $state;
+			}
+		});
+		
+		//메뉴 호버시 아이콘 변경
+		
+	</script>
+</body>
