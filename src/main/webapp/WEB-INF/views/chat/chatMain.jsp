@@ -8,6 +8,7 @@
 <title>채팅 메인 페이지</title>
 </head>
 <script type="text/javascript">
+//로그인 상황을 가정하기 위한 변수 저장 -----------------------------------------------나중에 수정해야함
 	var id = "hong";
 	var nick = "홍반장";	
 </script>
@@ -24,9 +25,12 @@
 		<c:set var="nick" value="홍반장" />
 		<input type="hidden" name="id" value="${id}">
 		<input type="hidden" name="nick" value="${nick}">
+		<input type="hidden" name="receiverId" value="kim"> <!-- 임시 대상자 받는 사람 -->
+		
+		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
+		<input type="hidden" name="chatType" value="personal">
 	</form>	
 	<button onclick="chatOpen();" type="button">채팅 참여</button>
-
 </body>
 
 <script type="text/javascript">

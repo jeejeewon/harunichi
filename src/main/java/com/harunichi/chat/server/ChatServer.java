@@ -14,7 +14,9 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.harunichi.chat.service.ChatService;
+import com.harunichi.chat.vo.ChatVo;
 
 //웹소켓 채팅 서버 본체
 //- 클라이언트들의 연결을 받고, 메시지를 중계하는 웹소켓 서버의 역할 수행
@@ -28,7 +30,7 @@ public class ChatServer {
 		this.chatService = SpringContext.getBean(ChatService.class);
 	}
 	
-	
+
 	//현재 접속 중인 모든 클라이언트 목록 관리
 	//Collections.synchronizedSet(...) 여러 클라이언트가 동시 사용시 문제가 생기지않도록 동기화 역할을 함
 	private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
@@ -53,7 +55,12 @@ public class ChatServer {
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록
         System.out.println("✉️ [서버 로그] 메시지 도착! 보낸 사람 ID:" +  session.getId() + ", 내용: \"" + message + "\"");        
         
+        //JSON 파싱
+        ObjectMapper mapper = new ObjectMapper();
+        ChatVo chatMsg = mapper.readValue(message, ChatVo.class);
         
+        //DB에 저장
+        chatService.saveMessage(chatMsg);
         
         
         //접속자 명단(clients)을 수정하거나 사용하는 동안 다른 작업이 끼어들지 못하게 잠금(Lock)을 검
@@ -74,7 +81,7 @@ public class ChatServer {
                     //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
                     //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송
                     System.out.println("     ㄴ[서버 로그] ID " + client.getId() + " 에게 메시지 전달 시도...");
-                    client.getBasicRemote().sendText(message);
+                    client.getBasicRemote().sendText(message); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!
                     System.out.println("     ㄴ[서버 로그] ID " + client.getId() + " 에게 메시지 전달 성공!");                    
                 }                 
             }//for           

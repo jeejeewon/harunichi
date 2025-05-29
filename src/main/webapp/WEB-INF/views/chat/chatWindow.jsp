@@ -41,8 +41,7 @@
 	
 	//웹 소켓 채팅에 사용할 HTML(DOM)요소들( 대화창, 메세지 입력창, 대화명)을 저장할 변수들								
 	var chatWindow, chatMessage, chatId;		
-	
-	
+
 	
     window.onload = function(){						
    		//대화 내용이 표시될 대화창 영역 얻기 
@@ -59,12 +58,21 @@
     
     //메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
     function sendMessage(){
+		
+    	//새로운 채팅!
+    	const chatData = {   	
+    			roomId : "hongRoom",				//채팅방 Id 임시!!!
+    			chatType : "${param.chatType}",		//개인채팅인지, 단체채팅인지
+    			senderId : chatId,			//보낸 사람
+    			senderNic : "${param.nick}",
+    			message : chatMessage.value		//메세지	
+    	};
+    	
     	//사용자가 입력한 메세지를 대화창에서 얻어 오른쪽 정렬로 디자인 추가
     	chatWindow.innerHTML += "<div class='myMsg'>" + chatMessage.value + "</div>";
     	
-    	//웹 소켓 통로를 통해 메세지를 서버페이지로 전송,
-    	//'대화명 | 메세지'로 구분 (대화명과 입력한 채팅메세지를 | 기호로 구분하여 전송)
-    	webSocket.send(chatId + '|' +  chatMessage.value);
+    	//웹 소켓 통로를 통해 메세지를 서버페이지로 전송
+    	webSocket.send(JSON.stringify(chatData));
     	
     	//메세지 입력 창 내용 초기화
     	chatMessage.value = "";
