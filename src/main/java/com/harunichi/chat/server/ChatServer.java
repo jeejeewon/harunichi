@@ -14,18 +14,18 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.harunichi.chat.service.chatService;
+import com.harunichi.chat.service.ChatService;
 
 //웹소켓 채팅 서버 본체
 //- 클라이언트들의 연결을 받고, 메시지를 중계하는 웹소켓 서버의 역할 수행
 //- 클라이언트는 'ws://서버주소:포트/프로젝트명/ChatingServer' 와 같은 주소로 접속을 시도합니다. (ws://는 웹소켓 통신 규약)
 @ServerEndpoint("/ChatingServer") // "/ChatingServer"라는 주소로 오는 웹소켓 요청은 이 클래스가 처리하겠다고 웹 서버에게 알려주는 설정
-public class chatServer {
+public class ChatServer {
 
 	//서비스 빈 수동 주입
-	private chatService chatService;
-	public chatServer() {
-		this.chatService = SpringContext.getBean(chatService.class);
+	private ChatService chatService;
+	public ChatServer() {
+		this.chatService = SpringContext.getBean(ChatService.class);
 	}
 	
 	

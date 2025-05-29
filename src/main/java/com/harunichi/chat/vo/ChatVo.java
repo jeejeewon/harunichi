@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Component
-public class chatVo {
+public class ChatVo {
 
 	int messageId;			//메시지 고유 ID
 	String roomId;			//채팅방 ID

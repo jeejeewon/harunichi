@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/chat")
-public class chatController {
+public class ChatController {
 
 	@RequestMapping("/main")
 	public String chatMain(HttpServletRequest request, 
