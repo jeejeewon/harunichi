@@ -11,7 +11,7 @@ request.setCharacterEncoding("utf-8");
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><!-- 폰트어썸(아이콘)라이브러리 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><!-- 구글아이콘 연결 -->
 <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
 <link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <title><tiles:insertAttribute name="title" /></title>
@@ -55,5 +55,8 @@ request.setCharacterEncoding("utf-8");
 				return $state;
 			}
 		});
+		
+		//메뉴 호버시 아이콘 변경
+		
 	</script>
 </body>

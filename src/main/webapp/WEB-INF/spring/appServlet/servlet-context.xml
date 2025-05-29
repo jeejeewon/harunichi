@@ -33,11 +33,9 @@
 	
 	<mvc:interceptors> 	
 		<mvc:interceptor>
-			<!-- 모든 요청 주소에 대해 인터셉터를 설정 -->	
-			<mvc:mapping path="/**"/>
-			<!-- *.do로 끝나는 2단계와 3단계 요청 주소에 대해 인터셉터를 설정 (위에서 모든 요청으로 설정했으므로 현재 필요x)-->	
-<!--  		<mvc:mapping path="/*/*.do"/>  
-			<mvc:mapping path="/*/*/*.do"/>    -->
+			<!-- *.do로 끝나는 2단계와 3단계 요청 주소에 대해 인터셉터를 설정-->	
+	 		<mvc:mapping path="/*/*.do"/>  
+			<mvc:mapping path="/*/*/*.do"/>  
 			<beans:bean class="com.harunichi.common.interceptor.ViewNameInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
