@@ -124,6 +124,11 @@ header {
     box-shadow: 0 3px 5px rgba(0,0,0,0.1);
 }
 
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #bfe6ff;
+    color: white;
+}
+
 .header-menu ul {
     list-style: none;
     padding: 0;
