@@ -6,6 +6,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}" />
 
+
+
 <section class="header-inner">
 
     <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/image/logo2.svg"></a>
@@ -27,12 +29,22 @@
 	                </select>
 	            </li>
 	            <li>
-		            <a href="#" class="profile-area">
-		            	<div class="profile-image">
-		            		<img src="${contextPath}/resources/image/basic_profile.jpg">
-		            	</div>
-		            	<span>user</span><!-- 세션에서 유저닉네임 가져와서 추가할 예정 -->
-		            </a>
+	            	<c:if test="${not empty sessionScope.id}">
+	            	 	<a href="#" class="profile-area">
+		            		<div class="profile-image">
+								<%-- 세션에 profileImg 값이 있을 경우 이미지 경로 사용, 없으면 기본 이미지 --%>
+                                <img src="${not empty sessionScope.profileImg ? sessionScope.profileImg : contextPath}/resources/image/basic_profile.jpg">
+		            		</div>
+		            		<%-- 세션에 nick 값이 있을 경우 닉네임 표시, 없으면 "익명" 또는 다른 기본값 표시 --%>
+                            <span>${not empty sessionScope.nick ? sessionScope.nick : '익명'}</span>
+		            	</a>
+	            	</c:if>
+	            	<%-- 세션에 id 값이 없을 경우 (비회원 상태) --> 로그인 링크 노출 --%>
+	            	<c:if test="${empty sessionScope.id}">
+                        <a href="${contextPath}/추후로그인페이지주소로변경">
+                            <span>로그인</span>
+                        </a>
+                    </c:if>
 	            </li>
 	            <li><a href="#"><img src="${contextPath}/resources/image/chat_icon.svg"></a></li>
 	            <li><a href="#"><img src="${contextPath}/resources/image/bell_icon.svg"></a></li>

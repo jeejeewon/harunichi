@@ -31,17 +31,18 @@ html, body {
     display: grid;
     height: 100%;
     width: 100%;
-    grid-template-rows: 72px 1fr 150px;
+    grid-template-rows: 72px 1fr auto;
     grid-template-columns: 1fr;
 }
 
 
-/*----------헤더 스타일링 시작----------*/
+/*----------헤더----------*/
 header {
     background-color: white;
     border-bottom: 1px solid #eee;
     display: flex;
     align-items: center;
+    font-size: 13px;
 }
 
 .header-inner{
@@ -113,6 +114,20 @@ header {
     width: auto;
     vertical-align: middle;
     filter: invert(81%) sepia(12%) saturate(2347%) hue-rotate(173deg) brightness(105%) contrast(101%);
+}
+
+.select2-dropdown {/*드롭다운박스스타일*/
+    max-height: 200px; 
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #bfe6ff !important;
+}
+.select2-container--default .select2-results__option--selected {
+    background-color: white !important;
 }
 
 .header-menu ul {
@@ -194,15 +209,6 @@ img.country-icon {
     margin-right: 8px;
     vertical-align: middle;
 }
-/*----------헤더끝----------*/
-
-
-
-
-footer {
-    background-color: lightblue;
-    color: white;
-}
 
 
 #inner-wrap {
@@ -218,8 +224,7 @@ footer {
 
 
 
-
-/*--------메뉴(aside) 스타일링 시작----------*/
+/*--------메뉴(aside)---------*/
 aside {
 	border-right:1px solid #eee;
     height: 100%;
@@ -249,6 +254,49 @@ article {
 	padding: 10px 16px;
 	border-radius: 10px;
 }
+
 .menu-inner nav ul li a:hover {
 	background-color: #e6e6e6;
+}
+
+
+
+/*------푸터(footer)----*/
+footer {
+	border-top: 1px solid #eee;
+	font-size: 13px;
+}
+
+.footer-inner{
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 40px;
+	display: flex;
+	flex-direction: column; 
+    align-items: flex-end;
+    gap: 20px;
+}
+
+.footer-inner .footer-logo{
+	width: 100px;
+	height: auto;
+	filter: grayscale(100%);
+}
+
+.footer-inner .footer-sns-ink{
+	display: flex;
+	gap: 10px;
+}
+
+.footer-inner  .footer-sns-ink li a img{
+	width: 20px;
+	height: auto;
+	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg) brightness(96%) contrast(89%);
+}
+
+
+.footer-info{
+	display: flex;
+	gap: 10px;
 }
