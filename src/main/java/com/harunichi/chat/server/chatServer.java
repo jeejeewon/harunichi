@@ -12,11 +12,22 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.harunichi.chat.service.chatService;
+
 //웹소켓 채팅 서버 본체
 //- 클라이언트들의 연결을 받고, 메시지를 중계하는 웹소켓 서버의 역할 수행
 //- 클라이언트는 'ws://서버주소:포트/프로젝트명/ChatingServer' 와 같은 주소로 접속을 시도합니다. (ws://는 웹소켓 통신 규약)
 @ServerEndpoint("/ChatingServer") // "/ChatingServer"라는 주소로 오는 웹소켓 요청은 이 클래스가 처리하겠다고 웹 서버에게 알려주는 설정
 public class chatServer {
+
+	//서비스 빈 수동 주입
+	private chatService chatService;
+	public chatServer() {
+		this.chatService = SpringContext.getBean(chatService.class);
+	}
+	
 	
 	//현재 접속 중인 모든 클라이언트 목록 관리
 	//Collections.synchronizedSet(...) 여러 클라이언트가 동시 사용시 문제가 생기지않도록 동기화 역할을 함
@@ -41,6 +52,9 @@ public class chatServer {
 		
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록
         System.out.println("✉️ [서버 로그] 메시지 도착! 보낸 사람 ID:" +  session.getId() + ", 내용: \"" + message + "\"");        
+        
+        
+        
         
         //접속자 명단(clients)을 수정하거나 사용하는 동안 다른 작업이 끼어들지 못하게 잠금(Lock)을 검
         //여러 클라이언트가 동시에 메시지를 보내거나 접속/종료할 때 접속자 명단이 꼬이는 것을 방지하는 안전 장치

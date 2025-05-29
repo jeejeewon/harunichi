@@ -5,43 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>채팅창</title>
-<style>
-	/* 채팅 UI 요소 스타일 지정 */
-	#chatWindow { 
-	    border: 1px solid black;    /* 대화창 테두리를 검은색 실선으로 설정 */
-	    width: 270px;               /* 대화창 너비 설정 */
-	    height: 310px;              /* 대화창 높이 설정 */
-	    overflow: scroll;           /* 내용이 넘칠 때 스크롤바 표시 */
-	    padding: 5px;               /* 내부 여백 설정 */
-	}
-	#chatMessage { 
-	    width: 236px;               /* 메시지 입력창 너비 설정 */
-	    height: 30px;               /* 메시지 입력창 높이 설정 */
-	}
-	#sendBtn { 
-	    height: 30px;               /* 전송 버튼 높이 설정 */
-	    position: relative;         /* 전송 버튼 위치 조정을 위해 relative 포지션 설정 */
-	    top: 2px;                   /* 버튼을 약간 아래로 이동 */
-	    left: -2px;                 /* 버튼을 약간 왼쪽으로 이동 */
-	}
-	#closeBtn { 
-	    margin-bottom: 3px;         /* 종료 버튼의 하단 여백 설정 */
-	    position: relative;         /* 종료 버튼 위치 조정을 위해 relative 포지션 설정 */
-	    top: 2px;                   /* 종료 버튼을 약간 아래로 이동 */
-	    left: -2px;                 /* 종료 버튼을 약간 왼쪽으로 이동 */
-	}
-	#chatId { 
-	    width: 158px;               /* 대화명 입력창 너비 설정 */
-	    height: 24px;               /* 대화명 입력창 높이 설정 */
-	    border: 1px solid #AAAAAA;  /* 대화명 입력창 테두리 설정 */
-	    background-color: #EEEEEE;  /* 대화명 입력창 배경색 설정 */
-	}
-	.myMsg { 
-	    text-align: right;          /* 내 메시지를 오른쪽 정렬로 설정 */
-	}
-</style>
+<link rel="stylesheet" href="../resources/css/chat.css">
+<script src="../resources/js/chat.js"></script>
 </head>
-
 <body>
 
 	<!-- 현재 채팅하는 사람의 대화명을 input에 표시 , 읽기전용으로 설정하여 수정 불가  -->
@@ -171,6 +137,10 @@
 	    chatWindow.scrollTop = chatWindow.scrollHeight; 	
 	};    
 
+	
+	
+	
+	
 	
 </script>
 </html>
