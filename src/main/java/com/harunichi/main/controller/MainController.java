@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,14 +18,19 @@ public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
+	//http://localhost:8090/harunichi 요청시 메인페이지, 또는
 	//http://localhost:8090/harunichi/main 요청시 메인페이지
-	@RequestMapping(value = "/main", method = RequestMethod.GET)
-	public String showMainPage(Locale locale, Model model) {
+	@RequestMapping(value = {"/", "/main"}, method = RequestMethod.GET)
+	public String showMainPage(Locale locale, Model model, HttpServletRequest request) {
+		
 		logger.info("메인페이지입니다.", locale);
 		
-		//여기에 로직넣기. 예) Model에 담은 데이터 조회하기 등등
+		// 인터셉터가 넣어둔 viewName 가져오기
+		String viewName = (String) request.getAttribute("viewName");
+		System.out.println("컨트롤러에서 가져온 viewName: " + viewName);
 		
-		return "/main/main";
+		logger.info("MainController - showMainPage() 메소드 종료. Returning view name: /main");
+		return "/main"; 
 	}
 	
 }
