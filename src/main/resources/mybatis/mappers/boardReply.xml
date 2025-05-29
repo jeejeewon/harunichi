@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- boardReply 관련한 SQL문을 작성 해 놓는 board.xml(매퍼파일) -->
+
+<mapper namespace="mapper.boardReply">
+
+	<!-- resultMap태그의 역할 - select구문실행 후 조회한 한줄 단위의 열값들을 저장할 클래스 지정 하는 태그 - result태그를 
+		내부에 작성 해서 조회된 열의 값을 저장할 VO의 변수명을 설정 합니다. - result태그의 property속성 값은 MemberVO의 
+		변수명 result태그의 column속성 값은 조회한 행의 열명을 작성합니다. -->
+
+	<!-- type="조회한 한줄 내용을 저장할 변수들이 있는 VO의 별칭" -->
+	<resultMap id="boardReplyResult" type="boardReplyVO">
+		<result property="replyId" column="replyId" />
+		<result property="replyCont" column="replyCont" />
+		<result property="replyDate" column="replyDate" />
+		<result property="replyImg" column="replyImg" />
+		<result property="replyLike" column="replyLike" />
+	</resultMap>
+
+</mapper>
