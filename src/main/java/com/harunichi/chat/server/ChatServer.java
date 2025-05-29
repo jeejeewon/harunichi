@@ -24,12 +24,8 @@ import com.harunichi.chat.vo.ChatVo;
 @ServerEndpoint("/ChatingServer") // "/ChatingServer"라는 주소로 오는 웹소켓 요청은 이 클래스가 처리하겠다고 웹 서버에게 알려주는 설정
 public class ChatServer {
 
-	//서비스 빈 수동 주입
-	private ChatService chatService;
-	public ChatServer() {
-		this.chatService = SpringContext.getBean(ChatService.class);
-	}
 	
+	private ChatService chatService;
 
 	//현재 접속 중인 모든 클라이언트 목록 관리
 	//Collections.synchronizedSet(...) 여러 클라이언트가 동시 사용시 문제가 생기지않도록 동기화 역할을 함
@@ -44,6 +40,9 @@ public class ChatServer {
 		//새로운 클라이언트 접속시 접속자 명단에 추가
 		clients.add(session); 
 		System.out.println("✅ [서버로그] 새로운 사용자 입장! ID:" + session.getId() + " (현재 총 " + clients.size() + "명 접속중)");		
+		
+		this.chatService = SpringContext.getBean(ChatService.class);
+	
 	}
 	
 	
@@ -59,7 +58,9 @@ public class ChatServer {
         ObjectMapper mapper = new ObjectMapper();
         ChatVo chatMsg = mapper.readValue(message, ChatVo.class);
         
-        //DB에 저장
+//        System.out.println("chatMsg : " + chatMsg);
+        
+        //DB에 저장        
         chatService.saveMessage(chatMsg);
         
         
@@ -81,7 +82,7 @@ public class ChatServer {
                     //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
                     //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송
                     System.out.println("     ㄴ[서버 로그] ID " + client.getId() + " 에게 메시지 전달 시도...");
-                    client.getBasicRemote().sendText(message); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!
+                    client.getBasicRemote().sendText(chatMsg.getSenderId() + "|" + chatMsg.getMessage()); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!             
                     System.out.println("     ㄴ[서버 로그] ID " + client.getId() + " 에게 메시지 전달 성공!");                    
                 }                 
             }//for           

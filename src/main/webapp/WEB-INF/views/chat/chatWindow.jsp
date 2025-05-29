@@ -52,6 +52,11 @@
    		
    		//채팅 하는 사용자의 대화명 요소에서 대화명값 얻기 
    		chatId = document.getElementById("chatId").value;
+   		
+//   		console.log("id : " + "${param.id}");
+//   		console.log("nick : " + "${param.nick}");
+//   		console.log("receiverId : " + "${param.receiverId}");
+   		
 	}
     
     
@@ -64,7 +69,6 @@
     			roomId : "hongRoom",				//채팅방 Id 임시!!!
     			chatType : "${param.chatType}",		//개인채팅인지, 단체채팅인지
     			senderId : chatId,			//보낸 사람
-    			senderNic : "${param.nick}",
     			message : chatMessage.value		//메세지	
     	};
     	
