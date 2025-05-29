@@ -22,7 +22,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductVo findById(int productId) throws Exception {
         return productDao.findById(productId);
     }
-
+    
+    @Override
+    public List<ProductVo> findPaged(int offset, int pageSize) throws Exception {
+        return productDao.findPaged(offset, pageSize);
+    }
+    
     @Override
     public void insert(ProductVo product) throws Exception {
         productDao.insert(product);

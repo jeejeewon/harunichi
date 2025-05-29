@@ -8,6 +8,8 @@ public interface ProductService {
     List<ProductVo> findAll() throws Exception;
 
     ProductVo findById(int productId) throws Exception;
+    
+    List<ProductVo> findPaged(int offset, int limit) throws Exception;
 
     void insert(ProductVo product) throws Exception;
 

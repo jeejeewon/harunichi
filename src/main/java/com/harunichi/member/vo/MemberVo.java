@@ -20,9 +20,7 @@ public class MemberVo {
 		private Timestamp joindate; //가입일
 		private String kakao_id; //카카오아이디
 		
-		
-		
-		
+				
 		
 		
 		

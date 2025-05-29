@@ -1,8 +1,9 @@
 package com.harunichi.product.vo;
 
-import lombok.Data;
 
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 @Data
 public class ProductVo {
@@ -16,6 +17,10 @@ public class ProductVo {
     private Timestamp productDate;
     private String productImg;
     private int productCount;
+    
     private String productWriterId;
+    private String writerNick; 
+    private String writerProfileImg;
+    
     
 }

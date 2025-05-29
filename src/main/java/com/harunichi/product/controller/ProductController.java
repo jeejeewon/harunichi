@@ -3,8 +3,10 @@ package com.harunichi.product.controller;
 import com.harunichi.product.vo.ProductVo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductController {
 
@@ -15,8 +17,8 @@ public interface ProductController {
 
     ModelAndView writeForm(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-    ModelAndView write(ProductVo product, HttpServletRequest request, HttpServletResponse response) throws Exception;
-
+    ModelAndView write(ProductVo product, MultipartFile uploadFile, HttpServletRequest request, HttpServletResponse response) throws Exception;
+    
     ModelAndView delete(@RequestParam("productId") int productId,
                         HttpServletRequest request, HttpServletResponse response) throws Exception;
     
@@ -25,6 +27,8 @@ public interface ProductController {
 
     ModelAndView edit(ProductVo product,
     		HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+
 
 
 }
