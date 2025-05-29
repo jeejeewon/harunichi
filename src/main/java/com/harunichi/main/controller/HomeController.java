@@ -1,3 +1,5 @@
+/*MainController와의 충돌을 방지하기위해 지워두겠습니다.*/
+/*
 package com.harunichi.main.controller;
 
 import java.text.DateFormat;
@@ -29,7 +31,8 @@ public class HomeController {
 		model.addAttribute("serverTime", formattedDate );
 		
 //		return "home";
-		return "/main/main";
+		return "/main";
 	}
 	
 }
+*/

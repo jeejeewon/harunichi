@@ -10,9 +10,10 @@ request.setCharacterEncoding("utf-8");
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
-<link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><!-- 폰트어썸(아이콘)라이브러리 -->
 <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+<link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <title><tiles:insertAttribute name="title" /></title>
 </head>
 <body>
@@ -32,8 +33,8 @@ request.setCharacterEncoding("utf-8");
 			<tiles:insertAttribute name="footer" />
 		</footer>
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 제이쿼리 -->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
 	<script>
 		//국가선택 로직
 		$(document).ready(function() {
