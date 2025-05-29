@@ -56,7 +56,6 @@ request.setCharacterEncoding("utf-8");
 			}
 		});
 		
-		//메뉴 호버시 아이콘 변경
 		
 	</script>
 </body>
