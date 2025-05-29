@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.product">
+
+    <select id="findAll" resultType="com.harunichi.product.vo.ProductVo">
+        <![CDATA[
+            SELECT 
+                p.*, 
+                m.nick AS writerNick,
+                m.profileImg AS writerProfileImg
+            FROM product p
+            LEFT JOIN member m ON p.productWriterId = m.id
+            ORDER BY p.productDate DESC
+        ]]>
+    </select>
+    
+    <select id="findPaged" resultType="com.harunichi.product.vo.ProductVo">
+        <![CDATA[    
+		    SELECT p.*, m.nick, m.profileImg
+		    FROM product p
+		    JOIN member m ON p.productWriterId = m.id
+		    ORDER BY p.productDate DESC
+		    LIMIT #{limit} OFFSET #{offset}
+        ]]>    
+	</select>
+
+    <select id="findById" parameterType="int" resultType="com.harunichi.product.vo.ProductVo">
+        <![CDATA[
+            SELECT 
+                p.*, 
+                m.nick AS writerNick,
+                m.profileImg AS writerProfileImg
+            FROM product p
+            LEFT JOIN member m ON p.productWriterId = m.id
+            WHERE p.productId = #{productId}
+        ]]>
+    </select>
+
+	<insert id="insert" parameterType="com.harunichi.product.vo.ProductVo">
+	    <![CDATA[
+	        INSERT INTO product (
+	            productTitle, productPrice, productStatus,
+	            productCategory, productContent, productDate,
+	            productImg, productCount, productWriterId
+	        ) VALUES (
+	            #{productTitle}, #{productPrice}, #{productStatus},
+	            #{productCategory}, #{productContent}, NOW(),
+	            #{productImg}, 0, #{productWriterId}
+	        )
+	    ]]>
+	</insert>
+
+
+    <update id="update" parameterType="com.harunichi.product.vo.ProductVo">
+        <![CDATA[
+            UPDATE product
+            SET productTitle = #{productTitle},
+                productPrice = #{productPrice},
+                productStatus = #{productStatus},
+                productCategory = #{productCategory},
+                productContent = #{productContent},
+                productImg = #{productImg}
+            WHERE productId = #{productId}
+        ]]>
+    </update>
+
+    <delete id="delete" parameterType="int">
+        <![CDATA[
+            DELETE FROM product WHERE productId = #{productId}
+        ]]>
+    </delete>
+
+    <update id="incrementViewCount" parameterType="int">
+        <![CDATA[
+            UPDATE product SET productCount = productCount + 1 WHERE productId = #{productId}
+        ]]>
+    </update>
+
+</mapper>
