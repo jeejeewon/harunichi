@@ -6,6 +6,7 @@
 <!-- namespace를 "mapper.member"로 꼭 맞춰주기 -->
 <mapper namespace="mapper.member"> 
 
+<!-- 아이디로만 회원 정보 조회 -->
 <select id="selectMemberById" parameterType="String" resultType="memberVo"> <!-- modelConfig.xml에 등록한 memberVo 별칭 -->
     <![CDATA[
         SELECT
@@ -31,5 +32,32 @@
 	]]>
 </select>
 
+
+<!-- 아이디와 비밀번호로 회원 정보 조회 (로그인시 필요함) -->
+<select id="loginByIdAndPw" parameterType="java.util.Map" resultType="memberVo">
+    <![CDATA[
+        SELECT
+            id,
+            pass,
+            name,
+            nick,
+            contry,
+            year,
+            gender,
+            email,
+            tel,
+            address,
+            myLike,
+            profileImg,
+            follower,
+            joindate,
+            kakao_id
+        FROM
+            member
+		 WHERE
+            id = #{userId}   /* 아이디 파라미터 */
+            AND pass = #{userPw} /* 비밀번호 파라미터 */
+	]]>
+</select>
 
 </mapper>
