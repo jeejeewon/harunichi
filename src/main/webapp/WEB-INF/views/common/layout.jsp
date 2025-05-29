@@ -55,7 +55,5 @@ request.setCharacterEncoding("utf-8");
 				return $state;
 			}
 		});
-		
-		
 	</script>
 </body>

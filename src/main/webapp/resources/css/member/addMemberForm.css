@@ -1,0 +1,164 @@
+@charset "UTF-8";
+/* 버튼색상 : #A3DAFF 하늘색 */
+/* 마우스호버 : #bfe6ff 연한하늘색 */
+*, *::before, *::after {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+	color: #222;
+}
+
+ul, ol {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+/*버튼 기본 디자인 제거*/
+button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.addmemberform-wrap{
+	width: calc(100% - 20px);
+	max-width: 768px;
+	margin: 0 auto;
+}
+.logo-area{
+	padding: 20px 0;
+}
+.logo-area a img{
+	height: 20px;
+    vertical-align: middle;
+}
+.addmemberform-middle{
+	display:flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+	border-bottom: 1px solid #ddd;
+	
+}
+.addmemberform-middle img{
+	width: 40px;
+	height: auto;
+}
+.addmemberform-middle p{
+	font-size: 24px;
+}
+
+/*셀렉트박스 디자인*/
+/* 전체 감싸는 영역 */
+.select-country-area {
+	margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.select2-container {/* Select2 컨테이너*/
+    width: 100%;
+}
+
+.select2-container--default .select2-selection--single {/* Select2 선택 영역 (닫혀 있을 때 보이는 부분) */
+    height: 45px;
+    border: 1px solid #eee;
+/*  border-radius: 25px; */
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {/* Select2 선택된 항목 텍스트/이미지 표시 영역 */
+    line-height: 43px;
+    padding-left: 15px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {/* Select2 드롭다운 화살표 숨기기 */
+    display: none;
+}
+
+.select2-dropdown {/* Select2 드롭다운 목록 (클릭했을 때 아래로 펼쳐지는 부분) */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.select2-results__option {/* Select2 드롭다운 옵션 (각 항목) */
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {/* Select2 드롭다운 옵션 호버 시 */
+    background-color: #bfe6ff;
+    color: #222;
+}
+
+/*맨 아래 로그인버튼 영역*/
+.login-ask-area{
+	text-align: center;
+	border-top: 1px solid #ddd;
+	padding: 30px 20px 20px 20px;
+}
+
+.login-ask-area p{
+	margin-bottom: 20px;
+}
+
+.login-ask-area a{
+	border: 1px solid #A3DAFF;
+	color: #A3DAFF;
+	border-radius: 5px;
+	padding: 12px;
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+}
+.login-ask-area a:hover{
+	color: white;
+	background-color: #A3DAFF;
+}
+
+/*한국 선택시*/
+.kr-register-options{
+	display: flex;
+	flex-direction: column;
+	gap : 20px;
+	padding: 30px 20px 10px 20px;
+	margin-bottom: 30px;
+}
+.kr-register-options button{
+	height: 45px;
+	border: 1px solid #222;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.kr-register-options button img{
+	width: auto;
+	height: 20px;
+}
+.kr-register-options button span{
+	font-size: 16px;
+}
+.kr-register-options button::after {
+    content: "";
+    display: block; 
+    width: 20px;
+    height: 20px; 
+    flex-shrink: 0;
+}
