@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    <definition name="/test" extends="baseLayout">
+       <put-attribute name="title" value="테스트 페이지" />
+       <put-attribute name="body" value="/WEB-INF/views/test.jsp" /> <!-- 이쪽 경로 설정 잘해두기 -->
+    </definition>
+</tiles-definitions>
+
