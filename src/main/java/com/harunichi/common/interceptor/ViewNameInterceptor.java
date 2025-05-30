@@ -12,6 +12,8 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		
+		//로그인 유무 판단 코드 작성 해야함
+		
 		try {
 
 			String viewName = getViewName(request);
