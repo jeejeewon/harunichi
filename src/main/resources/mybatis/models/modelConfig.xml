@@ -5,7 +5,7 @@
 <configuration>
   <typeAliases>
     <typeAlias type="com.harunichi.member.vo.MemberVo" alias="memberVo" />
-
+    <typeAlias type="com.harunichi.board.vo.BoardVo" alias="boardVo" />
   </typeAliases>
 </configuration>
 

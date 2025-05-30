@@ -2,14 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="mapper.borad">
+<mapper namespace="mapper.board">
 
-    <!-- selectBoard 실행될 때 쓸 SQL -->
-    <select id="selectBoardById" parameterType="int" resultMap="boardVo">
-        <!-- boardId 값 받아서 글 하나 가져옴 -->
-        SELECT boardId, boardCont, boardDate, boardImg, boardLike, boardCount, boardRe
-        FROM board
-        WHERE boardId = #{boardId}
-    </select>
+	<select id="selectBoardById" parameterType="int"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT boardId, boardCont, boardDate, boardImg, boardLike, boardCount,
+		boardRe
+		FROM board
+		WHERE boardId = #{boardId}
+	</select>
+
+	<select id="selectBoardList"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT boardId, boardCont, boardDate, boardImg, boardLike, boardCount,
+		boardRe
+		FROM board
+		ORDER BY boardDate DESC
+	</select>
+	
+    <insert id="insertBoard" parameterType="com.harunichi.board.vo.BoardVo">
+        INSERT INTO board (boardCont, boardDate, boardImg, boardLike, boardCount, boardRe)
+        VALUES (#{boardCont}, #{boardDate}, #{boardImg}, #{boardLike}, #{boardCount}, #{boardRe})
+    </insert>
+	
 
 </mapper>
