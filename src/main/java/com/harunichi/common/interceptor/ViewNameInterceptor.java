@@ -1,7 +1,11 @@
 package com.harunichi.common.interceptor;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -11,15 +15,41 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 	// 컨트롤러 클래스 실행전 요청한 주소에 관하여 뷰주소를 얻어 request메모리에 뷰주소를 저장하는 메소드
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+	
+/*
+
+//추후 로그인 폼으로 location.href 경로 변경 바람
 		
+		//로그인 유무 판단
+		try {			
+			request.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html;charset=utf-8");
+			HttpSession session = request.getSession();
+			String userId = (String)session.getAttribute("id");	
+			String contextPath = request.getContextPath();
+			PrintWriter out = response.getWriter();
+			
+			System.out.println("userId : " + userId);
+					
+			//로그인을 하지 않은 경우
+			if(userId == null || userId.equals("")) {
+				//로그인 페이지로 이동
+				response.setContentType("text/html;charset=utf-8");
+				out.println("<script>alert('로그인 후 이용 가능합니다.'); location.href='" + contextPath + "/chat/login';</script>");
+				out.flush();
+				out.close();
+				return false;
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+*/		
+		
+		//뷰 경로 얻기
 		try {
-
 			String viewName = getViewName(request);
-
 			System.out.println("ViewNameInterceptor인터셉터 내부의 preHandle메소드가 만든 뷰주소 : " + viewName);
-
 			request.setAttribute("viewName", viewName);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
