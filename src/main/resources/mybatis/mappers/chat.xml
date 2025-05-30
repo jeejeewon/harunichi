@@ -7,8 +7,8 @@
 
 	<insert id="saveMessage" parameterType="com.harunichi.chat.vo.ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, chatType)
-				VALUES(#{roomId}, #{senderId}, #{chatType})	
+			INSERT INTO chat(roomId, senderId, chatType, content)
+				VALUES(#{roomId}, #{senderId}, #{chatType}, #{message})	
 		]]>	
 	</insert>
 

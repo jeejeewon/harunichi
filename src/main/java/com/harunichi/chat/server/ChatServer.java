@@ -41,6 +41,7 @@ public class ChatServer {
 		clients.add(session); 
 		System.out.println("✅ [서버로그] 새로운 사용자 입장! ID:" + session.getId() + " (현재 총 " + clients.size() + "명 접속중)");		
 		
+		//빈 수동 주입 (웹소켓에서는 @Autowired가 안 먹힘!)
 		this.chatService = SpringContext.getBean(ChatService.class);
 	
 	}

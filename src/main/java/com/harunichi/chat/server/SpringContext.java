@@ -22,10 +22,9 @@ public class SpringContext implements ApplicationContextAware {
 	}
 	
 	
-	public static <T> T getBean(Class<T> clazz) {	
-		
-		return context.getBean(clazz);	
-		
+	//빈 호출 메소드	
+	public static <T> T getBean(Class<T> clazz) {			
+		return context.getBean(clazz);			
 	}
 	
 }
