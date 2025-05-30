@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/chat")
 public class ChatController {
 
+	@RequestMapping("/login")
+	public String loginTest(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("chatController의 loginTest 메소드 실행 -------------");
+		
+		return "/chat/loginTest";
+		
+	}
+	
 	@RequestMapping("/main")
 	public String chatMain(HttpServletRequest request, 
 						   HttpServletResponse response) throws Exception{
