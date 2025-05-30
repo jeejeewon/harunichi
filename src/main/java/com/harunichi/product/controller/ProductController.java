@@ -25,8 +25,8 @@ public interface ProductController {
     ModelAndView editForm(@RequestParam("productId") int productId,
             HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-    ModelAndView edit(ProductVo product,
-    		HttpServletRequest request, HttpServletResponse response) throws Exception;
+	ModelAndView edit(ProductVo product, MultipartFile uploadFile, HttpServletRequest request,
+			HttpServletResponse response) throws Exception;
 
 
 

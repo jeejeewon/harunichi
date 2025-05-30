@@ -47,4 +47,12 @@ public class ProductServiceImpl implements ProductService {
     public void incrementViewCount(int productId) throws Exception {
         productDao.incrementViewCount(productId);
     }
+    
+    @Override
+    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
+        return productDao.searchFiltered(keyword, category, minPrice, maxPrice, offset, limit);
+    }
+
+
+    
 }
