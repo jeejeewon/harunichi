@@ -4,7 +4,7 @@
 
 <%-- 한국인 회원가입 폼 --%>
 
-<section class="kr-register-options">
+<section class="register-options">
     <%-- 이메일 인증 버튼 --%>
     <button type="button" id="email-auth-btn">
 		<img src="${contextPath}/resources/image/email_icon.svg" alt="이메일 아이콘">

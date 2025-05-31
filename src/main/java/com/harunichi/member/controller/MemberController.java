@@ -13,12 +13,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.harunichi.member.vo.MemberVo;
 
 public interface MemberController {
+	//요청 페이지 보여주는 메소드
+	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//로그인메소드
 	public ModelAndView login (@RequestParam Map<String, String> loginMap, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//로그아웃메소드
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception;
-	//회원가입 폼 보여주는 메소드
-	public ModelAndView addMemberForm(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//회원가입메소드
 	public ResponseEntity addMember(@ModelAttribute("member") MemberVo member, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//아이디 중복확인 메소드

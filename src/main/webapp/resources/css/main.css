@@ -1,23 +1,34 @@
 @charset "UTF-8";
-
 /* 버튼색상 : #A3DAFF 하늘색 */
 /* 마우스호버 : #bfe6ff 연한하늘색 */
-
-*,
-*::before,
-*::after {
+/* 기본 글자색 : #222 */
+/* 연한 글자색 : #888 */
+*, *::before, *::after {
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
 	font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 	color: #222;
 }
+
 ul, ol {
 	list-style: none;
 }
+
 a {
 	text-decoration: none;
 	color: inherit;
+}
+/*버튼 기본 디자인 제거*/
+button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 html, body {
@@ -85,7 +96,7 @@ header {
 }
 
 .header-search-form:focus-within {
-    border: 2px solid #A3DAFF;
+    border: 1px solid #A3DAFF;
 }
 
 .header-search-form  input[type="text"] {
@@ -114,19 +125,6 @@ header {
     width: auto;
     vertical-align: middle;
     filter: invert(81%) sepia(12%) saturate(2347%) hue-rotate(173deg) brightness(105%) contrast(101%);
-}
-
-.select2-dropdown {/*드롭다운박스스타일*/
-    max-height: 200px; 
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-}
-
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: #bfe6ff;
-    color: white;
 }
 
 .header-menu ul {
@@ -167,9 +165,9 @@ header {
 	height: 100%;
 	filter:none;
 }
-.header-inner .select2-container {
+
+.header-inner .select2-container {/*셀렉트박스스타일*/
     width: 130px !important;
-    margin-left: 10px;
     vertical-align: middle;
 }
 
@@ -190,6 +188,19 @@ header {
 
 .header-inner .select2-container .select2-selection__arrow {
     display: none !important;
+}
+
+.select2-dropdown {/*드롭다운박스스타일*/
+    max-height: 200px; 
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #bfe6ff;
+    color: white;
 }
 
 .select2-dropdown {

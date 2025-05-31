@@ -1,6 +1,8 @@
 @charset "UTF-8";
 /* 버튼색상 : #A3DAFF 하늘색 */
 /* 마우스호버 : #bfe6ff 연한하늘색 */
+/* 기본 글자색 : #222 */
+/* 연한 글자색 : #888 */
 *, *::before, *::after {
 	padding: 0;
 	margin: 0;
@@ -34,10 +36,12 @@ button {
 	max-width: 768px;
 	margin: 0 auto;
 }
-.logo-area{
+.header-area{
 	padding: 20px 0;
+	display: flex;
+	justify-content: space-between;
 }
-.logo-area a img{
+.header-area a img{
 	height: 20px;
     vertical-align: middle;
 }
@@ -66,7 +70,7 @@ button {
     flex-direction: column;
     background-color: #f9f9f9;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
 }
 
 .select2-container {/* Select2 컨테이너*/
@@ -92,7 +96,8 @@ button {
 
 .select2-dropdown {/* Select2 드롭다운 목록 (클릭했을 때 아래로 펼쳐지는 부분) */
     border: 1px solid #ccc;
-    border-radius: 10px;
+    border-radius: 15px;
+    overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
@@ -106,21 +111,53 @@ button {
     color: #222;
 }
 
+/*가운데 버튼들 영역*/
+.register-options{
+	display: flex;
+	flex-direction: column;
+	gap : 20px;
+	padding: 30px 20px;
+	border-bottom: 1px solid #ddd;
+}
+.register-options button{
+	height: 45px;
+	border: 1px solid #222;
+	border-radius: 15px;
+	display: flex;
+	align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.register-options button img{
+	width: auto;
+	height: 20px;
+}
+.register-options button span{
+	font-size: 16px;
+}
+.register-options button::after {
+    content: "";
+    display: block; 
+    width: 20px;
+    height: 20px; 
+    flex-shrink: 0;
+}
+
 /*맨 아래 로그인버튼 영역*/
 .login-ask-area{
 	text-align: center;
-	border-top: 1px solid #ddd;
-	padding: 30px 20px 20px 20px;
+	padding: 20px;
 }
 
 .login-ask-area p{
 	margin-bottom: 20px;
+	color: #888;
 }
 
 .login-ask-area a{
 	border: 1px solid #A3DAFF;
 	color: #A3DAFF;
-	border-radius: 5px;
+	border-radius: 15px;
 	padding: 12px;
 	font-size: 16px;
 	font-weight: bold;
@@ -129,36 +166,4 @@ button {
 .login-ask-area a:hover{
 	color: white;
 	background-color: #A3DAFF;
-}
-
-/*한국 선택시*/
-.kr-register-options{
-	display: flex;
-	flex-direction: column;
-	gap : 20px;
-	padding: 30px 20px 10px 20px;
-	margin-bottom: 30px;
-}
-.kr-register-options button{
-	height: 45px;
-	border: 1px solid #222;
-	border-radius: 5px;
-	display: flex;
-	align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-}
-.kr-register-options button img{
-	width: auto;
-	height: 20px;
-}
-.kr-register-options button span{
-	font-size: 16px;
-}
-.kr-register-options button::after {
-    content: "";
-    display: block; 
-    width: 20px;
-    height: 20px; 
-    flex-shrink: 0;
 }

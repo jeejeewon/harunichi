@@ -22,10 +22,9 @@
 	    <nav class="header-menu">
 	        <ul>
 	            <li>
-	                <label for="country-select">lang</label>
 	                <select id="country-select" name="country">
-	                    <option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png">Korea</option>
-	                    <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">Japan</option>
+	                    <option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
+	                    <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 	                </select>
 	            </li>
 	            <li>
@@ -41,7 +40,7 @@
 	            	</c:if>
 	            	<%-- 세션에 id 값이 없을 경우 (비회원 상태) --> 로그인 링크 노출 --%>
 	            	<c:if test="${empty sessionScope.id}">
-                        <a href="${contextPath}/추후로그인페이지주소로변경">
+                        <a href="${contextPath}/member/loginpage.do">
                             <span>로그인</span>
                         </a>
                     </c:if>
