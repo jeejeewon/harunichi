@@ -3,7 +3,6 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%-- 한국인 회원가입 폼 --%>
-
 <section class="register-options">
     <%-- 이메일 인증 버튼 --%>
     <button type="button" id="email-auth-btn">
@@ -25,25 +24,31 @@
     
 </section>
 
+
 <script>
-        $(document).ready(function() {
-         	// [이메일로 인증받기] 버튼 클릭시 이메일 인증 페이지(emailAuthForm.jsp)로 이동
-            $('#email-auth-btn').on('click', function() {
-            	var selectedNationality = $('#nationality-select').val();
-            	window.location.href = '<c:url value="/member/emailAuthForm.do"/>?nationality=' + selectedNationality;
-            });
+	// 이메일 인증 버튼 클릭시
+	$(document).on('click', '#email-auth-btn', function () {
+		const selectedNationality = $('#nationality-select').val(); // 국적 셀렉트박스가 상단에 있다면
+		window.location.href = '<c:url value="/member/emailAuthForm.do"/>?nationality=' + selectedNationality;
+	});
 
-            // [카카오로 회원가입] 버튼 클릭 이벤트 (나중에 구현)
-            $('#kakao-register-btn').on('click', function() {
-                alert('카카오 로그인/가입 로직 시작!');
-                // TODO: 카카오 API 연동 로직
-            });
+	// 이벤트 위임 방식으로 클릭 이벤트 연결 (동적 요소도 동작하게 하기 위해)
+    $(document).on('click', '#kakao-register-btn', function () {
+        console.log('[카카오로 회원가입] 클릭됨');
+        
+        if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
+            alert('Kakao SDK 초기화되지 않았습니다.');
+            return;
+        }
 
-            // [네이버아이디로 가입] 버튼 클릭 이벤트 (나중에 구현)
-            $('#naver-register-btn').on('click', function() {
-                alert('네이버 로그인/가입 로직 시작!');
-                // TODO: 네이버 API 연동 로직
-            });
-
+        Kakao.Auth.authorize({
+            redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do',
+            scope: 'profile_nickname,account_email'
         });
+    });
+
+	// 네이버 클릭 테스트용
+    $(document).on('click', '#naver-register-btn', function () {
+        alert('네이버 로그인 기능은 아직 구현되지 않았습니다.');
+    });
 </script>

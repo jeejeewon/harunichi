@@ -45,8 +45,15 @@
 	
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 제이쿼리 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script><%-- 카카오 SDK --%>
     <script>
         $(document).ready(function() {
+        	// Kakao SDK 초기화
+        	if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+        	    Kakao.init('8da16305d90fb5864eea32886df24211');
+        	    console.log('[초기 페이지에서] Kakao SDK initialized:', Kakao.isInitialized());
+        	}
+        	
             // Select2 초기화
             $('#nationality-select').select2({
                 minimumResultsForSearch: -1, // 검색 기능 비활성화
