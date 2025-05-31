@@ -27,7 +27,7 @@ public class MemberControllerImpl implements MemberController{
 	
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -84,6 +84,5 @@ public class MemberControllerImpl implements MemberController{
 		logger.debug("Checking if ID is overlapped: " + id); // 아이디 중복 확인 로그
 		return null;
 	}
-	
 	
 }

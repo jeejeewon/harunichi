@@ -12,3 +12,12 @@
     </button>
 </section>
 
+<script>
+        $(document).ready(function() {
+         	// [이메일로 인증받기] 버튼 클릭시 이메일 인증 페이지(emailAuthForm.jsp)로 이동
+            $('#email-auth-btn').on('click', function() {
+            	var selectedNationality = $('#nationality-select').val();
+            	window.location.href = '<c:url value="/member/emailAuthForm.do"/>?nationality=' + selectedNationality;
+            });
+        });
+</script>
