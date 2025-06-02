@@ -83,14 +83,9 @@ button {
     color: white;
 }
 
-.select2-dropdown {
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-}
-
 .select2-results__option {
     padding: 10px 15px;
+    cursor: pointer;
 }
 
 img.country-icon {
