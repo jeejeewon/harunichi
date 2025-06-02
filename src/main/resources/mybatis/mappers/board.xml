@@ -6,24 +6,75 @@
 
 	<select id="selectBoardById" parameterType="int"
 		resultType="com.harunichi.board.vo.BoardVo">
-		SELECT boardId, boardCont, boardDate, boardImg, boardLike, boardCount,
-		boardRe
-		FROM board
-		WHERE boardId = #{boardId}
+		SELECT
+		boardId, boardWriter, boardCont, boardDate,
+		boardLike, boardCount, boardRe, boardImg1, boardImg2, boardImg3,
+		boardImg4
+		FROM
+		board
+		WHERE
+		boardWriter = #{memberId}
+		ORDER BY
+		boardDate DESC
 	</select>
 
 	<select id="selectBoardList"
 		resultType="com.harunichi.board.vo.BoardVo">
-		SELECT boardId, boardCont, boardDate, boardImg, boardLike, boardCount,
-		boardRe
-		FROM board
-		ORDER BY boardDate DESC
+		SELECT boardId, boardWriter,boardCont, boardDate,
+		boardLike,
+		boardCount, boardRe, boardImg1, boardImg2,
+		boardImg3,
+		boardImg4
+		FROM
+		board
+		ORDER BY
+		boardDate DESC
 	</select>
-	
-    <insert id="insertBoard" parameterType="com.harunichi.board.vo.BoardVo">
-        INSERT INTO board (boardCont, boardDate, boardImg, boardLike, boardCount, boardRe)
-        VALUES (#{boardCont}, #{boardDate}, #{boardImg}, #{boardLike}, #{boardCount}, #{boardRe})
-    </insert>
-	
+
+	<insert id="insertBoard"
+		parameterType="com.harunichi.board.vo.BoardVo">
+		INSERT INTO board (
+		boardCont, boardImg1, boardImg2,
+		boardImg3, boardImg4
+		) VALUES (
+		#{boardCont}, #{boardImg1},
+		#{boardImg2}, #{boardImg3}, #{boardImg4}
+		)
+	</insert>
+
+	<update id="updateBoard"
+		parameterType="com.harunichi.board.vo.BoardVo">
+		UPDATE board
+		<set>
+			<if test="boardCont != null">boardCont = #{boardCont},</if>
+			<if test="boardImg1 != null">boardImg1 = #{boardImg1},</if>
+			<if test="boardImg2 != null">boardImg2 = #{boardImg2},</if>
+			<if test="boardImg3 != null">boardImg3 = #{boardImg3},</if>
+			<if test="boardImg4 != null">boardImg4 = #{boardImg4},</if>
+		</set>
+		WHERE boardId = #{boardId}
+	</update>
+
+	<!-- 카운트 증감 쿼리 -->
+	<update id="incrementBoardLike" parameterType="int">
+		UPDATE board
+		SET
+		boardLike = boardLike + 1
+		WHERE boardId = #{boardId}
+	</update>
+
+	<update id="incrementBoardCount" parameterType="int">
+		UPDATE board
+		SET
+		boardCount = boardCount + 1
+		WHERE boardId = #{boardId}
+	</update>
+
+	<update id="incrementBoardRe" parameterType="int">
+		UPDATE board
+		SET
+		boardRe = boardRe + 1
+		WHERE boardId = #{boardId}
+	</update>
 
 </mapper>

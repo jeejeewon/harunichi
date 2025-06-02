@@ -11,10 +11,20 @@ import com.harunichi.board.vo.BoardVo;
 @Service("BoardService")
 public class BoardServiceImpl implements BoardService {
 	@Autowired
-    private BoardDao boardDao;
+	private BoardDao boardDao;
+
+	@Override
+	public List<BoardVo> selectBoardList() throws Exception {
+		return boardDao.selectBoardList();
+	}
+
+	@Override
+    public void insertBoard(BoardVo boardVo) throws Exception {
+        boardDao.insertBoard(boardVo);
+    }
 
     @Override
-    public List<BoardVo> selectBoardList() throws Exception {
-        return boardDao.selectBoardList();
+    public void updateBoard(BoardVo boardVo) throws Exception {
+        boardDao.updateBoard(boardVo);
     }
 }

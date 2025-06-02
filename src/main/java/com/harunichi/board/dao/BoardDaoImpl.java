@@ -26,17 +26,26 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 	public List<BoardVo> selectBoardList() throws Exception {
 		return sqlSession.selectList(NAMESPACE + "selectBoardList");
 	}
+	
+	@Override
+	public BoardVo selectBoardById(int boardId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	// 객체의 상태를 변경하는 등의 작업을 수행하는 메서드는 void로 선언	
 	// 게시글 등록
 	@Override
 	public void insertBoard(BoardVo boardVo) throws Exception {
 		sqlSession.insert(NAMESPACE + "insertBoard", boardVo);
 	}
 
+	// 게시글 수정
 	@Override
-	public BoardVo selectBoardById(int boardId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public void updateBoard(BoardVo boardVo) throws Exception {
+		sqlSession.update(NAMESPACE + "updateBoard", boardVo);
 	}
+
+	
 
 }
