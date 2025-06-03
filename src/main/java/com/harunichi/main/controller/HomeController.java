@@ -1,3 +1,4 @@
+
 /*MainController와의 충돌을 방지하기위해 지워두겠습니다.*/
 /*
 package com.harunichi.main.controller;
@@ -32,6 +33,7 @@ public class HomeController {
 		
 //		return "home";
 		return "/main";
+
 	}
 	
 }

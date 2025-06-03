@@ -10,8 +10,7 @@
 	<property name="locations">
 	<value>/WEB-INF/config/jdbc/jdbc.properties</value>
 	</property>
-	</bean>
-	
+	</bean>	
 	<bean id="dataSource"
 		class="org.apache.ibatis.datasource.pooled.PooledDataSource">
 		<property name="driver" value="${jdbc.driverClassName}" />
@@ -29,11 +28,9 @@
 	    class= "org.springframework.jdbc.datasource.DataSourceTransactionManager" >
 	    <property name ="dataSource" ref= "dataSource"></property >
 	</bean >
-	
 	<bean id ="sqlSession"
 	    class= "org.mybatis.spring.SqlSessionTemplate" >
 	    <constructor-arg ref= "sqlSessionFactory"></constructor-arg >
 	</bean >
-
-
 </beans>
+

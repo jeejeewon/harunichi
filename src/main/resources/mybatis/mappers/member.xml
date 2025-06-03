@@ -24,8 +24,12 @@
             profileImg,
             follower,
             joindate,
+<<<<<<< HEAD
             kakao_id,
             naver_id
+=======
+            kakao_id
+>>>>>>> origin/board
         FROM
             member
 		 WHERE
@@ -131,5 +135,4 @@
         )
         ]]>
 	</insert>
-
 </mapper>

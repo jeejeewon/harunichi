@@ -14,7 +14,7 @@ public class MemberDaoImpl implements MemberDao {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	//회원가입 기능
 	@Override
 	public int insertMember(MemberVo memberVO) throws DataAccessException {
@@ -22,12 +22,14 @@ public class MemberDaoImpl implements MemberDao {
 		return 0;
 	}
 	
+	
 	//로그인 기능
 	@Override
 	public MemberVo login(Map<String, String> loginMap) throws DataAccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 	//아이디 중복 확인 기능
 	@Override
@@ -35,6 +37,7 @@ public class MemberDaoImpl implements MemberDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 	//닉네임 중복 확인 기능
 	@Override
@@ -42,6 +45,7 @@ public class MemberDaoImpl implements MemberDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 	//회원 정보 조회 기능
 	@Override
@@ -66,6 +70,7 @@ public class MemberDaoImpl implements MemberDao {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 	
 	//비밀번호 변경 기능
 	@Override
@@ -73,6 +78,7 @@ public class MemberDaoImpl implements MemberDao {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 	
 	//회원 탈퇴 기능
 	@Override

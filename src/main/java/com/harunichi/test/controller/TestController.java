@@ -23,7 +23,7 @@ public class TestController {
         // 인터셉터가 넣어둔 viewName 가져오기
         String viewName = (String) request.getAttribute("viewName");
         System.out.println("컨트롤러에서 가져온 viewName: " + viewName); 
-
+        
         logger.info("TestController - showTestPage() 메소드 종료. Returning view name: /test");
 
         return "/test";
