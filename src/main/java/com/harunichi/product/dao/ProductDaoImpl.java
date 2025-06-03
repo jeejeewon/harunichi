@@ -54,4 +54,17 @@ public class ProductDaoImpl implements ProductDao {
     public void incrementViewCount(int productId) throws Exception {
         sqlSession.update(NAMESPACE + "incrementViewCount", productId);
     }
+    
+    @Override
+    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("keyword", keyword);
+        paramMap.put("category", category);
+        paramMap.put("minPrice", minPrice);
+        paramMap.put("maxPrice", maxPrice);
+        paramMap.put("offset", offset);
+        paramMap.put("limit", limit);
+        return sqlSession.selectList(NAMESPACE + "searchFiltered", paramMap);
+    }
+
 }
