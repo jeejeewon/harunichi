@@ -131,5 +131,17 @@
         )
         ]]>
 	</insert>
+	
+	<!-- 프로필 이미지와 관심사 업데이트 -->
+	<update id="updateMemberProfileAndLikes" parameterType="com.harunichi.member.vo.MemberVo">
+        <![CDATA[
+        UPDATE member
+        SET
+            myLike = #{myLike},
+            profileImg = #{profileImg}
+        WHERE
+            id = #{id}
+        ]]>
+	</update>
 
 </mapper>

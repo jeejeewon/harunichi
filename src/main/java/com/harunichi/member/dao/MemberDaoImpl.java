@@ -49,7 +49,7 @@ public class MemberDaoImpl implements MemberDao {
 
 		MemberVo memberVo = sqlSession.selectOne("mapper.member.selectMemberById", id);
 
-		return memberVo; // DB에서 가져온 MemberVo 객체 돌려주기!
+		return memberVo; // DB에서 가져온 MemberVo 객체 돌려주기
 	}
 	
 	//(카카오아이디) DB에 이미 가입된 회원인지 확인하는 메서드
@@ -63,8 +63,8 @@ public class MemberDaoImpl implements MemberDao {
 	//회원 정보 수정 기능
 	@Override
 	public int updateMember(MemberVo memberVO) throws DataAccessException {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = sqlSession.update("mapper.member.updateMemberProfileAndLikes", memberVO);
+		return result;
 	}
 	
 	//비밀번호 변경 기능

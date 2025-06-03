@@ -3,11 +3,13 @@ package com.harunichi.member.controller;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.harunichi.member.dao.MemberDao;
-import com.harunichi.member.dao.MemberDaoImpl;
+import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
 import com.harunichi.test.controller.TestController;
@@ -38,15 +41,11 @@ public class MemberControllerImpl implements MemberController{
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberControllerImpl.class);
 	
-	@Autowired
-    private MemberDao memberDao;
-	
 	@Autowired 
 	private MemberService memberService;
 	
-	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/addMemberWriteForm.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/addMemberWriteForm.do", "profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -123,28 +122,30 @@ public class MemberControllerImpl implements MemberController{
         System.out.println("사용자 정보 응답: " + userinfo); // 응답 내용 확인!
 
         // 4. 가져온 사용자 정보를 MemberVo 객체에 담고 세션에 저장
-        MemberVo kakaoMember = new MemberVo();
+        MemberVo memberVo = new MemberVo();
         String kakaoId = String.valueOf(userinfo.get("id"));
-        kakaoMember.setId("kakao_" + kakaoId);
-        kakaoMember.setContry("kr"); //카카오가입시 국적은 무조건 kr(한국)으로 저장!
+        //카카오에서 받아온 정보를 MemberVo에 매핑하기
+        memberVo.setId("kakao_" + kakaoId);//id는 "kakao_카카오아이디"로 저장
+        memberVo.setKakao_id(kakaoId);//원래카카오아이디는 kakao_id칼럼에 저장
+        memberVo.setContry("kr"); //국적 - 카카오가입시 국적은 무조건 kr(한국)으로 저장!
 
         if (userinfo.containsKey("properties")) {
             Map<String, Object> properties = (Map<String, Object>) userinfo.get("properties");
-            kakaoMember.setNick((String) properties.get("nickname"));
+            memberVo.setNick((String) properties.get("nickname"));
             // 이름 가져오기 (properties 또는 kakao_account에서)
             if (properties.containsKey("name")) {
-                kakaoMember.setName((String) properties.get("name"));
+            	memberVo.setName((String) properties.get("name"));
             }
         }
         if (userinfo.containsKey("kakao_account")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) userinfo.get("kakao_account");
             // 이메일
             if (kakaoAccount.containsKey("email")) {
-                kakaoMember.setEmail((String) kakaoAccount.get("email"));
+            	memberVo.setEmail((String) kakaoAccount.get("email"));
             }
             // 성별
             if (kakaoAccount.containsKey("gender")) {
-                kakaoMember.setGender((String) kakaoAccount.get("gender"));
+            	memberVo.setGender((String) kakaoAccount.get("gender"));
             }
             // 생년월일 (birthday, birthyear)
             if (kakaoAccount.containsKey("birthday") && kakaoAccount.containsKey("birthyear")) {
@@ -156,35 +157,35 @@ public class MemberControllerImpl implements MemberController{
                     int month = Integer.parseInt(birthday.substring(0, 2));
                     int day = Integer.parseInt(birthday.substring(2));
                     cal.set(year, month - 1, day);
-                    kakaoMember.setYear(new Date(cal.getTimeInMillis()));
+                    memberVo.setYear(new Date(cal.getTimeInMillis()));
                 } catch (NumberFormatException e) {
                     System.err.println("생년월일 파싱 오류: " + e.getMessage());
                 }
             }
             // 전화번호
             if (kakaoAccount.containsKey("phone_number")) {
-                kakaoMember.setTel((String) kakaoAccount.get("phone_number"));
+            	memberVo.setTel((String) kakaoAccount.get("phone_number"));
             }
             // 배송지 정보
             if (kakaoAccount.containsKey("shipping_address")) {
                 Map<String, Object> shippingAddress = (Map<String, Object>) kakaoAccount.get("shipping_address");
                 // 기본 주소
                 if (shippingAddress != null && shippingAddress.containsKey("base_address")) {
-                    kakaoMember.setAddress((String) shippingAddress.get("base_address"));
+                	memberVo.setAddress((String) shippingAddress.get("base_address"));
                 }
             }
         }
 
         // 5. 세션에 MemberVo 객체 저장
-        session.setAttribute("kakaoMember", kakaoMember);
+        session.setAttribute("memberVo", memberVo);
         session.setAttribute("authType", "kakao"); // 인증 방식도 세션에 저장 (회원가입 폼에서 활용)
 
         //6. DB에 이미 가입된 회원인지 확인 (selectMemberByKakaoId 호출)
         MemberVo dbMember = null;
 		try {
-			logger.info("DB 조회 시도: kakao_id = {}", "kakao_" + kakaoId); //조회하는 ID 로그
-            dbMember = memberService.selectMemberByKakaoId("kakao_" + kakaoId);
-            logger.info("DB 조회 결과 (dbMember): {}", dbMember); // 조회 결과 로그
+			logger.info("DB 조회 시도: kakao_id = {}", kakaoId); //조회하는 ID 로그
+			dbMember = memberService.selectMemberByKakaoId(kakaoId);
+			logger.info("DB 조회 결과 (dbMember): {}", dbMember); // 조회 결과 로그
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("카카오 ID로 회원 정보 조회 중 오류 발생", e);
@@ -195,13 +196,13 @@ public class MemberControllerImpl implements MemberController{
             //이미 가입된 회원이면 로그인 처리 (세션 저장 후 메인 등으로 리다이렉트)
             session.setAttribute("member", dbMember); // 사용자 정보를 세션에 저장 (우리가 DB에 저장한 회원 정보)
             session.setAttribute("isLogOn", true); // 로그인 상태 표시
-            session.setAttribute("memberId", dbMember.getId()); // 회원 ID 세션에 저장
+            session.setAttribute("id", dbMember.getId()); // 회원 ID 세션에 저장
 
-            mav.setViewName("redirect:/main.do"); // 메인 페이지로 리다이렉트
-            return mav; // 메서드 종료!
+            mav.setViewName("redirect:/"); // 메인 페이지로 리다이렉트
+            return mav; // 메서드 종료
         } else {
-            //가입되지 않은 회원이면 회원가입 폼으로 리다이렉트
-            mav.setViewName("redirect:/member/addMemberWriteForm.do"); // 회원 정보를 입력받는 폼 페이지
+            //가입되지 않은 회원이면 프로필이미지 설정과 관심사 설정 페이지로
+            mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do"); 
             return mav;
         }
     }
@@ -210,7 +211,76 @@ public class MemberControllerImpl implements MemberController{
     private final String NAVER_CLIENT_ID = ""; // 네이버 Client ID
     private final String NAVER_CLIENT_SECRET = ""; // 네이버 Client Secret
     private final String NAVER_REDIRECT_URI = "http://localhost:8090/harunichi/member/NaverCallback.do"; // 네이버 Redirect URI
-
+    
+    
+    // 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
+	@RequestMapping(value = "/profileImgAndMyLikeSettingProcess.do", method = RequestMethod.POST)
+	public String profileImgAndMyLikeSettingProcess( @RequestParam("profileImg") MultipartFile profileImg, @RequestParam(value = "myLike", required = false) String[] myLikes, HttpServletRequest request, Model model){
+		System.out.println("profileImgAndMyLikeSettingProcess 메소드 시작!");
+		//1.세션에서 kakaoMember 객체 가져오기
+		MemberVo memberVo = (MemberVo) request.getSession().getAttribute("memberVo");
+		if (memberVo == null) {
+            // 세션에 memberVo가 없으면 잘못된 접근
+            model.addAttribute("message", "잘못된 접근입니다. 다시 시도해주세요.");
+            return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+        }
+		//2. 프로필 이미지 처리
+		String filePath = handleProfileImage(profileImg, request);
+		System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
+		//3. 관심사 처리
+		String myLikeStr = handleMyLikes(myLikes);
+		System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
+		//4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
+        memberVo.setProfileImg(filePath);
+        memberVo.setMyLike(myLikeStr);
+        System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
+		//5. DB에 저장하기
+		try {
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 직전!");
+			memberService.updateMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장하게된다~
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 성공!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 중 에러 발생!");
+			model.addAttribute("message", "회원가입 처리 중 오류가 발생했습니다.");
+			return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+		}
+		System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
+		//6. 세션에 있던 memberVo객체 삭제
+		request.getSession().removeAttribute("memberVo");
+		//7. 인증 방식 정보도 삭제
+		request.getSession().removeAttribute("authType");
+		//8. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
+		HttpSession session = request.getSession();
+		session.setAttribute("member", memberVo);
+		session.setAttribute("isLogOn", true);
+		session.setAttribute("id", memberVo.getId());
+		//9. 모두 완료후 메인페이지로 리다이렉트
+		System.out.println("profileImgAndMyLikeSettingProcess - 메인 페이지로 리다이렉트");
+		return "redirect:/";
+	}
+	// 프로필 이미지 처리 메소드
+	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
+		String uploadDir = request.getSession().getServletContext().getRealPath("/resources/upload/profile");//업로드 디렉토리 설정
+		String fileName = null;
+		try {
+			if(profileImg != null && !profileImg.isEmpty()) {
+				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
+				return "/resources/upload/profile/" + fileName;//파일 경로 반환
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ""; //에러 발생시 빈 문자열 반환
+		}
+		return ""; //파일이 없을 경우에도 빈 문자열 반환
+	}
+	// 관심사 처리 메소드
+	private String handleMyLikes(String[] myLikes) {
+		if(myLikes != null && myLikes.length > 0) {
+			return String.join(",", myLikes);
+		}
+		return "";
+	}
 	
 	@Override//로그아웃메소드
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
