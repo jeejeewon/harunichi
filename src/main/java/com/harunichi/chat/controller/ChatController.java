@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.harunichi.chat.service.ChatService;
@@ -32,22 +33,23 @@ public class ChatController {
 	
 	@RequestMapping("/main")
 	public String chatMain(HttpServletRequest request, 
-						   HttpServletResponse response, HttpSession session) throws Exception{
+						   HttpServletResponse response, HttpSession session, Model model) throws Exception{
 		
 		System.out.println("chatController의 chatMain 메소드 실행 -------------");
 	
 		//로그인 했다고 가정하에 작성 (추후 삭제 필요)
 		String id = "hong";
+		String nick = "홍홍홍";
 		session.setAttribute("id", id);
+		session.setAttribute("nick", nick);
 		
 		//DB에서 친구추천 리스트 조회
-		List<MemberVo> members = chatService.selectMembers(id);
+		List<MemberVo> memberList = chatService.selectMembers(id);
 			//1. 사용자의 myLike(관심사)를 토대로 
 				//1-1. 관심사가 없거나 관심사에 맞는 사람이 없을 경우 그냥 조회
 			//2. 자신 빼고 조회
 		
-		
-		
+		model.addAttribute("memberList", memberList);
 		
 		return "/chatMain";
 		

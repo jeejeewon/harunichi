@@ -39,7 +39,7 @@ public class ChatDao {
 		
 		//사용자의 관심사 조회하여 변수에 저장
 		String myLike = sqlSession.selectOne(NAMESPACE + "selectMyLike", id);		
-		System.out.println(myLike);
+//		System.out.println(myLike);
 		
 		//조회한 관심사를 ","로 구분하여 자른 후 List에 저장
 		List<String> likeList = Arrays.stream(myLike.split(","))
@@ -73,7 +73,7 @@ public class ChatDao {
 		    resultList.addAll(randomMembers);
 		}
 		
-		System.out.println(resultList.toString());
+//		System.out.println(resultList.toString());
 	
 		return resultList;
 		

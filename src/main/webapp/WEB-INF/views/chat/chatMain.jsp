@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <title>채팅 메인 페이지</title>
 <style type="text/css">
+/* 친구추천 */
 #chatMainCon{
 	display: flex;
 	align-items: center;      
@@ -47,10 +48,20 @@
 	font-weight: bold;
 	margin-bottom: 40px;
 }
+.chat-slider-container {
+	width: 900px;
+	overflow-x: hidden; /* 가로 스크롤만 숨기고 */
+	overflow-y: visible; /* 세로는 보이게! */
+	position: relative; /* 자식 요소의 위치 기준 */
+	padding: 10px 0 20px 0; /* 살짝 위 공간 줘도 괜찮음 */
+}
 .profile-list {
 	display: flex;
-	gap: 20px; 
+	transition: transform 0.4s ease;
 	list-style: none; 
+}
+.profile-list li {
+	flex: 0 0 280px; /* 카드 하나의 너비 고정 */
 }
 .do-chat-btn {
 	display: flex;
@@ -76,6 +87,9 @@
 .btn:hover {
 	color: #53a5dc; 
 }
+
+
+/* 오픈채팅 */
 .open-chat-img {
 	width: 60px;
 	height: 60px;
@@ -126,8 +140,8 @@
 </head>
 <script type="text/javascript">
 //로그인 상황을 가정하기 위한 변수 저장 -----------------------------------------------나중에 수정해야함
-	var id = "hong";
-	var nick = "홍반장";	
+//	var id = "hong";
+//	var nick = "홍반장";	
 </script>
 
 <body>
@@ -135,38 +149,22 @@
 	<p id="recText">채팅친구추천</p>
 		<div id="chatMainCon">		
 			<a href="#" class="btn pre">◀</a>
-			<ul class="profile-list">						
-				<li>
-					<div class="profile-con">
-						<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
-							<img class="profile-img" src="../resources/images/chat/profile1.PNG" alt="프로필사진">
-						</a>
-						<p class="nick">닉네임</p>
-						<p>안녕하세요~!!!</p>
-						<a href="#" class="do-chat-btn">채팅하기</a>
-					</div>
-				</li>
-				<li>
-					<div class="profile-con">
-						<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
-							<img class="profile-img" src="../resources/images/chat/profile2.PNG" alt="프로필사진">
-						</a>
-						<p class="nick">닉네임</p>
-						<p>안녕하세요~!!!</p>
-						<a href="#" class="do-chat-btn">채팅하기</a>
-					</div>
-				</li>
-				<li>
-					<div class="profile-con">
-						<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
-							<img class="profile-img" src="../resources/images/chat/profile3.PNG" alt="프로필사진">
-						</a>
-						<p class="nick">닉네임</p>
-						<p>안녕하세요~!!!</p>
-						<a href="#" class="do-chat-btn">채팅하기</a>
-					</div>
-				</li>
-			</ul>	
+			<div class="chat-slider-container">
+				<ul class="profile-list">
+					<c:forEach var="member" items="${memberList}">						
+						<li>
+							<div class="profile-con">
+								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
+									<img class="profile-img" src="<c:url value='/resources/images/chat/${member.profileImg}'/>" alt="프로필사진">
+								</a>
+								<p class="nick">${member.nick}</p>
+								<p>${member.myLike}</p>
+								<a href="#" class="do-chat-btn" onclick="chatOpen();">채팅하기</a>
+							</div>
+						</li>
+					</c:forEach>						
+				</ul>
+			</div>	
 			<a href="#" class="btn next">▶</a>
 		</div>
 	</div>
@@ -217,8 +215,8 @@
 				
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window">
 		<!-- 나중에 세션에서 값 가져와야함 -->	
-		<c:set var="id" value="hong" />
-		<c:set var="nick" value="홍반장" />
+		<c:set var="id" value="${sessionScope.id}" />
+		<c:set var="nick" value="${sessionScope.nick}" />
 		<input type="hidden" name="id" value="${id}">
 		<input type="hidden" name="nick" value="${nick}">
 		<input type="hidden" name="receiverId" value="kim"> <!-- 임시 대상자 받는 사람 -->
@@ -227,21 +225,49 @@
 		<input type="hidden" name="chatType" value="personal">
 	</form>	
 	
-	<button onclick="chatOpen();" type="button">채팅 참여</button>
 </body>
 
 <script type="text/javascript">
 
-	function chatOpen(){
-		
-		var id = "${nick}";
-			
+	function chatOpen(){		
+		var id = "${nick}";			
 		//입력한 대화명을 파라미터로전달한 ChatWindow.jsp를 새롭게 팝업창에 보여줌
-		//location.href = "window?chatId=" + id + "";
-		
-		document.getElementById("chatForm").submit();
-		
+		//location.href = "window?chatId=" + id + "";	
+		document.getElementById("chatForm").submit();		
 	}	
+	
+	
+	//추천친구 캐러셀
+	let currentIndex = 0;
+	
+	const list = document.querySelector(".profile-list");
+	const items = document.querySelectorAll(".profile-list li");
+	const cardWidth = 280 + 20; // 카드 너비 + gap
+	const visibleCards = 3;	
+	const totalCards = items.length;
+	const maxIndex = totalCards - visibleCards;
+	
+	document.querySelector(".btn.next").addEventListener("click", (e) => {
+	  e.preventDefault();
+	  if (currentIndex < maxIndex) {
+	    currentIndex++;
+	    updateSlide();
+	  }
+	});
+	
+	document.querySelector(".btn.pre").addEventListener("click", (e) => {
+	  e.preventDefault();
+	  if (currentIndex > 0) {
+	    currentIndex--;
+	    updateSlide();
+	  }
+	});
+	
+	function updateSlide() {
+		const moveX = currentIndex * cardWidth;
+		list.style.transform = "translateX(-" + moveX + "px)";
+	}
+	
 	
 </script>
 
