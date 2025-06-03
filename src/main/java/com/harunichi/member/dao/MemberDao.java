@@ -24,6 +24,9 @@ public interface MemberDao {
 	//회원 정보 조회 기능 : 특정아이디에 해당하는 회원 정보를 Membervo객체로 가져옴
 	public MemberVo selectMemberById(String id) throws DataAccessException;
 	
+	//(카카오아이디) DB에 이미 가입된 회원인지 확인하는 메서드
+	public MemberVo selectMemberByKakaoId(String kakaoId) throws DataAccessException;
+	
 	//회원 정보 수정 기능
 	public int updateMember(MemberVo memberVO) throws DataAccessException;
 	 

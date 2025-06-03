@@ -1,6 +1,7 @@
 package com.harunichi.member.vo;
 
 import java.security.Timestamp;
+import java.sql.Date;
 
 public class MemberVo {
 	
@@ -9,7 +10,7 @@ public class MemberVo {
 		private String name; //이름
 		private String nick; //닉네임
 		private String contry; //국적
-		private int year; //생년월일
+		private Date year; //생년월일
 		private String gender; //성별
 		private String email; //이메일
 		private String tel; //전화번호
@@ -19,6 +20,7 @@ public class MemberVo {
 		private int follower; //팔로워
 		private Timestamp joindate; //가입일
 		private String kakao_id; //카카오아이디
+		private String naver_id; //네이버아이디
 		
 				
 		
@@ -54,10 +56,10 @@ public class MemberVo {
 		public void setContry(String contry) {
 			this.contry = contry;
 		}
-		public int getYear() {
+		public Date getYear() {
 			return year;
 		}
-		public void setYear(int year) {
+		public void setYear(Date year) {
 			this.year = year;
 		}
 		public String getGender() {
@@ -113,6 +115,12 @@ public class MemberVo {
 		}
 		public void setKakao_id(String kakao_id) {
 			this.kakao_id = kakao_id;
+		}
+		public String getNaver_id() {
+			return naver_id;
+		}
+		public void setNaver_id(String naver_id) {
+			this.naver_id = naver_id;
 		}
 	
 		
