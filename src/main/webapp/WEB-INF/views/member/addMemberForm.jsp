@@ -16,7 +16,7 @@
 		<div class="header-area">
 			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
+		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
 		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
@@ -29,8 +29,8 @@
 	        <label for="nationality-select"></label>
 	        <select id="nationality-select">
 	        	<option value="">국적을 선택해 주세요</option>
-	            <option value="KR" data-image="${contextPath}/resources/image/south-korea_icon.png">대한민국</option>
-	            <option value="JP" data-image="${contextPath}/resources/image/japan_icon.png">일본</option>
+	            <option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png">대한민국</option>
+	            <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">일본</option>
 	        </select>
 	    </div>
 	    <!-- 선택된 국적에 따른 회원가입 폼이 로딩될 영역 -->
@@ -119,7 +119,7 @@
         // toggleSocialLogin 함수 (상단 Select2 관련)
         function toggleSocialLogin(countryCode) {
             // 소셜 로그인 버튼 표시 로직 (예시)
-            if (countryCode === 'ko') {
+            if (countryCode === 'kr') {
                 // 한국
             } else if (countryCode === 'jp') {
                 // 일본

@@ -16,7 +16,7 @@
 		<div class="header-area">
 			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
+		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
 		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
@@ -98,7 +98,7 @@
 
 			// 소셜 로그인 버튼을 보이고 숨기는 함수
 			function toggleSocialLogin(country) {
-				if (country === 'ko') {
+				if (country === 'kr') {
 					// 한국일 경우 버튼 보이기
 					$('#socialLogin').show();
 				} else {

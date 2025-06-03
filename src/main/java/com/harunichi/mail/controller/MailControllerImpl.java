@@ -52,10 +52,10 @@ public class MailControllerImpl implements MailController {
 	    String emailSubject; // 이메일 제목
 		
 	    // 사용자가 일본어 사용자일 경우, 일본어 메일을 발송한다.
-	    if ("JP".equals(nationality)) {
+	    if ("jp".equals(nationality)) {
 	    	emailSubject = "harunichi メール認証コード"; // 일본어 제목
 	        htmlContent = "<!DOCTYPE html>"
-	                     + "<html lang='ja'>" // lang 속성도 ja로!
+	                     + "<html lang='ja'>" // lang 속성 ja (일본어)
 	                     + "<head>"
 	                     + "<meta charset='UTF-8'>"
 	                     + "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
@@ -78,9 +78,9 @@ public class MailControllerImpl implements MailController {
 	                     + "</body>"
 	                     + "</html>";
 	    } else { // 일본어 사용자가 아닌경우, 한국어 메일을 발송한다.
-	    	emailSubject = "harunichi 회원가입 이메일 인증 코드입니다."; // 한국어 제목
+	    	emailSubject = "harunichi 회원가입 이메일 인증 코드입니다.";
 	        htmlContent = "<!DOCTYPE html>"
-	                     + "<html lang='ko'>" // lang 속성도 ko로!
+	                     + "<html lang='ko'>" // lang 속성 ko (한국어)
 	                     + "<head>"
 	                     + "<meta charset='UTF-8'>"
 	                     + "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"

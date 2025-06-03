@@ -126,11 +126,12 @@ public class MemberControllerImpl implements MemberController{
         MemberVo kakaoMember = new MemberVo();
         String kakaoId = String.valueOf(userinfo.get("id"));
         kakaoMember.setId("kakao_" + kakaoId);
+        kakaoMember.setContry("kr"); //카카오가입시 국적은 무조건 kr(한국)으로 저장!
 
         if (userinfo.containsKey("properties")) {
             Map<String, Object> properties = (Map<String, Object>) userinfo.get("properties");
             kakaoMember.setNick((String) properties.get("nickname"));
-            // ✨ 이름 가져오기! (properties 또는 kakao_account에서) ✨
+            // 이름 가져오기 (properties 또는 kakao_account에서)
             if (properties.containsKey("name")) {
                 kakaoMember.setName((String) properties.get("name"));
             }
@@ -178,16 +179,16 @@ public class MemberControllerImpl implements MemberController{
         session.setAttribute("kakaoMember", kakaoMember);
         session.setAttribute("authType", "kakao"); // 인증 방식도 세션에 저장 (회원가입 폼에서 활용)
 
-        //6. DB에 이미 가입된 회원인지 확인 (selectMemberByKakaoId 호출) ✨
+        //6. DB에 이미 가입된 회원인지 확인 (selectMemberByKakaoId 호출)
         MemberVo dbMember = null;
 		try {
-			logger.info("DB 조회 시도: kakao_id = {}", "kakao_" + kakaoId); // ✨ 조회하는 ID 로그! ✨
+			logger.info("DB 조회 시도: kakao_id = {}", "kakao_" + kakaoId); //조회하는 ID 로그
             dbMember = memberService.selectMemberByKakaoId("kakao_" + kakaoId);
-            logger.info("DB 조회 결과 (dbMember): {}", dbMember); // ✨ 조회 결과 로그! ✨
+            logger.info("DB 조회 결과 (dbMember): {}", dbMember); // 조회 결과 로그
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("카카오 ID로 회원 정보 조회 중 오류 발생", e);
-			dbMember = new MemberVo();// dbMember를 기본 객체로 초기화!
+			dbMember = new MemberVo();// dbMember를 기본 객체로 초기화
 		}
 
         if (dbMember != null) {
@@ -221,11 +222,11 @@ public class MemberControllerImpl implements MemberController{
 	// 국적에 따른 회원가입 폼 내용을 반환하는 메소드
     @RequestMapping(value = "/getRegistrationForm", method = RequestMethod.GET)
     public String getRegistrationForm(@RequestParam("nationality") String nationality, Model model) {
-        if ("KR".equals(nationality)) {
-        	logger.info("Returning Korean registration form."); // KR 선택
+        if ("kr".equals(nationality)) {
+        	logger.info("Returning Korean registration form."); // kr 선택
             return "member/addMemberFormSelectKr"; // KR선택시 addMemberFormKr
-        } else if ("JP".equals(nationality)) {
-        	logger.info("Returning Japanese registration form."); // JP 선택
+        } else if ("jp".equals(nationality)) {
+        	logger.info("Returning Japanese registration form."); // jp 선택
             return "member/addMemberFormSelectJp"; // JP선택시 addMemberFormJp
         } else {
         	logger.warn("Invalid nationality: " + nationality); // 잘못된 국적
