@@ -19,7 +19,8 @@
             	<c:if test="${not empty profileImgPath}">
                 	<img id="profileImage" src="${profileImgPath}" alt="선택한 프로필 이미지" width="100" height="100">
             	</c:if>
-            	<input type="file" id="profileImg" name="profileImg" onchange="previewImage(this)">
+            	<input type="file" id="profileImg" name="profileImg" accept="image/*" onchange="previewImage(this)"> <!-- 이미지 파일만 첨부할수있게 설정 -->
+            	
         </div>
 
         <!-- 관심사 설정 (체크박스) -->
@@ -52,13 +53,21 @@
 
         <script>
             function previewImage(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('profileImage').src = e.target.result;
-                    }
-                    reader.readAsDataURL(input.files[0]);
+                const file = input.files[0];
+                if (!file) return;
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert("이미지 파일만 업로드 가능합니다 (JPG, PNG, GIF)");
+                    input.value = "";
+                    return;
                 }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
             }
         </script>
     </form>

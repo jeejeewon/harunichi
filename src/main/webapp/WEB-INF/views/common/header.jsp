@@ -34,6 +34,7 @@
 			            	<a href="#" class="profile-area">
 								<%-- 세션에 profileImg 값이 있을 경우 이미지 경로 사용, 없으면 기본 이미지 --%>
 		                        <img class="profile-image" src="${not empty sessionScope.member.profileImg ? sessionScope.member.profileImg : contextPath}/resources/image/basic_profile.jpg">
+		                        <p>${sessionScope.member.profileImg}</p>
 		                        <span>${sessionScope.member.nick}</span>
 				            </a>
 			            	<a href="#"><img src="${contextPath}/resources/image/chat_icon.svg"></a>

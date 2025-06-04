@@ -43,7 +43,7 @@
 
         Kakao.Auth.authorize({
             redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do',
-            scope: 'profile_nickname,account_email'
+            scope: 'profile_nickname,account_email,name,gender,birthday,birthyear,phone_number,shipping_address'
         });
     });
 

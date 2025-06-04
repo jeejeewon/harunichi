@@ -1,5 +1,7 @@
 package com.harunichi.member.controller;
 
+import java.io.File;
+import java.security.SecureRandom;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -127,51 +130,57 @@ public class MemberControllerImpl implements MemberController{
         //카카오에서 받아온 정보를 MemberVo에 매핑하기
         memberVo.setId("kakao_" + kakaoId);//id는 "kakao_카카오아이디"로 저장
         memberVo.setKakao_id(kakaoId);//원래카카오아이디는 kakao_id칼럼에 저장
-        memberVo.setContry("kr"); //국적 - 카카오가입시 국적은 무조건 kr(한국)으로 저장!
+        memberVo.setContry("kr"); //국적 - 카카오가입시 국적은 무조건 kr(한국)으로 저장
+        memberVo.setPass(GenerateRandomPassword(12));//비밀번호는 12자리 무작위 생성후 저장
 
+        // 닉네임
         if (userinfo.containsKey("properties")) {
             Map<String, Object> properties = (Map<String, Object>) userinfo.get("properties");
             memberVo.setNick((String) properties.get("nickname"));
-            // 이름 가져오기 (properties 또는 kakao_account에서)
-            if (properties.containsKey("name")) {
-            	memberVo.setName((String) properties.get("name"));
-            }
         }
+
+        // kakao_account 내부 정보
         if (userinfo.containsKey("kakao_account")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) userinfo.get("kakao_account");
+
+            // 이름
+            if (kakaoAccount.containsKey("name")) {
+                memberVo.setName((String) kakaoAccount.get("name"));
+            }
+
             // 이메일
             if (kakaoAccount.containsKey("email")) {
-            	memberVo.setEmail((String) kakaoAccount.get("email"));
+                memberVo.setEmail((String) kakaoAccount.get("email"));
             }
-            // 성별
+
+            // 성별 (선택)
             if (kakaoAccount.containsKey("gender")) {
-            	memberVo.setGender((String) kakaoAccount.get("gender"));
+                memberVo.setGender((String) kakaoAccount.get("gender"));
             }
-            // 생년월일 (birthday, birthyear)
+
+            // 전화번호 (선택)
+            if (kakaoAccount.containsKey("phone_number")) {
+                memberVo.setTel((String) kakaoAccount.get("phone_number"));
+            }
+
+            // 생년월일 (필수)
             if (kakaoAccount.containsKey("birthday") && kakaoAccount.containsKey("birthyear")) {
-                String birthday = (String) kakaoAccount.get("birthday");
-                String birthyear = (String) kakaoAccount.get("birthyear");
                 try {
+                    String birthday = (String) kakaoAccount.get("birthday"); // MMDD
+                    String birthyear = (String) kakaoAccount.get("birthyear");
                     Calendar cal = Calendar.getInstance();
-                    int year = Integer.parseInt(birthyear);
-                    int month = Integer.parseInt(birthday.substring(0, 2));
-                    int day = Integer.parseInt(birthday.substring(2));
-                    cal.set(year, month - 1, day);
+                    cal.set(Integer.parseInt(birthyear), Integer.parseInt(birthday.substring(0, 2)) - 1, Integer.parseInt(birthday.substring(2)));
                     memberVo.setYear(new Date(cal.getTimeInMillis()));
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     System.err.println("생년월일 파싱 오류: " + e.getMessage());
                 }
             }
-            // 전화번호
-            if (kakaoAccount.containsKey("phone_number")) {
-            	memberVo.setTel((String) kakaoAccount.get("phone_number"));
-            }
-            // 배송지 정보
+
+            // 배송지 주소 (선택)
             if (kakaoAccount.containsKey("shipping_address")) {
                 Map<String, Object> shippingAddress = (Map<String, Object>) kakaoAccount.get("shipping_address");
-                // 기본 주소
                 if (shippingAddress != null && shippingAddress.containsKey("base_address")) {
-                	memberVo.setAddress((String) shippingAddress.get("base_address"));
+                    memberVo.setAddress((String) shippingAddress.get("base_address"));
                 }
             }
         }
@@ -192,7 +201,7 @@ public class MemberControllerImpl implements MemberController{
 			dbMember = new MemberVo();// dbMember를 기본 객체로 초기화
 		}
 
-        if (dbMember != null) {
+        if (dbMember != null && dbMember.getId() != null) {
             //이미 가입된 회원이면 로그인 처리 (세션 저장 후 메인 등으로 리다이렉트)
             session.setAttribute("member", dbMember); // 사용자 정보를 세션에 저장 (우리가 DB에 저장한 회원 정보)
             session.setAttribute("isLogOn", true); // 로그인 상태 표시
@@ -224,6 +233,10 @@ public class MemberControllerImpl implements MemberController{
             model.addAttribute("message", "잘못된 접근입니다. 다시 시도해주세요.");
             return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
         }
+		
+		System.out.println("memberVo 이름 값 확인: " + memberVo.getName());
+		
+		
 		//2. 프로필 이미지 처리
 		String filePath = handleProfileImage(profileImg, request);
 		System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
@@ -231,13 +244,20 @@ public class MemberControllerImpl implements MemberController{
 		String myLikeStr = handleMyLikes(myLikes);
 		System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
 		//4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
-        memberVo.setProfileImg(filePath);
+		if (filePath != null) {
+		    memberVo.setProfileImg(filePath);
+		}
         memberVo.setMyLike(myLikeStr);
         System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
-		//5. DB에 저장하기
+        //5. 이메일 중복 체크
+        if (memberService.isEmailDuplicate(memberVo.getEmail())) {
+            model.addAttribute("message", "이미 사용 중인 이메일입니다.");
+            return "redirect:/member/addMemberForm.do";
+        }
+		//6. DB에 저장하기
 		try {
 			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 직전!");
-			memberService.updateMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장하게된다~
+			memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장하게된다~
 			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 성공!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -246,33 +266,38 @@ public class MemberControllerImpl implements MemberController{
 			return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
 		}
 		System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
-		//6. 세션에 있던 memberVo객체 삭제
+		//7. 세션에 있던 memberVo객체 삭제
 		request.getSession().removeAttribute("memberVo");
-		//7. 인증 방식 정보도 삭제
+		//8. 인증 방식 정보도 삭제
 		request.getSession().removeAttribute("authType");
-		//8. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
+		//9. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
 		HttpSession session = request.getSession();
 		session.setAttribute("member", memberVo);
 		session.setAttribute("isLogOn", true);
 		session.setAttribute("id", memberVo.getId());
-		//9. 모두 완료후 메인페이지로 리다이렉트
+		//10. 모두 완료후 메인페이지로 리다이렉트
 		System.out.println("profileImgAndMyLikeSettingProcess - 메인 페이지로 리다이렉트");
 		return "redirect:/";
 	}
+	
 	// 프로필 이미지 처리 메소드
 	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
 		String uploadDir = request.getSession().getServletContext().getRealPath("/resources/upload/profile");//업로드 디렉토리 설정
+		System.out.println("파일 저장 경로: " + uploadDir);
 		String fileName = null;
 		try {
 			if(profileImg != null && !profileImg.isEmpty()) {
+				File dir = new File(uploadDir);
+	            if (!dir.exists()) {
+	                dir.mkdirs(); // 디렉토리 없으면 생성
+	            }
 				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
-				return "/resources/upload/profile/" + fileName;//파일 경로 반환
+				return request.getContextPath() + "/resources/upload/profile/" + fileName;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ""; //에러 발생시 빈 문자열 반환
 		}
-		return ""; //파일이 없을 경우에도 빈 문자열 반환
+		return null; //파일이 없을 경우에 null 반환
 	}
 	// 관심사 처리 메소드
 	private String handleMyLikes(String[] myLikes) {
@@ -303,6 +328,20 @@ public class MemberControllerImpl implements MemberController{
             // 잘못된 국적 값이 넘어왔을 경우
             return "error/invalidNationality";
         }
+    }
+    
+    // 랜덤 비밀번호 생성 메소드 (매개변수는 비밀번호의 길이)
+    public static String GenerateRandomPassword(int len) {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            int randomIndex = random.nextInt(chars.length());
+            sb.append(chars.charAt(randomIndex));
+        }
+        String password = sb.toString();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
     }
 
     
