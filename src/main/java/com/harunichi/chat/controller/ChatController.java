@@ -58,9 +58,17 @@ public class ChatController {
 	
 	@RequestMapping("/window")
 	public String chatWindow (HttpServletRequest request, 
-			   HttpServletResponse response) throws Exception{
+			   HttpServletResponse response, Model model) throws Exception{
 		
 		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
+		
+		//채팅방 고유 ID 확인 (신규 채팅인지?)
+		String senderId = request.getParameter("id");
+		String receiverId = request.getParameter("receiverId");
+		
+		String roomId = chatService.selectRoomId(senderId, receiverId);
+		
+		model.addAttribute("roomId", roomId);
 		
 		return "/chatWindow";
 		

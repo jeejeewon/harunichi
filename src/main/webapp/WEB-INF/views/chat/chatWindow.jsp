@@ -114,7 +114,8 @@ body {
 	<div id="chatContainer">
 		<div id="chatTop">
 			<!-- 현재 채팅하는 사람의 대화명을 input에 표시 , 읽기전용으로 설정하여 수정 불가  -->
-			대화명 : <input type="text" id="chatId" value="${param.nick}" readonly>
+			나의 닉네임 : <input type="text" id="chatId" value="${param.id}" readonly><br>
+			상대방 닉네임 : <input type="text" id="receiverId" value="${param.receiverId}" readonly><br>		
 	
 			<!-- 채팅 종료 버튼 클릭시 disconnect()함수 호출 -->
 			<button id="closeBtn" onclick="disconnect();">채팅 종료</button>
@@ -212,26 +213,29 @@ body {
 			chatWindow.scrollTop = chatWindow.scrollHeight;
 		};
 	}
+	
 
+	
 	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
 	function sendMessage() {
 		
 
-
 		if (chatMessage.value != "") {
+			//보낸 시간 출력
 			const now = new Date();
 			const hours = now.getHours();
 			const minutes = now.getMinutes().toString().padStart(2, '0');
 			const ampm = hours >= 12 ? "오후" : "오전";
 			const displayHour = hours % 12 === 0 ? 12 : hours % 12;
-			time = ampm + " " + displayHour + ":" + minutes;	
-		}
+			time = ampm + " " + displayHour + ":" + minutes;			
+		}else{ return; } //아무것도 적지 않고 전송할 경우
 		
 		//새로운 채팅!
 		const chatData = {
-							roomId : "hongRoom", //채팅방 Id 임시!!!
+							roomId : "${roomId}",
 							chatType : "${param.chatType}", //개인채팅인지, 단체채팅인지
 							senderId : chatId, //보낸 사람
+							receiverId : "${param.receiverId}",
 							message : chatMessage.value //메세지	
 		};
 		

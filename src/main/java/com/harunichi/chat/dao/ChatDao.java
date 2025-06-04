@@ -72,11 +72,21 @@ public class ChatDao {
 		    List<MemberVo> randomMembers = sqlSession.selectList(NAMESPACE + "selectRandomMember", randomMap);
 		    resultList.addAll(randomMembers);
 		}
+		return resultList;		
+	}
+
+
 		
-//		System.out.println(resultList.toString());
-	
-		return resultList;
+	//DB에서 채팅방 ID 조회
+	public String selectRoomId(String senderId, String receiverId) {
 		
+		System.out.println("ChatDao의 selectRoomId 메소드 실행 ===============");	
+		
+		Map<String, String> idMap = new HashMap<String, String>();
+		idMap.put("senderId", senderId);
+		idMap.put("receiverId", receiverId);
+			
+		return sqlSession.selectOne(NAMESPACE + "selectRoomId", idMap);
 	}
 	
 	

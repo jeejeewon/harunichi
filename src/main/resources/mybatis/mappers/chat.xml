@@ -8,10 +8,12 @@
 	<!-- 채팅 메세지 저장 -->
 	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, chatType, content)
-				VALUES(#{roomId}, #{senderId}, #{chatType}, #{message})	
+			INSERT INTO chat(roomId, senderId, receiverId, chatType, content)
+				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})	
 		]]>	
 	</insert>
+	
+	
 	
 	<!-- 나의 관심사 조회 -->
 	<select id="selectMyLike" parameterType="String" resultType="String">
@@ -19,6 +21,8 @@
 			SELECT myLike FROM member WHERE id = #{id}		
 		]]>	
 	</select>
+	
+	
 	
 	<!-- 추천 친구 조회 -->
 	<select id="selectMembers" parameterType="map" resultType="memberVo">
@@ -41,6 +45,7 @@
 	</select>
 	
 	
+	
 	<!-- 랜덤 추천 친구 조회 -->
 	<select id="selectRandomMember" parameterType="map" resultType="memberVo">
 		<![CDATA[
@@ -60,7 +65,17 @@
 	 	]]>	
 	</select>	
 		
-	
+		
+		
+	<!-- 채팅방 ID 조회 -->
+	<select id="selectRoomId" parameterType="map" resultType="String">
+		<![CDATA[
+			SELECT roomId
+			FROM chat
+			WHERE senderId = #{senderId} AND receiverId = #{receiverId}
+			OR senderId = #{receiverId} AND receiverId = #{senderId}
+		]]>		
+	</select>
 
 
 </mapper>

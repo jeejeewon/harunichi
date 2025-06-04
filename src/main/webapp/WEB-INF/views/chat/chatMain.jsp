@@ -159,7 +159,7 @@
 								</a>
 								<p class="nick">${member.nick}</p>
 								<p>${member.myLike}</p>
-								<a href="#" class="do-chat-btn" onclick="chatOpen();">채팅하기</a>
+								<a href="#" class="do-chat-btn" data-id="${member.id}" onclick="chatOpen(this);">채팅하기</a>
 							</div>
 						</li>
 					</c:forEach>						
@@ -170,6 +170,7 @@
 	</div>
 	<div>
 	<p id="recText">오픈채팅방</p>
+	<a href="#">채팅방만들기</a>
 		<div id="openChatCon">
 			<ul class="open-chat-list">
 				<li>
@@ -214,25 +215,27 @@
 	<!-- 로그인한 사용자의 id와 닉네임, 프로필 사진명을 가져옴 -->
 				
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window">
-		<!-- 나중에 세션에서 값 가져와야함 -->	
-		<c:set var="id" value="${sessionScope.id}" />
-		<c:set var="nick" value="${sessionScope.nick}" />
+		<!-- 나중에 세션에서 값 가져와야함 -->			
+		<input id="id" name="id" type="text" placeholder="아이디">
+		<input id="nick" name="nick" type="text" placeholder="닉네임">
+<!-- 	<c:set var="id" value="${sessionScope.id}" />
+		<c:set var="nick" value="${sessionScope.nick}" /> 	
 		<input type="hidden" name="id" value="${id}">
-		<input type="hidden" name="nick" value="${nick}">
-		<input type="hidden" name="receiverId" value="kim"> <!-- 임시 대상자 받는 사람 -->
+		<input type="hidden" name="nick" value="${nick}">-->
+		<input type="hidden" id="receiverId" name="receiverId" value=""> 
 		
 		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
-		<input type="hidden" name="chatType" value="personal">
+		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
 	
 </body>
 
 <script type="text/javascript">
 
-	function chatOpen(){		
-		var id = "${nick}";			
-		//입력한 대화명을 파라미터로전달한 ChatWindow.jsp를 새롭게 팝업창에 보여줌
-		//location.href = "window?chatId=" + id + "";	
+	function chatOpen(btn){
+		//'채팅하기'버튼이 눌린 카드의 멤버 ID를 input에 저장
+		const receiverId = btn.getAttribute("data-id");
+		document.getElementById("receiverId").value = receiverId;
 		document.getElementById("chatForm").submit();		
 	}	
 	
