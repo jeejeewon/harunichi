@@ -214,7 +214,7 @@
 	
 	<!-- 로그인한 사용자의 id와 닉네임, 프로필 사진명을 가져옴 -->
 				
-	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window">
+	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
 		<!-- 나중에 세션에서 값 가져와야함 -->			
 		<input id="id" name="id" type="text" placeholder="아이디">
 		<input id="nick" name="nick" type="text" placeholder="닉네임">

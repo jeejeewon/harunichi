@@ -32,7 +32,6 @@ public class ChatService {
 	
 	//채팅방 ID 조회
 	public String selectRoomId(String senderId, String receiverId) {
-		
 		System.out.println("ChatService의 selectRoomId메소드 호출 ===================");		
 		
 		String roomId = chatDao.selectRoomId(senderId, receiverId);
@@ -56,6 +55,14 @@ public class ChatService {
 		
 		//DB에서 조회된 채팅방ID 반환
 		return roomId;
+	}
+
+	
+
+	//과거 채팅 내역 불러오기
+	public List<ChatVo> selectChatHistory(String roomId) {
+		System.out.println("ChatService의 selectChatHistory메소드 호출 ===================");	
+		return chatDao.selectChatHistory(roomId);
 	}
 	
 	

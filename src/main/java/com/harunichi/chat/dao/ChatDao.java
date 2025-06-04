@@ -28,6 +28,7 @@ public class ChatDao {
 	
 	//채팅 저장
 	public void saveMessage(ChatVo chatMsg) {		
+		System.out.println("ChatDao의 saveMessage 메소드 실행 ===============");	
 		sqlSession.insert(NAMESPACE + "saveMessage", chatMsg);			
 	}
 
@@ -78,8 +79,7 @@ public class ChatDao {
 
 		
 	//DB에서 채팅방 ID 조회
-	public String selectRoomId(String senderId, String receiverId) {
-		
+	public String selectRoomId(String senderId, String receiverId) {		
 		System.out.println("ChatDao의 selectRoomId 메소드 실행 ===============");	
 		
 		Map<String, String> idMap = new HashMap<String, String>();
@@ -87,6 +87,14 @@ public class ChatDao {
 		idMap.put("receiverId", receiverId);
 			
 		return sqlSession.selectOne(NAMESPACE + "selectRoomId", idMap);
+	}
+
+
+	
+	//DB에서 채팅 내역 조회
+	public List<ChatVo> selectChatHistory(String roomId) {
+		System.out.println("ChatDao의 selectChatHistory 메소드 실행 ===============");
+		return sqlSession.selectList(NAMESPACE + "selectChatHistory", roomId);
 	}
 	
 	

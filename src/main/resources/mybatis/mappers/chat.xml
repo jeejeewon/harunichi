@@ -8,7 +8,7 @@
 	<!-- 채팅 메세지 저장 -->
 	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, receiverId, chatType, content)
+			INSERT INTO chat(roomId, senderId, receiverId, chatType, message)
 				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})	
 		]]>	
 	</insert>
@@ -70,12 +70,27 @@
 	<!-- 채팅방 ID 조회 -->
 	<select id="selectRoomId" parameterType="map" resultType="String">
 		<![CDATA[
-			SELECT roomId
+			SELECT DISTINCT roomId
 			FROM chat
 			WHERE senderId = #{senderId} AND receiverId = #{receiverId}
 			OR senderId = #{receiverId} AND receiverId = #{senderId}
 		]]>		
 	</select>
+
+
+
+	<!-- 과거 채팅 내역 조회 -->
+	<select id="selectChatHistory" parameterType="String" resultType="chatVo">
+		<![CDATA[
+			SELECT * 
+			FROM chat
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
+
+
+
+
 
 
 </mapper>
