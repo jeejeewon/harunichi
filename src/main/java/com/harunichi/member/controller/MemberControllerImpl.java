@@ -280,25 +280,31 @@ public class MemberControllerImpl implements MemberController{
 		return "redirect:/";
 	}
 	
+
 	// 프로필 이미지 처리 메소드
 	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
-		String uploadDir = request.getSession().getServletContext().getRealPath("/resources/upload/profile");//업로드 디렉토리 설정
+		String uploadDir = request.getServletContext().getRealPath("/resources/images/profile");
 		System.out.println("파일 저장 경로: " + uploadDir);
 		String fileName = null;
 		try {
 			if(profileImg != null && !profileImg.isEmpty()) {
 				File dir = new File(uploadDir);
 	            if (!dir.exists()) {
-	                dir.mkdirs(); // 디렉토리 없으면 생성
+					boolean success = dir.mkdirs(); // 디렉토리 없으면 생성
+					if (!success) {
+						System.err.println("폴더 생성 실패!");
+						return null; // 폴더 생성 실패 시 null 반환
+					}
 	            }
 				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
-				return request.getContextPath() + "/resources/upload/profile/" + fileName;
+				return request.getContextPath() + "/resources/images/profile/" + fileName;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null; //파일이 없을 경우에 null 반환
 	}
+
 	// 관심사 처리 메소드
 	private String handleMyLikes(String[] myLikes) {
 		if(myLikes != null && myLikes.length > 0) {

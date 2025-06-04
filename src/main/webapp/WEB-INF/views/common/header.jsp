@@ -33,7 +33,14 @@
 	            		<div>
 			            	<a href="#" class="profile-area">
 								<%-- 세션에 profileImg 값이 있을 경우 이미지 경로 사용, 없으면 기본 이미지 --%>
-		                        <img class="profile-image" src="${not empty sessionScope.member.profileImg ? sessionScope.member.profileImg : contextPath}/resources/image/basic_profile.jpg">
+								<c:choose>
+								    <c:when test="${not empty sessionScope.member.profileImg}">
+								        <img class="profile-image" src="${sessionScope.member.profileImg}">
+								    </c:when>
+								    <c:otherwise>
+								        <img class="profile-image" src="${contextPath}/resources/image/basic_profile.jpg">
+								    </c:otherwise>
+								</c:choose>
 		                        <p>${sessionScope.member.profileImg}</p>
 		                        <span>${sessionScope.member.nick}</span>
 				            </a>
