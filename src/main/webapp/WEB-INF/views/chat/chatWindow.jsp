@@ -147,7 +147,6 @@ body {
 								
 	var chatWindow, chatMessage, senderId;
 	var webSocket;
-	var time;
 	var receiverId, roomId;	
 
 	window.onload = function() {
@@ -231,12 +230,14 @@ body {
 			var sender = message[0];
 			//메세지 내용을 content 변수에 저장
 			var content = message[1];
+			
+			var time = formatTime();
 
 			if (content != "") {			
 				//대화창에 '대화명 : 메세지' 형식으로 표시
 				chatWindow.innerHTML += "<div class='other-msg'>"
 					  + "<div class='message'>" + content +  "</div>"
-					  + "<span class='time'>" + formatTime(time) + "</span>"
+					  + "<span class='time'>" + time + "</span>"
 					  + "</div>";		
 			}
 
@@ -249,15 +250,11 @@ body {
 	
 
 	
-	
 	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
 	function sendMessage() {
 		
-
-		if (chatMessage.value != "") {
-			//보낸 시간 출력
-			time = formatTime();			
-		}else{ return; } //아무것도 적지 않고 전송할 경우
+		//아무것도 적지 않고 전송할 경우
+		if (chatMessage.value == "") { return; }
 		
 		//새로운 채팅!
 		const chatData = {
@@ -271,7 +268,7 @@ body {
 		//사용자가 입력한 메세지를 대화창에서 얻어 오른쪽 정렬로 디자인 추가
 		chatWindow.innerHTML += "<div class='my-msg'>"
 							  + "<div class='message'>" + chatMessage.value + "</div>"
-							  + "<span class='time'>" + time + "</span>"
+							  + "<span class='time'>" + formatTime() + "</span>"
 							  + "</div>";
 
 		//웹 소켓 통로를 통해 메세지를 서버페이지로 전송
@@ -284,11 +281,7 @@ body {
 		chatWindow.scrollTop = chatWindow.scrollHeight;
 	}
 
-	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출
-	function disconnect() {
-		webSocket.close(); //웹 소켓 통로연결 끊기 ( 웹브라우저, 서버페이지 연결 끊김 )
-	}
-
+	
 	//메세지 입력창에서 Enter키를 누르고 땠을 경우
 	//자동으로 sendMessage함수를 호출하도록처리
 	function enterKey() {
@@ -296,6 +289,12 @@ body {
 		if (window.event.keyCode == 13) {
 			sendMessage();
 		}
+	}
+	
+	
+	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출
+	function disconnect() {
+		webSocket.close(); //웹 소켓 통로연결 끊기 ( 웹브라우저, 서버페이지 연결 끊김 )
 	}
 
 

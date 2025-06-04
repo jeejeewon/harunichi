@@ -145,6 +145,19 @@
 </script>
 
 <body>
+	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
+		<!-- 나중에 세션에서 값 가져와야함 -->			
+		<input id="id" name="id" type="text" placeholder="아이디">
+		<input id="nick" name="nick" type="text" placeholder="닉네임">
+<!-- 	<c:set var="id" value="${sessionScope.id}" />
+		<c:set var="nick" value="${sessionScope.nick}" /> 	
+		<input type="hidden" name="id" value="${id}">
+		<input type="hidden" name="nick" value="${nick}">-->
+		<input type="hidden" id="receiverId" name="receiverId" value=""> 
+		
+		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
+		<input type="hidden" id="chatType" name="chatType" value="personal">
+	</form>	
 	<div style="margin-bottom: 80px;">
 	<p id="recText">채팅친구추천</p>
 		<div id="chatMainCon">		
@@ -158,7 +171,7 @@
 									<img class="profile-img" src="<c:url value='/resources/images/chat/${member.profileImg}'/>" alt="프로필사진">
 								</a>
 								<p class="nick">${member.nick}</p>
-								<p>${member.myLike}</p>
+								<p><span style="color: #a3daff; font-weight: bold; ">LIKE </span>${member.myLike}</p>
 								<a href="#" class="do-chat-btn" data-id="${member.id}" onclick="chatOpen(this);">채팅하기</a>
 							</div>
 						</li>
@@ -176,7 +189,7 @@
 				<li>
 					<div class="open-chat-item">
 						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile4.PNG" alt="오픈채팅방 프로필사진">						
+							<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
 						</a>	
 						<div class="open-chat-info">
 							<p class="open-chat-title">채팅방 제목 (인원수)</p>
@@ -187,7 +200,7 @@
 				<li>
 					<div class="open-chat-item">
 						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile5.PNG" alt="오픈채팅방 프로필사진">						
+							<img class="open-chat-img" src="../resources/images/chat/profile5.png" alt="오픈채팅방 프로필사진">						
 						</a>
 						<div class="open-chat-info">						
 							<p class="open-chat-title">채팅방 제목 (인원수)</p>
@@ -198,7 +211,7 @@
 				<li>
 					<div class="open-chat-item">
 						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile6.PNG" alt="오픈채팅방 프로필사진">						
+							<img class="open-chat-img" src="../resources/images/chat/profile6.png" alt="오픈채팅방 프로필사진">						
 						</a>
 						<div class="open-chat-info">
 							<p class="open-chat-title">채팅방 제목 (인원수)</p>
@@ -209,25 +222,6 @@
 			</ul>
 		</div>	
 	</div>
-
-
-	
-	<!-- 로그인한 사용자의 id와 닉네임, 프로필 사진명을 가져옴 -->
-				
-	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
-		<!-- 나중에 세션에서 값 가져와야함 -->			
-		<input id="id" name="id" type="text" placeholder="아이디">
-		<input id="nick" name="nick" type="text" placeholder="닉네임">
-<!-- 	<c:set var="id" value="${sessionScope.id}" />
-		<c:set var="nick" value="${sessionScope.nick}" /> 	
-		<input type="hidden" name="id" value="${id}">
-		<input type="hidden" name="nick" value="${nick}">-->
-		<input type="hidden" id="receiverId" name="receiverId" value=""> 
-		
-		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
-		<input type="hidden" id="chatType" name="chatType" value="personal">
-	</form>	
-	
 </body>
 
 <script type="text/javascript">
