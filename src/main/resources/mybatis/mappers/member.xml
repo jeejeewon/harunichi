@@ -59,6 +59,33 @@
             kakao_id = #{kakaoId}
         ]]>
     </select>
+    
+	<!-- 네이버 ID로 회원 정보 조회  -->
+    <select id="selectMemberByNaverId" parameterType="java.lang.String" resultType="com.harunichi.member.vo.MemberVo">
+        <![CDATA[
+        SELECT
+            id,
+            pass,
+            name,
+            nick,
+            contry,
+            year,
+            gender,
+            email,
+            tel,
+            address,
+            myLike,
+            profileImg,
+            follower,
+            joindate,
+            kakao_id,
+            naver_id
+        FROM
+            member
+        WHERE
+            naver_id = #{naverId}
+        ]]>
+    </select>
 	
 	<!-- 이메일로 회원 정보 조회 -->
 	<select id="selectMemberByEmail" parameterType="string" resultType="com.harunichi.member.vo.MemberVo">

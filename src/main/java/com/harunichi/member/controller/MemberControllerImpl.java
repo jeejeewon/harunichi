@@ -77,7 +77,7 @@ public class MemberControllerImpl implements MemberController{
     private final String KAKAO_REST_API_KEY = "e0c7dc056f537df0edb757b015e72883";
     private final String KAKAO_REDIRECT_URI = "http://localhost:8090/harunichi/member/KakaoCallback.do";
     
-    // KakaoCallback 앤드포인트 (카카오 인증 서버로부터 리다이렉트)
+    // KakaoCallback 메소드
     @RequestMapping(value = "/KakaoCallback.do", method = RequestMethod.GET)
     public ModelAndView kakaoCallback(@RequestParam("code") String code, 
     		 						  @RequestParam(value = "state", required = false, defaultValue = "login") String mode,
@@ -261,11 +261,130 @@ public class MemberControllerImpl implements MemberController{
 
     }
     
-    // 네이버 API 설정 (나중에 구현)
-    private final String NAVER_CLIENT_ID = ""; // 네이버 Client ID
-    private final String NAVER_CLIENT_SECRET = ""; // 네이버 Client Secret
-    private final String NAVER_REDIRECT_URI = "http://localhost:8090/harunichi/member/NaverCallback.do"; // 네이버 Redirect URI
     
+    // NaverCallback 메소드
+    @RequestMapping(value = "/NaverCallback.do", method = RequestMethod.GET)
+    public ModelAndView naverCallback(@RequestParam("code") String code,
+                                      @RequestParam(value = "state", required = false, defaultValue = "login") String mode,
+                                      HttpServletRequest request) {
+
+        ModelAndView mav = new ModelAndView();
+        HttpSession session = request.getSession();
+
+        // 네이버 로그인 설정값
+        String clientId = "v80rEgQ4aPt_g050ZNtj";
+        String clientSecret = "nJd3qHAENe";
+        String redirectUri = "http://localhost:8090/harunichi/member/NaverCallback.do";
+
+        // 1. Access Token 요청
+        String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
+                        + "&client_id=" + clientId
+                        + "&client_secret=" + clientSecret
+                        + "&code=" + code
+                        + "&state=" + mode;
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> tokenResponse = restTemplate.getForEntity(tokenUrl, Map.class);
+        Map<String, Object> tokenInfo = tokenResponse.getBody();
+        String accessToken = (String) tokenInfo.get("access_token");
+
+        // 2. 사용자 정보 요청
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> userInfoRequest = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> userInfoResponse = restTemplate.exchange(
+            "https://openapi.naver.com/v1/nid/me", HttpMethod.GET, userInfoRequest, Map.class);
+        Map<String, Object> responseMap = (Map<String, Object>) userInfoResponse.getBody().get("response");
+
+        // 3. MemberVo 객체 생성
+        MemberVo memberVo = new MemberVo();
+        String naverId = (String) responseMap.get("id");
+        memberVo.setId("naver_" + naverId);
+        memberVo.setNaver_id(naverId);
+        memberVo.setContry("kr");
+        memberVo.setPass(GenerateRandomPassword(12));
+
+        memberVo.setEmail((String) responseMap.get("email"));
+        memberVo.setName((String) responseMap.get("name"));
+        memberVo.setNick((String) responseMap.get("nickname"));
+        memberVo.setGender((String) responseMap.get("gender"));
+        memberVo.setTel((String) responseMap.get("mobile"));
+        memberVo.setAddress((String) responseMap.get("address"));
+
+        // 생일 데이터 가공 (옵션)
+        if (responseMap.containsKey("birthyear") && responseMap.containsKey("birthday")) {
+            try {
+                String birthyear = (String) responseMap.get("birthyear");   // 예: "1990"
+                String birthday = (String) responseMap.get("birthday");     // 예: "12-25" (MM-DD)
+
+                // "1990-12-25" 형태로 변환
+                String fullBirth = birthyear + "-" + birthday;
+
+                // java.sql.Date로 변환
+                Date birthDate = Date.valueOf(fullBirth);
+
+                // MemberVo에 저장
+                memberVo.setYear(birthDate);
+            } catch (Exception e) {
+                System.err.println("생년월일 파싱 오류: " + e.getMessage());
+            }
+        }
+
+        // 4. 세션 저장
+        session.setAttribute("memberVo", memberVo);
+        session.setAttribute("authType", "naver");
+
+        // 5. DB 조회 → 로그인 또는 회원가입 분기
+        MemberVo dbMember = null;
+        try {
+//            dbMember = memberService.selectMemberByNaverId(naverId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            dbMember = new MemberVo();
+        }
+
+        if ("login".equals(mode)) {
+            if (dbMember != null && dbMember.getId() != null) {
+                session.setAttribute("member", dbMember);
+                session.setAttribute("isLogOn", true);
+                session.setAttribute("id", dbMember.getId());
+                mav.setViewName("redirect:/");
+            } else {
+                // 비회원 → 알림창 후 회원가입 화면
+                try {
+                    HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+                    response.setContentType("text/html;charset=UTF-8");
+                    PrintWriter out = response.getWriter();
+
+                    String contextPath = request.getContextPath();
+                    out.println("<script>");
+                    out.println("if (confirm('회원이 아닙니다. 네이버 계정으로 가입하시겠습니까?')) {");
+                    out.println("    location.href='" + contextPath + "/member/profileImgAndMyLikeSetting.do';");
+                    out.println("} else {");
+                    out.println("    location.href='" + contextPath + "/member/loginpage.do';");
+                    out.println("}");
+                    out.println("</script>");
+                    out.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        } else if ("join".equals(mode)) {
+            if (dbMember != null && dbMember.getId() != null) {
+                session.setAttribute("message", "이미 가입된 네이버 계정입니다. 로그인해주세요.");
+                mav.setViewName("redirect:/member/loginForm.jsp");
+            } else {
+                session.setAttribute("memberVo", memberVo);
+                session.setAttribute("authType", "naver");
+                mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
+            }
+        }
+
+        return mav;
+    }
+
     
     // 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
 	@RequestMapping(value = "/profileImgAndMyLikeSettingProcess.do", method = RequestMethod.POST)

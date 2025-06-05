@@ -30,7 +30,7 @@
 	            <li>
 	            	<%-- 세션에 id 값이 있을 경우 --> 로그인, 채팅, 알림 아이콘 노출 --%>
 	            	<c:if test="${not empty sessionScope.id}">
-	            		<div>
+	            		<div class="login-status">
 			            	<a href="#" class="profile-area">
 								<%-- 세션에 profileImg 값이 있을 경우 이미지 경로 사용, 없으면 기본 이미지 --%>
 								<c:choose>
@@ -54,7 +54,7 @@
                         </a>
                     </c:if>
 	            </li>
-	            <li><a href="#"><img src="${contextPath}/resources/icon/grid_icon.svg"></a></li>
+	            <li><a href="#"><img src="${contextPath}/resources/icon/grid_icon.svg" class="on-icons"></a></li>
 	        </ul>
 	    </nav>
     </div>

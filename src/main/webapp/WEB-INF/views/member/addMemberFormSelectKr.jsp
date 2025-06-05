@@ -32,7 +32,7 @@
 		window.location.href = '<c:url value="/member/emailAuthForm.do"/>?nationality=' + selectedNationality;
 	});
 
-	// 이벤트 위임 방식으로 클릭 이벤트 연결 (동적 요소도 동작하게 하기 위해)
+	// 카카오로 회원가입 버튼 클릭시
     $(document).on('click', '#kakao-register-btn', function () {
         console.log('[카카오로 회원가입] 클릭됨');
         
@@ -48,8 +48,13 @@
         });
     });
 
-	// 네이버 클릭 테스트용
+	// 네이버로 회원가입 클릭시
     $(document).on('click', '#naver-register-btn', function () {
-        alert('네이버 로그인 기능은 아직 구현되지 않았습니다.');
+    	const clientId = 'v80rEgQ4aPt_g050ZNtj';
+        const redirectUri = 'http://localhost:8090/harunichi/member/NaverCallback.do';
+        const state = 'join'; // 회원가입 요청
+
+        const naverJoinUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+        window.location.href = naverJoinUrl;
     });
 </script>
