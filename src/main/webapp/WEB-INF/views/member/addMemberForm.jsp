@@ -14,14 +14,14 @@
 <body>
 	<section class="addmemberform-wrap">
 		<div class="header-area">
-			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
+			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
+		     	<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
+		        <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
 		<div class="addmemberform-middle">
-			<img src="${contextPath}/resources/image/party-icon.png">
+			<img src="${contextPath}/resources/icon/party-icon.png">
 			<p>회원가입을 환영합니다!</p>
 		</div>
 		<!-- 국가를 선택하는 select가 있는 영역 -->
@@ -29,8 +29,8 @@
 	        <label for="nationality-select"></label>
 	        <select id="nationality-select">
 	        	<option value="">국적을 선택해 주세요</option>
-	            <option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png">대한민국</option>
-	            <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">일본</option>
+	            <option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png">대한민국</option>
+	            <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png">일본</option>
 	        </select>
 	    </div>
 	    <!-- 선택된 국적에 따른 회원가입 폼이 로딩될 영역 -->

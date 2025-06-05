@@ -14,10 +14,10 @@
 <body>
 	<section class="loginpage-wrap">
 		<div class="header-area">
-			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
+			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
+		     	<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
+		        <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
 		<div class="loginpage-middle">
@@ -32,12 +32,12 @@
         		<p class="separator">
   					<span>또는</span>
 				</p>
-				<button type="button" id="social-login-button kakao">
-        			<img src="${contextPath}/resources/image/kakao_icon.png" alt="카카오 아이콘">
+				<button type="button" id="kakao-login-btn">
+        			<img src="${contextPath}/resources/icon/kakao_icon.png" alt="카카오 아이콘">
         			<span>카카오로 로그인</span>
     			</button>
-    			<button type="button" id="social-login-button naver">
-        			<img src="${contextPath}/resources/image/naver_icon.svg" alt="네이버 아이콘">
+    			<button type="button" id="naver-login-btn">
+        			<img src="${contextPath}/resources/icon/naver_icon.svg" alt="네이버 아이콘">
         			<span>네이버로 로그인</span>
     			</button>
         	</div>
@@ -109,6 +109,21 @@
 			
 			//로그인버튼 클릭시 함수 (아이디비번이 맞으면 메인으로, 맞지않으면 에러메시지 띄워주기)
 			
+		});
+		
+		//카카오로로그인 버튼 클릭시
+		$(document).on('click', '#kakao-login-btn', function () {
+		    console.log('[카카오로 로그인] 클릭됨');
+
+		    if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
+		        alert('Kakao SDK 초기화되지 않았습니다.');
+		        return;
+		    }
+
+		    Kakao.Auth.authorize({
+		        redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do?mode=login',
+		        scope: 'profile_nickname,account_email'
+		    });
 		});
 	</script>
 </body>

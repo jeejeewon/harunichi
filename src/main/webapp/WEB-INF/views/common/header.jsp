@@ -10,21 +10,21 @@
 
 <section class="header-inner">
 
-    <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/image/logo2.svg"></a>
+    <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/icon/logo2.svg"></a>
     
     <div class="header-main-content">
     	<form class="header-search-form" action="/search" method="get">
         	<input type="text" placeholder="검색어를 입력하세요">
        	 	<button type="submit">
-				<img src="${contextPath}/resources/image/search_icon.svg" alt="검색">
+				<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
 			</button>
     	</form>
 	    <nav class="header-menu">
 	        <ul>
 	            <li>
 	                <select id="country-select" name="country">
-	                    <option value="ko" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
-	                    <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
+	                    <option value="ko" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
+	                    <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 	                </select>
 	            </li>
 	            <li>
@@ -38,14 +38,14 @@
 								        <img class="profile-image" src="${sessionScope.member.profileImg}">
 								    </c:when>
 								    <c:otherwise>
-								        <img class="profile-image" src="${contextPath}/resources/image/basic_profile.jpg">
+								        <img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">
 								    </c:otherwise>
 								</c:choose>
 		                        <p>${sessionScope.member.profileImg}</p>
 		                        <span>${sessionScope.member.nick}</span>
 				            </a>
-			            	<a href="#"><img src="${contextPath}/resources/image/chat_icon.svg"></a>
-			            	<a href="#"><img src="${contextPath}/resources/image/bell_icon.svg"></a>
+			            	<a href="#"><img src="${contextPath}/resources/icon/chat_icon.svg"></a>
+			            	<a href="#"><img src="${contextPath}/resources/icon/bell_icon.svg"></a>
 	            		</div>
 	            	</c:if>
 	            <%-- 세션에 id 값이 없을 경우 (비회원 상태) --> 로그인 링크 노출 --%>
@@ -55,7 +55,7 @@
                         </a>
                     </c:if>
 	            </li>
-	            <li><a href="#"><img src="${contextPath}/resources/image/grid_icon.svg"></a></li>
+	            <li><a href="#"><img src="${contextPath}/resources/icon/grid_icon.svg"></a></li>
 	        </ul>
 	    </nav>
     </div>

@@ -14,7 +14,7 @@
         <div>
             <label>프로필 이미지:</label>
             	<c:if test="${empty profileImgPath}">
-                	<img id="profileImage" src="${contextPath}/resources/image/basic_profile.jpg" alt="기본 프로필 이미지" width="100" height="100">
+                	<img id="profileImage" src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 프로필 이미지" width="100" height="100">
             	</c:if>
             	<c:if test="${not empty profileImgPath}">
                 	<img id="profileImage" src="${profileImgPath}" alt="선택한 프로필 이미지" width="100" height="100">

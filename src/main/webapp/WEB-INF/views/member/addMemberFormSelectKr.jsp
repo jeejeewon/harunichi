@@ -6,19 +6,19 @@
 <section class="register-options">
     <%-- 이메일 인증 버튼 --%>
     <button type="button" id="email-auth-btn">
-		<img src="${contextPath}/resources/image/email_icon.svg" alt="이메일 아이콘">
+		<img src="${contextPath}/resources/icon/email_icon.svg" alt="이메일 아이콘">
         <span>이메일로 인증받기</span>
     </button>
 
     <%-- 카카오로 가입 버튼 --%>
     <button type="button" id="kakao-register-btn">
-        <img src="${contextPath}/resources/image/kakao_icon.png" alt="카카오 아이콘">
+        <img src="${contextPath}/resources/icon/kakao_icon.png" alt="카카오 아이콘">
         <span>카카오로 회원가입</span>
     </button>
 
     <%-- 네이버로 가입 버튼 --%>
     <button type="button" id="naver-register-btn">
-        <img src="${contextPath}/resources/image/naver_icon.svg" alt="네이버 아이콘">
+        <img src="${contextPath}/resources/icon/naver_icon.svg" alt="네이버 아이콘">
         <span>네이버아이디로 가입</span>
     </button>
     
@@ -42,7 +42,7 @@
         }
 
         Kakao.Auth.authorize({
-            redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do',
+            redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do?mode=join',
             scope: 'profile_nickname,account_email,name,gender,birthday,birthyear,phone_number,shipping_address'
         });
     });

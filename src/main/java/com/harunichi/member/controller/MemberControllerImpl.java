@@ -75,11 +75,16 @@ public class MemberControllerImpl implements MemberController{
     
     // KakaoCallback 앤드포인트 (카카오 인증 서버로부터 리다이렉트)
     @RequestMapping(value = "/KakaoCallback.do", method = RequestMethod.GET)
-    public ModelAndView kakaoCallback(@RequestParam("code") String code, HttpServletRequest request) {
+    public ModelAndView kakaoCallback(@RequestParam("code") String code, 
+    								  @RequestParam(value = "mode", defaultValue = "login") String mode,
+    								  HttpServletRequest request) {
+    	
+    	
         ModelAndView mav = new ModelAndView();
         HttpSession session = request.getSession();
-
-        System.out.println("카카오로부터 받은 인증 코드: " + code); // 1. 인증 코드 확인
+        
+        // 1. 인증 코드 확인
+        System.out.println("카카오로부터 받은 인증 코드: " + code);
 
         // 2. 인증 코드를 사용하여 Access Token을 발급받기 (POST 요청)
         RestTemplate restTemplate = new RestTemplate();
@@ -200,7 +205,7 @@ public class MemberControllerImpl implements MemberController{
 			logger.error("카카오 ID로 회원 정보 조회 중 오류 발생", e);
 			dbMember = new MemberVo();// dbMember를 기본 객체로 초기화
 		}
-
+		
         if (dbMember != null && dbMember.getId() != null) {
             //이미 가입된 회원이면 로그인 처리 (세션 저장 후 메인 등으로 리다이렉트)
             session.setAttribute("member", dbMember); // 사용자 정보를 세션에 저장 (우리가 DB에 저장한 회원 정보)
