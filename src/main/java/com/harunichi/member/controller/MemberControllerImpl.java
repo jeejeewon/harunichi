@@ -338,7 +338,7 @@ public class MemberControllerImpl implements MemberController{
         // 5. DB 조회 → 로그인 또는 회원가입 분기
         MemberVo dbMember = null;
         try {
-//            dbMember = memberService.selectMemberByNaverId(naverId);
+        	dbMember = memberService.selectMemberByNaverId(naverId);
         } catch (Exception e) {
             e.printStackTrace();
             dbMember = new MemberVo();

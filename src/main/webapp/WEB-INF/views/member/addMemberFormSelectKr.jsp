@@ -53,8 +53,14 @@
     	const clientId = 'v80rEgQ4aPt_g050ZNtj';
         const redirectUri = 'http://localhost:8090/harunichi/member/NaverCallback.do';
         const state = 'join'; // 회원가입 요청
-
-        const naverJoinUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+		
+        const encodedRedirectUri = encodeURIComponent(redirectUri);
+		const naverJoinUrl = "https://nid.naver.com/oauth2.0/authorize"
+			+ "?response_type=code"
+			+ "&client_id=" + clientId
+			+ "&redirect_uri=" + encodedRedirectUri
+			+ "&state=" + state;
+		
         window.location.href = naverJoinUrl;
     });
 </script>

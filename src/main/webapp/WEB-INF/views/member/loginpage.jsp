@@ -141,8 +141,13 @@
 		    const redirectUri = 'http://localhost:8090/harunichi/member/NaverCallback.do';
 		    const state = 'login'; // 로그인요청인지 회원가입요청인지 구분하기 위해서 설정함
 
-		    const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
-
+		    const encodedRedirectUri = encodeURIComponent(redirectUri);
+			const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
+				+ "?response_type=code"
+				+ "&client_id=" + clientId
+				+ "&redirect_uri=" + encodedRedirectUri
+				+ "&state=" + state;
+		    
 		    window.location.href = naverLoginUrl; 
 		});
 	</script>

@@ -25,11 +25,19 @@ public class MemberServiceImpl implements MemberService{
 	public int updateMember(MemberVo memberVo) throws Exception {
 		return memberDao.updateMember(memberVo);
 	}
-
+	
+	//카카오 아이디로 회원 조회
 	@Override
 	public MemberVo selectMemberByKakaoId(String kakaoId) throws Exception {
 		return memberDao.selectMemberByKakaoId(kakaoId);
 	}
+	
+	//네이버 아이디로 회원 조회
+	@Override
+	public MemberVo selectMemberByNaverId(String naverId) throws Exception {
+		return memberDao.selectMemberByNaverId(naverId);
+	}
+
 	//이메일 중복 체크 기능 (매개변수로 받은 이메일이 중복인지 아닌지를 판단)
 	@Override
 	public boolean isEmailDuplicate(String email) {

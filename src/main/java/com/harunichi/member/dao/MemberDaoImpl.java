@@ -42,6 +42,13 @@ public class MemberDaoImpl implements MemberDao {
         MemberVo memberVo = sqlSession.selectOne("mapper.member.selectMemberByKakaoId", kakaoId);
         return memberVo;
 	}
+	
+	//(네이버아이디) DB에 이미 가입된 회원인지 확인하는 메서드
+	@Override
+	public MemberVo selectMemberByNaverId(String naverId) throws DataAccessException {
+        MemberVo memberVo = sqlSession.selectOne("mapper.member.selectMemberByNaverId", naverId);
+        return memberVo;
+	}
 
 	//회원 정보 수정 기능
 	@Override

@@ -21,7 +21,11 @@ public interface MemberDao {
 	//(카카오아이디) DB에 이미 가입된 회원인지 확인하는 메서드
 	public MemberVo selectMemberByKakaoId(String kakaoId) throws DataAccessException;
 	
+	//(네이버아이디) DB에 이미 가입된 회원인지 확인하는 메서드
+	public MemberVo selectMemberByNaverId(String naverId) throws DataAccessException;
+	
 	//회원 정보 수정 기능
 	public int updateMember(MemberVo memberVO) throws DataAccessException;
+
 	
 }
