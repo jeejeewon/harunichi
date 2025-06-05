@@ -50,9 +50,16 @@
 	</section>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 제이쿼리 -->
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
+	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script><!-- 카카오 SDK -->
 	<script>
 		//국가선택 로직
 		$(document).ready(function() {
+			// Kakao SDK 초기화
+            if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+                Kakao.init('8da16305d90fb5864eea32886df24211');
+                console.log('Kakao SDK initialized:', Kakao.isInitialized());
+            }
+			
 			$('#country-select').select2({
 				minimumResultsForSearch: -1,
 				templateResult: formatState,
@@ -121,9 +128,10 @@
 		    }
 
 		    Kakao.Auth.authorize({
-		        redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do?mode=login',
-		        scope: 'profile_nickname,account_email'
-		    });
+	            redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do',
+	            state: 'login',
+	            scope: 'profile_nickname,account_email,name,gender,birthday,birthyear,phone_number,shipping_address'
+	        });
 		});
 	</script>
 </body>

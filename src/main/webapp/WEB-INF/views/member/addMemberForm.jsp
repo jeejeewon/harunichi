@@ -51,7 +51,7 @@
             // Kakao SDK 초기화
             if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
                 Kakao.init('8da16305d90fb5864eea32886df24211');
-                console.log('[초기 페이지에서] Kakao SDK initialized:', Kakao.isInitialized());
+                console.log('Kakao SDK initialized:', Kakao.isInitialized());
             }
 
             // Select2 공통 formatState 함수

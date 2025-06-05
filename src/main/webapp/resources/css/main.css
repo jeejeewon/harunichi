@@ -141,7 +141,7 @@ header {
 }
 
 
-.header-menu ul li a img {
+.header-menu ul li a .on-icons {
     height: 17px;
     vertical-align: middle;
     filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg) brightness(96%) contrast(89%);

@@ -1,6 +1,8 @@
 package com.harunichi.member.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.util.Calendar;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -76,7 +80,7 @@ public class MemberControllerImpl implements MemberController{
     // KakaoCallback 앤드포인트 (카카오 인증 서버로부터 리다이렉트)
     @RequestMapping(value = "/KakaoCallback.do", method = RequestMethod.GET)
     public ModelAndView kakaoCallback(@RequestParam("code") String code, 
-    								  @RequestParam(value = "mode", defaultValue = "login") String mode,
+    		 						  @RequestParam(value = "state", required = false, defaultValue = "login") String mode,
     								  HttpServletRequest request) {
     	
     	
@@ -206,19 +210,55 @@ public class MemberControllerImpl implements MemberController{
 			dbMember = new MemberVo();// dbMember를 기본 객체로 초기화
 		}
 		
-        if (dbMember != null && dbMember.getId() != null) {
-            //이미 가입된 회원이면 로그인 처리 (세션 저장 후 메인 등으로 리다이렉트)
-            session.setAttribute("member", dbMember); // 사용자 정보를 세션에 저장 (우리가 DB에 저장한 회원 정보)
-            session.setAttribute("isLogOn", true); // 로그인 상태 표시
-            session.setAttribute("id", dbMember.getId()); // 회원 ID 세션에 저장
+		//7. 분기처리 ( 로그인버튼을 눌러서 왔을 경우와 회원가입버튼을 눌러서 왔을경우)
+		if ("login".equals(mode)) {
+		    if (dbMember != null && dbMember.getId() != null) {
+		        // [카카오 로그인] 성공
+		        session.setAttribute("member", dbMember);
+		        session.setAttribute("isLogOn", true);
+		        session.setAttribute("id", dbMember.getId());
 
-            mav.setViewName("redirect:/"); // 메인 페이지로 리다이렉트
-            return mav; // 메서드 종료
-        } else {
-            //가입되지 않은 회원이면 프로필이미지 설정과 관심사 설정 페이지로
-            mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do"); 
-            return mav;
-        }
+		        mav.setViewName("redirect:/");
+		    } else {
+		        // [카카오 로그인] → 비회원인 경우
+		        session.setAttribute("kakaoUserInfo", userinfo);
+		        try {
+		            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		            response.setContentType("text/html;charset=UTF-8");
+		            PrintWriter out = response.getWriter();
+
+		            String contextPath = request.getContextPath();
+
+		            out.println("<script>");
+		            out.println("if (confirm('회원이 아닙니다. 카카오 계정으로 가입하시겠습니까?')) {");
+		            out.println("    location.href='" + contextPath + "/member/profileImgAndMyLikeSetting.do';");
+		            out.println("} else {");
+		            out.println("    location.href='" + contextPath + "/member/loginpage.do';");
+		            out.println("}");
+		            out.println("</script>");
+
+		            out.flush();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return null; // ModelAndView 반환 안 함
+		    }
+
+		} else if ("join".equals(mode)) {
+		    if (dbMember != null && dbMember.getId() != null) {
+		        // 이미 가입된 카카오 계정으로 회원가입 시도한 경우
+		        session.setAttribute("message", "이미 가입된 카카오 계정입니다. 로그인해주세요.");
+		        mav.setViewName("redirect:/member/loginForm.jsp");
+		    } else {
+		        // 회원가입 로직 그대로
+		        session.setAttribute("memberVo", memberVo);
+		        session.setAttribute("authType", "kakao");
+		        mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
+		    }
+		}
+
+		return mav;
+
     }
     
     // 네이버 API 설정 (나중에 구현)

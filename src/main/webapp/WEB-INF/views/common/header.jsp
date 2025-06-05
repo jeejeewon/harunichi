@@ -41,11 +41,10 @@
 								        <img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">
 								    </c:otherwise>
 								</c:choose>
-		                        <p>${sessionScope.member.profileImg}</p>
 		                        <span>${sessionScope.member.nick}</span>
 				            </a>
-			            	<a href="#"><img src="${contextPath}/resources/icon/chat_icon.svg"></a>
-			            	<a href="#"><img src="${contextPath}/resources/icon/bell_icon.svg"></a>
+			            	<a href="#"><img src="${contextPath}/resources/icon/chat_icon.svg" class="on-icons"></a>
+			            	<a href="#"><img src="${contextPath}/resources/icon/bell_icon.svg" class="on-icons"></a>
 	            		</div>
 	            	</c:if>
 	            <%-- 세션에 id 값이 없을 경우 (비회원 상태) --> 로그인 링크 노출 --%>
