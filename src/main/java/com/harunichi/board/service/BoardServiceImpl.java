@@ -19,12 +19,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-    public void insertBoard(BoardVo boardVo) throws Exception {
-        boardDao.insertBoard(boardVo);
-    }
+	public void insertBoard(BoardVo boardVo) throws Exception {
+		boardDao.insertBoard(boardVo);
+	}
 
-    @Override
-    public void updateBoard(BoardVo boardVo) throws Exception {
-        boardDao.updateBoard(boardVo);
-    }
+	@Override
+	public void updateBoard(BoardVo boardVo) throws Exception {
+		boardDao.updateBoard(boardVo);
+	}
 }

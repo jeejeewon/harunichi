@@ -1,15 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <div class="container board">
-	board list임~
 
-	<div class="search-bar">검색 바 영역</div>
+	<a href="${contextPath}/board/postForm">새 게시글 작성</a>
 
 	<div class="board-list">
-		<p>전체 글 목록</p>
 		<table>
 			<thead>
 				<tr>
@@ -36,10 +35,13 @@
 						<td>${board.boardLike}</td>
 						<td>${board.boardCount}</td>
 						<td>${board.boardRe}</td>
-						<td><img src="/board/upload/${board.boardImg1}" alt="Image 1"></td>
-						<td><img src="/board/upload/${board.boardImg2}" alt="Image 2"></td>
-						<td><img src="/board/upload/${board.boardImg3}" alt="Image 3"></td>
-						<td><img src="/board/upload/${board.boardImg4}" alt="Image 4"></td>
+						<c:forEach var="imageFileName" items="${board.imageFiles}">
+							<c:if test="${not empty imageFileName}">
+								<td><img
+									src="${contextPath}/resources/images/board/${imageFileName}"
+									alt="게시글 이미지" width="100"></td>
+							</c:if>
+						</c:forEach>
 					</tr>
 				</c:forEach>
 				<c:if test="${empty boardList}">

@@ -30,15 +30,13 @@
 		ORDER BY
 		boardDate DESC
 	</select>
-
+	
 	<insert id="insertBoard"
 		parameterType="com.harunichi.board.vo.BoardVo">
 		INSERT INTO board (
-		boardCont, boardImg1, boardImg2,
-		boardImg3, boardImg4
+		boardWriter, boardCont, boardImg1, boardImg2, boardImg3, boardImg4
 		) VALUES (
-		#{boardCont}, #{boardImg1},
-		#{boardImg2}, #{boardImg3}, #{boardImg4}
+		#{boardWriter}, #{boardCont}, #{boardImg1}, #{boardImg2}, #{boardImg3}, #{boardImg4}
 		)
 	</insert>
 

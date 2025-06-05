@@ -13,8 +13,7 @@ public interface BoardController {
 	// 전체 글 목록
 	ModelAndView boardList(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-	// 게시글 등록 및 수정
-	 ModelAndView boardEdit(HttpServletRequest request, HttpServletResponse response,
-             int boardId, List<MultipartFile> imageFiles);
+	// 게시글 등록
+	 ModelAndView boardPost(HttpServletRequest request, HttpServletResponse response, List<MultipartFile> imageFiles);
 
 }
