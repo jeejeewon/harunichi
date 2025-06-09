@@ -48,8 +48,7 @@
             <input type="checkbox" id="interest20" name="myLike" value="음악감상"> <label for="interest20">음악감상</label><br>
         </div>
 
-        <button type="submit">저장</button>
-        <a href="skipProfileSetting.do">설정하지 않고 가입하기</a>
+        <button type="submit">가입 완료</button>
 
         <script>
             function previewImage(input) {
