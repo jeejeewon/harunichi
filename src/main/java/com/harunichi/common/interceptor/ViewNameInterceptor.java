@@ -28,20 +28,6 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 	}
 
 	
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-						   ModelAndView modelAndView) throws Exception {
-
-		System.out.println("ViewNameInterceptor의 2번째 postHandle메소드가 호출됨");
-	}
-
-	
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-				throws Exception {
-	}
-
-	
 	//뷰 전체 주소를 얻기 위한 메소드
 	//메인 화면 요청 주소 - http://localhost:8090/harunichi/main/main.do를 입력하면 
 	//                 요청한 전체 주소에서 main/main 뷰 전체 주소를 얻기 위한 메소드 

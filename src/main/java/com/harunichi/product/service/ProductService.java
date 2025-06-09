@@ -21,5 +21,6 @@ public interface ProductService {
     
     List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception;
 
+    List<ProductVo> findOtherProducts(String writerId, int productId, int offset, int size) throws Exception;
 
 }

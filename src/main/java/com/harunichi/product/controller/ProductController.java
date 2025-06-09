@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductController {
@@ -26,9 +27,7 @@ public interface ProductController {
             HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 	ModelAndView edit(ProductVo product, MultipartFile uploadFile, HttpServletRequest request,
-			HttpServletResponse response) throws Exception;
-
-
+			HttpServletResponse response, RedirectAttributes rttr) throws Exception;
 
 
 }

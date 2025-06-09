@@ -15,6 +15,7 @@ request.setCharacterEncoding("utf-8");
 <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
 <link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <title><tiles:insertAttribute name="title" /></title>
+
 </head>
 <body>
 	<div id="wrap">
@@ -54,8 +55,31 @@ request.setCharacterEncoding("utf-8");
 				);
 				return $state;
 			}
+		
+			
+			//선택된 국가를 세션에 저장
+			$('#country-select').on('change', function() {
+				var selectedCountry = $(this).val(); // 선택된 국가 코드 (예: "KR", "JP")
+
+				console.log("선택된 국가:", selectedCountry); // 콘솔에서 확인
+
+				// 서버로 선택된 국가 정보 보내기 (AJAX 사용)
+				$.ajax({
+					url: '${contextPath}/main/selectCountry', // 서버에서 국가 정보를 처리할 주소
+					type: 'POST', // 또는 GET 방식
+					data: { nationality: selectedCountry }, // 서버로 보낼 데이터 (키:값 형태)
+					success: function(response) {
+						console.log("국가 정보 세션 저장 성공!");
+						// 필요하다면 세션 저장 성공 후 추가 작업 수행 (예: 페이지 새로고침, 메시지 표시 등)
+						// window.location.reload(); // 예: 페이지 새로고침
+					},
+					error: function(xhr, status, error) {
+						console.error("국가 정보 세션 저장 실패:", status, error);
+						// 에러 발생 시 처리
+					}
+				});
+			});
+			
 		});
-		
-		
 	</script>
 </body>
