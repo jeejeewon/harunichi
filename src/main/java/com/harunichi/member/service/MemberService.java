@@ -16,5 +16,7 @@ public interface MemberService {
 	public MemberVo selectMemberByNaverId(String naverId) throws Exception;
 	//이메일 중복 체크 기능 (매개변수로 받은 이메일이 중복인지 아닌지를 판단)
 	public boolean isEmailDuplicate(String email);
+	//아이디 중복 체크 기능
+	public boolean checkId(String id);
 	
 }

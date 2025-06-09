@@ -44,6 +44,14 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectMemberByEmail(email) != null;
 	}
 
+	//아이디 중복 체크 기능
+	@Override
+	public boolean checkId(String id) {
+		//DB에서 이 id를 가진 회원이 1명 이상 존재하면 true, 없으면 false 반환
+		return memberDao.checkId(id) > 0;
+	}
+	
+	
 	
 	
 

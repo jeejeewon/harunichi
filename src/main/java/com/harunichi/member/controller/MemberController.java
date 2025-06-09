@@ -26,6 +26,6 @@ public interface MemberController {
 	// 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
 	public String profileImgAndMyLikeSettingProcess( @RequestParam("profileImg") MultipartFile profileImg, @RequestParam(value = "myLike", required = false) String[] myLikes, HttpServletRequest request, Model model);
 	//아이디 중복확인 메소드
-	public ResponseEntity overlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception;
+	public ResponseEntity checkId(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 }

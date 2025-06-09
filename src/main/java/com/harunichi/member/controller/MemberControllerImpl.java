@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -523,9 +526,18 @@ public class MemberControllerImpl implements MemberController{
 
 	
 	@Override//아이디 중복확인 메소드
-	public ResponseEntity overlapped(String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.debug("Checking if ID is overlapped: " + id); // 아이디 중복 확인 로그
-		return null;
+	@RequestMapping(value = "/checkId.do", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Boolean>> checkId(@RequestParam("id") String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		logger.debug("🔍 아이디 중복 체크 요청: " + id);
+
+		boolean checkId = memberService.checkId(id); // 이름 바뀜!
+
+		Map<String, Boolean> result = new HashMap<>();
+		result.put("exists", checkId); // true면 이미 있음
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 }

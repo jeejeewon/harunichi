@@ -56,6 +56,13 @@ public class MemberDaoImpl implements MemberDao {
 		int result = sqlSession.update("mapper.member.updateMember", memberVO);
 		return result;
 	}
-
+	
+	//아이디 중복 체크
+	@Override
+	public int checkId(String id) {
+		return sqlSession.selectOne("mapper.member.countById", id);
+	}
+	
+	
 
 }

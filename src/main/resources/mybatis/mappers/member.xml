@@ -161,6 +161,11 @@
         ]]>
 	</insert>
 	
+	<select id="countById" parameterType="String" resultType="int">
+    	SELECT COUNT(*) FROM member WHERE id = #{id}
+	</select>
+	
+	
 	<!-- 프로필 이미지와 관심사 업데이트 : 추후 사용예정
 	<update id="updateMemberProfileAndLikes" parameterType="com.harunichi.member.vo.MemberVo">
         <![CDATA[

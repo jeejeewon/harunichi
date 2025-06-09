@@ -26,6 +26,9 @@ public interface MemberDao {
 	
 	//회원 정보 수정 기능
 	public int updateMember(MemberVo memberVO) throws DataAccessException;
+	
+	//아이디 중복 체크
+	public int checkId(String id);
 
 	
 }
