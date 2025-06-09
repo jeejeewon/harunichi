@@ -52,7 +52,7 @@ public class MemberControllerImpl implements MemberController{
 	private MemberService memberService;
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/addMemberWriteForm.do", "profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/addMemberWriteForm.do", "/profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -61,8 +61,8 @@ public class MemberControllerImpl implements MemberController{
 	    logger.debug("Returning viewName: " + viewName); // Logger로 디버깅 메시지 출력
 	    
 	    return mav;
-	    //"/loginpage.do"요청시->/loginpage.jsp보여줌
-	    //"/addMemberForm.do"요청시->/addMemberForm.jsp보여줌
+	    //"/loginpage.do"요청시->loginpage.jsp보여줌
+	    //"/addMemberForm.do"요청시->addMemberForm.jsp보여줌
 	}
 
 	
@@ -390,7 +390,7 @@ public class MemberControllerImpl implements MemberController{
 	@RequestMapping(value = "/profileImgAndMyLikeSettingProcess.do", method = RequestMethod.POST)
 	public String profileImgAndMyLikeSettingProcess( @RequestParam("profileImg") MultipartFile profileImg, @RequestParam(value = "myLike", required = false) String[] myLikes, HttpServletRequest request, Model model){
 		System.out.println("profileImgAndMyLikeSettingProcess 메소드 시작!");
-		//1.세션에서 kakaoMember 객체 가져오기
+		//1.세션에서 memberVo 객체 가져오기
 		MemberVo memberVo = (MemberVo) request.getSession().getAttribute("memberVo");
 		if (memberVo == null) {
             // 세션에 memberVo가 없으면 잘못된 접근
@@ -477,6 +477,45 @@ public class MemberControllerImpl implements MemberController{
 		return "";
 	}
 	
+	// 프로필이미지, 관심사 스킵하고 가입완료(insert)
+	@RequestMapping(value = "/skipProfileSetting.do", method = RequestMethod.POST)
+	public String skipProfileSetting(HttpServletRequest request, Model model) {
+		//세션에서 memberVo 객체 가져오기
+				MemberVo memberVo = (MemberVo) request.getSession().getAttribute("memberVo");
+				if (memberVo == null) {
+		            // 세션에 memberVo가 없으면 잘못된 접근
+		            model.addAttribute("message", "잘못된 접근입니다. 다시 시도해주세요.");
+		            return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+		        }
+				
+				System.out.println("memberVo 이름 값 확인: " + memberVo.getName());
+				
+		//DB에 저장하기
+		try {
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 직전!");
+			memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 성공!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 중 에러 발생!");
+			model.addAttribute("message", "회원가입 처리 중 오류가 발생했습니다.");
+			return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+		}
+		System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
+		//세션에 있던 memberVo객체 삭제
+		request.getSession().removeAttribute("memberVo");
+		//인증 방식 정보도 삭제
+		request.getSession().removeAttribute("authType");
+		//회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
+		HttpSession session = request.getSession();
+		session.setAttribute("member", memberVo);
+		session.setAttribute("isLogOn", true);
+		session.setAttribute("id", memberVo.getId());
+		//모두 완료후 메인페이지로 리다이렉트
+		return "redirect:/";
+	}
+
+	
 	@Override//로그아웃메소드
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logger.info("User logged out."); // 로그아웃 로그
@@ -515,9 +554,9 @@ public class MemberControllerImpl implements MemberController{
     }
 
     
-	@Override//회원가입메소드
+	@Override//일반 회원가입메소드
 	public ResponseEntity addMember(MemberVo member, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("Attempting to add member: " + member); // 회원가입 시도 로그
+		logger.info("회원가입 시도 : " + member); // 회원가입 시도 로그
 		return null;
 	}
 

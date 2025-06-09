@@ -137,7 +137,7 @@
                         $('#verifyAuthCodeBtn').hide(); // 확인 버튼 숨김
                         
                         // 인증 완료 후 다음 페이지로 이동
-                        window.location.href = "${contextPath}/여기에다음페이지주소를입력.do";
+                        window.location.href = "${contextPath}/member/addMemberWriteForm.do";
 
                     } else {
                         alert("인증번호가 일치하지 않습니다. 다시 확인해주세요.");
