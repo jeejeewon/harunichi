@@ -88,14 +88,36 @@ public class ChatDao {
 			
 		return sqlSession.selectOne(NAMESPACE + "selectRoomId", idMap);
 	}
-
-
 	
+
+
 	//DB에서 채팅 내역 조회
 	public List<ChatVo> selectChatHistory(String roomId) {
 		System.out.println("ChatDao의 selectChatHistory 메소드 실행 ===============");
 		return sqlSession.selectList(NAMESPACE + "selectChatHistory", roomId);
 	}
+
+
+
+	//DB의 chatRoom테이블에 roomId 저장
+	public void insertRoomId(Map<String, String> roomMap) {
+		System.out.println("ChatDao의 insertRoomId 메소드 실행 ===============");
+		sqlSession.insert(NAMESPACE + "insertRoomId", roomMap);				
+	}
+
+
+	//채팅방에 참여하고 있는 유저 조회
+	public String selectUserCount(String roomId) {
+		System.out.println("ChatDao의 selectUserCount 메소드 실행 ===============");
+		return sqlSession.selectOne(NAMESPACE + "selectUserCount", roomId);
+	}
+
+
+
+
+
+
+
 	
 	
 }

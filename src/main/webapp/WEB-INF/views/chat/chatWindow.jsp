@@ -23,9 +23,57 @@ body {
 	background-color: white;
 	align-items: center;
 }
+
+/* 채팅방 상단 부분 */
+#chatTop {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	background-color: #d4edf7;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+.chat-top-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.profile-img {
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	object-fit: cover;
+}
+.room-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.room-title {
+	font-weight: bold;
+	font-size: 18px;
+}
+.user-count {
+	margin-left: 4px;
+}
+.chat-top-right {
+	position: absolute;
+	top: 5px;
+  	right: 10px;
+	align-items: center;
+	justify-content:flex-start;
+	gap: 5px;
+}
+.disconnect-btn {
+	font-size: 15px;
+}
+
+
 /* 대화창 */
 #messageContainer {
-	width: 80%;
+	width: 100%;
 	height: 90%;
 	padding: 10px;
 	overflow: scroll;
@@ -41,7 +89,7 @@ body {
 }
 /* 하단 입력창 전체 */
 #inputContainer {
-	width: 80%;
+	width: 100%;
 	display: flex;
 	align-content: center;
 	border: 1px solid #d1d1d1;
@@ -69,13 +117,6 @@ body {
 	cursor: pointer;
 	font-weight: bold;
 	height: 60px;
-}
-
-#closeBtn {
-	margin-bottom: 3px; /* 종료 버튼의 하단 여백 설정 */
-	position: relative; /* 종료 버튼 위치 조정을 위해 relative 포지션 설정 */
-	top: 2px; /* 종료 버튼을 약간 아래로 이동 */
-	left: -2px; /* 종료 버튼을 약간 왼쪽으로 이동 */
 }
 
 #senderId {
@@ -118,12 +159,17 @@ body {
 <body>
 	<div id="chatContainer">
 		<div id="chatTop">
-			<!-- 현재 채팅하는 사람의 대화명을 input에 표시 , 읽기전용으로 설정하여 수정 불가  -->
-			나의 닉네임 : <input type="text" id="senderId" value="${param.id}" readonly><br>
-			상대방 닉네임 : <input type="text" id="receiverId" value="${param.receiverId}" readonly><br>		
-	
-			<!-- 채팅 종료 버튼 클릭시 disconnect()함수 호출 -->
-			<button id="closeBtn" onclick="disconnect();">채팅 종료</button>
+			<div class="chat-top-left">
+				<a href="#">
+					<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
+				</a>
+				<div class="room-info">
+					<span class="room-title" id="receiverId">${param.nick}<span class="user-count">(${count})</span></span>
+				</div>		
+			</div>
+			<div class="chat-top-right">
+			    <button class="disconnect-btn" onclick="disconnect();">×</button>
+			</div>		
 		</div>
 		<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
 		<div id="messageContainer"></div>
@@ -135,7 +181,10 @@ body {
 			<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
 			<button id="sendBtn" onclick="sendMessage();">전송</button>
 		</div>
+		<a>나의 닉네임 : <input type="text" id="senderId" value="${param.id}" readonly>	</a>	
 	</div>
+	
+	
 </body>
 
 <script type="text/javascript">
@@ -295,6 +344,7 @@ body {
 	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출
 	function disconnect() {
 		webSocket.close(); //웹 소켓 통로연결 끊기 ( 웹브라우저, 서버페이지 연결 끊김 )
+		window.location.href="<%=request.getContextPath()%>/chat/main";
 	}
 
 

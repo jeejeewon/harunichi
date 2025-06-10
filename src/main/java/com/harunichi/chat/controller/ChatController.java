@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,7 +59,7 @@ public class ChatController {
 	}
 	
 	
-	
+	@Transactional
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
 			   HttpServletResponse response, Model model) throws Exception{		
@@ -66,11 +67,13 @@ public class ChatController {
 		
 		//채팅방 고유 ID 확인 (신규 채팅인지?)
 		String senderId = request.getParameter("id");
-		String receiverId = request.getParameter("receiverId");
-		
-		String roomId = chatService.selectRoomId(senderId, receiverId);
-				
+		String receiverId = request.getParameter("receiverId");		
+		String roomId = chatService.selectRoomId(senderId, receiverId);		
 		model.addAttribute("roomId", roomId);
+		
+		//채팅방 참여 인원 확인
+		int count = chatService.selectUserCount(roomId);
+		model.addAttribute("count", count);
 		
 		return "/chatWindow";	
 	}
@@ -84,7 +87,6 @@ public class ChatController {
 		System.out.println("chatController의 selectChatHistory 메소드 실행 -------------");
 		return chatService.selectChatHistory(roomId);
 	}
-	
 	
 	
 }

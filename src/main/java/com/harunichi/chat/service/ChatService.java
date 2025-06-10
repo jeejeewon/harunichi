@@ -2,7 +2,9 @@ package com.harunichi.chat.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,12 @@ public class ChatService {
 		
 		String roomId = chatDao.selectRoomId(senderId, receiverId);
 		
+		Map<String, String> roomMap = new HashMap<String, String>();
+		
+		String userId = senderId + "," + receiverId;
+		
+		roomMap.put("userId", userId);
+		
 		System.out.println("roomId : " + roomId);
 		
 		//DB에 조회된 채팅방ID가 없다면?
@@ -49,7 +57,12 @@ public class ChatService {
 			//새로운 채팅방 ID 생성 후 반환
 			String newRoomId = now + "_" + random;			
 			System.out.println("newRoomId : " + newRoomId);
-		
+			
+			roomMap.put("roomId", newRoomId);
+			
+			//DB의 chatRoom테이블에 roomId 저장
+			chatDao.insertRoomId(roomMap);
+			
 			return newRoomId;		
 		}	
 		
@@ -64,6 +77,16 @@ public class ChatService {
 		System.out.println("ChatService의 selectChatHistory메소드 호출 ===================");	
 		return chatDao.selectChatHistory(roomId);
 	}
+
 	
-	
+	//채팅방 참여 인원 확인
+	public int selectUserCount(String roomId) {
+		
+		String userList = chatDao.selectUserCount(roomId);
+		
+		int count = userList.split(",").length;
+
+		return count;
+	}
+
 }

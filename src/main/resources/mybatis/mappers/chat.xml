@@ -76,7 +76,15 @@
 			OR senderId = #{receiverId} AND receiverId = #{senderId}
 		]]>		
 	</select>
-
+	
+	
+	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
+	<insert id="insertRoomId" parameterType="map">
+		<![CDATA[
+			INSERT INTO chatRoom(roomId, userId) 
+			VALUES (#{roomId}, #{userId})
+		]]>	
+	</insert>
 
 
 	<!-- 과거 채팅 내역 조회 -->
@@ -89,6 +97,14 @@
 	</select>
 
 
+	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
+	<select id="selectUserCount" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT userId
+			FROM chatRoom
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
 
 
 
