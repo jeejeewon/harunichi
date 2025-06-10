@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -535,11 +537,66 @@ public class MemberControllerImpl implements MemberController{
         return passwordEncoder.encode(password);
     }
 
-    
-	@Override//일반 회원가입메소드
-	public ResponseEntity addMember(MemberVo member, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("회원가입 시도 : " + member); // 회원가입 시도 로그
-		return null;
+    @RequestMapping(value = "/addMemberProcess", method = RequestMethod.POST)
+	@Override//일반 회원가입메소드 (인서트는 이미지프로필, 관심사 선택화면에서 하게됨)
+	public String addMemberProcess(@RequestParam("id") String id,
+										   @RequestParam("pass") String pass,
+										   @RequestParam("name") String name,
+										   @RequestParam("nick") String nick,
+										   @RequestParam("year") String yearString, // String으로 받음
+										   @RequestParam(value = "gender", required = false) String gender, // 성별은 선택 사항이라 required=false
+										   @RequestParam(value = "tel", required = false) String tel,
+										   @RequestParam(value = "address", required = false) String address,
+										   HttpSession session) throws Exception {
+    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
+
+        if (memberVo == null) {
+            System.out.println("앗! 세션에 memberVo가 없어요. 비정상적인 접근일 수 있습니다.");
+            return "redirect:/";
+        }
+        
+        memberVo.setId(id);
+        memberVo.setPass(pass);
+        memberVo.setName(name);
+        memberVo.setNick(nick);
+        
+        //생년월일 String을 DATE 형태로 변환
+        Date year = null; // java.sql.Date 객체
+
+        if (yearString != null && !yearString.trim().isEmpty()) {
+            try {
+                LocalDate localDate = LocalDate.parse(yearString);
+                year = Date.valueOf(localDate);
+                System.out.println("생년월일 변환 성공: " + year);
+            } catch (DateTimeParseException e) {
+                System.err.println("생년월일 파싱 오류: " + yearString + " - " + e.getMessage());
+            } catch (Exception e) {
+                 System.err.println("생년월일 변환 중 예상치 못한 오류 발생: " + e.getMessage());
+            }
+        }
+        
+        //변환 후 setYear
+        memberVo.setYear(year);
+        
+        //성별 표준화 로직 (아까 추가했던 코드)
+        String standardizedGender = null;
+        if (gender != null && !gender.isEmpty()) {
+            if ("male".equalsIgnoreCase(gender)) {
+                standardizedGender = "M";
+            } else if ("female".equalsIgnoreCase(gender)) {
+                standardizedGender = "F";
+            }
+        }
+        memberVo.setGender(standardizedGender);
+
+
+        memberVo.setTel(tel);
+        memberVo.setAddress(address);
+
+        session.setAttribute("memberVo", memberVo);
+
+        System.out.println("회원 정보 세션 업데이트 완료! 다음 페이지로 이동합니다.");
+        return "success";
 	}
 
 	

@@ -141,7 +141,7 @@ public class MailControllerImpl implements MailController {
 	    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
 	    	// 세션에 memberVo가 없을경우(비정상적인 흐름) : 처음단계로 리다이렉트
 	    	if (memberVo == null) {
-	    		return "회원가입시국가선택하는페이지로";
+	    		return "redirect:/member/addMemberForm.do";
 	    	}
 	    	
 	    	// 2. 이메일 정보 저장
