@@ -51,9 +51,6 @@ public class ChatController {
 		
 		//DB에서 친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);
-			//1. 사용자의 myLike(관심사)를 토대로 
-				//1-1. 관심사가 없거나 관심사에 맞는 사람이 없을 경우 그냥 조회
-			//2. 자신 빼고 조회
 		
 		model.addAttribute("memberList", memberList);
 		
@@ -72,7 +69,7 @@ public class ChatController {
 		String receiverId = request.getParameter("receiverId");
 		
 		String roomId = chatService.selectRoomId(senderId, receiverId);
-		
+				
 		model.addAttribute("roomId", roomId);
 		
 		return "/chatWindow";	

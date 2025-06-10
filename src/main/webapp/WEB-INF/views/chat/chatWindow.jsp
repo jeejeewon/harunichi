@@ -147,15 +147,15 @@ body {
 								
 	var chatWindow, chatMessage, senderId;
 	var webSocket;
-	var receiverId, roomId;	
+	var receiverId;
+	var roomId = "${roomId}";	 //채팅방 ID 저장
 
 	window.onload = function() {
 		chatWindow = document.getElementById("messageContainer");	//대화 내용이 표시될 대화창 영역
 		chatMessage = document.getElementById("chatMessage");		//메세지 입력창
 		senderId = document.getElementById("senderId").value;		//채팅 하는 사용자의 대화명 요소에서 대화명값 얻기 
 		
-		receiverId = document.getElementById("receiverId").value;	//받는 사람 ID 저장
-		roomId = "${roomId}";										//채팅방 ID 저장
+		receiverId = document.getElementById("receiverId").value;	//받는 사람 ID 저장								
 //   	console.log("id : " + "${param.id}");
 //   	console.log("nick : " + "${param.nick}");
 //   	console.log("receiverId : " + "${param.receiverId}");
@@ -196,7 +196,7 @@ body {
 	//웹소켓 연결
 	function connectWebSocket(){
 		//웹 소켓 객체 생성 : JSP의 application내장객체를 통해 요청할 채팅 서버페이지 주소로 웹소켓을 만들어 연결 
-		webSocket = new WebSocket("<%=application.getInitParameter("CHAT_ADDR")%>/ChatingServer");
+		webSocket = new WebSocket("<%=application.getInitParameter("CHAT_ADDR")%>/ChattingServer?roomId=" + roomId);
 
 		//서버에 웹소켓 통로 연결이 성공적으로 이루어진 이벤트가 발생했을때 호출되는 이벤트 핸들러 함수 설정
 		//대화창에 연결 성공 메세지를 보여주기 위해 출력
