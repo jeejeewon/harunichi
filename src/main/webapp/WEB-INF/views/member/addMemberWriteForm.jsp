@@ -61,14 +61,8 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="email">이메일:</label>
-			<input type="email" name="email" id="email">
-			<span class="error" id="error-email"></span>
-		</div>
-		
-		<div class="form-group">
 			<label for="tel">전화번호</label>
-			<input type="text" name="tel" id="tel">
+			<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
 		</div>
 
 		<div class="form-group">
@@ -76,56 +70,12 @@
 			<input type="text" id="address" name="address" placeholder="예: 서울특별시 강남구 역삼동 123-45">
 		</div>
 
-
-
-
-
-
-
 		<div class="form-group">
-			<button type="submit">가입 완료</button>
+			<button type="submit">다음</button>
 		</div>
 	</form>
 
 	<script>
-    	//필수값 입력 확인
-    	let checkIdConfirmed = false;
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.querySelector("form");
-
-            form.addEventListener("submit", function (e) {
-                let isValid = true;
-                document.querySelectorAll(".error").forEach(span => span.textContent = "");
-                
-                const fields = [
-                    { id: "id", msg: "아이디를 입력해주세요." },
-                    { id: "pass", msg: "비밀번호를 입력해주세요." },
-                    { id: "name", msg: "이름을 입력해주세요." },
-                    { id: "nick", msg: "닉네임을 입력해주세요." },
-                    { id: "year", msg: "생년월일을 선택해주세요." },
-                    { id: "email", msg: "이메일을 입력해주세요." }
-                ];
-
-                fields.forEach(field => {
-                    const input = document.getElementById(field.id);
-                    const errorSpan = document.getElementById("error-" + field.id);
-                    if (!input.value.trim()) {
-                        errorSpan.textContent = field.msg;
-                        isValid = false;
-                    }
-                });
-                
-                if (!checkIdConfirmed) {
-                    alert("아이디 중복 확인을 해주세요.");
-                    isValid = false;
-                }
-
-                if (!isValid) {
-                    e.preventDefault(); // 제출 막음
-                }
-            });
-        });
-    	
     	//아이디 중복 확인
     	document.getElementById("checkIdBtn").addEventListener("click", function() {
     		const id = document.getElementById("id").value.trim();

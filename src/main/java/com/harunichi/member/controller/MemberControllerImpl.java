@@ -489,7 +489,25 @@ public class MemberControllerImpl implements MemberController{
 	
 	// 국적에 따른 회원가입 폼 내용을 반환하는 메소드
     @RequestMapping(value = "/getRegistrationForm", method = RequestMethod.GET)
-    public String getRegistrationForm(@RequestParam("nationality") String nationality, Model model) {
+    public String getRegistrationForm(@RequestParam("nationality") String nationality, HttpSession session) {
+    	// 1. 세션에서 기존 memberVo 객체 꺼내기 시도
+    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
+    	// 2. 만약 세션에 memberVo가 없으면 새로 생성
+        if (memberVo == null) {
+            System.out.println("세션에 memberVo 객체가 없어서 새로 생성합니다.");
+            memberVo = new MemberVo();
+        } else {
+             System.out.println("세션에서 기존 memberVo 객체를 가져왔습니다.");
+        }
+        // 3. MemberVo 객체에 받아온 nationality 값 셋팅
+        memberVo.setContry(nationality);
+        System.out.println("세션 memberVo에 국가 정보 (" + nationality + ") 저장 완료");
+        
+        // 4. 업데이트된 memberVo를 세션에 다시 저장 (새로 만들었든 기존것을 가져왔든 다시 저장)
+        session.setAttribute("memberVo", memberVo);
+        
+        
+        // nationality에 따라 하단의 View 반환
         if ("kr".equals(nationality)) {
         	logger.info("Returning Korean registration form."); // kr 선택
             return "member/addMemberFormSelectKr"; // KR선택시 addMemberFormKr
