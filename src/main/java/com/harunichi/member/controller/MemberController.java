@@ -19,7 +19,7 @@ public interface MemberController {
 	//요청 페이지 보여주는 메소드
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//로그인메소드
-	public ModelAndView login (@RequestParam Map<String, String> loginMap, HttpServletRequest request, HttpServletResponse response) throws Exception;
+	public String login (@RequestParam("id") String id, @RequestParam("password") String password, HttpSession session);
 	//로그아웃메소드
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	//일반 회원가입메소드

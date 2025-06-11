@@ -18,5 +18,7 @@ public interface MemberService {
 	public boolean isEmailDuplicate(String email);
 	//아이디 중복 체크 기능
 	public boolean checkId(String id);
+	//아이디로 회원 정보 조회
+	public MemberVo selectMemberById(String id);
 	
 }

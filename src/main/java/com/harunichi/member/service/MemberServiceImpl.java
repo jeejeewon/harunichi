@@ -50,6 +50,13 @@ public class MemberServiceImpl implements MemberService{
 		//DB에서 이 id를 가진 회원이 1명 이상 존재하면 true, 없으면 false 반환
 		return memberDao.checkId(id) > 0;
 	}
+
+	//아이디로 회원 정보 조회
+	@Override
+	public MemberVo selectMemberById(String id) {
+		return memberDao.selectMemberById(id);
+	}
+	
 	
 	
 	

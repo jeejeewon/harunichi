@@ -12,7 +12,7 @@ public interface MemberDao {
 	//회원가입 기능 : 새로운 정보가 담긴 MemberVo객체를 받아서 DB에 저장
 	public int insertMember(MemberVo memberVO) throws DataAccessException;
 	
-	//회원 정보 조회 기능 : 특정아이디에 해당하는 회원 정보를 Membervo객체로 가져옴
+	//아이디로 회원 정보 조회 기능 : 특정아이디에 해당하는 회원 정보를 Membervo객체로 가져옴
 	public MemberVo selectMemberById(String id) throws DataAccessException;
 	
 	// 이메일로 회원 조회

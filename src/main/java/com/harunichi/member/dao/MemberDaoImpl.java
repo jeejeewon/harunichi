@@ -22,7 +22,7 @@ public class MemberDaoImpl implements MemberDao {
 		// insert 성공 시 : 반환값은 삽입된 row 수 (보통 1) , 실패 시 → 예외가 발생하거나 0
 	}
 	
-	//회원 정보 조회 기능
+	//아이디로 회원 정보 조회 기능
 	@Override
 	public MemberVo selectMemberById(String id) throws DataAccessException {
 		MemberVo memberVo = sqlSession.selectOne("mapper.member.selectMemberById", id);

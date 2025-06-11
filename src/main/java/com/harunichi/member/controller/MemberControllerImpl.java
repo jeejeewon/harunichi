@@ -71,11 +71,24 @@ public class MemberControllerImpl implements MemberController{
 	    //"/addMemberForm.do"요청시->addMemberForm.jsp보여줌
 	}
 
-	
+	@RequestMapping(value = "/login.do")
+	@ResponseBody
 	@Override//로그인메소드
-	public ModelAndView login(Map<String, String> loginMap, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("Attempting login with parameters: " + loginMap); // 로그인 시도 로그
-		return null;
+	public String login(@RequestParam("id") String id,
+					    @RequestParam("password") String password,
+					    HttpSession session) {
+		
+		MemberVo dbMember = memberService.selectMemberById(id);
+
+	    if (dbMember == null || !dbMember.getPass().equals(password)) {
+	        return "fail";
+	    }
+
+	    session.setAttribute("member", dbMember);
+	    session.setAttribute("isLogOn", true);
+	    session.setAttribute("id", dbMember.getId());
+
+	    return "success";
 	}
 	
 	

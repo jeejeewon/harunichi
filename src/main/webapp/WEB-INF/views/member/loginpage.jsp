@@ -23,7 +23,7 @@
 		<div class="loginpage-middle">
 			<p>로그인</p>
 		</div>
-		<form action="${contextPath}/member/loginProcess.do" method="post">
+		<form action="${contextPath}/member/login.do" method="post">
 			<input type="text" id="userId" name="id" placeholder="아이디" required>
 			<input type="password" id="userPw" name="password" placeholder="비밀번호" required>
 			<p class="error_message" style="display: none;">아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.</p>
@@ -115,7 +115,19 @@
 			}
 			
 			//로그인버튼 클릭시 함수 (아이디비번이 맞으면 메인으로, 맞지않으면 에러메시지 띄워주기)
-			
+			$('form').on('submit', function(e) {
+				e.preventDefault(); // 폼 기본 제출 막기
+				
+				$.post($(this).attr('action'), $(this).serialize(), function(result) {
+			    	if (result === 'success') {
+			        	location.href = '/harunichi'; // 메인페이지로 이동
+			        } else {
+			        	$('.error_message').show();
+			        }
+			       }).fail(function() {
+			            alert("서버 통신 오류");
+			        });
+			    });
 		});
 		
 		//카카오로로그인 버튼 클릭시
