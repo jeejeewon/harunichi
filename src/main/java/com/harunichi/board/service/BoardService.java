@@ -12,4 +12,12 @@ public interface BoardService {
 
 	void updateBoard(BoardVo boardVo) throws Exception;
 
+	BoardVo getBoardById(int boardId) throws Exception;
+
+	void incrementBoardCount(int boardId) throws Exception;
+
+	BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception;
+
+	
+
 }

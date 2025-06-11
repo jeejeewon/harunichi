@@ -6,10 +6,7 @@ import com.harunichi.board.vo.BoardVo;
 
 public interface BoardDao {
 
-	// boardId로 조회
-	BoardVo selectBoardById(int boardId) throws Exception;
-
-	// 전체 게시글 목록 가져오기
+	// 전체 게시글 목록
 	List<BoardVo> selectBoardList() throws Exception;
 
 	// 게시글 등록
@@ -17,5 +14,14 @@ public interface BoardDao {
 
 	// 게시글 수정
 	void updateBoard(BoardVo boardVo) throws Exception;
+
+	// 게시글 상세 조회
+	BoardVo getBoardById(int boardId) throws Exception;
+
+	// 조회수 증가
+	void incrementBoardCount(int boardId) throws Exception;
+
+	// 조회수 증가 없이 정보만 가져오기
+	BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception;
 
 }

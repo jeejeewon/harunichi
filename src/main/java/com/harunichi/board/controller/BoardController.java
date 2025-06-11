@@ -14,6 +14,23 @@ public interface BoardController {
 	ModelAndView boardList(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 	// 게시글 등록
-	 ModelAndView boardPost(HttpServletRequest request, HttpServletResponse response, List<MultipartFile> imageFiles);
+	ModelAndView boardPost(HttpServletRequest request, HttpServletResponse response, List<MultipartFile> imageFiles)
+			throws Exception;
+
+	// 게시글 수정 폼
+	ModelAndView editBoardForm(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+
+	// 게시글 수정 폼에서 넘어온 데이터를 처리하는 메소드
+	//ModelAndView updateBoard(HttpServletRequest request, HttpServletResponse response, List<MultipartFile> imageFiles) throws Exception;
+
+	ModelAndView updateBoard(HttpServletRequest request, HttpServletResponse response, List<MultipartFile> imageFiles,
+			List<Integer> deleteIndices);
+
+	// 게시글 삭제 처리 메소드
+	// ModelAndView deleteBoard(HttpServletRequest request, HttpServletResponse
+	// response, int boardId) throws Exception;
+
+	// 게시글 상세
+	ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
 
 }

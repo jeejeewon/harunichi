@@ -12,9 +12,11 @@ public class BoardVo {
 	private String boardWriter;
 	private String boardCont;
 	private Timestamp boardDate;
+	private Timestamp boardModDate;
 	private int boardLike;
 	private int boardCount;
 	private int boardRe;
+	private String boardCate;
 	private String boardImg1;
 	private String boardImg2;
 	private String boardImg3;

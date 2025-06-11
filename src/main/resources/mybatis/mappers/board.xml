@@ -4,25 +4,11 @@
 
 <mapper namespace="mapper.board">
 
-	<select id="selectBoardById" parameterType="int"
-		resultType="com.harunichi.board.vo.BoardVo">
-		SELECT
-		boardId, boardWriter, boardCont, boardDate,
-		boardLike, boardCount, boardRe, boardImg1, boardImg2, boardImg3,
-		boardImg4
-		FROM
-		board
-		WHERE
-		boardWriter = #{memberId}
-		ORDER BY
-		boardDate DESC
-	</select>
-
 	<select id="selectBoardList"
 		resultType="com.harunichi.board.vo.BoardVo">
 		SELECT boardId, boardWriter,boardCont, boardDate,
 		boardLike,
-		boardCount, boardRe, boardImg1, boardImg2,
+		boardCount, boardRe, boardCate, boardImg1, boardImg2,
 		boardImg3,
 		boardImg4
 		FROM
@@ -30,13 +16,18 @@
 		ORDER BY
 		boardDate DESC
 	</select>
-	
+
 	<insert id="insertBoard"
 		parameterType="com.harunichi.board.vo.BoardVo">
 		INSERT INTO board (
-		boardWriter, boardCont, boardImg1, boardImg2, boardImg3, boardImg4
+		boardWriter, boardCont, boardCate,
+		boardImg1,
+		boardImg2, boardImg3, boardImg4, boardDate
 		) VALUES (
-		#{boardWriter}, #{boardCont}, #{boardImg1}, #{boardImg2}, #{boardImg3}, #{boardImg4}
+		#{boardWriter},
+		#{boardCont}, #{boardCate}, #{boardImg1}, #{boardImg2},
+		#{boardImg3}, #{boardImg4},
+		#{boardDate}
 		)
 	</insert>
 
@@ -44,14 +35,35 @@
 		parameterType="com.harunichi.board.vo.BoardVo">
 		UPDATE board
 		<set>
-			<if test="boardCont != null">boardCont = #{boardCont},</if>
-			<if test="boardImg1 != null">boardImg1 = #{boardImg1},</if>
-			<if test="boardImg2 != null">boardImg2 = #{boardImg2},</if>
-			<if test="boardImg3 != null">boardImg3 = #{boardImg3},</if>
-			<if test="boardImg4 != null">boardImg4 = #{boardImg4},</if>
+			<if test="boardCont != null">
+				boardCont = #{boardCont},
+			</if>
+			<if test="boardCate != null">
+				boardCate = #{boardCate},
+			</if>
+			<!-- 이미지 필드는 null일 경우에도 업데이트 (NULL로 설정) -->
+			boardImg1 = #{boardImg1},
+			boardImg2 = #{boardImg2},
+			boardImg3 = #{boardImg3},
+			boardImg4 = #{boardImg4},
+			<if test="boardModDate != null">
+				boardModDate = #{boardModDate},
+			</if>
 		</set>
 		WHERE boardId = #{boardId}
 	</update>
+
+
+	<select id="getBoardById" parameterType="int"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT
+		boardId, boardWriter, boardCont, boardDate,
+		boardLike, boardCount, boardRe,
+		boardCate, boardImg1, boardImg2,
+		boardImg3, boardImg4
+		FROM board
+		WHERE boardId = #{boardId}
+	</select>
 
 	<!-- 카운트 증감 쿼리 -->
 	<update id="incrementBoardLike" parameterType="int">
@@ -64,7 +76,7 @@
 	<update id="incrementBoardCount" parameterType="int">
 		UPDATE board
 		SET
-		boardCount = boardCount + 1
+		boardCount = COALESCE(boardCount, 0) + 1
 		WHERE boardId = #{boardId}
 	</update>
 
@@ -74,5 +86,16 @@
 		boardRe = boardRe + 1
 		WHERE boardId = #{boardId}
 	</update>
+
+	<!-- 조회수 증가 없이 게시글 정보만 가져오는 쿼리 -->
+	<select id="getBoardByIdWithoutIncrement" parameterType="int"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT boardId, boardCont, boardWriter, boardDate, boardCate,
+		boardCount, boardImg1, boardImg2, boardImg3, boardImg4, boardModDate <!-- 
+			boardModDate 필드가 있다면 추가 -->
+		FROM board
+		WHERE boardId = #{boardId}
+	</select>
+
 
 </mapper>
