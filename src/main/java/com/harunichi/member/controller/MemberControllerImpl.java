@@ -168,14 +168,28 @@ public class MemberControllerImpl implements MemberController{
                 memberVo.setEmail((String) kakaoAccount.get("email"));
             }
 
-            // 성별 (선택)
+            // 성별 (선택) : 네이버 형식과 같게 F또는 M으로 저장하도록 함
             if (kakaoAccount.containsKey("gender")) {
-                memberVo.setGender((String) kakaoAccount.get("gender"));
+                String gender = (String) kakaoAccount.get("gender"); // "female" 또는 "male"
+                
+                // female → F, male → M
+                if ("female".equals(gender)) {
+                    memberVo.setGender("F");
+                } else if ("male".equals(gender)) {
+                    memberVo.setGender("M");
+                } else {
+                    memberVo.setGender(""); // 예외 처리 (기타, null 등)
+                }
             }
 
-            // 전화번호 (선택)
+            // 전화번호 (선택) : +821012345678 형식으로 저장하기위해 -와 공백을 제거하고 저장함.
             if (kakaoAccount.containsKey("phone_number")) {
-                memberVo.setTel((String) kakaoAccount.get("phone_number"));
+                String rawPhone = (String) kakaoAccount.get("phone_number");
+                if (rawPhone != null) {
+                    // 공백 및 하이픈 제거 → 예: "+821025565619"
+                    String cleanedPhone = rawPhone.replaceAll("[\\s\\-]", "");
+                    memberVo.setTel(cleanedPhone);
+                }
             }
 
             // 생년월일 (필수)
@@ -350,8 +364,17 @@ public class MemberControllerImpl implements MemberController{
         memberVo.setName((String) responseMap.get("name"));
         memberVo.setNick((String) responseMap.get("nickname"));
         memberVo.setGender((String) responseMap.get("gender"));
-        memberVo.setTel((String) responseMap.get("mobile"));
         memberVo.setAddress((String) responseMap.get("address"));
+
+        //전화번호 데이터 가공 : +821012345678형식으로 저장하기위해 공백제거, -제거함
+        String rawMobile = (String) responseMap.get("mobile");
+        if (rawMobile != null && rawMobile.startsWith("0")) {
+            // 하이픈 제거 + 맨 앞 '0' 제거 → "+82" 붙이기
+            String formattedMobile = "+82" + rawMobile.replaceAll("-", "").substring(1);
+            memberVo.setTel(formattedMobile);
+        } else {
+            memberVo.setTel(rawMobile); // 예외 처리 (이미 +82로 올 경우 등)
+        }
 
         // 생일 데이터 가공 (옵션)
         if (responseMap.containsKey("birthyear") && responseMap.containsKey("birthday")) {
@@ -535,11 +558,9 @@ public class MemberControllerImpl implements MemberController{
                  System.err.println("생년월일 변환 중 예상치 못한 오류 발생: " + e.getMessage());
             }
         }
-        
-        //변환 후 setYear
         memberVo.setYear(year);
         
-        //성별 표준화 로직 (아까 추가했던 코드)
+        //성별 표준화 후 저장 (M 또는 F 으로 저장) 
         String standardizedGender = null;
         if (gender != null && !gender.isEmpty()) {
             if ("male".equalsIgnoreCase(gender)) {
@@ -551,7 +572,17 @@ public class MemberControllerImpl implements MemberController{
         memberVo.setGender(standardizedGender);
 
 
+        // 전화번호 포맷 처리 (세션에서 국가정보 읽어온 후, +821012345678 형식으로 저장하기)
+        if (tel != null && tel.startsWith("0")) {
+            String country = memberVo.getContry(); // "kr" 또는 "jp"
+            if ("kr".equalsIgnoreCase(country)) {
+                tel = "+82" + tel.substring(1);
+            } else if ("jp".equalsIgnoreCase(country)) {
+                tel = "+81" + tel.substring(1);
+            }
+        }
         memberVo.setTel(tel);
+        
         memberVo.setAddress(address);
 
         session.setAttribute("memberVo", memberVo);
@@ -621,9 +652,21 @@ public class MemberControllerImpl implements MemberController{
 		session.setAttribute("member", memberVo);
 		session.setAttribute("isLogOn", true);
 		session.setAttribute("id", memberVo.getId());
-		//9. 모두 완료후 메인페이지로 리다이렉트
-		System.out.println("profileImgAndMyLikeSettingProcess - 메인 페이지로 리다이렉트");
-		return "redirect:/";
+		//9. 모두 완료후 메인페이지로 리다이렉트 (자바스크립트 alert + 이동)
+		try {
+			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+			response.setContentType("text/html;charset=UTF-8");
+			PrintWriter out = response.getWriter();
+
+			out.println("<script>");
+			out.println("alert('회원가입이 완료되었습니다. 환영합니다!');");
+			out.println("location.href='" + request.getContextPath() + "/';");
+			out.println("</script>");
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null; // 자바스크립트로 리다이렉트했기 때문에 return null 처리
 	}
 	
 

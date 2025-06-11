@@ -307,7 +307,7 @@
                         // 실제 서버 응답 형식에 따라 수정 필요 (JSON 객체 등)
                         if (response === "success") {
                             // 서버에서 memberVo 업데이트 성공 시
-                            alert("정보 저장 완료! 다음 단계로 이동합니다.");
+                            //alert("정보 저장 완료! 다음 단계로 이동합니다."); 
                             // 다음 페이지 (profileImgAndMyLikeSetting.jsp)로 이동
                             window.location.href = "${contextPath}/member/profileImgAndMyLikeSetting.do"; // 다음 페이지 URL로 수정!
                         } else {
