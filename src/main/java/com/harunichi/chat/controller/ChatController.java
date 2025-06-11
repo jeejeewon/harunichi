@@ -70,10 +70,24 @@ public class ChatController {
 		String receiverId = request.getParameter("receiverId");		
 		String roomId = chatService.selectRoomId(senderId, receiverId);		
 		model.addAttribute("roomId", roomId);
-		
+
 		//채팅방 참여 인원 확인
-		int count = chatService.selectUserCount(roomId);
+		String userList = chatService.selectUserCount(roomId);
+		int count = userList.split(",").length;
 		model.addAttribute("count", count);
+		
+		//채팅방 타이틀 제목 확인
+		String title; 
+		
+		//개인 채팅일 경우 상대방 닉네임 표시
+		if(count <= 2) {
+			title = chatService.selectNick(receiverId);
+			model.addAttribute("title", title);	
+		}else {
+			//단체 채팅일 경우 지정한 타이틀 표시
+			title = chatService.selectTitle(roomId);
+			model.addAttribute("title", title);
+		}
 		
 		return "/chatWindow";	
 	}

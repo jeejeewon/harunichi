@@ -153,7 +153,8 @@
 		<c:set var="nick" value="${sessionScope.nick}" /> 	
 		<input type="hidden" name="id" value="${id}">
 		<input type="hidden" name="nick" value="${nick}">-->
-		<input type="hidden" id="receiverId" name="receiverId" value=""> 
+		<input type="hidden" id="receiverId" name="receiverId"> 
+		<input type="hidden" id="receiverNick" name="receiverNick"> 
 		
 		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
 		<input type="hidden" id="chatType" name="chatType" value="personal">

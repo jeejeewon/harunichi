@@ -59,8 +59,9 @@ public class ChatService {
 			System.out.println("newRoomId : " + newRoomId);
 			
 			roomMap.put("roomId", newRoomId);
+			roomMap.put("receiverId", receiverId);
 			
-			//DB의 chatRoom테이블에 roomId 저장
+			//DB의 chatRoom테이블에 roomId, 상대방 닉네임 저장
 			chatDao.insertRoomId(roomMap);
 			
 			return newRoomId;		
@@ -80,13 +81,21 @@ public class ChatService {
 
 	
 	//채팅방 참여 인원 확인
-	public int selectUserCount(String roomId) {
-		
+	public String selectUserCount(String roomId) {		
 		String userList = chatDao.selectUserCount(roomId);
-		
-		int count = userList.split(",").length;
-
-		return count;
+		return userList;
 	}
+
+	//채팅방 타이틀 확인(단체채팅)
+	public String selectTitle(String roomId) {
+		return chatDao.selectTitle(roomId);
+	}
+
+	//채팅방 타이틀 확인(개인채팅)
+	public String selectNick(String receiverId) {
+		return chatDao.selectNick(receiverId);
+	}
+
+
 
 }

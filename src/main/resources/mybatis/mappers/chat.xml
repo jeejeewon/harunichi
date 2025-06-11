@@ -64,8 +64,7 @@
 		 	LIMIT #{shortage}
 	 	]]>	
 	</select>	
-		
-		
+			
 		
 	<!-- 채팅방 ID 조회 -->
 	<select id="selectRoomId" parameterType="map" resultType="String">
@@ -81,10 +80,33 @@
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
 		<![CDATA[
-			INSERT INTO chatRoom(roomId, userId) 
-			VALUES (#{roomId}, #{userId})
+			INSERT INTO chatRoom(roomId, userId, title) 
+			VALUES (#{roomId}, 
+					#{userId}, 
+					(SELECT nick
+					FROM member
+					WHERE id = #{receiverId}))	
 		]]>	
 	</insert>
+	
+	<!-- 채팅방 타이틀 조회(단체 채팅) -->
+	<select id="selectTitle" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT title
+			FROM chatroom
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
+	
+	
+	<!-- 채팅방 타이틀 조회(개인 채팅) -->
+	<select id="selectNick" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT nick
+			FROM member
+			WHERE id = #{String}
+		]]>
+	</select>
 
 
 	<!-- 과거 채팅 내역 조회 -->

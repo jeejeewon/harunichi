@@ -113,6 +113,18 @@ public class ChatDao {
 	}
 
 
+	//채팅방 타이틀 조회(단체)
+	public String selectTitle(String roomId) {		
+		System.out.println("ChatDao의 selectTitle 메소드 실행 ===============");
+		return sqlSession.selectOne(NAMESPACE + "selectTitle", roomId);
+	}
+
+
+	//채팅방 타이틀 조회(개인)
+	public String selectNick(String receiverId) {
+		System.out.println("ChatDao의 selectNick 메소드 실행 ===============");
+		return sqlSession.selectOne(NAMESPACE + "selectNick", receiverId);
+	}
 
 
 

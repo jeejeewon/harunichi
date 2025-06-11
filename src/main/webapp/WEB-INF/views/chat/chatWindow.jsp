@@ -164,7 +164,7 @@ body {
 					<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
 				</a>
 				<div class="room-info">
-					<span class="room-title" id="receiverId">${param.nick}<span class="user-count">(${count})</span></span>
+					<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
 				</div>		
 			</div>
 			<div class="chat-top-right">
