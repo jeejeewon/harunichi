@@ -35,12 +35,12 @@
                 <li><strong>카테고리:</strong>
                     <span>
                         <c:choose>
-                            <c:when test="${product.productCategory == 'book'}">도서</c:when>  
-                            <c:when test="${product.productCategory == 'electronics'}">전자제품</c:when>                                               
-                            <c:when test="${product.productCategory == 'toy'}">장난감</c:when>                                               
-                            <c:when test="${product.productCategory == 'fashion'}">패션</c:when>
-                            <c:when test="${product.productCategory == 'music'}">음반</c:when>
-                            <c:when test="${product.productCategory == 'etc'}">기타</c:when>
+                            <c:when test="${product.productCategory == 'book'}">📚도서</c:when>  
+                            <c:when test="${product.productCategory == 'electronics'}">💻전자제품</c:when>                                               
+                            <c:when test="${product.productCategory == 'toy'}">🧸장난감</c:when>                                               
+                            <c:when test="${product.productCategory == 'fashion'}">👕패션</c:when>
+                            <c:when test="${product.productCategory == 'music'}">💿음반</c:when>
+                            <c:when test="${product.productCategory == 'etc'}">🎁기타</c:when>
                             <c:otherwise>${product.productCategory}</c:otherwise>
                         </c:choose>
                     </span>
@@ -54,6 +54,7 @@
 
             <div class="action-buttons">
                 <button onclick="startChat('${product.productWriterId}')" class="btn btn-chat">채팅하기</button>
+                <button onclick="payment('${product.productId}')" class="btn btn-pay">결제하기</button>
                 <button id="likeButton" class="btn-like">
                     <i class="fa-regular fa-heart">❤️</i> <span id="likeCount">0</span>
                 </button>
@@ -135,6 +136,16 @@
       }
     });
   }
+  
+  function payment(productId) {
+// 	    if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
+// 	        alert("결제는 로그인 후 이용 가능합니다.");
+// 	        location.href = ctx + '/member/loginpage.do';
+// 	        return;
+// 	    }
+	    location.href = ctx + '/payment/form?productId=' + productId;
+	}
+
 
   $(document).ready(function () {
     loadOtherProducts();
@@ -154,7 +165,7 @@
     $('#likeButton').on('click', function () {
       if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
         alert('로그인이 필요합니다.');
-        location.href = ctx + '/member/login';
+        location.href = ctx + '/member/loginpage.do';
         return;
       }
 
@@ -198,7 +209,7 @@
   function startChat(writerId) {
     if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
       alert("채팅 기능은 로그인 후 이용 가능합니다.");
-      location.href = ctx + '/member/login';
+      location.href = ctx + '/member/loginpage.do';
       return;
     }
     if (writerId === currentUserId) {
@@ -208,12 +219,12 @@
     location.href = ctx + '/chat?to=' + writerId;
   }
   
-  // 수정, 삭제 버튼 클릭
+  // 수정, 삭제 버튼 클릭시 로그인 여부
 //   function checkLogin() {
 // 	  const currentUserId = '${sessionScope.loginId}';
 // 	  if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
 // 	    alert('로그인 후 이용 가능합니다.');
-// 	    location.href = ctx + '/member/login';
+// 	    location.href = ctx + '/member/loginpage.do';
 // 	    return false;
 // 	  }
 // 	  return true;

@@ -52,12 +52,12 @@
         <div class="form-row">
             <label for="productCategory">카테고리</label>
             <select id="productCategory" name="productCategory">
-                <option value="book" <c:if test="${product.productCategory eq 'book'}">selected</c:if>>도서</option>
-                <option value="electronics" <c:if test="${product.productCategory eq 'electronics'}">selected</c:if>>전자제품</option>
-                <option value="toy" <c:if test="${product.productCategory eq 'toy'}">selected</c:if>>장난감</option>
-                <option value="fashion" <c:if test="${product.productCategory eq 'fashion'}">selected</c:if>>패션</option>
-                <option value="music" <c:if test="${product.productCategory eq 'music'}">selected</c:if>>음반</option>
-                <option value="etc" <c:if test="${product.productCategory eq 'etc'}">selected</c:if>>기타</option>
+                <option value="book" <c:if test="${product.productCategory eq 'book'}">selected</c:if>>📚도서</option>
+                <option value="electronics" <c:if test="${product.productCategory eq 'electronics'}">selected</c:if>>💻전자제품</option>
+                <option value="toy" <c:if test="${product.productCategory eq 'toy'}">selected</c:if>>🧸장난감</option>
+                <option value="fashion" <c:if test="${product.productCategory eq 'fashion'}">selected</c:if>>👕패션</option>
+                <option value="music" <c:if test="${product.productCategory eq 'music'}">selected</c:if>>💿음반</option>
+                <option value="etc" <c:if test="${product.productCategory eq 'etc'}">selected</c:if>>🎁기타</option>
             </select>
         </div>
 

@@ -234,8 +234,8 @@ public class ProductControllerImpl implements ProductController {
             map.put("productPrice", product.getProductPrice());
             map.put("productImg", product.getProductImg());
             map.put("productCount", product.getProductCount());
-            map.put("writerNick", product.getWriterNick()); // 필드명 통일: nick -> writerNick
-            map.put("writerProfileImg", product.getWriterProfileImg()); // 필드명 통일: profileImg -> writerProfileImg
+            map.put("writerNick", product.getWriterNick());
+            map.put("writerProfileImg", product.getWriterProfileImg());
             result.add(map);
         }
         return result;

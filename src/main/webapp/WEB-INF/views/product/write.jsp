@@ -38,12 +38,12 @@
         <div class="form-row">
             <label for="productCategory">카테고리</label>
             <select id="productCategory" name="productCategory">
-                <option value="book">도서</option>
-                <option value="electronics">전자제품</option>
-                <option value="toy">장난감</option>
-                <option value="fashion">패션</option>
-                <option value="music">음반</option>
-                <option value="etc">기타</option>
+                <option value="book">📚도서</option>
+                <option value="electronics">💻전자제품</option>
+                <option value="toy">🧸장난감</option>
+                <option value="fashion">👕패션</option>
+                <option value="music">💿음반</option>
+                <option value="etc">🎁기타</option>
             </select>
         </div>
 

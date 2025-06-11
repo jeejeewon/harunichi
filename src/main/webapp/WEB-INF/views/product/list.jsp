@@ -13,12 +13,12 @@
         <input type="text" id="keyword" placeholder="검색어 입력 (제목/내용)" />
         <select id="category">
             <option value="">상품카테고리</option>
-            <option value="book">도서</option>
-            <option value="electronics">전자제품</option>
-            <option value="toy">장난감</option>
-            <option value="fashion">패션</option>
-            <option value="music">음반</option>
-            <option value="etc">기타</option>
+            <option value="book">📚도서</option>
+            <option value="electronics">💻전자제품</option>
+            <option value="toy">🧸장난감</option>
+            <option value="fashion">👕패션</option>
+            <option value="music">💿음반</option>
+            <option value="etc">🎁기타</option>
         </select>
         <button class="btn-sky" onclick="searchProducts()">검색</button>
     </div>
@@ -46,8 +46,8 @@ const categoryMap = {
   book: '📚도서',
   electronics: '💻전자제품',
   toy: '🧸장난감',
-  fashion: '💿패션',
-  music: '👕음반',
+  fashion: '👕패션',
+  music: '💿음반',
   etc: '🎁기타'
 };
 
