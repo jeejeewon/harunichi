@@ -40,6 +40,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.member.service.MemberService;
@@ -57,7 +58,7 @@ public class MemberControllerImpl implements MemberController{
 	private MemberService memberService;
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/addMemberWriteForm.do", "/profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -225,7 +226,26 @@ public class MemberControllerImpl implements MemberController{
 
 		        mav.setViewName("redirect:/");
 		    } else {
-		        // [카카오 로그인] → 비회원인 경우
+		    	// [카카오 로그인] → 비회원이지만 이메일은 기존 가입자가 있을 경우
+		    	 boolean isEmailDuplicate = memberService.isEmailDuplicate(memberVo.getEmail());
+		         if (isEmailDuplicate) {
+		             try {
+		                 HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		                 response.setContentType("text/html;charset=UTF-8");
+		                 PrintWriter out = response.getWriter();
+
+		                 String contextPath = request.getContextPath();
+		                 out.println("<script>");
+		                 out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
+		                 out.println("location.href='" + contextPath + "/member/loginpage.do';");
+		                 out.println("</script>");
+		                 out.flush();
+		             } catch (IOException e) {
+		                 e.printStackTrace();
+		             }
+		             return null; // 여기서 리턴해야 profileImgAndMyLikeSetting.do로 안 넘어감
+		         }
+		        // [카카오 로그인] → 진짜 비회원인 경우
 		        session.setAttribute("kakaoUserInfo", userinfo);
 		        try {
 		            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
@@ -250,6 +270,23 @@ public class MemberControllerImpl implements MemberController{
 		    }
 
 		} else if ("join".equals(mode)) {
+			// 이메일 중복 체크
+		    if (memberService.isEmailDuplicate(memberVo.getEmail())) {
+		        try {
+		            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		            response.setContentType("text/html;charset=UTF-8");
+		            PrintWriter out = response.getWriter();
+
+		            out.println("<script>");
+		            out.println("alert('이미 가입된 이메일입니다. 로그인 페이지로 이동합니다.');");
+		            out.println("location.href='" + request.getContextPath() + "/member/loginpage.do';");
+		            out.println("</script>");
+		            out.flush();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return null;
+		    }
 		    if (dbMember != null && dbMember.getId() != null) {
 		        // 이미 가입된 카카오 계정으로 회원가입 시도한 경우
 		        session.setAttribute("message", "이미 가입된 카카오 계정입니다. 로그인해주세요.");
@@ -309,7 +346,6 @@ public class MemberControllerImpl implements MemberController{
         memberVo.setNaver_id(naverId);
         memberVo.setContry("kr");
         memberVo.setPass(GenerateRandomPassword(12));
-
         memberVo.setEmail((String) responseMap.get("email"));
         memberVo.setName((String) responseMap.get("name"));
         memberVo.setNick((String) responseMap.get("nickname"));
@@ -348,15 +384,37 @@ public class MemberControllerImpl implements MemberController{
             e.printStackTrace();
             dbMember = new MemberVo();
         }
-
+        
+        // 6. 분기 처리
         if ("login".equals(mode)) {
             if (dbMember != null && dbMember.getId() != null) {
+            	// 네이버 ID로 로그인 성공
                 session.setAttribute("member", dbMember);
                 session.setAttribute("isLogOn", true);
                 session.setAttribute("id", dbMember.getId());
                 mav.setViewName("redirect:/");
             } else {
-                // 비회원 → 알림창 후 회원가입 화면
+            	// 네이버 ID 없음 → 이메일 중복 검사
+                boolean isEmailDuplicate = memberService.isEmailDuplicate(memberVo.getEmail());
+                if (isEmailDuplicate) {
+                    try {
+                        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+                        response.setContentType("text/html;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+
+                        String contextPath = request.getContextPath();
+                        out.println("<script>");
+                        out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
+                        out.println("location.href='" + contextPath + "/member/loginpage.do';");
+                        out.println("</script>");
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null; // 등록된 이메일이 있을경우엔 여기서 리턴해줘야 profileImgAndMyLikeSetting.do 안 감
+                }
+                // 진짜 비회원 → 회원가입 여부 묻기
+                session.setAttribute("naverUserInfo", responseMap);
                 try {
                     HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
                     response.setContentType("text/html;charset=UTF-8");
@@ -381,6 +439,27 @@ public class MemberControllerImpl implements MemberController{
                 session.setAttribute("message", "이미 가입된 네이버 계정입니다. 로그인해주세요.");
                 mav.setViewName("redirect:/member/loginForm.jsp");
             } else {
+            	// 이메일 중복 검사
+                boolean isEmailDuplicate = memberService.isEmailDuplicate(memberVo.getEmail());
+                if (isEmailDuplicate) {
+                    try {
+                        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+                        response.setContentType("text/html;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+
+                        String contextPath = request.getContextPath();
+                        out.println("<script>");
+                        out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 로그인 페이지로 이동합니다.');");
+                        out.println("location.href='" + contextPath + "/member/loginpage.do';");
+                        out.println("</script>");
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+                
+                //진짜 신규회월인경우
                 session.setAttribute("memberVo", memberVo);
                 session.setAttribute("authType", "naver");
                 mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
@@ -389,6 +468,112 @@ public class MemberControllerImpl implements MemberController{
 
         return mav;
     }
+    
+    
+    //일반 회원 입력 폼 접근할때 접근검사
+    @RequestMapping(value = "/addMemberWriteForm.do", method = RequestMethod.GET)
+    public String addMemberWriteForm(HttpSession session, HttpServletResponse response) throws IOException {
+        MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
+
+        // 인코딩 설정 (alert 깨짐 방지)
+        response.setContentType("text/html; charset=UTF-8");
+
+        // 비정상 접근일 경우
+        if (memberVo == null || memberVo.getEmail() == null) {
+            response.getWriter().write("<script>alert('비정상적인 접근입니다.'); location.href='/harunichi/member/addMemberForm.do';</script>");
+            return null; // JSP 이동 안 함
+        }
+
+        // 이메일 중복일 경우
+        if (memberService.isEmailDuplicate(memberVo.getEmail())) {
+            session.removeAttribute("memberVo"); // 세션 정리
+            response.getWriter().write("<script>alert('이미 회원으로 등록된 이메일입니다.'); location.href='/harunichi/member/addMemberForm.do';</script>");
+            return null;
+        }
+
+        // ✅ 통과하면 JSP로 이동
+        return "member/addMemberWriteForm";
+    }
+
+
+
+    @RequestMapping(value = "/addMemberProcess", method = RequestMethod.POST)
+    @ResponseBody
+	@Override//일반 회원가입메소드 (인서트는 이미지프로필, 관심사 선택화면에서 하게됨)
+	public String addMemberProcess(@RequestParam("id") String id,
+										   @RequestParam("pass") String pass,
+										   @RequestParam("name") String name,
+										   @RequestParam("nick") String nick,
+										   @RequestParam("year") String yearString, // String으로 받음
+										   @RequestParam(value = "gender", required = false) String gender, // 성별은 선택 사항이라 required=false
+										   @RequestParam(value = "tel", required = false) String tel,
+										   @RequestParam(value = "address", required = false) String address,
+										   HttpSession session) throws Exception {
+    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
+
+        if (memberVo == null) {
+            System.out.println("앗! 세션에 memberVo가 없어요. 비정상적인 접근일 수 있습니다.");
+            return "redirect:/";
+        }
+        
+        memberVo.setId(id);
+        memberVo.setPass(pass);
+        memberVo.setName(name);
+        memberVo.setNick(nick);
+        
+        //생년월일 String을 DATE 형태로 변환
+        Date year = null; // java.sql.Date 객체
+
+        if (yearString != null && !yearString.trim().isEmpty()) {
+            try {
+                LocalDate localDate = LocalDate.parse(yearString);
+                year = Date.valueOf(localDate);
+                System.out.println("생년월일 변환 성공: " + year);
+            } catch (DateTimeParseException e) {
+                System.err.println("생년월일 파싱 오류: " + yearString + " - " + e.getMessage());
+            } catch (Exception e) {
+                 System.err.println("생년월일 변환 중 예상치 못한 오류 발생: " + e.getMessage());
+            }
+        }
+        
+        //변환 후 setYear
+        memberVo.setYear(year);
+        
+        //성별 표준화 로직 (아까 추가했던 코드)
+        String standardizedGender = null;
+        if (gender != null && !gender.isEmpty()) {
+            if ("male".equalsIgnoreCase(gender)) {
+                standardizedGender = "M";
+            } else if ("female".equalsIgnoreCase(gender)) {
+                standardizedGender = "F";
+            }
+        }
+        memberVo.setGender(standardizedGender);
+
+
+        memberVo.setTel(tel);
+        memberVo.setAddress(address);
+
+        session.setAttribute("memberVo", memberVo);
+
+        System.out.println("회원 정보 세션 업데이트 완료! 다음 페이지로 이동합니다.");
+        return "success";
+	}
+    
+	@Override//아이디 중복확인 메소드
+	@RequestMapping(value = "/checkId.do", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Boolean>> checkId(@RequestParam("id") String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		logger.debug("🔍 아이디 중복 체크 요청: " + id);
+
+		boolean checkId = memberService.checkId(id); // 이름 바뀜!
+
+		Map<String, Boolean> result = new HashMap<>();
+		result.put("exists", checkId); // true면 이미 있음
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 
     
     // 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
@@ -405,7 +590,6 @@ public class MemberControllerImpl implements MemberController{
 		
 		System.out.println("memberVo 이름 값 확인: " + memberVo.getName());
 		
-		
 		//2. 프로필 이미지 처리
 		String filePath = handleProfileImage(profileImg, request);
 		System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
@@ -418,33 +602,26 @@ public class MemberControllerImpl implements MemberController{
 		}
         memberVo.setMyLike(myLikeStr);
         System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
-        //5. 이메일 중복 체크
-        if (memberService.isEmailDuplicate(memberVo.getEmail())) {
-            model.addAttribute("message", "이미 사용 중인 이메일입니다.");
-            return "redirect:/member/addMemberForm.do";
-        }
-		//6. DB에 저장하기
+		//5. DB에 저장하기
 		try {
-			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 직전!");
-			memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장하게된다~
-			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 성공!");
+			memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("profileImgAndMyLikeSettingProcess - insertMember 호출 중 에러 발생!");
 			model.addAttribute("message", "회원가입 처리 중 오류가 발생했습니다.");
 			return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
 		}
 		System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
-		//7. 세션에 있던 memberVo객체 삭제
+		
+		//6. 세션에 있던 memberVo객체 삭제
 		request.getSession().removeAttribute("memberVo");
-		//8. 인증 방식 정보도 삭제
+		//7. 인증 방식 정보도 삭제
 		request.getSession().removeAttribute("authType");
-		//9. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
+		//8. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
 		HttpSession session = request.getSession();
 		session.setAttribute("member", memberVo);
 		session.setAttribute("isLogOn", true);
 		session.setAttribute("id", memberVo.getId());
-		//10. 모두 완료후 메인페이지로 리다이렉트
+		//9. 모두 완료후 메인페이지로 리다이렉트
 		System.out.println("profileImgAndMyLikeSettingProcess - 메인 페이지로 리다이렉트");
 		return "redirect:/";
 	}
@@ -536,83 +713,5 @@ public class MemberControllerImpl implements MemberController{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
-
-    @RequestMapping(value = "/addMemberProcess", method = RequestMethod.POST)
-	@Override//일반 회원가입메소드 (인서트는 이미지프로필, 관심사 선택화면에서 하게됨)
-	public String addMemberProcess(@RequestParam("id") String id,
-										   @RequestParam("pass") String pass,
-										   @RequestParam("name") String name,
-										   @RequestParam("nick") String nick,
-										   @RequestParam("year") String yearString, // String으로 받음
-										   @RequestParam(value = "gender", required = false) String gender, // 성별은 선택 사항이라 required=false
-										   @RequestParam(value = "tel", required = false) String tel,
-										   @RequestParam(value = "address", required = false) String address,
-										   HttpSession session) throws Exception {
-    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
-
-        if (memberVo == null) {
-            System.out.println("앗! 세션에 memberVo가 없어요. 비정상적인 접근일 수 있습니다.");
-            return "redirect:/";
-        }
-        
-        memberVo.setId(id);
-        memberVo.setPass(pass);
-        memberVo.setName(name);
-        memberVo.setNick(nick);
-        
-        //생년월일 String을 DATE 형태로 변환
-        Date year = null; // java.sql.Date 객체
-
-        if (yearString != null && !yearString.trim().isEmpty()) {
-            try {
-                LocalDate localDate = LocalDate.parse(yearString);
-                year = Date.valueOf(localDate);
-                System.out.println("생년월일 변환 성공: " + year);
-            } catch (DateTimeParseException e) {
-                System.err.println("생년월일 파싱 오류: " + yearString + " - " + e.getMessage());
-            } catch (Exception e) {
-                 System.err.println("생년월일 변환 중 예상치 못한 오류 발생: " + e.getMessage());
-            }
-        }
-        
-        //변환 후 setYear
-        memberVo.setYear(year);
-        
-        //성별 표준화 로직 (아까 추가했던 코드)
-        String standardizedGender = null;
-        if (gender != null && !gender.isEmpty()) {
-            if ("male".equalsIgnoreCase(gender)) {
-                standardizedGender = "M";
-            } else if ("female".equalsIgnoreCase(gender)) {
-                standardizedGender = "F";
-            }
-        }
-        memberVo.setGender(standardizedGender);
-
-
-        memberVo.setTel(tel);
-        memberVo.setAddress(address);
-
-        session.setAttribute("memberVo", memberVo);
-
-        System.out.println("회원 정보 세션 업데이트 완료! 다음 페이지로 이동합니다.");
-        return "success";
-	}
-
-	
-	@Override//아이디 중복확인 메소드
-	@RequestMapping(value = "/checkId.do", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<Map<String, Boolean>> checkId(@RequestParam("id") String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		logger.debug("🔍 아이디 중복 체크 요청: " + id);
-
-		boolean checkId = memberService.checkId(id); // 이름 바뀜!
-
-		Map<String, Boolean> result = new HashMap<>();
-		result.put("exists", checkId); // true면 이미 있음
-
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
 	
 }
