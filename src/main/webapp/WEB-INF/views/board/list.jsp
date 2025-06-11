@@ -20,6 +20,7 @@
 							<span>${board.boardCate}</span>
 						</div>
 						<div class="user-profile">
+							<%-- member 프로필 사진 가져오기 --%>
 							<div class="user-pic">
 								<img
 									src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
@@ -30,8 +31,16 @@
 							<div class="item-more">
 								<ul class="popup">
 									<li><a>링크 복사</a></li>
-									<li><a href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>
-									<li><a href="${contextPath}/board/">삭제하기</a></li>
+									<li><a
+										href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>
+									<li>
+										<form action="${contextPath}/board/delete" method="post"
+											style="display: inline;">
+											<input type="hidden" name="boardId" value="${board.boardId}">
+											<button type="submit"
+												onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+										</form>
+									</li>
 								</ul>
 							</div>
 						</div>
@@ -109,5 +118,28 @@ setInterval(() => {
         const timestamp = parseInt(span.dataset.timestamp);
         span.textContent = formatTimeAgo(timestamp);
     });
-}, 60000); // 60000 밀리초 = 1분
+}, 60000); 
+
+// 게시글 삭제 관련 메세지
+$(document).ready(function() {    
+    const urlParams = new URLSearchParams(window.location.search);
+    const msg = urlParams.get('msg');
+
+    if (msg) {
+        let alertMessage = '';
+        if (msg === 'deleteSuccess') {
+            alertMessage = '게시글이 성공적으로 삭제되었습니다.';
+        } else if (msg === 'deleteFailed') {
+            alertMessage = '게시글 삭제에 실패했습니다.';
+        } else if (msg === 'invalidBoardId') {
+            alertMessage = '잘못된 게시글 정보입니다.';
+        } else if (msg === 'deleteError') {
+            alertMessage = '게시글 삭제 중 시스템 오류가 발생했습니다.';
+        }
+        if (alertMessage) {
+            alert(alertMessage);        
+            history.replaceState({}, document.title, window.location.pathname); 
+        }
+    }
+});
 </script>

@@ -54,8 +54,15 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 
 	// 조회수 증가 없이 게시글 정보만 가져오는 메소드
 	@Override
-	public BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception {		
-		return sqlSession.selectOne("mapper.board.getBoardByIdWithoutIncrement", boardId);
+	public BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception {
+		return sqlSession.selectOne(NAMESPACE +"getBoardByIdWithoutIncrement", boardId);
 	}
 
+	// 게시글 삭제
+	@Override
+	public int deleteBoard(int boardId) throws Exception {
+		// BoardMapper.xml에 정의된 deleteBoard 쿼리 실행
+		// 네임스페이스.쿼리ID 형식으로 호출함
+		return sqlSession.delete(NAMESPACE + "deleteBoard", boardId);
+	}
 }

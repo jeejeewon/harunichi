@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
 <mapper namespace="mapper.board">
 
 	<select id="selectBoardList"
@@ -44,7 +43,8 @@
 			<!-- 이미지 필드는 null일 경우에도 업데이트 (NULL로 설정) -->
 			boardImg1 = #{boardImg1},
 			boardImg2 = #{boardImg2},
-			boardImg3 = #{boardImg3},
+			boardImg3 =
+			#{boardImg3},
 			boardImg4 = #{boardImg4},
 			<if test="boardModDate != null">
 				boardModDate = #{boardModDate},
@@ -65,7 +65,7 @@
 		WHERE boardId = #{boardId}
 	</select>
 
-	<!-- 카운트 증감 쿼리 -->
+	<!-- 카운트 증감 -->
 	<update id="incrementBoardLike" parameterType="int">
 		UPDATE board
 		SET
@@ -87,15 +87,21 @@
 		WHERE boardId = #{boardId}
 	</update>
 
-	<!-- 조회수 증가 없이 게시글 정보만 가져오는 쿼리 -->
+	<!-- 조회수 증가 없이 게시글 정보만 가져오는 -->
 	<select id="getBoardByIdWithoutIncrement" parameterType="int"
 		resultType="com.harunichi.board.vo.BoardVo">
-		SELECT boardId, boardCont, boardWriter, boardDate, boardCate,
-		boardCount, boardImg1, boardImg2, boardImg3, boardImg4, boardModDate <!-- 
-			boardModDate 필드가 있다면 추가 -->
+		SELECT boardId, boardCont, boardWriter, boardDate,
+		boardCate,
+		boardCount, boardImg1, boardImg2, boardImg3, boardImg4,
+		boardModDate, boardModDate
 		FROM board
 		WHERE boardId = #{boardId}
 	</select>
 
+	<!-- 게시글 삭제 -->
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM board
+		WHERE boardId = #{boardId}
+	</delete>	
 
 </mapper>
