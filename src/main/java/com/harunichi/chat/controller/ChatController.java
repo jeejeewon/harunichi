@@ -45,8 +45,8 @@ public class ChatController {
 		System.out.println("chatController의 chatMain 메소드 실행 -------------");
 	
 		//로그인 했다고 가정하에 작성 (추후 삭제 필요)
-		String id = "hong";
-		String nick = "홍홍홍";
+		String id = "user2";
+		String nick = "유저2";
 		session.setAttribute("id", id);
 		session.setAttribute("nick", nick);
 		

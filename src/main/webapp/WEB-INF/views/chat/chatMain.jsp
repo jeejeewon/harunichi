@@ -90,6 +90,31 @@
 
 
 /* 오픈채팅 */
+#openTitle {
+	display: flex;
+	align-items: center;
+}
+.open-chat {
+	margin: 0;
+}
+#newOpenChatBtn {
+	display: flex;
+	justify-content: center; 
+	align-items: center;    
+	border-radius: 8px;	
+	font-size:16px;
+	color: #a3daff;
+	width: 70px;
+	height: 30px;
+	background-color: white;
+	font-weight: bold;
+	border: 1px solid #a3daff;
+	margin: 0 0 35px 20px;
+}
+#newOpenChatBtn:hover {
+	background-color: #a3daff;
+	color: white;	
+}
 .open-chat-img {
 	width: 60px;
 	height: 60px;
@@ -135,6 +160,79 @@
   background-color: #f0f8ff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-3px); /* 살짝 올라감 */
+}
+
+/* 모달창 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal h2 {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+	margin-bottom: 30px;
+	color: #a3daff;
+	text-align: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+#newChatForm {
+	display: block;
+	align-content: center;
+	margin: 0 10px 30px 10px;
+}
+
+#newChatForm label {
+	display: block;
+}
+#newChatForm p {
+	font-size: 13px;
+	color: #7d7d7d;
+	margin-bottom: 15px;
+}
+.open-chat-form {
+	display: block;
+	width: 100%;
+	height: 30px;
+
+	border: 1px solid #ccc; /* 원하는 색으로 */
+}	
+.modal-btn-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* 버튼 사이 간격 */
+  margin-top: 50px;
+}
+
+.modal-btn {
+  padding: 8px 16px;
+  background-color: #a3daff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+}
+.modal-btn:hover {
+	background-color: #53a5dc; 
+}
+
+
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -183,8 +281,10 @@
 		</div>
 	</div>
 	<div>
-	<p id="recText">오픈채팅방</p>
-	<a href="#">채팅방만들기</a>
+	<div id="openTitle">
+		<p id="recText">오픈채팅방</p>
+		<a href="#" id="newOpenChatBtn" onclick="openModal()">만들기</a>
+	</div>
 		<div id="openChatCon">
 			<ul class="open-chat-list">
 				<li>
@@ -222,6 +322,25 @@
 				</li>								
 			</ul>
 		</div>	
+	</div>
+	<!-- 모달창 영역 -->
+	<div id="myModal" class="modal">
+	  <div class="modal-content">
+	    <span class="close" onclick="closeModal()">&times;</span>
+	    <h2>오픈채팅방 만들기</h2>
+	    <form action="" id="newChatForm">
+		    <label>채팅방 제목</label>	    
+		    <input id="openChatTitle" class="open-chat-form" type="text" maxlength="20">
+		    <p>최대 20자까지 입력 가능합니다.</p>
+		    <label>채팅방 인원</label>		    
+		    <input id="openChatPersons" class="open-chat-form" type="number" min="2" max="8">
+		    <p>최대 8명까지 입장 가능합니다.</p>
+		    <div class="modal-btn-wrap">
+			    <button class="modal-btn" onclick="confirmAction()">만들기</button>
+			    <button class="modal-btn" onclick="closeModal()">취소</button>
+		    </div>
+	    </form>
+	  </div>
 	</div>
 </body>
 
@@ -265,6 +384,21 @@
 		const moveX = currentIndex * cardWidth;
 		list.style.transform = "translateX(-" + moveX + "px)";
 	}
+	
+	
+	//모달창
+	function openModal() {
+		  document.getElementById("myModal").style.display = "block";
+		}
+
+		function closeModal() {
+		  document.getElementById("myModal").style.display = "none";
+		}
+
+		function confirmAction() {
+		  alert("확인 누름!");
+		  closeModal();
+		}
 	
 	
 </script>

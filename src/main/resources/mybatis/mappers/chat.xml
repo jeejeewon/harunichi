@@ -80,12 +80,8 @@
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
 		<![CDATA[
-			INSERT INTO chatRoom(roomId, userId, title) 
-			VALUES (#{roomId}, 
-					#{userId}, 
-					(SELECT nick
-					FROM member
-					WHERE id = #{receiverId}))	
+			INSERT INTO chatRoom(roomId, userId) 
+			VALUES (#{roomId}, #{userId})	
 		]]>	
 	</insert>
 	
