@@ -23,7 +23,7 @@
 	        <ul>
 	            <li>
 	                <select id="country-select" name="country">
-	                    <option value="ko" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'ko' ? 'selected' : ''}>Korea</option>
+	                    <option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>krrea</option>
 	                    <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 	                </select>
 	            </li>
@@ -42,7 +42,7 @@
 								        	<img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">
 								    	</c:otherwise>
 									</c:choose>
-		                        	<span>${sessionScope.member.nick}</span>
+		                        	<!-- <span>${sessionScope.member.nick}</span>  -->
 				            	</a>
 				            	<!-- 프로필클릭시 모달창 -->
 				            	<div id="userMenuLayer"><jsp:include page="../member/profileWindow.jsp" /></div>

@@ -116,9 +116,9 @@
             });
         });
 
-        // toggleSocialLogin 함수 (상단 Select2 관련)
+        // toggleSocialLogin 함수
         function toggleSocialLogin(countryCode) {
-            // 소셜 로그인 버튼 표시 로직 (예시)
+            // 소셜 로그인 버튼 표시 로직
             if (countryCode === 'kr') {
                 // 한국
             } else if (countryCode === 'jp') {

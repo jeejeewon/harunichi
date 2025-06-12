@@ -58,7 +58,7 @@ request.setCharacterEncoding("utf-8");
 			
 			//선택된 국가를 세션에 저장
 			$('#country-select').on('change', function() {
-				var selectedCountry = $(this).val(); // 선택된 국가 코드 (ko 또는 jp)
+				var selectedCountry = $(this).val(); // 선택된 국가 코드 (kr 또는 jp)
 
 				console.log("선택된 국가:", selectedCountry); // 콘솔에서 확인
 
