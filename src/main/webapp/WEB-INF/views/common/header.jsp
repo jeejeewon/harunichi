@@ -23,7 +23,7 @@
 	        <ul>
 	            <li>
 	                <select id="country-select" name="country">
-	                    <option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>krrea</option>
+	                    <option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>korea</option>
 	                    <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 	                </select>
 	            </li>
