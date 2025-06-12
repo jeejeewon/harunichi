@@ -22,5 +22,5 @@ public class ChatVo {
 	private boolean isReported;		//신고 여부 (0/false: 정상, 1/true: 신고됨)
 	private Timestamp sentTime;		//보낸 시간
 	private Timestamp receivedTime; //받은 시간 (안읽음 NULL, 읽는 순간 시간 들어가도록)
-	
+
 }

@@ -328,17 +328,21 @@
 	  <div class="modal-content">
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h2>오픈채팅방 만들기</h2>
-	    <form action="" id="newChatForm">
+	    <form action="<%=request.getContextPath()%>/chat/window" id="newChatForm" method="POST">
 		    <label>채팅방 제목</label>	    
-		    <input id="openChatTitle" class="open-chat-form" type="text" maxlength="20">
+		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20">
 		    <p>최대 20자까지 입력 가능합니다.</p>
 		    <label>채팅방 인원</label>		    
-		    <input id="openChatPersons" class="open-chat-form" type="number" min="2" max="8">
+		    <input id="openChatPersons" name="persons" class="open-chat-form" type="number" min="2" max="8">
 		    <p>최대 8명까지 입장 가능합니다.</p>
 		    <div class="modal-btn-wrap">
 			    <button class="modal-btn" onclick="confirmAction()">만들기</button>
 			    <button class="modal-btn" onclick="closeModal()">취소</button>
 		    </div>
+		    <input type="hidden" id="openChatUserId" name="id">
+		    <!-- 	<c:set var="id" value="${sessionScope.id}" />	
+			<input type="hidden" name="id" value="${id}"> -->
+		    <input type="hidden" name="chatType" value="group">
 	    </form>
 	  </div>
 	</div>
@@ -397,36 +401,13 @@
 
 		function confirmAction() {
 		  alert("확인 누름!");
-
-		  const chatInfo = {
-				  id : document.querySelector("#id").value,
-				  title : document.querySelector("#openChatTitle").value,
-				  persons : document.querySelector("#openChatPersons").value,
-				  chatType : "group"			  
-		  };
 		  
-		  /*
-		  const url = "<%=request.getContextPath()%>/chat/window";
-		  
-		  fetch(url, {
-			  method : "POST",
-			  headers : {
-				  "Content-Type" : "application/json"
-			  },
-			  body : JSON.stringify(chatInfo)			  
-		  });
-		*/
+		  //hidden 값에 사용자 id 저장 (로그인 기능 구현시 이 부분 필요없음!!!!!!!!!!!!!!!!!)
+		  const userId = document.querySelector("#id").value;
+		  document.querySelector("#openChatUserId").value = userId;
+  	  
+		  document.getElementById("newChatForm").submit();	
 
-		/*		  
-				fetch('API요청주소', {
-		        method : 'POST',    //요청 메소드(GET, POST, PATCH, DELETE)
-		        headers : {
-		            "Content-Type" : "application/json"
-		        },
-		        body : JSON.stringify(객체) //전송 요청할 데이터
-		    })
-		    .then( response => { 응답 처리문; } );  
-		*/	  
 		}
 	
 	

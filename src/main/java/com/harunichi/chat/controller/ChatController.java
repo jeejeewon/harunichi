@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,9 +69,32 @@ public class ChatController {
 		String senderId = request.getParameter("id");
 		String receiverId = request.getParameter("receiverId");		
 		String chatType = request.getParameter("chatType");
+		int persons = 0;
 		
-		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);		
-		model.addAttribute("roomId", roomId);
+		String chatTitle = request.getParameter("title");		
+		if(chatType.equals("group")) {
+			persons = Integer.parseInt(request.getParameter("persons"));
+		}
+		
+		
+		String roomId = "";
+		
+		//개인채팅일 경우
+		if(chatType.equals("personal")) {		
+			roomId = chatService.selectRoomId(senderId, receiverId, chatType);		
+			model.addAttribute("roomId", roomId);
+		}else { //단체채팅 생성이므로 바로 채팅방 ID 생성
+			ChatRoomVo vo = new ChatRoomVo();
+			vo.setUserId(senderId);
+			vo.setChatType(chatType);
+			vo.setTitle(chatTitle);
+			vo.setPersons(persons);
+			
+			roomId = chatService.insertRoomId(vo);
+			model.addAttribute("roomId", roomId);
+		}
+		
+
 
 		//채팅방 참여 인원 확인
 		int count = chatService.selectUserCount(roomId);

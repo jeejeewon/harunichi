@@ -83,13 +83,21 @@
 	
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
-		<![CDATA[
-			INSERT INTO chatRoom(roomId, userId, admissionTime)
-			VALUES 
-		]]>	
-		<foreach collection="userList" item="userId" separator="," >
-			(#{roomId}, #{userId}, NOW())
-		</foreach>
+		<if test="'personal' == chatType">
+			<![CDATA[
+				INSERT INTO chatRoom(roomId, userId, admissionTime)
+				VALUES 
+			]]>	
+			<foreach collection="userList" item="userId" separator="," >
+				(#{roomId}, #{userId}, NOW())
+			</foreach>
+		</if>
+		<if test="'group' == chatType">
+			<![CDATA[
+				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime)
+				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW())
+			]]>	
+		</if>
 	</insert>
 	
 	<!-- 채팅방 타이틀 조회(단체 채팅) -->
