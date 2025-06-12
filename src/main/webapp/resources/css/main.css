@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 /* 버튼색상 : #A3DAFF 하늘색 */
 /* 마우스호버 : #bfe6ff 연한하늘색 */
 /* 기본 글자색 : #222 */
@@ -11,9 +10,11 @@
 	font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 	color: #222;
 }
+
 ul, ol {
 	list-style: none;
 }
+
 a {
 	text-decoration: none;
 	color: inherit;
@@ -309,4 +310,3 @@ footer {
 	display: flex;
 	gap: 10px;
 }
-
