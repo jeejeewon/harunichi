@@ -504,8 +504,7 @@ public class BoardControllerImpl implements BoardController {
 		ModelAndView mav = new ModelAndView(); // ModelAndView 객체 미리 생성
 
 		try {
-			// 1. Service를 통해 삭제할 게시글 정보 (파일 이름 포함) 조회
-			// ServiceImpl의 getBoardByIdWithoutIncrement 메소드를 호출합니다.
+			// 1. Service를 통해 삭제할 게시글 정보 (파일 이름 포함) 조회			
 			log.info(">>게시글 정보 조회를 위해 Service 호출 (getBoardByIdWithoutIncrement), boardId:{}", boardId);
 			boardToDelete = boardService.getBoardByIdWithoutIncrement(boardId);
 
@@ -518,7 +517,6 @@ public class BoardControllerImpl implements BoardController {
 			}
 
 			// 2. Service를 통해 데이터베이스에서 게시글 및 댓글 데이터 삭제
-			// ServiceImpl의 deleteBoardData 메소드를 호출합니다.
 			log.info(">>데이터베이스 삭제를 위해 Service 호출 (deleteBoardData), boardId:{}", boardId);
 			dbDeleteResult = boardService.deleteBoardData(boardId);
 
