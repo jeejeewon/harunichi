@@ -18,6 +18,7 @@ public interface BoardService {
 
 	BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception;
 
-	public int deleteBoard(int boardId, String uploadPath) throws Exception;
+	public int deleteBoardData(int boardId) throws Exception;
+	//public int deleteBoard(int boardId, String uploadPath) throws Exception;
 
 }

@@ -46,10 +46,35 @@
  
     <div class="comments-section">
         <h2>댓글 (${board.boardRe})</h2>
-        <%-- 여기에 댓글 목록 보여주는 코드와 댓글 작성 폼 추가하기 --%>
+        <div class="comments-section">
+    <h2>댓글(${board.boardRe})</h2>
+
+    <%-- 여기에 댓글 목록 보여주는 코드 --%>
+    <%-- 댓글 목록을 반복문을 사용하여 표시 --%>
+    <%-- <c:forEach var="reply" items="${replyList}"> --%>
+        <%-- <div class="comment"> --%>
+            <%-- <div class="comment-author">${reply.replyWriter}</div> --%>
+            <%-- <div class="comment-content">${reply.replyCont}</div> --%>
+            <%-- <div class="comment-date">${reply.replyDate}</div> --%>
+        <%-- </div> --%>
+    <%-- </c:forEach> --%>
+
+    <%-- 댓글 작성 폼 추가 --%>
+    <div class="comment-form">
+        <h3>댓글 작성</h3>
+        <%-- 댓글 작성을 위한 폼. 액션 URL은 댓글을 처리할 컨트롤러 매핑 주소입니다. --%>
+        <form action="${contextPath}/reply/write" method="post">
+            <%-- 어떤 게시글에 대한 댓글인지 넘겨줍니다. --%>
+            <input type="hidden" name="boardId" value="${board.boardId}">
+            <%-- 댓글 내용을 입력하는 부분 --%>
+            <textarea name="replyCont" placeholder="댓글을 입력하세요." required></textarea>
+            <%-- 댓글 작성 버튼 --%>
+            <button type="submit">댓글 등록</button>
+        </form>
     </div>
-
-
+</div>
+    </div>
+    
 </div>
 
 <%-- 날짜 포맷팅 스크립트 등 필요한 스크립트 추가 --%>
@@ -65,7 +90,7 @@
             var day = ('0' + date.getDate()).slice(-2);
             var hours = ('0' + date.getHours()).slice(-2);
             var minutes = ('0' + date.getMinutes()).slice(-2);
-            element.textContent = year + '.' + month + '.' + day + ' ' + hours + ':' + minutes;
+            element.textContent = year + '.' + month + '.' + day + '. ' + hours + ':' + minutes;
         }
     });
 </script>

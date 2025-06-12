@@ -199,6 +199,25 @@ public class BoardControllerImpl implements BoardController {
 		return mav;
 	}
 
+	// 파일 삭제 헬퍼 메소드 (ServiceImpl에서 이동)
+	private void deleteFile(String fileName, ServletContext context) {
+		if (fileName != null && !fileName.isEmpty()) {
+			String uploadPath = context.getRealPath("/resources/images/board"); // 실제 파일 저장 경로 가져오기
+			File fileToDelete = new File(uploadPath, fileName);
+			if (fileToDelete.exists()) {
+				if (fileToDelete.delete()) {
+					log.info(">>파일 삭제 성공:{}", fileName);
+				} else {
+					log.warn(">>파일 삭제 실패:{}", fileName);
+				}
+			} else {
+				log.warn(">>삭제하려는 파일이 존재하지 않습니다:{}", fileName);
+			}
+		} else {
+			log.warn(">>파일 삭제 시도 실패: 파일명이 유효하지 않습니다.");
+		}
+	}
+
 	// 게시글 수정
 	@Override
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -209,29 +228,32 @@ public class BoardControllerImpl implements BoardController {
 	) {
 		ModelAndView mav = new ModelAndView();
 		log.info(">>BoardControllerImpl-updateBoard() 호출 시작");
+		// 삭제 요청된 파일들의 실제 파일명을 저장할 리스트
+		List<String> filesToDeleteFromSystem = new ArrayList<>();
+		// 업로드되었으나 최종 목록에 포함되지 않은 파일 목록
+		List<String> uploadedButNotAdded = new ArrayList<>();
 
 		try {
 			// 1. 파라미터 받기
 			int boardId = Integer.parseInt(request.getParameter("boardId"));
 			String boardCont = request.getParameter("boardCont");
 			String boardCate = request.getParameter("boardCate");
-			log.info(">>수정을 위한 boardId: {}", boardId);
-			log.info(">>수정 내용: {}, 카테고리: {}", boardCont, boardCate);
-			log.info(">>삭제 요청된 이미지 순서: {}", deleteIndices);
+			log.info(">>수정을 위한 boardId:{}", boardId);
+			log.info(">>수정 내용:{}, 카테고리:{}", boardCont, boardCate);
+			log.info(">>삭제 요청된 이미지 순서:{}", deleteIndices);
 
-			// 2. 기존 게시글 정보 조회
-			BoardVo existingBoard = boardService.getBoardById(boardId);
+			// 2. 기존 게시글 정보 조회 (파일 이름 확인용)
+			BoardVo existingBoard = boardService.getBoardByIdWithoutIncrement(boardId);
 			if (existingBoard == null) {
-				log.warn(">>수정하려는 게시글(ID: {})을 찾을 수 없습니다.", boardId);
+				log.warn(">>수정하려는 게시글(ID:{})을 찾을 수 없습니다.", boardId);
 				mav.addObject("msg", "수정하려는 게시글을 찾을 수 없습니다.");
-				// mav.setViewName("/board/errorPage");
 				mav.setViewName("redirect:/board/list");
 				return mav;
 			}
 			log.info(">>기존 게시글 정보 조회 완료.");
 
 			// 3. 삭제 요청된 기존 이미지 처리
-			// 삭제 요청이 들어온 이미지 순서에 해당하는 필드를 null로 설정
+			// 삭제 요청이 들어온 이미지 순서에 해당하는 필드를 null로 설정하고 실제 삭제할 파일 목록에 추가
 			if (deleteIndices != null && !deleteIndices.isEmpty()) {
 				log.info(">>삭제 요청된 이미지 처리 시작");
 				// 기존 이미지 파일명 리스트를 임시로 만듬
@@ -247,8 +269,8 @@ public class BoardControllerImpl implements BoardController {
 					if (listIndex >= 0 && listIndex < currentImageNames.size()) {
 						String fileNameToDelete = currentImageNames.get(listIndex);
 						if (fileNameToDelete != null && !fileNameToDelete.isEmpty()) {
-							log.info(">>기존 이미지 {} (파일명: {}) 삭제 요청 감지.", index, fileNameToDelete);
-							// 해당 순서의 이미지 필드를 null로 설정
+							log.info(">>기존 이미지 {}(파일명:{}) 삭제 요청 감지. DB 필드를 null로 설정.", index, fileNameToDelete);
+							// 해당 순서의 이미지 필드를 null로 설정 (DB 업데이트 시 반영)
 							switch (index) {
 							case 1:
 								existingBoard.setBoardImg1(null);
@@ -263,16 +285,15 @@ public class BoardControllerImpl implements BoardController {
 								existingBoard.setBoardImg4(null);
 								break;
 							}
-							// TODO: 실제 파일 시스템에서도 해당 파일을 삭제하는 로직 추가 필요
-							// deleteFile(servletContext, fileNameToDelete);
+							// 실제 파일 시스템에서 삭제할 파일 목록에 추가
+							filesToDeleteFromSystem.add(fileNameToDelete);
 						} else {
-							log.warn(">>삭제 요청된 순서 {} 에 해당하는 기존 이미지가 없습니다.", index);
+							log.warn(">>삭제 요청된 순서 {}에 해당하는 기존 이미지가 없습니다.", index);
 						}
 					} else {
-						log.warn(">>유효하지 않은 삭제 요청 순서: {}", index);
+						log.warn(">>유효하지 않은 삭제 요청 순서:{}", index);
 					}
 				}
-
 			} else {
 				log.info(">>삭제 요청된 이미지가 없습니다. 기존 이미지를 유지합니다.");
 			}
@@ -281,19 +302,17 @@ public class BoardControllerImpl implements BoardController {
 			List<String> newFileNames = new ArrayList<>();
 			boolean isNewFileUploaded = (imageFiles != null && !imageFiles.isEmpty()
 					&& imageFiles.get(0).getSize() > 0);
-
 			if (isNewFileUploaded) {
 				log.info(">>새로운 이미지 파일이 감지되었습니다.");
 				newFileNames = uploadFiles(servletContext, imageFiles); // 새로운 파일 업로드 로직 호출
-				log.info(">>업로드된 새 파일명: {}", newFileNames);
+				log.info(">>업로드된 새 파일명:{}", newFileNames);
 			} else {
 				log.info(">>새로운 이미지 파일이 첨부되지 않았습니다.");
 			}
 
-			// 5. 최종 이미지 목록 구성 (기존 유지 + 새 이미지 추가, 최대 4개 제한)
+			// 5. 최종 이미지 목록 구성 (삭제되지 않고 남은 기존 이미지 + 새로 업로드된 이미지 추가, 최대 4개 제한)
 			List<String> finalImageNames = new ArrayList<>();
-
-			// 삭제되지 않고 남은 기존 이미지 추가
+			// 삭제되지 않고 남은 기존 이미지 추가 (existingBoard 객체는 이미 삭제 요청된 필드가 null로 설정되어 있음)
 			if (existingBoard.getBoardImg1() != null)
 				finalImageNames.add(existingBoard.getBoardImg1());
 			if (existingBoard.getBoardImg2() != null)
@@ -302,20 +321,22 @@ public class BoardControllerImpl implements BoardController {
 				finalImageNames.add(existingBoard.getBoardImg3());
 			if (existingBoard.getBoardImg4() != null)
 				finalImageNames.add(existingBoard.getBoardImg4());
-			log.info(">>삭제 처리 후 남은 기존 이미지: {}", finalImageNames);
+			log.info(">>삭제 처리 후 남은 기존 이미지:{}", finalImageNames);
 
-			// 새로운 이미지 추가 (최대 4개까지)
-			List<String> uploadedButNotAdded = new ArrayList<>(); // 최대 개수 초과로 추가되지 못한 파일 목록
-			for (String newName : newFileNames) {
-				if (finalImageNames.size() < 4) { // 최대 개수(4개) 확인
-					finalImageNames.add(newName);
-					log.info(">>새 이미지 '{}'를 최종 목록에 추가합니다.", newName);
-				} else {
-					log.warn(">>이미지 최대 개수(4개) 초과로 새로운 파일 '{}'은 추가되지 않았습니다.", newName);
-					uploadedButNotAdded.add(newName); // 추가되지 못한 파일 목록에 추가
+			// 새로 업로드된 이미지 추가 (최대 4개까지)
+			if (newFileNames != null) {
+				for (String newName : newFileNames) {
+					if (finalImageNames.size() < 4) { // 최대 개수(4개) 확인
+						finalImageNames.add(newName);
+						log.info(">>새 이미지 '{}'를 최종 목록에 추가합니다.", newName);
+					} else {
+						log.warn(">>이미지 최대 개수(4개) 초과로 새로운 파일 '{}'은 추가되지 않았습니다.", newName);
+						uploadedButNotAdded.add(newName); // 추가되지 못한 파일 목록에 추가
+					}
 				}
 			}
-			log.info(">>최종 이미지 목록: {}", finalImageNames);
+			log.info(">>최종 이미지 목록:{}", finalImageNames);
+			log.info(">>업로드되었으나 추가되지 못한 파일 목록:{}", uploadedButNotAdded);
 
 			// 6. BoardVo 객체에 최종 데이터 설정
 			// existingBoard 객체에 수정 내용과 최종 이미지 목록을 설정
@@ -323,8 +344,7 @@ public class BoardControllerImpl implements BoardController {
 			existingBoard.setBoardCate(boardCate);
 			existingBoard.setBoardModDate(new Timestamp(System.currentTimeMillis())); // 수정 시간 설정
 
-			// 이미지 필드를 모두 초기화하고 최종 목록으로 다시 설정합니다.
-			// MyBatis Mapper에서 null도 업데이트하도록 수정했음
+			// 이미지 필드를 모두 초기화하고 최종 목록으로 다시 설정함
 			existingBoard.setBoardImg1(null);
 			existingBoard.setBoardImg2(null);
 			existingBoard.setBoardImg3(null);
@@ -339,32 +359,63 @@ public class BoardControllerImpl implements BoardController {
 			if (finalImageNames.size() > 3)
 				existingBoard.setBoardImg4(finalImageNames.get(3));
 
-			// 7. BoardService를 통해 게시글 수정 요청
-			log.info(">>게시글 수정을 위해 BoardService.updateBoard() 호출");
-			// 수정된 existingBoard 객체를 서비스로 넘김
+			// 7. BoardService를 통해 게시글 업데이트 (DB 저장)
+			log.info(">>게시글 DB 업데이트를 위해 Service 호출");
 			boardService.updateBoard(existingBoard);
 			log.info(">>BoardService.updateBoard() 호출 완료");
 
-			// 최대 개수 초과로 추가되지 못한 파일들을 실제 파일 시스템에서 삭제하는 로직 추가
-			for (String fileName : uploadedButNotAdded) {
-				deleteFile(servletContext, fileName);
+			// 8. DB 업데이트 성공 시 실제 파일 시스템에서 파일 삭제
+			log.info(">>DB 업데이트 성공. 실제 파일 시스템 삭제 시도.");
+			// 삭제 요청된 기존 파일 삭제
+			if (!filesToDeleteFromSystem.isEmpty()) {
+				log.info(">>삭제 요청된 기존 파일 {}개 삭제 시도.", filesToDeleteFromSystem.size());
+				for (String fileName : filesToDeleteFromSystem) {
+					try {
+						// deleteFile 헬퍼 메소드 호출 시 파라미터 순서 수정
+						deleteFile(fileName, servletContext);
+					} catch (Exception e) {
+						log.error("기존 이미지 파일 삭제 중 오류 발생 (DB 업데이트는 완료됨): {}", fileName, e);
+						// 파일 삭제 실패는 로그만 남기고 계속 진행
+					}
+				}
+				log.info(">>삭제 요청된 기존 파일 삭제 시도 완료.");
+			} else {
+				log.info(">>삭제 요청된 기존 파일이 없습니다.");
 			}
 
-			// 8. 결과 설정 및 뷰 반환
-			log.info(">>게시글 수정 성공, 상세 페이지로 리다이렉트: /board/view?boardId={}", boardId);
+			// 업로드되었지만 최종 목록에 포함되지 않은 파일 삭제 (최대 개수 초과 등)
+			if (!uploadedButNotAdded.isEmpty()) {
+				log.info(">>업로드되었으나 사용되지 않은 파일 {}개 삭제 시도.", uploadedButNotAdded.size());
+				for (String fileName : uploadedButNotAdded) {
+					try {
+						// deleteFile 헬퍼 메소드 호출 시 파라미터 순서 수정
+						deleteFile(fileName, servletContext);
+					} catch (Exception e) {
+						log.error("업로드되었으나 사용되지 않은 파일 삭제 중 오류 발생: {}", fileName, e);
+						// 파일 삭제 실패는 로그만 남기고 계속 진행
+					}
+				}
+				log.info(">>업로드되었으나 사용되지 않은 파일 삭제 시도 완료.");
+			} else {
+				log.info(">>업로드되었으나 사용되지 않은 파일이 없습니다.");
+			}
+
+			log.info(">>파일 시스템 삭제 시도 완료.");
+
+			// 9. 결과 설정 및 뷰 반환
+			log.info(">>게시글 수정 성공, 상세 페이지로 리다이렉트:/board/view?boardId={}", boardId);
 			mav.setViewName("redirect:/board/view?boardId=" + boardId); // 수정 성공 시 해당 게시글 상세 페이지로 리다이렉트
 
-		} catch (NumberFormatException e) {
-			// boardId 파라미터가 숫자가 아닐 경우 발생
-			log.error(">>게시글 ID 파싱 오류 발생: {}", request.getParameter("boardId"), e);
+		} catch (NumberFormatException e) { // boardId 파라미터가 숫자가 아닐 경우 발생
+			log.error(">>게시글 ID 파싱 오류 발생:{}", request.getParameter("boardId"), e);
 			mav.addObject("msg", "잘못된 게시글 정보입니다.");
 			// mav.setViewName("/board/errorPage"); // 400 Bad Request 에러 페이지
-			mav.setViewName("redirect:/board/list");
+			mav.setViewName("redirect:/board/list"); // 목록으로 리다이렉트
 		} catch (Exception e) {
-			log.error(">>게시글 수정 처리 중 예외 발생, boardId: {}", request.getParameter("boardId"), e);
+			log.error(">>게시글 수정 처리 중 예외 발생, boardId:{}", request.getParameter("boardId"), e);
 			mav.addObject("msg", "게시글 수정 중 오류가 발생했습니다.");
 			// mav.setViewName("/board/errorPage"); // 500 Internal Server Error 에러 페이지
-			mav.setViewName("redirect:/board/list");
+			mav.setViewName("redirect:/board/list"); // 목록으로 리다이렉트
 		}
 		log.info(">>BoardControllerImpl-updateBoard() 호출 종료");
 		return mav;
@@ -403,7 +454,6 @@ public class BoardControllerImpl implements BoardController {
 
 		// 파일 업로드 로직
 		for (MultipartFile imageFile : imageFiles) {
-			// 파일이 비어있으면, 해당 파일은 건너뛰고 다음 파일로 진행합니다.
 			if (imageFile.isEmpty()) {
 				log.warn("첨부 파일이 비어있습니다. 파일 업로드를 건너뜁니다.");
 				continue; // 다음 파일로 진행
@@ -413,7 +463,7 @@ public class BoardControllerImpl implements BoardController {
 			String contentType = imageFile.getContentType();
 			if (contentType == null || !contentType.startsWith("image/")) {
 				log.warn("유효하지 않은 파일 형식: {}", imageFile.getOriginalFilename());
-				continue; // 다음 파일로 진행
+				continue;
 			}
 
 			String originalFileName = imageFile.getOriginalFilename();
@@ -441,63 +491,72 @@ public class BoardControllerImpl implements BoardController {
 		return fileNames;
 	}
 
-	private void deleteFile(ServletContext context, String fileName) {
-		if (fileName == null || fileName.isEmpty()) {
-			return;
-		}
-		String realPath = context.getRealPath("/");
-		String uploadPath = realPath + "resources" + File.separator + "images" + File.separator + "board";
-		File fileToDelete = new File(uploadPath, fileName);
-		if (fileToDelete.exists()) {
-			if (fileToDelete.delete()) {
-				log.info(">>파일 삭제 성공: {}", fileName);
-			} else {
-				log.warn(">>파일 삭제 실패: {}", fileName);
-			}
-		} else {
-			log.warn(">>삭제하려는 파일이 존재하지 않습니다: {}", fileName);
-		}
-	}
-
 	// 게시글 삭제 처리
 	@Override
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public ModelAndView deleteBoard(HttpServletRequest request, HttpServletResponse response, int boardId)
-			throws Exception {
-		ModelAndView mav = new ModelAndView();
-		log.info(">>BoardControllerImpl-deleteBoard() 호출 시작, boardId: {}", boardId);
+	public ModelAndView deleteBoard(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("boardId") int boardId) throws Exception {
 
-		String redirectUrl = "redirect:/board/list";
+		log.info(">>BoardControllerImpl-deleteBoard() 호출 시작, boardId:{}", boardId);
+
+		BoardVo boardToDelete = null;
+		int dbDeleteResult = 0; // DB 삭제 결과
+		ModelAndView mav = new ModelAndView(); // ModelAndView 객체 미리 생성
 
 		try {
-			// Controller에서 파일 업로드 경로를 얻어서 Service로 전달
-			String realPath = servletContext.getRealPath("/");
-			// uploadFiles 메소드에서 사용한 경로와 동일하게 구성
-			String uploadPath = realPath + "resources" + File.separator + "images" + File.separator + "board";
-			log.info(">>파일 삭제를 위한 uploadPath: {}", uploadPath);
+			// 1. Service를 통해 삭제할 게시글 정보 (파일 이름 포함) 조회
+			// ServiceImpl의 getBoardByIdWithoutIncrement 메소드를 호출합니다.
+			log.info(">>게시글 정보 조회를 위해 Service 호출 (getBoardByIdWithoutIncrement), boardId:{}", boardId);
+			boardToDelete = boardService.getBoardByIdWithoutIncrement(boardId);
 
-			// Service를 통해 게시글 삭제 요청 (uploadPath 함께 전달)
-			int result = boardService.deleteBoard(boardId, uploadPath); // <-- uploadPath 전달
-
-			if (result > 0) {
-				log.info(">>게시글 삭제 성공, boardId: {}", boardId);
-				redirectUrl += "?msg=deleteSuccess";
-			} else {
-				log.warn(">>게시글 삭제 실패 또는 해당 게시글 없음, boardId: {}", boardId);
-				redirectUrl += "?msg=deleteFailed";
+			if (boardToDelete == null) {
+				log.warn(">>삭제할 게시글(ID:{})을 찾을 수 없습니다. 삭제를 중단합니다.", boardId);
+				// 게시글이 없으면 목록 페이지로 리다이렉트 또는 에러 처리
+				mav.setViewName("redirect:/board/list");
+				mav.addObject("msg", "notfound");
+				return mav;
 			}
 
-		} catch (NumberFormatException e) {
-			log.error(">>게시글 ID 파싱 오류 발생: {}", request.getParameter("boardId"), e);
-			redirectUrl += "?msg=invalidBoardId";
+			// 2. Service를 통해 데이터베이스에서 게시글 및 댓글 데이터 삭제
+			// ServiceImpl의 deleteBoardData 메소드를 호출합니다.
+			log.info(">>데이터베이스 삭제를 위해 Service 호출 (deleteBoardData), boardId:{}", boardId);
+			dbDeleteResult = boardService.deleteBoardData(boardId);
+
+			// 3. 데이터베이스 삭제 성공 시 실제 파일 시스템에서 이미지 파일 삭제
+			if (dbDeleteResult > 0) { // 게시글 레코드가 1개 이상 삭제되었다면 (DB 삭제 성공)
+				log.info(">>데이터베이스 삭제 성공 ({} 행 삭제). 파일 삭제 시도.", dbDeleteResult);
+				// 파일 삭제는 DB 트랜잭션과 별개로 Controller에서 처리
+				try {
+					deleteFile(boardToDelete.getBoardImg1(), servletContext);
+					deleteFile(boardToDelete.getBoardImg2(), servletContext);
+					deleteFile(boardToDelete.getBoardImg3(), servletContext);
+					deleteFile(boardToDelete.getBoardImg4(), servletContext);
+					log.info(">>파일 삭제 시도 완료.");
+				} catch (Exception e) {
+					log.error(">>이미지 파일 삭제 중 예외 발생 (DB 삭제는 완료됨), boardId:{}", boardId, e);
+				}
+			} else {
+				log.warn(">>데이터베이스 삭제 실패 (삭제된 행 수 0), boardId:{}", boardId);
+				// DB 삭제 실패 시 처리 (예: 에러 페이지 또는 메시지)
+				mav.setViewName("redirect:/board/list");
+				mav.addObject("msg", "db_delete_failed");
+				return mav;
+			}
+
 		} catch (Exception e) {
-			log.error(">>게시글 삭제 처리 중 예외 발생, boardId: {}", boardId, e);
-			redirectUrl += "?msg=deleteError";
+			log.error(">>게시글 삭제 처리 중 예외 발생, boardId:{}", boardId, e);
+			// Service에서 발생한 예외 (DB 관련)는 여기서 잡아서 처리
+			// 예: 에러 페이지로 이동 또는 메시지 표시
+			mav.setViewName("redirect:/board/list");
+			mav.addObject("msg", "error");
+			return mav;
 		}
 
-		mav.setViewName(redirectUrl);
+		log.info(">>BoardControllerImpl-deleteBoard() 호출 종료, DB 삭제된 행 수:{}", dbDeleteResult);
 
-		log.info(">>BoardControllerImpl-deleteBoard() 호출 종료, 리다이렉트 URL: {}", redirectUrl);
+		// 삭제 성공 시 게시글 목록 페이지로 리다이렉트
+		mav.setViewName("redirect:/board/list");
+		mav.addObject("msg", "deleted");
 		return mav;
 	}
 
