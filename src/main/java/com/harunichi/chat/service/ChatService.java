@@ -1,6 +1,7 @@
 package com.harunichi.chat.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,16 +34,16 @@ public class ChatService {
 	}
 	
 	//채팅방 ID 조회
-	public String selectRoomId(String senderId, String receiverId) {
+	public String selectRoomId(String senderId, String receiverId,  String chatType) {
 		System.out.println("ChatService의 selectRoomId메소드 호출 ===================");		
 		
-		String roomId = chatDao.selectRoomId(senderId, receiverId);
+		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);
 		
-		Map<String, String> roomMap = new HashMap<String, String>();
+		Map<String, Object> roomMap = new HashMap<String, Object>();
 		
-		String userId = senderId + "," + receiverId;
+//		String userId = senderId + "," + receiverId;
 		
-		roomMap.put("userId", userId);
+//		roomMap.put("userId", userId);
 		
 		System.out.println("roomId : " + roomId);
 		
@@ -59,9 +60,15 @@ public class ChatService {
 			System.out.println("newRoomId : " + newRoomId);
 			
 			roomMap.put("roomId", newRoomId);
-			roomMap.put("receiverId", receiverId);
 			
-			//DB의 chatRoom테이블에 roomId, 상대방 닉네임 저장
+			List<String> userList = new ArrayList<String>();		
+			userList.add(receiverId);
+			userList.add(senderId);
+			
+			roomMap.put("chatType", chatType);
+			roomMap.put("userList", userList);
+						
+			//DB의 chatRoom테이블에 채팅방 정보 저장
 			chatDao.insertRoomId(roomMap);
 			
 			return newRoomId;		
@@ -81,9 +88,8 @@ public class ChatService {
 
 	
 	//채팅방 참여 인원 확인
-	public String selectUserCount(String roomId) {		
-		String userList = chatDao.selectUserCount(roomId);
-		return userList;
+	public int selectUserCount(String roomId) {		
+		return chatDao.selectUserCount(roomId);
 	}
 
 	//채팅방 타이틀 확인(단체채팅)

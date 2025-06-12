@@ -79,17 +79,23 @@ public class ChatDao {
 
 		
 	//DB에서 채팅방 ID 조회
-	public String selectRoomId(String senderId, String receiverId) {		
+	public String selectRoomId(String senderId, String receiverId, String chatType) {		
 		System.out.println("ChatDao의 selectRoomId 메소드 실행 ===============");	
 		
 		Map<String, String> idMap = new HashMap<String, String>();
 		idMap.put("senderId", senderId);
 		idMap.put("receiverId", receiverId);
+		idMap.put("chatType", chatType);
 			
 		return sqlSession.selectOne(NAMESPACE + "selectRoomId", idMap);
+	}	
+
+	//DB의 chatRoom테이블에 roomId 저장
+	public void insertRoomId(Map<String, Object> roomMap) {
+		System.out.println("ChatDao의 insertRoomId 메소드 실행 ===============");
+		sqlSession.insert(NAMESPACE + "insertRoomId", roomMap);				
 	}
 	
-
 
 	//DB에서 채팅 내역 조회
 	public List<ChatVo> selectChatHistory(String roomId) {
@@ -98,16 +104,8 @@ public class ChatDao {
 	}
 
 
-
-	//DB의 chatRoom테이블에 roomId 저장
-	public void insertRoomId(Map<String, String> roomMap) {
-		System.out.println("ChatDao의 insertRoomId 메소드 실행 ===============");
-		sqlSession.insert(NAMESPACE + "insertRoomId", roomMap);				
-	}
-
-
 	//채팅방에 참여하고 있는 유저 조회
-	public String selectUserCount(String roomId) {
+	public int selectUserCount(String roomId) {
 		System.out.println("ChatDao의 selectUserCount 메소드 실행 ===============");
 		return sqlSession.selectOne(NAMESPACE + "selectUserCount", roomId);
 	}

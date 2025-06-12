@@ -397,7 +397,36 @@
 
 		function confirmAction() {
 		  alert("확인 누름!");
-		  closeModal();
+
+		  const chatInfo = {
+				  id : document.querySelector("#id").value,
+				  title : document.querySelector("#openChatTitle").value,
+				  persons : document.querySelector("#openChatPersons").value,
+				  chatType : "group"			  
+		  };
+		  
+		  /*
+		  const url = "<%=request.getContextPath()%>/chat/window";
+		  
+		  fetch(url, {
+			  method : "POST",
+			  headers : {
+				  "Content-Type" : "application/json"
+			  },
+			  body : JSON.stringify(chatInfo)			  
+		  });
+		*/
+
+		/*		  
+				fetch('API요청주소', {
+		        method : 'POST',    //요청 메소드(GET, POST, PATCH, DELETE)
+		        headers : {
+		            "Content-Type" : "application/json"
+		        },
+		        body : JSON.stringify(객체) //전송 요청할 데이터
+		    })
+		    .then( response => { 응답 처리문; } );  
+		*/	  
 		}
 	
 	

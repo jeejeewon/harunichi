@@ -66,13 +66,17 @@
 	</select>	
 			
 		
-	<!-- 채팅방 ID 조회 -->
+	<!-- 채팅방 ID 조회 (개인) -->
 	<select id="selectRoomId" parameterType="map" resultType="String">
 		<![CDATA[
-			SELECT DISTINCT roomId
-			FROM chat
-			WHERE senderId = #{senderId} AND receiverId = #{receiverId}
-			OR senderId = #{receiverId} AND receiverId = #{senderId}
+			SELECT roomId
+			FROM chatRoom
+			WHERE userId = #{receiverId}
+			AND roomId IN
+			(SELECT roomId
+			FROM chatRoom
+			WHERE userId = #{senderId} 
+			AND chatType = #{chatType})	
 		]]>		
 	</select>
 	
@@ -80,9 +84,12 @@
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
 		<![CDATA[
-			INSERT INTO chatRoom(roomId, userId) 
-			VALUES (#{roomId}, #{userId})	
+			INSERT INTO chatRoom(roomId, userId, admissionTime)
+			VALUES 
 		]]>	
+		<foreach collection="userList" item="userId" separator="," >
+			(#{roomId}, #{userId}, NOW())
+		</foreach>
 	</insert>
 	
 	<!-- 채팅방 타이틀 조회(단체 채팅) -->
@@ -116,9 +123,9 @@
 
 
 	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
-	<select id="selectUserCount" parameterType="String" resultType="String">
+	<select id="selectUserCount" parameterType="String" resultType="int">
 		<![CDATA[
-			SELECT userId
+			SELECT count(*)
 			FROM chatRoom
 			WHERE roomId = #{roomId}
 		]]>
