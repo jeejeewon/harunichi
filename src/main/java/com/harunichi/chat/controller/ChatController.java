@@ -74,8 +74,7 @@ public class ChatController {
 		String chatTitle = request.getParameter("title");		
 		if(chatType.equals("group")) {
 			persons = Integer.parseInt(request.getParameter("persons"));
-		}
-		
+		}	
 		
 		String roomId = "";
 		
@@ -94,18 +93,15 @@ public class ChatController {
 			model.addAttribute("roomId", roomId);
 		}
 		
-
-
 		//채팅방 참여 인원 확인
-		int count = chatService.selectUserCount(roomId);
-		
+		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 		
 		//채팅방 타이틀 제목 확인
 		String title; 
 		
-		//개인 채팅일 경우 상대방 닉네임 표시
-		if(count <= 2) {
+		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
+		if(chatType.equals("personal")) {
 			title = chatService.selectNick(receiverId);
 			model.addAttribute("title", title);	
 		}else {
@@ -116,8 +112,7 @@ public class ChatController {
 		
 		return "/chatWindow";	
 	}
-	
-	
+		
 	
 	//과거 채팅 내역 불러오기
 	@RequestMapping("/history")

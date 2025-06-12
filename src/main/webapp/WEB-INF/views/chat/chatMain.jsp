@@ -400,7 +400,6 @@
 		}
 
 		function confirmAction() {
-		  alert("확인 누름!");
 		  
 		  //hidden 값에 사용자 id 저장 (로그인 기능 구현시 이 부분 필요없음!!!!!!!!!!!!!!!!!)
 		  const userId = document.querySelector("#id").value;

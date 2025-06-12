@@ -24,19 +24,20 @@ public class ChatService {
 	
 	//채팅 메세지 DB에 저장
 	public void saveMessage(ChatVo chatMsg) {		
-		System.out.println("ChatService의 saveMessage메소드 호출 ===================");		
+		System.out.println("---ChatService의 saveMessage메소드 호출");		
 		//DAO로 DB작업 요청시키기
 		chatDao.saveMessage(chatMsg);
 	}
 
 	//DB에서 친구 추천 리스트 조회
 	public List<MemberVo> selectMembers(String id) {
+		System.out.println("---ChatService의 selectMembers메소드 호출");	
 		return chatDao.selectMembers(id);
 	}
 	
 	//채팅방 ID 조회
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
-		System.out.println("ChatService의 selectRoomId메소드 호출 ===================");		
+		System.out.println("---ChatService의 selectRoomId메소드 호출");		
 		
 		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);
 		
@@ -49,7 +50,7 @@ public class ChatService {
 		
 		//DB에 조회된 채팅방ID가 없다면?
 		if(roomId == null) {		
-			insertRoomId(vo);
+			roomId = insertRoomId(vo);
 		}	
 		
 		//DB에서 조회된 채팅방ID 반환
@@ -58,7 +59,7 @@ public class ChatService {
 	
 	public String insertRoomId(ChatRoomVo vo) {
 		
-		System.out.println("ChatService의 insertRoomId메소드 호출 ===================");		
+		System.out.println("---ChatService의 insertRoomId메소드 호출");		
 		
 		Map<String, Object> roomMap = new HashMap<String, Object>();
 	
@@ -96,23 +97,27 @@ public class ChatService {
 	
 	//과거 채팅 내역 불러오기
 	public List<ChatVo> selectChatHistory(String roomId) {
-		System.out.println("ChatService의 selectChatHistory메소드 호출 ===================");	
+		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
 		return chatDao.selectChatHistory(roomId);
 	}
 
 	
 	//채팅방 참여 인원 확인
 	public int selectUserCount(String roomId) {		
+		System.out.println("---ChatService의 selectUserCount메소드 호출");		
 		return chatDao.selectUserCount(roomId);
 	}
 
 	//채팅방 타이틀 확인(단체채팅)
 	public String selectTitle(String roomId) {
+		System.out.println("---ChatService의 selectTitle메소드 호출");
+		System.out.println("roomId : " + roomId);
 		return chatDao.selectTitle(roomId);
 	}
 
 	//채팅방 타이틀 확인(개인채팅)
 	public String selectNick(String receiverId) {
+		System.out.println("---ChatService의 selectNick메소드 호출");
 		return chatDao.selectNick(receiverId);
 	}
 
