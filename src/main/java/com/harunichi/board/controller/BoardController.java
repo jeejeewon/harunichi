@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.harunichi.board.vo.ReplyVo;
+
 public interface BoardController {
 
 	// 전체 글 목록
@@ -29,7 +31,9 @@ public interface BoardController {
 	// 게시글 삭제
 	ModelAndView deleteBoard(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
 
-	// 게시글 상세
+	// 게시글 상세 (댓글 목록 포함)
 	ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+
+	public String addReply(ReplyVo reply, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 }

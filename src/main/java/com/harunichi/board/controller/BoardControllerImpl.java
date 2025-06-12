@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.harunichi.board.service.BoardService;
 import com.harunichi.board.vo.BoardVo;
+import com.harunichi.board.vo.ReplyVo;
 
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -124,48 +126,44 @@ public class BoardControllerImpl implements BoardController {
 	// 게시글 상세 요청 URL: /board/view?boardId=숫자
 	@Override
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam("boardId") int boardId) throws Exception {
-
-		ModelAndView mav = new ModelAndView();
-
-		log.info(">> BoardControllerImpl - viewBoard() 호출 시작, boardId: {}", boardId); // logback 사용 예시
-
+	public ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response, @RequestParam("boardId") int boardId) throws Exception {
+		
+		ModelAndView mav = new ModelAndView("/board/view"); 
 		try {
-			// BoardService의 getBoardById 메소드를 호출
-			// 이 서비스 메소드 안에서 boardId에 해당하는 게시글의 조회수를 1 증가시키는 로직
-			BoardVo board = boardService.getBoardById(boardId);
+			// 1. 게시글 정보 가져오기 (조회수 증가 포함)			
+			BoardVo boardVo = boardService.getBoardById(boardId);
 
-			// 가져온 게시글 정보(BoardVo 객체)가 null이 아닌지 확인
-			if (board != null) {
-				log.info(">> 게시글 정보 가져오기 성공! boardId: {}", board.getBoardId());
-				// 게시글 정보가 있다면, 이 정보를 ModelAndView 객체에 담아서 View(JSP)로 넘겨줌
-				// board라는 이름으로 담았으니, View에서는 ${board}로 접근됨
-				mav.addObject("board", board);
+			if (boardVo != null) {
+				log.info(">>게시글 정보 조회 완료.");
 
-				// 게시글 상세 정보를 보여줄 View의 이름을 설정
-				mav.setViewName("/board/view");
+				// 2. 해당 게시글의 댓글 개수를 별도로 조회
+				int replyCount = boardService.getReplyCountByBoardId(boardId); 
+				// 3. BoardVo 객체에 댓글 개수 설정
+				boardVo.setBoardRe(replyCount); // Controller에서 직접 설정
+				log.info(">>게시글(ID:{}) 댓글 개수 조회 및 설정 완료: {}", boardId, replyCount);
+
+				// 4. 해당 게시글의 댓글 목록을 불러와서 mav에 추가
+				List<ReplyVo> replyList = boardService.getRepliesByBoardId(boardId);
+				mav.addObject("replyList", replyList); // JSP에서 사용할 이름 "replyList"로 추가
+				log.info(">>댓글 목록 조회 완료. 댓글 수: {}", replyList != null ? replyList.size() : 0);
+
+				// 5. 게시글 정보 (댓글 개수 포함)를 mav에 추가
+				mav.addObject("board", boardVo); // boardRe
 
 			} else {
-
-				log.warn(">> 해당 boardId의 게시글이 없습니다: {}", boardId);
-
-				mav.addObject("msg", "죄송합니다. 요청하신 게시글을 찾을 수 없습니다.");
-				// mav.setViewName("/board/errorPage");
-				mav.setViewName("redirect:/board/list");
+				log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
+				mav.setViewName("redirect:/board/list"); // 게시글 없으면 목록으로 리다이렉트
+				mav.addObject("msg", "notfound");
 			}
-
 		} catch (Exception e) {
-
-			log.error(">> 게시글 조회 중 예외 발생, boardId: {}", boardId, e);
-
-			mav.addObject("msg", "게시글을 불러오는 중 시스템 오류가 발생했습니다.");
-			// mav.setViewName("/board/errorPage");
-			mav.setViewName("redirect:/board/list");
+			log.error("게시글 상세 조회 중 오류 발생, boardId:{}", boardId, e);
+			mav.addObject("msg", "게시글 상세 조회 중 오류가 발생했습니다.");
+			mav.setViewName("errorPage");
 		}
-
+		log.info(">>BoardControllerImpl-viewBoard() 호출 종료");
 		return mav;
 	}
+
 
 	// 게시글 수정 폼 요청
 	@RequestMapping(value = "/editForm", method = RequestMethod.GET)
@@ -223,8 +221,7 @@ public class BoardControllerImpl implements BoardController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public ModelAndView updateBoard(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles, // 새로 업로드할 파일 리스트
-			@RequestParam(value = "deleteIndices", required = false) List<Integer> deleteIndices // 삭제할 기존 이미지의 순서(1, 2,
-																									// 3, 4) 리스트
+			@RequestParam(value = "deleteIndices", required = false) List<Integer> deleteIndices // 삭제할 기존 이미지의 순서(1, 2, 3, 4) 리스트
 	) {
 		ModelAndView mav = new ModelAndView();
 		log.info(">>BoardControllerImpl-updateBoard() 호출 시작");
@@ -504,7 +501,7 @@ public class BoardControllerImpl implements BoardController {
 		ModelAndView mav = new ModelAndView(); // ModelAndView 객체 미리 생성
 
 		try {
-			// 1. Service를 통해 삭제할 게시글 정보 (파일 이름 포함) 조회			
+			// 1. Service를 통해 삭제할 게시글 정보 (파일 이름 포함) 조회
 			log.info(">>게시글 정보 조회를 위해 Service 호출 (getBoardByIdWithoutIncrement), boardId:{}", boardId);
 			boardToDelete = boardService.getBoardByIdWithoutIncrement(boardId);
 
@@ -556,6 +553,20 @@ public class BoardControllerImpl implements BoardController {
 		mav.setViewName("redirect:/board/list");
 		mav.addObject("msg", "deleted");
 		return mav;
+	}
+
+	// 댓글 작성 요청 처리 메소드
+	@RequestMapping(value = "/reply/write", method = RequestMethod.POST)
+	public String addReply(@ModelAttribute("reply") ReplyVo reply, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		log.info(">>BoardControllerImpl-addReply() 호출됨");
+		// TODO: 작성자 정보 설정 로직 추가 (예: 세션에서 사용자 ID 가져오기)
+		// reply.setReplyWriter(로그인된 사용자 ID);	
+		
+		// 임시로 replyWriter를 "admin"으로 고정 설정
+		reply.setReplyWriter("admin");
+		boardService.addReply(reply); // BoardService의 addReply 메소드 호출
+		return "redirect:/board/view?boardId=" + reply.getBoardId();
 	}
 
 }

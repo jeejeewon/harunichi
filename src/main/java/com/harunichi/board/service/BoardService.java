@@ -3,6 +3,7 @@ package com.harunichi.board.service;
 import java.util.List;
 
 import com.harunichi.board.vo.BoardVo;
+import com.harunichi.board.vo.ReplyVo;
 
 public interface BoardService {
 
@@ -18,7 +19,16 @@ public interface BoardService {
 
 	BoardVo getBoardByIdWithoutIncrement(int boardId) throws Exception;
 
+	// 특정 게시물의 데이터와 댓글 모두 삭제
 	public int deleteBoardData(int boardId) throws Exception;
-	//public int deleteBoard(int boardId, String uploadPath) throws Exception;
+
+	// 댓글 추가
+	public int addReply(ReplyVo reply) throws Exception;
+
+	// 특정 게시물의 댓글 목록 조회
+	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception;
+
+	// 특정 게시물의 댓글 갯수
+	public int getReplyCountByBoardId(int boardId) throws Exception;
 
 }

@@ -12,6 +12,7 @@ import com.harunichi.board.controller.BoardControllerImpl;
 import com.harunichi.board.dao.BoardDao;
 import com.harunichi.board.dao.ReplyDao;
 import com.harunichi.board.vo.BoardVo;
+import com.harunichi.board.vo.ReplyVo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,13 +41,20 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED) // 이 메소드 전체를 하나의 트랜잭션으로 묶음
+	@Transactional(propagation = Propagation.REQUIRED)
 	public BoardVo getBoardById(int boardId) throws Exception {
 		// 1. 해당 boardId의 게시글 조회수를 1 증가
 		incrementBoardCount(boardId);
-
-		// 2. 조회수가 증가된 최신 게시글 정보를 가져와서 리턴
-		return boardDao.getBoardById(boardId);
+		// 2. 조회수가 증가된 최신 게시글 정보를 가져옴
+		BoardVo board = boardDao.getBoardById(boardId);
+		// 3. 댓글 개수 조회 및 설정 로직은 Controller로 이동했으므로 여기서는 제거
+		if (board != null) {
+			log.info(">>게시글 정보 조회 완료.");
+		} else {
+			log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
+		}
+		log.info(">>BoardServiceImpl-getBoardById() 호출 종료.");
+		return board; // 게시글 정보만 반환
 	}
 
 	// 조회수 증가 메소드
@@ -65,29 +73,47 @@ public class BoardServiceImpl implements BoardService {
 	// 게시글 삭제
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED) // DB 작업에 트랜잭션 적용
-	public int deleteBoardData(int boardId) throws Exception {
-		log.info(">>BoardServiceImpl-deleteBoardData() 호출 시작, boardId:{}", boardId);
+	public int deleteBoardData(int boardId) throws Exception {		
 		int result = 0;
 		try {
-			// 1. 해당 게시글에 속한 댓글 먼저 삭제
-			log.info(">>게시글(ID:{})에 속한 댓글 삭제 시도.", boardId);
-			int deletedRepliesCount = 0;
-			// replyDao에 deleteRepliesByBoardId 메소드
-			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);
-			log.info(">>게시글(ID:{}) 댓글 삭제 완료. 삭제된 댓글 수:{}", boardId, deletedRepliesCount);
-
-			// 2. 데이터베이스에서 게시글 레코드 삭제
-			log.info(">>게시글 레코드 삭제 시도, boardId:{}", boardId);
-			// boardDao에 deleteBoard 메소드
-			result = boardDao.deleteBoard(boardId);
-			log.info(">>게시글 레코드 삭제 완료. 삭제된 행 수:{}", result);
-
+			// 1. 해당 게시글에 속한 댓글 먼저 삭제		
+			int deletedRepliesCount = 0;		
+			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);				
+			result = boardDao.deleteBoard(boardId);	
 		} catch (Exception e) {
-			log.error(">>데이터베이스 삭제 중 예외 발생, boardId:{}", boardId, e);		
-			throw e; 
+			log.error(">>데이터베이스 삭제 중 예외 발생, boardId:{}", boardId, e);
+			throw e;
 		}
 		log.info(">>BoardServiceImpl-deleteBoardData() 호출 종료, 삭제된 행 수:{}", result);
 		return result;
+	}
+
+	// 댓글 추가
+	@Override
+	public int addReply(ReplyVo reply) throws Exception {		
+		// ReplyDao의 insertReply 메소드를 호출하여 DB에 댓글 저장
+		int result = replyDao.insertReply(reply);
+		log.info(">>댓글 DB 저장 완료. 결과: {}", result);
+		return result; // 삽입된 행 수 반환
+	}
+
+	// 특정 게시물의 댓글 조회
+	@Override
+	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception {	
+		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);
+		log.info(">>BoardServiceImpl-getRepliesByBoardId() 호출 종료. 조회된 댓글 수:{}",
+				replyList != null ? replyList.size() : 0);
+		return replyList; // 조회된 댓글 목록 반환
+	}
+	
+	@Override	
+	@Transactional(readOnly = true) // 읽기 전용 트랜잭션
+	public int getReplyCountByBoardId(int boardId) throws Exception {
+		log.info(">>BoardServiceImpl-getReplyCountByBoardId() 호출 시작, boardId:{}", boardId);
+		// ReplyDao의 countRepliesByBoardId 메소드를 호출하여 댓글 개수를 가져옵니다.
+		int replyCount = replyDao.countRepliesByBoardId(boardId);
+		log.info(">>BoardServiceImpl-getReplyCountByBoardId() 호출 종료. 댓글 개수:{}", replyCount);
+		return replyCount; // 댓글 개수 반환
 	}
 
 }
