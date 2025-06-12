@@ -58,7 +58,7 @@ request.setCharacterEncoding("utf-8");
 			
 			//선택된 국가를 세션에 저장
 			$('#country-select').on('change', function() {
-				var selectedCountry = $(this).val(); // 선택된 국가 코드 (예: "KR", "JP")
+				var selectedCountry = $(this).val(); // 선택된 국가 코드 (ko 또는 jp)
 
 				console.log("선택된 국가:", selectedCountry); // 콘솔에서 확인
 
@@ -80,5 +80,25 @@ request.setCharacterEncoding("utf-8");
 			});
 			
 		});
+		
+		
+		//헤더 프로필 클릭시 모달 이벤트
+		//토글로 나타나게하기
+		function toggleUserMenu(event) {
+		    event.preventDefault();
+		    const menu = document.getElementById("userMenuLayer");
+		    menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+		}
+		// 바깥 클릭 시 메뉴 닫기
+		document.addEventListener("click", function(e) {
+		    const menu = document.getElementById("userMenuLayer");
+		    const trigger = document.querySelector(".profile-area");
+		
+		    // menu, profile-area 둘 다 클릭 영역이 아닐 때만 닫기
+		    if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
+		        menu.style.display = "none";
+		    }
+		});
+		
 	</script>
 </body>

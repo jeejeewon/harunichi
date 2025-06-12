@@ -144,6 +144,82 @@ header {
 	gap: 15px;
 }
 
+/*프로필클릭시 모달창*/
+.profile-area-wrap{
+	position: relative;
+}
+
+.profile-area-wrap #userMenuLayer {
+	display: none;
+    position: absolute;
+    z-index: 999;
+    top: calc(100% + 10px);
+    left: 50%;
+	transform: translateX(-50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    padding: 20px;
+}
+/* 꼬리 세모 */
+#userMenuLayer::before {
+	content: "";
+	position: absolute;
+	top: -8px; /* 메뉴 박스 위로 */
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 0 8px 8px 8px;
+	border-style: solid;
+	border-color: transparent transparent #ccc transparent; /* 테두리용 */
+	overflow: hidden;
+}
+#userMenuLayer::after {
+	content: "";
+	position: absolute;
+	top: -7px;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 0 7px 7px 7px;
+	border-style: solid;
+	border-color: transparent transparent #fff transparent; /* 배경용 */
+}
+/*----모달창 디자인----*/
+.profile-window{
+	display: flex;
+	gap: 15px;
+}
+.profile-window-left{
+	position: relative;
+}
+.profile-window-left .profile-img-thumb img{
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+}
+.adit-profile-img{
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #555;
+	padding: 3px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.adit-profile-img img{
+	width: 70%;
+	height: auto;
+	display: block;
+	filter: brightness(0) invert(1); /* 완전 흰색 */
+}
+/*----*/
+
 .header-menu ul li a .on-icons {
     height: 17px;
     vertical-align: middle;

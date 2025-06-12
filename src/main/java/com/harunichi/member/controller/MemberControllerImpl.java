@@ -715,14 +715,28 @@ public class MemberControllerImpl implements MemberController{
 		return "";
 	}
 	
+	@RequestMapping("/logout.do")
 	@Override//로그아웃메소드
-	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("User logged out."); // 로그아웃 로그
-		return null;
+	public String logout(HttpServletRequest request) {
+	    // 1. 기존 세션에서 국가 정보만 임시 저장
+	    HttpSession session = request.getSession();
+	    String selectedCountry = (String) session.getAttribute("selectedCountry");
+
+	    // 2. 세션 전체 무효화 (로그아웃 처리)
+	    session.invalidate();
+
+	    // 3. 새 세션을 만들고 selectedCountry만 복원
+	    session = request.getSession(true); // 새로운 세션 생성
+	    if (selectedCountry != null) {
+	        session.setAttribute("selectedCountry", selectedCountry);
+	    }
+
+	    // 4. 메인 페이지로 리다이렉트
+	    return "redirect:/";
 	}
 	
 	
-	// 국적에 따른 회원가입 폼 내용을 반환하는 메소드
+	// 상단 헤더 국가 선택 로직 국적에 따른 회원가입 폼 내용을 반환하는 메소드
     @RequestMapping(value = "/getRegistrationForm", method = RequestMethod.GET)
     public String getRegistrationForm(@RequestParam("nationality") String nationality, HttpSession session) {
     	// 1. 세션에서 기존 memberVo 객체 꺼내기 시도

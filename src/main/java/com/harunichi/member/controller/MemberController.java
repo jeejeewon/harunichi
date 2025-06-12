@@ -21,7 +21,7 @@ public interface MemberController {
 	//로그인메소드
 	public String login (@RequestParam("id") String id, @RequestParam("password") String password, HttpSession session);
 	//로그아웃메소드
-	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception;
+	public String logout(HttpServletRequest request);
 	//일반 회원가입메소드
 	public String addMemberProcess(@RequestParam("id") String id, @RequestParam("pass") String pass, @RequestParam("name") String name, @RequestParam("nick") String nick, @RequestParam("year") String yearString, @RequestParam(value = "gender", required = false) String gender, @RequestParam(value = "tel", required = false) String tel, @RequestParam(value = "address", required = false) String address, HttpSession session) throws Exception;
 	// 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
