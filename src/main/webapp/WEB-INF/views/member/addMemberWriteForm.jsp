@@ -52,7 +52,7 @@
 					</div>
 			
 					<div class="form-group">
-						<input type="text" name="year" id="year" maxlength="10" placeholder="생년월일 8자리" >
+						<input type="text" name="year" id="year" maxlength="8" placeholder="생년월일 8자리">
 						<span class="error" id="error-year"></span>
 					</div>
 				</div>
@@ -182,15 +182,38 @@
 
 	    // 생년월일 입력 처리
 	    $('#year').on('input', function () {
-	        let raw = $(this).val().replace(/\D/g, '');
-	        if (raw.length > 8) raw = raw.substring(0, 8);
-	        if (raw.length === 8) {
-	            const formatted = raw.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3');
-	            $(this).val(formatted);
-	        } else {
-	            $(this).val(raw);
-	        }
-	    });
+		    let raw = $(this).val().replace(/\D/g, '');
+		    if (raw.length > 8) raw = raw.substring(0, 8);
+		
+		    if (raw.length === 8) {
+		        const year = parseInt(raw.substring(0, 4), 10);
+		        const month = parseInt(raw.substring(4, 6), 10);
+		        const day = parseInt(raw.substring(6, 8), 10);
+		
+		        let isValid = true;
+		        if (month < 1 || month > 12) {
+		            isValid = false;
+		        } else {
+		            const lastDay = new Date(year, month, 0).getDate();
+		            if (day < 1 || day > lastDay) {
+		                isValid = false;
+		            }
+		        }
+		
+		        if (!isValid) {
+		            $('#error-year').text('올바른 생년월일을 입력해주세요.');
+		            $(this).val(raw.substring(0, 6)); // 잘못된 날은 잘라서 보여줌
+		        } else {
+		            $('#error-year').text('');
+		            const formatted = raw.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+		            $(this).val(formatted);
+		        }
+		    } else {
+		        $('#error-year').text('');
+		        $(this).val(raw);
+		    }
+		});
+
 
 	    // 아이디 입력 시 안내문 표시
 	    $('#id').on('input', function () {
@@ -338,6 +361,30 @@
 	    });
 
 	    toggleNextButton(); // 초기 상태
+	    
+	 	// 폼 전송 Ajax로 처리
+	    $('#memberForm').on('submit', function(e) {
+	        e.preventDefault(); // 기본 제출 막기
+
+	        const formData = $(this).serialize(); // 폼 데이터 직렬화
+
+	        $.ajax({
+	            url: '${contextPath}/member/addMemberProcess.do',
+	            type: 'POST',
+	            data: formData,
+	            success: function(response) {
+	                if (response === 'success') {
+	                    window.location.href = '${contextPath}/member/profileImgAndMyLikeSetting.do';
+	                } else {
+	                    alert("회원가입 처리 중 오류가 발생했습니다.");
+	                }
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("서버 통신 오류:", error);
+	                alert("서버와 통신 중 문제가 발생했습니다.");
+	            }
+	        });
+	    });
 	});
 
 	</script>

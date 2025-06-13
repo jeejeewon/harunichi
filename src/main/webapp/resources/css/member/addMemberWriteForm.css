@@ -59,7 +59,7 @@ input{
     font-size: 14px;
 }
 
-#idCheckText span, #error-pass, #error-passConfirm {
+#idCheckText span, #error-pass, #error-passConfirm, #error-year {
 	font-size: 0.9em;
 	display: inline; /* 줄바꿈 방지 */
 	white-space: nowrap; /* 내용이 넘쳐도 줄바꿈 안됨 */
@@ -67,7 +67,7 @@ input{
 #id-check-required{
 	color: red;
 }
-#error-pass, #error-passConfirm {
+#error-pass, #error-passConfirm, #error-year {
 	margin-right: 20px;
 }
 
