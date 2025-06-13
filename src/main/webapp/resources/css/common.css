@@ -20,7 +20,7 @@ a {
 	color: inherit;
 	cursor: pointer;
 }
-/*버튼 기본 디자인 제거*/
+/*버튼 기본 스타일 제거*/
 button {
   border: none;
   background-color: transparent;
@@ -37,4 +37,10 @@ html, body {
     padding: 0;
     height: 100%;
     overflow: auto;
+}
+/*인풋 기본 스타일 제거*/
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
 }

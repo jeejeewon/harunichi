@@ -533,7 +533,7 @@ public class MemberControllerImpl implements MemberController{
 
 
 
-    @RequestMapping(value = "/addMemberProcess", method = RequestMethod.POST)
+    @RequestMapping(value = "/addMemberProcess.do", method = RequestMethod.POST)
     @ResponseBody
 	@Override//일반 회원가입메소드 (인서트는 이미지프로필, 관심사 선택화면에서 하게됨)
 	public String addMemberProcess(@RequestParam("id") String id,
