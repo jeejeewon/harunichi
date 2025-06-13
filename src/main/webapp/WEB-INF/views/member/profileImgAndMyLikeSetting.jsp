@@ -6,6 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <title>프로필 이미지 & 관심사 설정</title>
+	<!-- 스타일 및 폰트 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
 </head>
 <body>
 	<h1>프로필 이미지 & 관심사 설정</h1>
