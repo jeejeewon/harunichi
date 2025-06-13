@@ -13,16 +13,12 @@
 		]]>	
 	</insert>
 	
-	
-	
 	<!-- 나의 관심사 조회 -->
 	<select id="selectMyLike" parameterType="String" resultType="String">
 		<![CDATA[
 			SELECT myLike FROM member WHERE id = #{id}		
 		]]>	
 	</select>
-	
-	
 	
 	<!-- 추천 친구 조회 -->
 	<select id="selectMembers" parameterType="map" resultType="memberVo">
@@ -43,8 +39,6 @@
 			LIMIT 10
 		]]>	
 	</select>
-	
-	
 	
 	<!-- 랜덤 추천 친구 조회 -->
 	<select id="selectRandomMember" parameterType="map" resultType="memberVo">
@@ -138,8 +132,6 @@
 			WHERE roomId = #{roomId}
 		]]>
 	</select>
-
-
 
 
 </mapper>

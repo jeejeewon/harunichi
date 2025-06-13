@@ -14,7 +14,7 @@
     	<form class="header-search-form" action="/search" method="get">
         	<input type="text" placeholder="검색어를 입력하세요">
        	 	<button type="submit">
-				<img src="${contextPath}/resources/image/search_icon.svg" alt="검색">
+				<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
 			</button>
     	</form>
 	    <nav class="header-menu">

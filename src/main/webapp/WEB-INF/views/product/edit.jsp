@@ -1,84 +1,97 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<h2>상품 수정</h2>
+<!-- 공통 CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/product.css" />
 
-<form action="${pageContext.request.contextPath}/product/edit.do"
-      method="post" enctype="multipart/form-data">
-    <input type="hidden" name="productId" value="${product.productId}">
-    <table class="product-form">
-        <tr>
-            <td>상품명</td>
-            <td><input type="text" name="productTitle"
-                       value="${product.productTitle}" required></td>
-        </tr>
-        <tr>
-            <td>가격</td>
-            <td><input type="number" name="productPrice"
-                       value="${product.productPrice}" required></td>
-        </tr>
-        <tr>
-            <td>거래방식</td>
-            <td>
-                <select name="productStatus">
-                    <option value="판매" ${product.productStatus == '판매' ? 'selected' : ''}>판매</option>
-                    <option value="나눔" ${product.productStatus == '나눔' ? 'selected' : ''}>나눔</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>카테고리</td>
-            <td><input type="text" name="productCategory"
-                       value="${product.productCategory}" required></td>
-        </tr>
-        <tr>
-            <td>설명</td>
-            <td><textarea name="productContent">${product.productContent}</textarea></td>
-        </tr>
+<section class="product-form-container">
+    <h2 class="form-title">상품 수정</h2>
 
-        <tr>
-            <td>기존 이미지</td>
-            <td>
-                <c:if test="${not empty product.productImg}">
-                    <img id="currentPreview" src="${product.productImg}" width="100" style="border:1px solid #ccc; border-radius:4px;"><br>
-                    <label><input type="checkbox" name="deleteImg" value="true"> 기존 이미지 삭제</label>
-                </c:if>
-            </td>
-        </tr>
+    <form action="${pageContext.request.contextPath}/product/edit"
+          method="post" enctype="multipart/form-data" class="product-form">
 
-        <tr>
-            <td>새 이미지</td>
-            <td>
-                <input type="file" name="uploadFile" accept="image/*" onchange="previewImage(event)">
-                <div style="margin-top: 10px;">
-                    <img id="newPreview" src="#" alt="미리보기" style="display:none; max-width: 100px; border: 1px solid #ccc; border-radius: 4px;" />
-                </div>
-            </td>
-        </tr>
+        <input type="hidden" name="productId" value="${product.productId}" />
 
-    </table>
+        <div class="form-row">
+            <label for="productTitle">상품명</label>
+            <input type="text" id="productTitle" name="productTitle"
+                   value="${product.productTitle}" required />
+        </div>
 
-    <input type="submit" value="수정">
-</form>
+        <div class="form-row">
+            <label>기존 이미지</label>
+            <c:if test="${not empty product.productImg}">
+                <img id="currentPreview" src="${pageContext.request.contextPath}${product.productImg}" width="100"
+                     style="border:1px solid #ccc; border-radius:4px;"><br>
+                <label><input type="checkbox" name="deleteImg" value="true"> 기존 이미지 삭제</label>
+            </c:if>
+        </div>
+
+        <div class="form-row">
+            <label>새 이미지</label>
+            <input type="file" name="uploadFile" accept="image/*" onchange="previewImage(event)" />
+            <div class="preview-container">
+                <img id="newPreview" src="#" alt="미리보기" style="display:none;" />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label for="productPrice">가격</label>
+            <input type="number" id="productPrice" name="productPrice"
+                   value="${product.productPrice}" required />
+        </div>
+
+        <div class="form-row">
+            <label for="productStatus">거래방식</label>
+            <select id="productStatus" name="productStatus">
+				<option value="0" <c:if test="${product.productStatus == 0}">selected</c:if>>판매</option>
+				<option value="1" <c:if test="${product.productStatus == 1}">selected</c:if>>나눔</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="productCategory">카테고리</label>
+            <select id="productCategory" name="productCategory">
+                <option value="book" <c:if test="${product.productCategory eq 'book'}">selected</c:if>>📚도서</option>
+                <option value="electronics" <c:if test="${product.productCategory eq 'electronics'}">selected</c:if>>💻전자제품</option>
+                <option value="toy" <c:if test="${product.productCategory eq 'toy'}">selected</c:if>>🧸장난감</option>
+                <option value="fashion" <c:if test="${product.productCategory eq 'fashion'}">selected</c:if>>👕패션</option>
+                <option value="music" <c:if test="${product.productCategory eq 'music'}">selected</c:if>>💿음반</option>
+                <option value="etc" <c:if test="${product.productCategory eq 'etc'}">selected</c:if>>🎁기타</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="productContent">설명</label>
+            <textarea id="productContent" name="productContent" rows="5" required>${product.productContent}</textarea>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn-sky">수정</button>
+            <a href="${pageContext.request.contextPath}/product/list" class="btn-back">목록으로</a>
+        </div>
+
+    </form>
+</section>
 
 <script>
-function previewImage(event) {
-    const input = event.target;
-    const preview = document.getElementById('newPreview');
-    const current = document.getElementById('currentPreview');
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('newPreview');
+        const current = document.getElementById('currentPreview');
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            if (current) current.style.display = 'none';
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (current) current.style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = '#';
+            preview.style.display = 'none';
+            if (current) current.style.display = 'block';
         }
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.src = '#';
-        preview.style.display = 'none';
-        if (current) current.style.display = 'block';
     }
-}
 </script>

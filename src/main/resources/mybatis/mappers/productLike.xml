@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.productLike">
+
+    <!-- 좋아요 여부 확인 -->
+    <select id="isLiked" parameterType="com.harunichi.product.vo.ProductLikeVo" resultType="int">
+        SELECT COUNT(*) 
+        FROM product_like
+        WHERE product_id = #{productId}
+          AND like_user_id = #{likeUserId}
+    </select>
+
+    <!-- 좋아요 추가 -->
+    <insert id="insertLike" parameterType="com.harunichi.product.vo.ProductLikeVo">
+        INSERT INTO product_like (product_id, like_user_id)
+        VALUES (#{productId}, #{likeUserId})
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="deleteLike" parameterType="com.harunichi.product.vo.ProductLikeVo">
+        DELETE FROM product_like
+        WHERE product_id = #{productId}
+          AND like_user_id = #{likeUserId}
+    </delete>
+
+    <!-- 좋아요 수 조회 -->
+    <select id="getLikeCount" parameterType="int" resultType="int">
+        SELECT COUNT(*) 
+        FROM product_like
+        WHERE product_id = #{productId}
+    </select>
+
+</mapper>

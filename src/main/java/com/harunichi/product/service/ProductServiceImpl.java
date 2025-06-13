@@ -5,7 +5,9 @@ import com.harunichi.product.vo.ProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("productService")
 public class ProductServiceImpl implements ProductService {
@@ -53,6 +55,15 @@ public class ProductServiceImpl implements ProductService {
         return productDao.searchFiltered(keyword, category, minPrice, maxPrice, offset, limit);
     }
 
+    @Override
+    public List<ProductVo> findOtherProducts(String writerId, int productId, int offset, int size) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("writerId", writerId);
+        paramMap.put("productId", productId);
+        paramMap.put("offset", offset);
+        paramMap.put("size", size);
+        return productDao.findOtherProducts(paramMap);
+    }
 
     
 }
