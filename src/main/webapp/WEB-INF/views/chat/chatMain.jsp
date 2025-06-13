@@ -63,7 +63,7 @@
 .profile-list li {
 	flex: 0 0 280px; /* 카드 하나의 너비 고정 */
 }
-.do-chat-btn {
+.do-chat-btn { 
 	display: flex;
 	justify-content: center; 
 	align-items: center;    
