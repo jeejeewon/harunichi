@@ -1,160 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>채팅창</title>
-<style type="text/css">
-body {
-	margin: 0;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-/* 채팅 전체 화면 */
-#chatContainer {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	background-color: white;
-	align-items: center;
-}
-
-/* 채팅방 상단 부분 */
-#chatTop {
-	position: relative;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	background-color: #d4edf7;
-	margin-bottom: 10px;
-	padding: 10px;
-}
-.chat-top-left {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-}
-.profile-img {
-	width: 50px;
-	height: 50px;
-	border-radius: 100%;
-	object-fit: cover;
-}
-.room-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-.room-title {
-	font-weight: bold;
-	font-size: 18px;
-}
-.user-count {
-	margin-left: 4px;
-}
-.chat-top-right {
-	position: absolute;
-	top: 5px;
-  	right: 10px;
-	align-items: center;
-	justify-content:flex-start;
-	gap: 5px;
-}
-.disconnect-btn {
-	font-size: 15px;
-}
-
-
-/* 대화창 */
-#messageContainer {
-	width: 100%;
-	height: 90%;
-	padding: 10px;
-	overflow: scroll;
-	padding: 5px;
-	display: flex;
-  	flex-direction: column;
-}
-/* 채팅알림 */
-.chat-text {
-	text-align: center;
-	background-color: #fcfcfc;
-	margin: 5px 0;
-}
-/* 하단 입력창 전체 */
-#inputContainer {
-	width: 100%;
-	display: flex;
-	align-content: center;
-	border: 1px solid #d1d1d1;
-	padding: 5px 10px;
-	margin-top: 10px;
-	align-items: center;
-}
-/* 메세지 입력창 input */
-#chatMessage {
-	flex: 1;
-	border: none;
-	outline: none;
-	font-size: 14px;
-	padding: 8px;
-	height: 100px;
-}
-/* 전송 버튼 */
-#sendBtn {
-	position: relative;
-	background-color: #d4edf7;
-	border: none;
-	padding: 8px 20px;
-	margin-left: 10px;
-	border-radius: 15px;
-	cursor: pointer;
-	font-weight: bold;
-	height: 60px;
-}
-
-#senderId {
-	width: 158px; /* 대화명 입력창 너비 설정 */
-	height: 24px; /* 대화명 입력창 높이 설정 */
-	border: 1px solid #AAAAAA; /* 대화명 입력창 테두리 설정 */
-	background-color: #EEEEEE; /* 대화명 입력창 배경색 설정 */
-}
-
-/* 메세지 */
-.my-msg, .other-msg {
-  max-width: 60%;
-  padding: 8px 12px;
-  margin: 4px 0;
-  border-radius: 10px;
-  position: relative;
-  display: inline-block;
-  word-break: break-word;
-  color: black;
-}
-.my-msg {
-	background-color: #d4edf7;
-	align-self: flex-end;
-}
-.other-msg {
-	background-color: #f1f0f0;
-	align-self: flex-start;
-}
-.my-msg .time,
-.other-msg .time {
-  display: block;
-  font-size: 0.75em;
-  color: #666;
-  text-align: right;
-  margin-top: 5px;
-}
-
-</style>
+<link href="${contextPath}/resources/css/chat/chatWindow.css" rel="stylesheet" >
 </head>
 <body>
 	<div id="chatContainer">
@@ -181,7 +34,6 @@ body {
 			<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
 			<button id="sendBtn" onclick="sendMessage();">전송</button>
 		</div>
-		<a>나의 닉네임 : <input type="text" id="senderId" value="${param.id}" readonly>	</a>	
 	</div>
 	
 	
@@ -198,16 +50,12 @@ body {
 	var webSocket;
 	var receiverId;
 	var roomId = "${roomId}";	 //채팅방 ID 저장
-
+	var senderId = "${sessionScope.id}";
+	
 	window.onload = function() {
 		chatWindow = document.getElementById("messageContainer");	//대화 내용이 표시될 대화창 영역
-		chatMessage = document.getElementById("chatMessage");		//메세지 입력창
-		senderId = document.getElementById("senderId").value;		//채팅 하는 사용자의 대화명 요소에서 대화명값 얻기 
-		
+		chatMessage = document.getElementById("chatMessage");		//메세지 입력창	
 		receiverId = document.getElementById("receiverId").value;	//받는 사람 ID 저장								
-//   	console.log("id : " + "${param.id}");
-//   	console.log("nick : " + "${param.nick}");
-//   	console.log("receiverId : " + "${param.receiverId}");
 
 		//과거 메세지 불러오기
 		fetch("${pageContext.request.contextPath}/chat/history?roomId=" + roomId)
