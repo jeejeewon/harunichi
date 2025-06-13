@@ -1,0 +1,162 @@
+
+.addmemberform-wrap{
+	width: calc(100% - 20px);
+	max-width: 768px;
+	margin: 0 auto;
+}
+.header-area{
+	padding: 20px 0;
+	display: flex;
+	justify-content: space-between;
+	font-size: 13px;
+}
+.header-area a img{
+	height: 20px;
+    vertical-align: middle;
+}
+
+.select2-container {/*셀렉트박스스타일*/
+    width: 130px !important;
+    vertical-align: middle;
+}
+
+.select-country-area .select2-container {/*셀렉트박스스타일*/
+    width: 100% !important;
+    vertical-align: middle;
+}
+
+.select2-container .select2-selection--single {
+    height: auto !important;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.select2-selection--single {
+    padding: 6px 12px;
+}
+
+.select-country-area .select2-selection--single {
+    padding: 12px;
+}
+
+.select2-container .select2-selection__rendered {
+    color: #333;
+    line-height: normal !important;
+    padding-left: 0;
+}
+
+.select2-container .select2-selection__arrow {
+    display: none !important;
+}
+
+.select2-dropdown {/*드롭다운박스스타일*/
+    max-height: 200px; 
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #bfe6ff;
+    color: #444;
+}
+
+.select2-results__option {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+img.country-icon {
+    width: 20px;
+    height: auto;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.addmemberform-middle{
+	display:flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+	border-bottom: 1px solid #ddd;
+	
+}
+.addmemberform-middle img{
+	width: 40px;
+	height: auto;
+}
+.addmemberform-middle p{
+	font-size: 24px;
+}
+
+/* 하단 셀렉트박스 디자인*/
+/* 전체 감싸는 영역 */
+.select-country-area {
+	margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+/*가운데 버튼들 영역*/
+.register-options{
+	display: flex;
+	flex-direction: column;
+	gap : 20px;
+	padding: 30px 20px;
+	border-bottom: 1px solid #ddd;
+}
+.register-options button{
+	height: 45px;
+	border: 1px solid #222;
+	border-radius: 15px;
+	display: flex;
+	align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.register-options button img{
+	width: auto;
+	height: 20px;
+}
+.register-options button span{
+	font-size: 16px;
+}
+.register-options button::after {
+    content: "";
+    display: block; 
+    width: 20px;
+    height: 20px; 
+    flex-shrink: 0;
+}
+
+/*맨 아래 로그인버튼 영역*/
+.login-ask-area{
+	text-align: center;
+	padding: 20px;
+}
+
+.login-ask-area p{
+	margin-bottom: 20px;
+	color: #888;
+}
+
+.login-ask-area a{
+	border: 1px solid #A3DAFF;
+	color: #A3DAFF;
+	border-radius: 15px;
+	padding: 12px;
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+}
+.login-ask-area a:hover{
+	color: white;
+	background-color: #A3DAFF;
+}

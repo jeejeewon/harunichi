@@ -12,10 +12,10 @@ import java.util.Map;
 @Repository("productDao")
 public class ProductDaoImpl implements ProductDao {
 
-    private static final String NAMESPACE = "mapper.product.";
-
     @Autowired
     private SqlSession sqlSession;
+
+    private static final String NAMESPACE = "mapper.product.";
 
     @Override
     public List<ProductVo> findAll() throws Exception {
@@ -26,13 +26,13 @@ public class ProductDaoImpl implements ProductDao {
     public ProductVo findById(int productId) throws Exception {
         return sqlSession.selectOne(NAMESPACE + "findById", productId);
     }
-    
+
     @Override
-    public List<ProductVo> findPaged(int offset, int pageSize) throws Exception {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("offset", offset);
-        paramMap.put("limit", pageSize);
-        return sqlSession.selectList(NAMESPACE + "findPaged", paramMap);
+    public List<ProductVo> findPaged(int offset, int limit) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+        return sqlSession.selectList(NAMESPACE + "findPaged", params);
     }
 
     @Override
@@ -54,4 +54,22 @@ public class ProductDaoImpl implements ProductDao {
     public void incrementViewCount(int productId) throws Exception {
         sqlSession.update(NAMESPACE + "incrementViewCount", productId);
     }
+
+    @Override
+    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("keyword", keyword);
+        params.put("category", category);
+        params.put("minPrice", minPrice);
+        params.put("maxPrice", maxPrice);
+        params.put("offset", offset);
+        params.put("limit", limit);
+        return sqlSession.selectList(NAMESPACE + "searchFiltered", params);
+    }
+
+    @Override
+    public List<ProductVo> findOtherProducts(Map<String, Object> paramMap) throws Exception {
+        return sqlSession.selectList(NAMESPACE + "findOtherByWriter", paramMap);
+    }
+
 }

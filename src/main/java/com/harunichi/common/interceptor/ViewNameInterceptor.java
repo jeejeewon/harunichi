@@ -2,11 +2,9 @@ package com.harunichi.common.interceptor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -55,20 +53,6 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 		}
 		// 클라이언트가 요청한 주소와 매핑된 특정 컨트롤러 클래스의 @RequestMapping된 메소드로 다시 재요청해 이동 되게 된다.
 		return true;
-	}
-
-	
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-						   ModelAndView modelAndView) throws Exception {
-
-		System.out.println("ViewNameInterceptor의 2번째 postHandle메소드가 호출됨");
-	}
-
-	
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-				throws Exception {
 	}
 
 	

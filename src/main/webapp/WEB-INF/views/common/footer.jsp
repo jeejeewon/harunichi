@@ -7,12 +7,12 @@
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
 
 <section class="footer-inner">
-		<img src="${contextPath}/resources/image/logo1.svg" class="footer-logo">
+		<img src="${contextPath}/resources/icon/logo1.svg" class="footer-logo">
 		<ul class="footer-sns-ink">
-			<li><a href="#"><img src="${contextPath}/resources/image/instagram-icon.svg" alt="인스타그램"></a></li>
-			<li><a href="#"><img src="${contextPath}/resources/image/youtube-icon.svg" alt="유튜브"></a></li>
-			<li><a href="#"><img src="${contextPath}/resources/image/facebook-icon.svg" alt="페이스북"></a></li>
-			<li><a href="#"><img src="${contextPath}/resources/image/twitter-icon.svg" alt="트위터"></a></li>
+			<li><a href="#"><img src="${contextPath}/resources/icon/instagram-icon.svg" alt="인스타그램"></a></li>
+			<li><a href="#"><img src="${contextPath}/resources/icon/youtube-icon.svg" alt="유튜브"></a></li>
+			<li><a href="#"><img src="${contextPath}/resources/icon/facebook-icon.svg" alt="페이스북"></a></li>
+			<li><a href="#"><img src="${contextPath}/resources/icon/twitter-icon.svg" alt="트위터"></a></li>
 		</ul>
 		<ul class="footer-info">
 			<li><a href="#">회사소개</a></li>
@@ -26,3 +26,4 @@
 		</ul>
 
 </section>
+

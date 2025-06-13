@@ -5,12 +5,133 @@
        
 <mapper namespace="mapper.chat">    
 
-	<insert id="saveMessage" parameterType="com.harunichi.chat.vo.ChatVo">
+	<!-- 채팅 메세지 저장 -->
+	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, chatType, content)
-				VALUES(#{roomId}, #{senderId}, #{chatType}, #{message})	
+			INSERT INTO chat(roomId, senderId, receiverId, chatType, message)
+				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})
 		]]>	
 	</insert>
+	
+	<!-- 나의 관심사 조회 -->
+	<select id="selectMyLike" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT myLike FROM member WHERE id = #{id}
+		]]>
+	</select>
+	
+	<!-- 추천 친구 조회 -->
+	<select id="selectMembers" parameterType="map" resultType="memberVo">
+		<![CDATA[
+			SELECT * FROM member WHERE id != #{id}
+			AND FLOOR((YEAR(CURDATE()) - year) / 10) = 
+				(SELECT FLOOR((YEAR(CURDATE()) - year) / 10) FROM member WHERE id = #{id})
+		]]>	
+   		<if test="likeList != null and likeList.size() > 0">
+		     AND (
+		        <foreach collection="likeList" item="like" separator=" OR ">
+		          myLike LIKE CONCAT('%', #{like}, '%')
+		        </foreach>
+		     )
+    	</if>
+    	<![CDATA[
+			ORDER BY RAND()
+			LIMIT 10
+		]]>	
+	</select>
+	
+	<!-- 랜덤 추천 친구 조회 -->
+	<select id="selectRandomMember" parameterType="map" resultType="memberVo">
+		<![CDATA[
+			SELECT *
+		  	FROM member
+		  	WHERE id != #{id}
+	  	]]>	
+	    <if test="alreadySelectedIds != null and alreadySelectedIds.size() > 0">
+	      AND id NOT IN
+	      <foreach collection="alreadySelectedIds" item="memberId" open="(" separator="," close=")">
+	        #{memberId}
+	      </foreach>
+	    </if>
+	    <![CDATA[
+		  	ORDER BY RAND()
+		 	LIMIT #{shortage}
+	 	]]>	
+	</select>	
+			
+		
+	<!-- 채팅방 ID 조회 (개인) -->
+	<select id="selectRoomId" parameterType="map" resultType="String">
+		<![CDATA[
+			SELECT roomId
+			FROM chatRoom
+			WHERE userId = #{receiverId}
+			AND roomId IN
+			(SELECT roomId
+			FROM chatRoom
+			WHERE userId = #{senderId} 
+			AND chatType = #{chatType})	
+		]]>		
+	</select>
+	
+	
+	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
+	<insert id="insertRoomId" parameterType="map">
+		<if test="'personal' == chatType">
+			<![CDATA[
+				INSERT INTO chatRoom(roomId, userId, admissionTime)
+				VALUES 
+			]]>	
+			<foreach collection="userList" item="userId" separator="," >
+				(#{roomId}, #{userId}, NOW())
+			</foreach>
+		</if>
+		<if test="'group' == chatType">
+			<![CDATA[
+				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime)
+				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW())
+			]]>	
+		</if>
+	</insert>
+	
+	<!-- 채팅방 타이틀 조회(단체 채팅) -->
+	<select id="selectTitle" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT title
+			FROM chatroom
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
+	
+	
+	<!-- 채팅방 타이틀 조회(개인 채팅) -->
+	<select id="selectNick" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT nick
+			FROM member
+			WHERE id = #{String}
+		]]>
+	</select>
+
+
+	<!-- 과거 채팅 내역 조회 -->
+	<select id="selectChatHistory" parameterType="String" resultType="chatVo">
+		<![CDATA[
+			SELECT * 
+			FROM chat
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
+
+
+	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
+	<select id="selectUserCount" parameterType="String" resultType="int">
+		<![CDATA[
+			SELECT count(*)
+			FROM chatRoom
+			WHERE roomId = #{roomId}
+		]]>
+	</select>
 
 
 </mapper>
