@@ -10,32 +10,33 @@
 <link href="${contextPath}/resources/css/chat/chatWindow.css" rel="stylesheet" >
 </head>
 <body>
-	<div id="chatContainer">
-		<div id="chatTop">
-			<div class="chat-top-left">
-				<a href="#">
-					<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
-				</a>
-				<div class="room-info">
-					<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
+	<div class="chat-center-wrapper">
+		<div id="chatContainer">
+			<div id="chatTop">
+				<div class="chat-top-left">
+					<a href="#">
+						<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
+					</a>
+					<div class="room-info">
+						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
+					</div>		
+				</div>
+				<div class="chat-top-right">
+				    <button class="disconnect-btn" onclick="disconnect();">×</button>
 				</div>		
 			</div>
-			<div class="chat-top-right">
-			    <button class="disconnect-btn" onclick="disconnect();">×</button>
-			</div>		
-		</div>
-		<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
-		<div id="messageContainer"></div>
-
-		<div id="inputContainer">
-			<!-- 메세지 입력창,  키보드 이벤트 발생시 enterKey() 함수 호출 -->
-			<input type="text" id="chatMessage" onkeyup="enterKey();">
-
-			<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
-			<button id="sendBtn" onclick="sendMessage();">전송</button>
+			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
+			<div id="messageContainer"></div>
+	
+			<div id="inputContainer">
+				<!-- 메세지 입력창,  키보드 이벤트 발생시 enterKey() 함수 호출 -->
+				<input type="text" id="chatMessage" onkeyup="enterKey();">
+	
+				<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
+				<button id="sendBtn" onclick="sendMessage();">전송</button>
+			</div>
 		</div>
 	</div>
-	
 	
 </body>
 
