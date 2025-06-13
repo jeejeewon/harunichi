@@ -10,12 +10,14 @@ request.setCharacterEncoding("utf-8");
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><!-- 구글아이콘 연결 -->
-<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
-<link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <title><tiles:insertAttribute name="title" /></title>
 
+	<!-- 스타일 및 폰트 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><!-- 구글아이콘 연결 -->
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
+    <link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
 	<div id="wrap">
@@ -59,7 +61,7 @@ request.setCharacterEncoding("utf-8");
 			
 			//선택된 국가를 세션에 저장
 			$('#country-select').on('change', function() {
-				var selectedCountry = $(this).val(); // 선택된 국가 코드 (예: "KR", "JP")
+				var selectedCountry = $(this).val(); // 선택된 국가 코드 (kr 또는 jp)
 
 				console.log("선택된 국가:", selectedCountry); // 콘솔에서 확인
 
@@ -81,5 +83,25 @@ request.setCharacterEncoding("utf-8");
 			});
 			
 		});
+		
+		
+		//헤더 프로필 클릭시 모달 이벤트
+		//토글로 나타나게하기
+		function toggleUserMenu(event) {
+		    event.preventDefault();
+		    const menu = document.getElementById("userMenuLayer");
+		    menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+		}
+		// 바깥 클릭 시 메뉴 닫기
+		document.addEventListener("click", function(e) {
+		    const menu = document.getElementById("userMenuLayer");
+		    const trigger = document.querySelector(".profile-area");
+		
+		    // menu, profile-area 둘 다 클릭 영역이 아닐 때만 닫기
+		    if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
+		        menu.style.display = "none";
+		    }
+		});
+		
 	</script>
 </body>

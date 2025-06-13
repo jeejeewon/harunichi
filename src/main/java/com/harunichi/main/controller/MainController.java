@@ -32,11 +32,11 @@ public class MainController {
 		// 세션에 국가 정보 확인 및 설정
 	    HttpSession session = request.getSession();
 	    String selectedCountry = (String) session.getAttribute("selectedCountry");
-	    // 세션에 국가 정보가 없으면 기본값 'ko'로 설정
+	    // 세션에 국가 정보가 없으면 기본값 'kr'로 설정
 	    if (selectedCountry == null || selectedCountry.isEmpty()) {
-	        session.setAttribute("selectedCountry", "ko");
-	        logger.info("세션에 국가 정보가 없어 기본값 'ko' 저장.");
-	        selectedCountry = "ko";
+	        session.setAttribute("selectedCountry", "kr");
+	        logger.info("세션에 국가 정보가 없어 기본값 'kr' 저장.");
+	        selectedCountry = "kr";
 	    } else {
 	        logger.info("세션에 이미 저장된 국가 정보 확인: " + selectedCountry);
 	    }
@@ -59,7 +59,7 @@ public class MainController {
 		session.setAttribute("selectedCountry", nationality); // 세션에 "selectedCountry"라는 이름으로 국가 정보 저장
 		// 헤더의 국가 선택 셀렉트 박스에서
 		// - 일본 선택 시: selectedCountry 세션 속성에 "jp" 저장
-		// - 한국 선택 시: selectedCountry 세션 속성에 "ko" 저장
+		// - 한국 선택 시: selectedCountry 세션 속성에 "kr" 저장
 
 		logger.info("Saved nationality '" + nationality + "' to session.");
 
