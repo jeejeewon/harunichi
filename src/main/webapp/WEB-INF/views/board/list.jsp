@@ -60,8 +60,8 @@
 							</c:forEach>
 						</div>
 						<div class="item-info">
-							<p>${board.boardLike}</p>
-							<p>${board.boardRe}</p>
+							<p>좋아요 ${board.boardLike}</p>
+							<p>댓글수 ${board.boardRe}</p>
 						</div>
 					</div>
 				</div>

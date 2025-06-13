@@ -53,3 +53,4 @@
 .board .board-list .list-item .item-info {
 	display: flex;
 }
+.board .conmment-list .comment {display: flex;}
