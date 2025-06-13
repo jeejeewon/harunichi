@@ -9,21 +9,21 @@
 	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
 			INSERT INTO chat(roomId, senderId, receiverId, chatType, message)
-				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})	
+				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})
 		]]>	
 	</insert>
 	
 	<!-- 나의 관심사 조회 -->
 	<select id="selectMyLike" parameterType="String" resultType="String">
 		<![CDATA[
-			SELECT myLike FROM member WHERE id = #{id}		
-		]]>	
+			SELECT myLike FROM member WHERE id = #{id}
+		]]>
 	</select>
 	
 	<!-- 추천 친구 조회 -->
 	<select id="selectMembers" parameterType="map" resultType="memberVo">
 		<![CDATA[
-			SELECT * FROM member WHERE id != #{id}			  
+			SELECT * FROM member WHERE id != #{id}
 			AND FLOOR((YEAR(CURDATE()) - year) / 10) = 
 				(SELECT FLOOR((YEAR(CURDATE()) - year) / 10) FROM member WHERE id = #{id})
 		]]>	
