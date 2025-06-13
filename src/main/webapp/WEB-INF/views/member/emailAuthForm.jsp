@@ -11,44 +11,45 @@
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
 	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
-	<link href="${contextPath}/resources/css/member/addMemberForm.css" rel="stylesheet" type="text/css" media="screen">
+	<link href="${contextPath}/resources/css/member/emailAuthForm.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
-	<section class="email-auth-form-wrap">
-		<div class="header-area">
-			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
-			<select id="country-select" name="country">
-				<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png" ${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-				<option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png" ${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
-			</select>
-		</div>
-		<!-- 선택한 국가 정보 저장용 -->
-		<input type="hidden" id="userNationality" value="">
-	</section>
+	<jsp:include page="../common/lightHeader.jsp" />
+	<!-- 선택한 국가 정보 저장용 -->
+	<input type="hidden" id="userNationality" value="">
 	
-
-	<div class="email-auth-form">
-
-		<h2>이메일 인증</h2>
-		<p>회원가입을 위해 이메일 주소를 입력하고 인증을 진행해주세요.</p>
-
-		<form id="emailAuthForm" action="#" method="post">
+	<section class="email-auth-wrap">
+	
+		<div class="email-auth-middle">
+			<h2>이메일 인증</h2>
+			<p>이메일 주소를 입력하고 인증을 진행해주세요.</p>
+			<img src="${contextPath}/resources/icon/sky_email_icon.png" />
+		</div>
+		
+		<form id="emailAuthForm" action="#" method="post" novalidate>
 			<div class="form-group">
-				<label for="email">이메일 주소:</label>
 				<input type="email" id="email" name="email" placeholder="이메일 주소를 입력해주세요." required>
 			</div>
 
 			<button type="button" id="sendAuthCodeBtn">인증번호 발송</button>
 
 			<div class="form-group" id="authCodeGroup" style="display: none;">
-				<label for="authCode">인증번호:</label>
 				<input type="text" id="authCode" name="authCode" placeholder="인증번호를 입력해주세요." required>
 			</div>
-
-			<button type="button" id="verifyAuthCodeBtn" style="display: none;">인증번호 확인</button>
-			<button type="button" id="resendAuthCodeBtn" style="display: none;">인증번호 재발송</button>
+			<div class="buttons">
+				<button type="button" id="verifyAuthCodeBtn" style="display: none;">인증번호 확인</button>
+				<button class="resend" type="button" id="resendAuthCodeBtn" style="display: none;">인증번호 재발송</button>
+			</div>
 		</form>
-	</div>
+		
+		<!-- 스피너 표시 -->
+		<div id="loading-spinner" style="display: none; text-align: center; margin-top: 15px;">
+  			<img src="${contextPath}/resources/icon/loading-circle2.gif" alt="로딩 중..." style="width: 32px;" />
+  			<p style="color: #888;">잠시만 기다려주세요...</p>
+		</div>
+		
+	</section>
+	
 
 	<!-- 스크립트 -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -107,12 +108,18 @@
 
 			const $authButton = $(this);
 			$authButton.hide();
-
+			
+			
+			$('#loading-spinner').show(); //보내는중 스피너 표시
+			
 			$.ajax({
 				url: '${contextPath}/mail/sendAuthEmail.do',
 				type: 'POST',
 				data: { email: email, nationality: userNationality },
 				success: function(response) {
+					
+					$('#loading-spinner').hide();//스피너 제거
+					
 					if (response === "success") {
 						alert("인증 메일이 발송되었습니다. 메일함을 확인해주세요.");
 						$('#authCodeGroup').show();
@@ -124,6 +131,9 @@
 					}
 				},
 				error: function(xhr, status, error) {
+					
+					$('#loading-spinner').hide();//스피너 제거
+					
 					console.error("메일 발송 중 오류 발생:", error);
 					alert("메일 발송 중 오류가 발생했습니다.");
 					$authButton.show();
@@ -131,35 +141,51 @@
 			});
 		});
 
-		// 인증번호 재발송 버튼
+		// 인증번호 재발송, 인증확인 버튼 나타났다 사라졌다
 		$('#resendAuthCodeBtn').on('click', function() {
 			const email = $('#email').val();
 			const $resendButton = $(this);
+			const $verifyButton = $('#verifyAuthCodeBtn');
 
 			if (email === "") {
 				alert("이메일 주소를 입력해주세요!");
 				return;
 			}
 
+			// 두 버튼 다 숨기기
 			$resendButton.hide();
-
+			$verifyButton.hide();
+			
+			$('#loading-spinner').show(); //보내는중 스피너 표시
+			
 			$.ajax({
 				url: '${contextPath}/mail/sendAuthEmail.do',
 				type: 'POST',
 				data: { email: email, nationality: $('#userNationality').val() },
 				success: function(response) {
+					
+					$('#loading-spinner').hide();//스피너 제거
+					
 					if (response === "success") {
 						alert("인증 메일이 재발송되었습니다. 메일함을 확인해주세요.");
+						// 두 버튼 다시 보이기
 						$resendButton.show();
+						$verifyButton.show();
 					} else {
 						alert("메일 재발송에 실패했습니다. 다시 시도해주세요.");
+						// 두 버튼 다시 보이기
 						$resendButton.show();
+						$verifyButton.show();
 					}
 				},
 				error: function(xhr, status, error) {
+					
+					$('#loading-spinner').hide();//스피너 제거
+					
 					console.error("메일 재발송 중 오류 발생:", error);
 					alert("메일 재발송 중 오류가 발생했습니다.");
 					$resendButton.show();
+					$verifyButton.show();
 				}
 			});
 		});

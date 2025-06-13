@@ -292,7 +292,7 @@ header {
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
     background-color: #bfe6ff;
-    color: white;
+	color: #222;
 }
 
 .select2-dropdown {
