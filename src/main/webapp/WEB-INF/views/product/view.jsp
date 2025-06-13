@@ -90,7 +90,7 @@
   const writerId = '${product.productWriterId}';
   const currentUserId = '${sessionScope.loginId}';
   let page = 1;
-  const size = 5;
+  const size = 4;
 
   function loadOtherProducts() {
     $.ajax({
@@ -205,7 +205,7 @@
     });
   });
 
-  // 전역 함수로 채팅 시작
+  // 채팅 시작, 로그인 여부 및 본인과의 채팅 확인
   function startChat(writerId) {
     if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
       alert("채팅 기능은 로그인 후 이용 가능합니다.");
@@ -216,7 +216,7 @@
       alert("자신과는 채팅할 수 없습니다.");
       return;
     }
-    location.href = ctx + '/chat?to=' + writerId;
+    location.href = ctx + '/chat/chat?to=' + writerId;
   }
   
   // 수정, 삭제 버튼 클릭시 로그인 여부

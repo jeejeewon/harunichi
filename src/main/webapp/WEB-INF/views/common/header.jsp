@@ -8,7 +8,7 @@
 
 <section class="header-inner">
 
-    <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/image/logo2.svg"></a>
+    <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/icon/logo2.svg"></a>
     
     <div class="header-main-content">
     	<form class="header-search-form" action="/search" method="get">
@@ -51,4 +51,7 @@
     </div>
     
 </section>
+
+
+
 
