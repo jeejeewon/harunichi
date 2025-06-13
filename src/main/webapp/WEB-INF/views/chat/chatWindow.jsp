@@ -146,7 +146,22 @@
 		
 	}
 	
-
+	
+	//1000바이트까지 입력 가능하도록 하는 함수
+	function getByteLength(str) {
+		return new Blob([str]).size;
+	}
+	document.getElementById("chatMessage").addEventListener("input", function () {
+		let msg = this.value;
+		let maxByte = 1000;
+		
+		//입력한 메세지가 1000바이트를 넘는다면 뒤에 입력한 내용을 잘라냄
+		while (getByteLength(msg) > maxByte) {
+		  msg = msg.slice(0, -1); // 뒤에서부터 잘라냄
+		}		
+		this.value = msg;
+	});
+	
 	
 	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
 	function sendMessage() {

@@ -10,6 +10,7 @@
 #chatContainer {
 	width: 100%;
 	max-width: 800px;
+	min-width: 400px;
 	height: 67vh;
 	min-height: 300px;
 	display: flex;
