@@ -8,6 +8,8 @@
 <meta charset="UTF-8">
 <title>채팅창</title>
 <link href="${contextPath}/resources/css/chat/chatWindow.css" rel="stylesheet" >
+<style type="text/css">
+</style>
 </head>
 <body>
 	<div class="chat-center-wrapper">
@@ -52,6 +54,7 @@
 	var receiverId;
 	var roomId = "${roomId}";	 //채팅방 ID 저장
 	var senderId = "${sessionScope.id}";
+	var lastDate;
 	
 	window.onload = function() {
 		chatWindow = document.getElementById("messageContainer");	//대화 내용이 표시될 대화창 영역
@@ -63,9 +66,24 @@
 			.then(response => response.json())
 			.then(messages => {
 				messages.forEach(msg => {
+					const sentDate = new Date(msg.sentTime);
+					
+				    // 로컬 날짜 기준으로 YYYY-MM-DD 만들기
+				    const year = sentDate.getFullYear();
+				    const month = (sentDate.getMonth() + 1).toString().padStart(2, '0');
+				    const day = sentDate.getDate().toString().padStart(2, '0');
+				    const currentDateStr = year + "-" + month + "-" + day;
+							
+					//메세지 보낸 날짜 표시
+					if(lastDate !== currentDateStr){
+						const dateDisplay = new Date(sentDate).toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric'});
+						chatWindow.innerHTML += "<div class='date-text'>" + dateDisplay + "</div>";
+						lastDate = currentDateStr;
+					}
+					
 					const sender = msg.senderId;
 					const message = msg.message;
-					const time = formatTime(new Date(msg.sentTime));
+					const time = formatTime(sentDate);
 					
 					chatWindow.innerHTML += "<div class='" + (sender === senderId ? "my-msg" : "other-msg") + "'>" 
 										  + "<div class='message'>" 

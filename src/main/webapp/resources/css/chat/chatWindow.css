@@ -144,3 +144,13 @@
   text-align: right;
   margin-top: 5px;
 }
+.date-text {
+    margin: 5px 0;
+    width: 150px;
+    text-align: center;
+    align-self: center;
+    border-bottom: 2px solid #d4edf7;
+    padding-bottom: 2px;
+}
+
+
