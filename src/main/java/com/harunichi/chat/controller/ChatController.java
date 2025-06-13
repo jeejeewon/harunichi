@@ -32,6 +32,7 @@ public class ChatController {
 	@Autowired
 	private ChatService chatService;	
 	
+	
 	@RequestMapping("/login")
 	public String loginTest(HttpServletRequest request, HttpServletResponse response) throws Exception{		
 		System.out.println("chatController의 loginTest 메소드 실행 -------------");		
@@ -45,11 +46,10 @@ public class ChatController {
 						   HttpServletResponse response, HttpSession session, Model model) throws Exception{		
 		System.out.println("chatController의 chatMain 메소드 실행 -------------");
 	
-		//로그인 했다고 가정하에 작성 (추후 삭제 필요)
-		String id = "user2";
-		String nick = "유저2";
-		session.setAttribute("id", id);
-		session.setAttribute("nick", nick);
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		
+		String id = (String)session.getAttribute("id");	
+		String nick = member.getNick();
 		
 		//DB에서 채팅친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);
@@ -62,14 +62,20 @@ public class ChatController {
 	
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
-			   HttpServletResponse response, Model model) throws Exception{		
+			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
 		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
 		
 		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
-		String senderId = request.getParameter("id");
+		String senderId = (String)session.getAttribute("id");	
 		String receiverId = request.getParameter("receiverId");		
 		String chatType = request.getParameter("chatType");
 		int persons = 0;
+		
+		System.out.println(senderId.toString());
+		System.out.println(receiverId.toString());
+		System.out.println(chatType.toString());
+		
+		
 		
 		String chatTitle = request.getParameter("title");		
 		if(chatType.equals("group")) {

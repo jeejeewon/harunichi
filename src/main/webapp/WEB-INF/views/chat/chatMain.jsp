@@ -1,259 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>      
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>  
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>채팅 메인 페이지</title>
-<style type="text/css">
-/* 친구추천 */
-#chatMainCon{
-	display: flex;
-	align-items: center;      
-	justify-content: center;   
-	gap: 30px;                
-}
-.profile-con {	
-	display: flex;
-	width: 280px;
-	height: 330px;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center; 
-	text-align: center;
-	border: 1px solid #ccc;
-	border-radius: 10px;
-	padding: 20px 0;
-	margin: 0 10px;
-}
-.profile-con:hover{
-	transform: translateY(-8px); 
-	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-.profile-img {
-	width: 140px;
-	height: 140px;
-	border-radius: 100%;
-	object-fit: cover;
-}
-.nick {
-	font-weight: bold;
-	font-size: 26px;
-	margin: 10px 0;
-}
-#recText {
-	font-size: 30px;
-	color: #a3daff;
-	font-weight: bold;
-	margin-bottom: 40px;
-}
-.chat-slider-container {
-	width: 900px;
-	overflow-x: hidden; /* 가로 스크롤만 숨기고 */
-	overflow-y: visible; /* 세로는 보이게! */
-	position: relative; /* 자식 요소의 위치 기준 */
-	padding: 10px 0 20px 0; /* 살짝 위 공간 줘도 괜찮음 */
-}
-.profile-list {
-	display: flex;
-	transition: transform 0.4s ease;
-	list-style: none; 
-}
-.profile-list li {
-	flex: 0 0 280px; /* 카드 하나의 너비 고정 */
-}
-.do-chat-btn { 
-	display: flex;
-	justify-content: center; 
-	align-items: center;    
-	text-align: center;
-	border-radius: 8px;	
-	font-size:20px;
-	color: #fff;
-	width: 150px;
-	height: 40px;
-	background-color: #a3daff;
-	margin-top: 15px;
-	text-decoration: none;
-}
-.do-chat-btn:hover { 
-	background-color: #53a5dc; 
-}
-.btn {
-	font-size: 40px;
-	color: #a3daff;
-}
-.btn:hover {
-	color: #53a5dc; 
-}
-
-
-/* 오픈채팅 */
-#openTitle {
-	display: flex;
-	align-items: center;
-}
-.open-chat {
-	margin: 0;
-}
-#newOpenChatBtn {
-	display: flex;
-	justify-content: center; 
-	align-items: center;    
-	border-radius: 8px;	
-	font-size:16px;
-	color: #a3daff;
-	width: 70px;
-	height: 30px;
-	background-color: white;
-	font-weight: bold;
-	border: 1px solid #a3daff;
-	margin: 0 0 35px 20px;
-}
-#newOpenChatBtn:hover {
-	background-color: #a3daff;
-	color: white;	
-}
-.open-chat-img {
-	width: 60px;
-	height: 60px;
-	border-radius: 50%;
-	background-color: #d6eef5; 
-	object-fit: cover;
-}
-.open-chat-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-.open-chat-item {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-	padding: 12px 0;
-	border-bottom: 1px solid #e0e0e0;
-	cursor: pointer;
-}
-.open-chat-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-.open-chat-title {
-	font-weight: bold;
-	color: #444;
-	margin: 0;
-}
-.open-chat-content {
-	font-size: 0.9rem;
-	color: #888;
-	margin-top: 4px;
-}
-#openChatCon {
-  display: flex;
-  justify-content: center;  /* 가로 중앙 */
-  flex-direction: column;
-  padding: 0 90px 0 80px;
-}
-.open-chat-item:hover {
-  background-color: #f0f8ff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-3px); /* 살짝 올라감 */
-}
-
-/* 모달창 */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.4);
-}
-
-.modal h2 {
-	border-bottom: 1px solid #ccc;
-	padding-bottom: 10px;
-	margin-bottom: 30px;
-	color: #a3daff;
-	text-align: center;
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-#newChatForm {
-	display: block;
-	align-content: center;
-	margin: 0 10px 30px 10px;
-}
-
-#newChatForm label {
-	display: block;
-}
-#newChatForm p {
-	font-size: 13px;
-	color: #7d7d7d;
-	margin-bottom: 15px;
-}
-.open-chat-form {
-	display: block;
-	width: 100%;
-	height: 30px;
-
-	border: 1px solid #ccc; /* 원하는 색으로 */
-}	
-.modal-btn-wrap {
-  display: flex;
-  justify-content: center;
-  gap: 10px; /* 버튼 사이 간격 */
-  margin-top: 50px;
-}
-
-.modal-btn {
-  padding: 8px 16px;
-  background-color: #a3daff;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
-}
-.modal-btn:hover {
-	background-color: #53a5dc; 
-}
-
-
-.close {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-</style>
+<link href="${contextPath}/resources/css/chat/chatMain.css" rel="stylesheet" >
 </head>
-<script type="text/javascript">
-//로그인 상황을 가정하기 위한 변수 저장 -----------------------------------------------나중에 수정해야함
-//	var id = "hong";
-//	var nick = "홍반장";	
-</script>
-
 <body>
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
-		<!-- 나중에 세션에서 값 가져와야함 -->			
-		<input id="id" name="id" type="text" placeholder="아이디">
-		<input id="nick" name="nick" type="text" placeholder="닉네임">
-<!-- 	<c:set var="id" value="${sessionScope.id}" />
-		<c:set var="nick" value="${sessionScope.nick}" /> 	
-		<input type="hidden" name="id" value="${id}">
-		<input type="hidden" name="nick" value="${nick}">-->
 		<input type="hidden" id="receiverId" name="receiverId"> 
-		<input type="hidden" id="receiverNick" name="receiverNick"> 
-		
+		<input type="hidden" id="receiverNick" name="receiverNick"> 		
 		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
@@ -339,9 +98,6 @@
 			    <button class="modal-btn" onclick="confirmAction()">만들기</button>
 			    <button class="modal-btn" onclick="closeModal()">취소</button>
 		    </div>
-		    <input type="hidden" id="openChatUserId" name="id">
-		    <!-- 	<c:set var="id" value="${sessionScope.id}" />	
-			<input type="hidden" name="id" value="${id}"> -->
 		    <input type="hidden" name="chatType" value="group">
 	    </form>
 	  </div>
@@ -401,10 +157,6 @@
 
 		function confirmAction() {
 		  
-		  //hidden 값에 사용자 id 저장 (로그인 기능 구현시 이 부분 필요없음!!!!!!!!!!!!!!!!!)
-		  const userId = document.querySelector("#id").value;
-		  document.querySelector("#openChatUserId").value = userId;
-  	  
 		  document.getElementById("newChatForm").submit();	
 
 		}

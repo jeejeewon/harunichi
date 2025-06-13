@@ -92,10 +92,15 @@ public class ChatServer {
                 	//자신이 보낸 메시지를 다시 받지 않기 위함 (메아리방지)    
                     if (!client.equals(session)) {
                     	
-                        //메시지를 보낸 사람 외의 다른 클라이언트에게 메시지 전송
-                        //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
-                        //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송                     
-                        client.getBasicRemote().sendText(chatMsg.getSenderId() + "|" + chatMsg.getMessage()); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!                                            
+                    	if(client.isOpen()) {
+	                        //메시지를 보낸 사람 외의 다른 클라이언트에게 메시지 전송
+	                        //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
+	                        //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송                     
+	                        client.getBasicRemote().sendText(chatMsg.getSenderId() + "|" + chatMsg.getMessage()); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!                                            
+                    	}else {
+                            sessionsInRoom.remove(client);
+                            System.out.println("🧹 닫힌 세션 발견해서 제거함");	
+                    	}
                     }                 
                 }//for           
     		}//synchronized     	
