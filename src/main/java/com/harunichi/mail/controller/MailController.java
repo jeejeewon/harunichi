@@ -1,5 +1,7 @@
 package com.harunichi.mail.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -11,6 +13,6 @@ public interface MailController {
 	
 	//메일로보낸 인증코드를 확인하는 메서드
     @ResponseBody
-    String verifyAuthCode(@RequestParam("email") String email, @RequestParam("authCode") String authCode);
+    String verifyAuthCode(@RequestParam("email") String email, @RequestParam("authCode") String authCode, HttpSession session);
     
 }

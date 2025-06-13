@@ -24,12 +24,8 @@
             profileImg,
             follower,
             joindate,
-<<<<<<< HEAD
             kakao_id,
             naver_id
-=======
-            kakao_id
->>>>>>> origin/board
         FROM
             member
 		 WHERE
@@ -63,7 +59,38 @@
             kakao_id = #{kakaoId}
         ]]>
     </select>
-
+    
+	<!-- 네이버 ID로 회원 정보 조회  -->
+    <select id="selectMemberByNaverId" parameterType="java.lang.String" resultType="com.harunichi.member.vo.MemberVo">
+        <![CDATA[
+        SELECT
+            id,
+            pass,
+            name,
+            nick,
+            contry,
+            year,
+            gender,
+            email,
+            tel,
+            address,
+            myLike,
+            profileImg,
+            follower,
+            joindate,
+            kakao_id,
+            naver_id
+        FROM
+            member
+        WHERE
+            naver_id = #{naverId}
+        ]]>
+    </select>
+	
+	<!-- 이메일로 회원 정보 조회 -->
+	<select id="selectMemberByEmail" parameterType="string" resultType="com.harunichi.member.vo.MemberVo">
+	    SELECT * FROM member WHERE email = #{email}
+	</select>
 
 	<!-- 아이디와 비밀번호로 회원 정보 조회 (로그인시 필요함) -->
 	<select id="loginByIdAndPw" parameterType="java.util.Map" resultType="memberVo">
@@ -95,7 +122,7 @@
 
 
 
-	<!-- 회원 가입 쿼리 -->
+	<!-- 회원 가입 쿼리 --> <!-- joindate(가입일)은 테이블 생성시 자동생성되므로, insert쿼리문에서 삭제했음 -->
 	<insert id="insertMember" parameterType="com.harunichi.member.vo.MemberVo">
         <![CDATA[
         INSERT INTO member (
@@ -112,7 +139,6 @@
             myLike,
             profileImg,
             follower,
-            joindate,
             kakao_id,
             naver_id
         ) VALUES (
@@ -129,10 +155,28 @@
             #{myLike},
             #{profileImg},
             #{follower},
-            #{joindate},
             #{kakao_id},
             #{naver_id}
         )
         ]]>
 	</insert>
+	
+	<select id="countById" parameterType="String" resultType="int">
+    	SELECT COUNT(*) FROM member WHERE id = #{id}
+	</select>
+	
+	
+	<!-- 프로필 이미지와 관심사 업데이트 : 추후 사용예정
+	<update id="updateMemberProfileAndLikes" parameterType="com.harunichi.member.vo.MemberVo">
+        <![CDATA[
+        UPDATE member
+        SET
+            myLike = #{myLike},
+            profileImg = #{profileImg}
+        WHERE
+            id = #{id}
+        ]]>
+	</update>
+-->
+
 </mapper>

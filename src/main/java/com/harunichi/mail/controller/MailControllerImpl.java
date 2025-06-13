@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.harunichi.member.vo.MemberVo;
 
 @Controller
 @RequestMapping("/mail") // 메일 관련 요청은 "/mail"로 시작하기
@@ -128,12 +131,29 @@ public class MailControllerImpl implements MailController {
 	@Override
 	@RequestMapping(value = "/verifyAuthCode.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String verifyAuthCode(@RequestParam("email") String email, @RequestParam("authCode") String authCode) {
+	public String verifyAuthCode(@RequestParam("email") String email, @RequestParam("authCode") String authCode, HttpSession session) {
 		
 		String storedAuthCode = authCodeMap.get(email);
 
 	    if (storedAuthCode != null && storedAuthCode.equals(authCode)) {
-	    	authCodeMap.remove(email); // 인증 성공했으면 맵에서 제거
+	    	
+	    	// 1. 세션에서 기존 memberVo 객체 꺼내오기 (국가 정보가 이미 담겨있을 것으로 예상)
+	    	MemberVo memberVo = (MemberVo) session.getAttribute("memberVo");
+	    	// 세션에 memberVo가 없을경우(비정상적인 흐름) : 처음단계로 리다이렉트
+	    	if (memberVo == null) {
+	    		return "redirect:/member/addMemberForm.do";
+	    	}
+	    	
+	    	// 2. 이메일 정보 저장
+	    	memberVo.setEmail(email);
+	    	session.setAttribute("memberVo", memberVo);
+	    	System.out.println("세션 memberVo에 이메일 정보 (" + email + ") 저장 완료!");
+	    	System.out.println("현재 memberVo 상태 - 국가: " + memberVo.getContry() + ", 이메일: " + memberVo.getEmail());
+	    	
+	    	// 3. 업데이트된 memberVo 객체를 세션에 다시 저장 (덮어쓰기)
+	    	session.setAttribute("memberVo", memberVo);
+	    	
+	    	authCodeMap.remove(email); // 이메일 인증 성공했으면 맵에서 제거
 	        return "success"; // 인증 성공
 	    } else {
 	        return "error"; // 인증 실패
