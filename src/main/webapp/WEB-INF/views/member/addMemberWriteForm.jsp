@@ -97,7 +97,7 @@
 	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- 제이쿼리 -->
 	<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script><!-- 카카오주소api -->
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
 	<script type="text/javascript">
 	$(document).ready(function() {
 

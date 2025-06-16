@@ -58,7 +58,7 @@ public class MemberControllerImpl implements MemberController{
 	private MemberService memberService;
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do", "updateProfileForm.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do", "updateMyInfoForm.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");

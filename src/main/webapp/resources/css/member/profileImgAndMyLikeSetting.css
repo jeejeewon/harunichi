@@ -40,6 +40,11 @@ form > div{
     margin: 10px 0;
 }
 
+.custom-file-label:hover{
+	background-color: #A3DAFF;
+	color: white;
+}
+
 .profile-img-upload input[type="file"] {
     display: none;
 }

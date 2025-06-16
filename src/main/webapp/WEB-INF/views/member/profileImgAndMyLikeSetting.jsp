@@ -118,7 +118,7 @@
         	<button type="submit">가입 완료</button>
     	</form>
 	</section>
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- 제이쿼리 -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- 제이쿼리 -->
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
 	<script>
 		// Select2 국가 셀렉트 초기화

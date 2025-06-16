@@ -35,7 +35,8 @@ button {
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+   	height: auto;
+   	min-height: 100%;
     overflow: auto;
 }
 /*인풋 기본 스타일 제거*/
