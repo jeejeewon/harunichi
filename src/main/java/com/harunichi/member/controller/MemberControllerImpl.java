@@ -58,7 +58,7 @@ public class MemberControllerImpl implements MemberController{
 	private MemberService memberService;
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do", "updateMyInfoForm.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -297,30 +297,6 @@ public class MemberControllerImpl implements MemberController{
 		    }
 
 		} else if ("join".equals(mode)) {
-			if (dbMember != null && dbMember.getId() != null) {
-				// 이미 카카오 ID로 가입된 계정 
-			    try {
-			        // 세션 값 세팅: 서버에서 즉시 로그인 처리
-			        session.setAttribute("member", dbMember);
-			        session.setAttribute("isLogOn", true);
-			        session.setAttribute("id", dbMember.getId());
-
-			        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-			        response.setContentType("text/html;charset=UTF-8");
-			        PrintWriter out = response.getWriter();
-
-			        String contextPath = request.getContextPath();
-
-			        out.println("<script>");
-			        out.println("alert('이미 가입된 카카오 계정입니다. 해당 아이디로 로그인합니다.');");
-			        out.println("location.href='" + contextPath + "/';");
-			        out.println("</script>");
-			        out.flush();
-			    } catch (IOException e) {
-			        e.printStackTrace();
-			    }
-			    return null; // 응답 끝냈으니 Spring 렌더링 X
-			}
 			// 이메일 중복 체크
 		    if (memberService.isEmailDuplicate(memberVo.getEmail())) {
 		        try {
@@ -329,7 +305,7 @@ public class MemberControllerImpl implements MemberController{
 		            PrintWriter out = response.getWriter();
 
 		            out.println("<script>");
-		            out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
+		            out.println("alert('이미 가입된 이메일입니다. 로그인 페이지로 이동합니다.');");
 		            out.println("location.href='" + request.getContextPath() + "/member/loginpage.do';");
 		            out.println("</script>");
 		            out.flush();
@@ -337,8 +313,13 @@ public class MemberControllerImpl implements MemberController{
 		            e.printStackTrace();
 		        }
 		        return null;
+		    }
+		    if (dbMember != null && dbMember.getId() != null) {
+		        // 이미 가입된 카카오 계정으로 회원가입 시도한 경우
+		        session.setAttribute("message", "이미 가입된 카카오 계정입니다. 로그인해주세요.");
+		        mav.setViewName("redirect:/member/loginForm.jsp");
 		    } else {
-		    	// 진짜 비회원 → 가입 유도
+		        // 회원가입 로직 그대로
 		        session.setAttribute("memberVo", memberVo);
 		        session.setAttribute("authType", "kakao");
 		        mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
@@ -490,48 +471,31 @@ public class MemberControllerImpl implements MemberController{
                 return null;
             }
         } else if ("join".equals(mode)) {
-			if (dbMember != null && dbMember.getId() != null) {
-				// 이미 네이버 ID로 가입된 계정 
-			    try {
-			        // 세션 값 세팅: 서버에서 즉시 로그인 처리
-			        session.setAttribute("member", dbMember);
-			        session.setAttribute("isLogOn", true);
-			        session.setAttribute("id", dbMember.getId());
+            if (dbMember != null && dbMember.getId() != null) {
+                session.setAttribute("message", "이미 가입된 네이버 계정입니다. 로그인해주세요.");
+                mav.setViewName("redirect:/member/loginForm.jsp");
+            } else {
+            	// 이메일 중복 검사
+                boolean isEmailDuplicate = memberService.isEmailDuplicate(memberVo.getEmail());
+                if (isEmailDuplicate) {
+                    try {
+                        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+                        response.setContentType("text/html;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
 
-			        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-			        response.setContentType("text/html;charset=UTF-8");
-			        PrintWriter out = response.getWriter();
-
-			        String contextPath = request.getContextPath();
-
-			        out.println("<script>");
-			        out.println("alert('이미 가입된 네이버 계정입니다. 해당 아이디로 로그인합니다.');");
-			        out.println("location.href='" + contextPath + "/';");
-			        out.println("</script>");
-			        out.flush();
-			    } catch (IOException e) {
-			        e.printStackTrace();
-			    }
-			    return null; // 응답 끝냈으니 Spring 렌더링 X
-			}
-			// 이메일 중복 체크
-		    if (memberService.isEmailDuplicate(memberVo.getEmail())) {
-		        try {
-		            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-		            response.setContentType("text/html;charset=UTF-8");
-		            PrintWriter out = response.getWriter();
-
-		            out.println("<script>");
-		            out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
-		            out.println("location.href='" + request.getContextPath() + "/member/loginpage.do';");
-		            out.println("</script>");
-		            out.flush();
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
-		        return null;
-		    } else {
-		    	// 진짜 비회원 → 가입 유도
+                        String contextPath = request.getContextPath();
+                        out.println("<script>");
+                        out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 로그인 페이지로 이동합니다.');");
+                        out.println("location.href='" + contextPath + "/member/loginpage.do';");
+                        out.println("</script>");
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+                
+                //진짜 신규회월인경우
                 session.setAttribute("memberVo", memberVo);
                 session.setAttribute("authType", "naver");
                 mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
@@ -569,7 +533,7 @@ public class MemberControllerImpl implements MemberController{
 
 
 
-    @RequestMapping(value = "/addMemberProcess.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/addMemberProcess", method = RequestMethod.POST)
     @ResponseBody
 	@Override//일반 회원가입메소드 (인서트는 이미지프로필, 관심사 선택화면에서 하게됨)
 	public String addMemberProcess(@RequestParam("id") String id,
@@ -656,95 +620,67 @@ public class MemberControllerImpl implements MemberController{
 	}
 
     
-	// 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
+    // 프로필이미지, 관심사 세팅 후 가입완료까지(insert까지 처리)
 	@RequestMapping(value = "/profileImgAndMyLikeSettingProcess.do", method = RequestMethod.POST)
-	// 반환 타입을 String -> void 로 변경!
-	public void profileImgAndMyLikeSettingProcess( @RequestParam("profileImg") MultipartFile profileImg, @RequestParam(value = "myLike", required = false) String[] myLikes, HttpServletRequest request, HttpServletResponse response, Model model){ // HttpServletResponse 추가
-	    System.out.println("profileImgAndMyLikeSettingProcess 메소드 시작!");
+	public String profileImgAndMyLikeSettingProcess( @RequestParam("profileImg") MultipartFile profileImg, @RequestParam(value = "myLike", required = false) String[] myLikes, HttpServletRequest request, Model model){
+		System.out.println("profileImgAndMyLikeSettingProcess 메소드 시작!");
+		//1.세션에서 memberVo 객체 가져오기
+		MemberVo memberVo = (MemberVo) request.getSession().getAttribute("memberVo");
+		if (memberVo == null) {
+            // 세션에 memberVo가 없으면 잘못된 접근
+            model.addAttribute("message", "잘못된 접근입니다. 다시 시도해주세요.");
+            return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+        }
+		
+		System.out.println("memberVo 이름 값 확인: " + memberVo.getName());
+		
+		//2. 프로필 이미지 처리
+		String filePath = handleProfileImage(profileImg, request);
+		System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
+		//3. 관심사 처리
+		String myLikeStr = handleMyLikes(myLikes);
+		System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
+		//4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
+		if (filePath != null) {
+		    memberVo.setProfileImg(filePath);
+		}
+        memberVo.setMyLike(myLikeStr);
+        System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
+		//5. DB에 저장하기
+		try {
+			memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "회원가입 처리 중 오류가 발생했습니다.");
+			return "redirect:/member/addMemberForm.do"; // 다시 addMemberForm.do로 리다이렉트
+		}
+		System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
+		
+		//6. 세션에 있던 memberVo객체 삭제
+		request.getSession().removeAttribute("memberVo");
+		//7. 인증 방식 정보도 삭제
+		request.getSession().removeAttribute("authType");
+		//8. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
+		HttpSession session = request.getSession();
+		session.setAttribute("member", memberVo);
+		session.setAttribute("isLogOn", true);
+		session.setAttribute("id", memberVo.getId());
+		//9. 모두 완료후 메인페이지로 리다이렉트 (자바스크립트 alert + 이동)
+		try {
+			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+			response.setContentType("text/html;charset=UTF-8");
+			PrintWriter out = response.getWriter();
 
-	    // HttpServletResponse 객체를 파라미터로 바로 받아서 사용
-	    response.setContentType("text/html;charset=UTF-8");
-	    PrintWriter out = null; // PrintWriter 변수 선언
-
-	    try {
-	        //1.세션에서 memberVo 객체 가져오기
-	        MemberVo memberVo = (MemberVo) request.getSession().getAttribute("memberVo");
-	        if (memberVo == null) {
-	            // 세션에 memberVo가 없으면 잘못된 접근
-	            // model.addAttribute("message", "잘못된 접근입니다. 다시 시도해주세요."); // Model은 void 타입에서 의미 없음
-	            out = response.getWriter(); // 에러 발생 시에도 PrintWriter 사용
-	            out.println("<script>");
-	            out.println("alert('잘못된 접근입니다. 다시 시도해주세요.');");
-	            out.println("location.href='" + request.getContextPath() + "/member/addMemberForm.do';"); // 리다이렉트 경로 수정
-	            out.println("</script>");
-	            out.flush();
-	            out.close(); // PrintWriter 닫기
-	            return; // void 타입이므로 return; 으로 종료
-	        }
-
-	        System.out.println("memberVo 이름 값 확인: " + memberVo.getName());
-
-	        //2. 프로필 이미지 처리
-	        String filePath = handleProfileImage(profileImg, request);
-	        System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
-	        //3. 관심사 처리
-	        String myLikeStr = handleMyLikes(myLikes);
-	        System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
-	        //4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
-	        if (filePath != null) {
-	            memberVo.setProfileImg(filePath);
-	        }
-	        memberVo.setMyLike(myLikeStr);
-	        System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
-
-	        //5. DB에 저장하기
-	        try {
-	            memberService.insertMember(memberVo); //mapper에 설정한 insert문을 호출하여 db에 저장
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            // model.addAttribute("message", "회원가입 처리 중 오류가 발생했습니다."); // Model은 void 타입에서 의미 없음
-	            out = response.getWriter(); // 에러 발생 시에도 PrintWriter 사용
-	            out.println("<script>");
-	            out.println("alert('회원가입 처리 중 오류가 발생했습니다.');");
-	            out.println("location.href='" + request.getContextPath() + "/member/addMemberForm.do';"); // 리다이렉트 경로 수정
-	            out.println("</script>");
-	            out.flush();
-	            out.close(); // PrintWriter 닫기
-	            return; // void 타입이므로 return; 으로 종료
-	        }
-	        System.out.println("profileImgAndMyLikeSettingProcess - DB 저장 완료!");
-
-	        //6. 세션에 있던 memberVo객체 삭제
-	        request.getSession().removeAttribute("memberVo");
-	        //7. 인증 방식 정보도 삭제
-	        request.getSession().removeAttribute("authType");
-	        //8. 회원가입 완료 후 메인페이지로 리다이렉트하기전에, 로그인을 먼저 시켜주기
-	        HttpSession session = request.getSession();
-	        session.setAttribute("member", memberVo);
-	        session.setAttribute("isLogOn", true);
-	        session.setAttribute("id", memberVo.getId());
-
-	        //9. 모두 완료후 메인페이지로 리다이렉트 (자바스크립트 alert + 이동)
-	        out = response.getWriter(); // 성공 시 PrintWriter 사용
-	        out.println("<script>");
-	        out.println("alert('회원가입이 완료되었습니다. 환영합니다!');");
-	        out.println("location.href='" + request.getContextPath() + "/';");
-	        out.println("</script>");
-	        out.flush();
-	        out.close(); // PrintWriter 닫기
-
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        // IOException 발생 시 처리 (예: 로그 기록 등)
-	    } finally {
-	        // 혹시 모를 상황에 대비하여 out이 열려있으면 닫아줌 (try-with-resources 사용하면 더 좋음)
-	        // if (out != null && !out.checkError()) { // checkError()는 에러 발생 여부 확인
-	        //     out.close();
-	        // }
-	    }
-	    // void 타입이므로 return null; 필요 없음
+			out.println("<script>");
+			out.println("alert('회원가입이 완료되었습니다. 환영합니다!');");
+			out.println("location.href='" + request.getContextPath() + "/';");
+			out.println("</script>");
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null; // 자바스크립트로 리다이렉트했기 때문에 return null 처리
 	}
-
 	
 
 	// 프로필 이미지 처리 메소드
@@ -847,12 +783,5 @@ public class MemberControllerImpl implements MemberController{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
-
-	@Override
-	public String profileImgAndMyLikeSettingProcess(MultipartFile profileImg, String[] myLikes,
-			HttpServletRequest request, Model model) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }

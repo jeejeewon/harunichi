@@ -18,7 +18,7 @@
 					</c:otherwise>
 				</c:choose>
 				<!-- 프로필 수정 버튼 -->
-				<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-img">
+				<a href="${contextPath}/member/updateProfileForm.do" class="adit-profile-img">
 				<img src="${contextPath}/resources/icon/camera_icon.svg">
 				</a>
 			</div>
@@ -33,5 +33,5 @@
 			<a href="${contextPath}/member/logout.do" class="logout-btn">로그아웃</a>
 		</div>
 	</div>
-	<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-thumb"> 프로필 수정하기 </a>
+	<a href="${contextPath}/member/updateProfileForm.do" class="adit-profile-thumb"> 프로필 수정하기 </a>
 </div>
