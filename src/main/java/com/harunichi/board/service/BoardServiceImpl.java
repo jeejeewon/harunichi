@@ -123,7 +123,7 @@ public class BoardServiceImpl implements BoardService {
     public int deleteReply(int replyId, String replyWriter) throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("replyId", replyId);
-        paramMap.put("replyWriter", replyWriter);
+        paramMap.put("currentUserId", replyWriter);
         return replyDao.deleteReply(paramMap);
     }
 

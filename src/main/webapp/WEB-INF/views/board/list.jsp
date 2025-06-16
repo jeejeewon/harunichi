@@ -7,10 +7,12 @@
 	type="text/css">
 
 <div class="container board main">
-	<div class="board-list">
-		<c:if test="${not empty sessionScope.id}">
+	<c:if test="${not empty sessionScope.id}">
+		<div class="post-btn">
 			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
-		</c:if>
+		</div>
+	</c:if>
+	<div class="board-list">
 		<div class="list-wrap">
 			<c:forEach var="board" items="${boardList}">
 				<div class="list-item">
@@ -34,15 +36,15 @@
 									<c:if
 										test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
 										<li><a
-											href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>									
-									<li>
-										<form action="${contextPath}/board/delete" method="post"
-											style="display: inline;">
-											<input type="hidden" name="boardId" value="${board.boardId}">
-											<button type="submit"
-												onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
-										</form>
-									</li>
+											href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>
+										<li>
+											<form action="${contextPath}/board/delete" method="post"
+												style="display: inline;">
+												<input type="hidden" name="boardId" value="${board.boardId}">
+												<button type="submit"
+													onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+											</form>
+										</li>
 									</c:if>
 								</ul>
 							</div>
@@ -79,6 +81,8 @@
 	<jsp:include page="side.jsp" />
 </div>
 <script>
+$('article').has('.board').addClass('board-article');
+
 function formatTimeAgo(timestamp) {
     const now = new Date();
     const postDate = new Date(timestamp);

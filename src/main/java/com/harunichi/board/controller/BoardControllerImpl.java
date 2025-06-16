@@ -595,7 +595,7 @@ public class BoardControllerImpl implements BoardController {
 			log.info(">> 댓글 등록: replyWriter 설정됨 - {}", loginUser.getNick());
 		} else {
 			log.warn(">> 댓글 작성 실패: 로그인되지 않은 사용자 요청");
-			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired"; 
+			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired";
 		}
 		boardService.addReply(reply);
 		return "redirect:/board/view?boardId=" + reply.getBoardId();
@@ -608,22 +608,31 @@ public class BoardControllerImpl implements BoardController {
 
 		ModelAndView mav = new ModelAndView();
 		// 임시로 member_id를 "admin"으로 설정
-		String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
+		// String currentUserId = "admin";
+		HttpSession session = request.getSession();
+		MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+		String currentUserId = null;
+		if (loginUser != null) {
+			currentUserId = loginUser.getNick();
+			log.info(">> 댓글 삭제 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId);
+		} else {
+			log.warn(">> 댓글 삭제 실패: 로그인되지 않은 사용자 요청, replyId={}", replyId);
+			mav.addObject("msg", "댓글을 삭제하려면 로그인이 필요합니다.");
+			mav.setViewName("redirect:/board/view?boardId=" + boardId);
+			return mav; // 처리 중단
+		}
 
 		try {
-			// Service를 통해 댓글 삭제 로직 수행
 			// Service 메서드 내부에서 replyWriter와 currentUserId 비교 로직은 DAO 쿼리에서 처리됨
 			int result = boardService.deleteReply(replyId, currentUserId);
 
 			if (result > 0) {
-				// 삭제 성공 시 해당 게시글 상세 페이지로 리다이렉트
 				mav.setViewName("redirect:/board/view?boardId=" + boardId);
-				// mav.addObject("msg", "댓글이 삭제되었습니다."); // 메시지 전달은 필요에 따라 추가
 			} else {
-				// 삭제 실패 (해당 댓글이 없거나 작성자가 일치하지 않음)
 				log.warn(">>댓글 삭제 실패: replyId={}, 요청 사용자={}", replyId, currentUserId);
-				mav.setViewName("redirect:/board/view?boardId=" + boardId); // 실패해도 상세 페이지로
-				mav.addObject("msg", "댓글 삭제에 실패했거나 권한이 없습니다."); // 실패 메시지
+				mav.setViewName("redirect:/board/view?boardId=" + boardId);
+				mav.addObject("msg", "댓글 삭제에 실패했거나 권한이 없습니다.");
 			}
 		} catch (Exception e) {
 			log.error("댓글 삭제 중 오류 발생, replyId:{}", replyId, e);
@@ -642,7 +651,21 @@ public class BoardControllerImpl implements BoardController {
 
 		Map<String, Object> resultMap = new HashMap<>();
 		// 임시로 member_id를 "admin"으로 설정
-		String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
+		// String currentUserId = "admin";
+		
+		HttpSession session = request.getSession();		
+		MemberVo loginUser = (MemberVo) session.getAttribute("member"); 
+		String currentUserId = null; 
+	
+		if (loginUser != null) {		
+			currentUserId = loginUser.getNick(); 
+			log.info(">> 댓글 수정 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId); 
+		} else {
+			log.warn(">> 댓글 수정 실패: 로그인되지 않은 사용자 요청, replyId={}", replyId);
+			resultMap.put("status", "fail");
+			resultMap.put("message", "댓글을 수정하려면 로그인이 필요합니다.");
+			return resultMap;
+		}
 
 		try {
 			// Service를 통해 댓글 수정 로직 수행

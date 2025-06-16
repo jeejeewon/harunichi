@@ -46,19 +46,18 @@
 	</select>
 
 	<!-- 댓글 삭제 -->
-	<!-- replyId와 replyWriter(사용자 ID)를 받아서 해당 댓글 삭제 -->
 	<delete id="deleteReply" parameterType="map">
 		DELETE FROM reply
-		WHERE replyId = #{replyId} AND replyWriter = #{replyWriter}
+		WHERE replyId = #{replyId}
+		AND replyWriter = #{currentUserId}; 
 	</delete>
 
-	<!-- 댓글 수정 -->
-	<!-- replyId, replyCont, replyWriter(사용자 ID)를 받아서 해당 댓글 내용 수정 -->
-	 <update id="updateReply" parameterType="map">
-        UPDATE reply
-        SET replyCont = #{replyCont}
-        WHERE replyId = #{replyId} AND replyWriter = #{replyWriter}
-    </update>
+	<!-- 댓글 수정 -->	
+	<update id="updateReply" parameterType="map">
+		UPDATE reply
+		SET replyCont = #{replyCont}
+		WHERE replyId = #{replyId} AND replyWriter = #{replyWriter}
+	</update>
 
 
 </mapper>

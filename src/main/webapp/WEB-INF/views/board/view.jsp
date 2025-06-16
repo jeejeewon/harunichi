@@ -53,14 +53,11 @@
 			<c:forEach var="reply" items="${replyList}">
 				<div class="comment" id="reply-${reply.replyId}">
 					<%-- 댓글 div에 ID 추가 --%>
-					<div class="comment-author">${sessionScope.member.nick}</div>
+					<div class="comment-author">${reply.replyWriter}</div>
 					<div class="comment-content">${reply.replyCont}</div>
-					<div class="comment-date">${reply.replyDate}</div>
-
-					<%-- 임시 member_id와 replyWriter 비교 --%>
-					<c:set var="currentUserId" value="admin" />
-					<%-- <<<<<<< 임시 member_id 설정 --%>
-					<c:if test="${reply.replyWriter eq currentUserId}">
+					<div class="comment-date">${reply.replyDate}</div>				
+					<c:if
+						test="${not empty sessionScope.member and sessionScope.member.nick eq reply.replyWriter}">
 						<div class="comment-actions">
 							<button class="modify-btn" data-reply-id="${reply.replyId}">수정</button>
 							<button class="delete-btn" data-reply-id="${reply.replyId}"
