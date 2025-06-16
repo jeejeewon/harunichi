@@ -9,6 +9,7 @@
 <meta charset="UTF-8">
 <title>채팅 메인 페이지</title>
 <link href="${contextPath}/resources/css/chat/chatMain.css" rel="stylesheet" >
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
@@ -20,7 +21,7 @@
 	<div style="margin-bottom: 80px;">
 	<p id="recText">채팅친구추천</p>
 		<div id="chatMainCon">		
-			<a href="#" class="btn pre">◀</a>
+			<a href="#" class="btn pre"><i class="bi bi-arrow-left"></i></a>
 			<div class="chat-slider-container">
 				<ul class="profile-list">
 					<c:forEach var="member" items="${memberList}">						
@@ -37,7 +38,7 @@
 					</c:forEach>						
 				</ul>
 			</div>	
-			<a href="#" class="btn next">▶</a>
+			<a href="#" class="btn next"><i class="bi bi-arrow-right"></i></a>
 		</div>
 	</div>
 	<div>
@@ -100,8 +101,8 @@
 	
 	const list = document.querySelector(".profile-list");
 	const items = document.querySelectorAll(".profile-list li");
-	const cardWidth = 280 + 20; // 카드 너비 + gap
-	const visibleCards = 3;	
+	const cardWidth = 230 + 20; // 카드 너비 + gap
+	const visibleCards = 4;	
 	const totalCards = items.length;
 	const maxIndex = totalCards - visibleCards;
 	

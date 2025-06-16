@@ -5,12 +5,10 @@
 	display: flex;
 	align-items: center;      
 	justify-content: center;   
-	gap: 30px;                
+	gap: 30px;              
 }
 .profile-con {	
 	display: flex;
-	width: 280px;
-	height: 330px;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center; 
@@ -23,10 +21,10 @@
 .profile-con:hover{
 	transform: translateY(-8px); 
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
+}	
 .profile-img {
-	width: 140px;
-	height: 140px;
+	width: 120px;
+	height: 120px;
 	border-radius: 100%;
 	object-fit: cover;
 }
@@ -36,13 +34,13 @@
 	margin: 10px 0;
 }
 #recText {
-	font-size: 30px;
-	color: #a3daff;
+	font-size: 20px;
+	color: #797979;
 	font-weight: bold;
 	margin-bottom: 40px;
 }
 .chat-slider-container {
-	width: 900px;
+	width: 1000px;
 	overflow-x: hidden; /* 가로 스크롤만 숨기고 */
 	overflow-y: visible; /* 세로는 보이게! */
 	position: relative; /* 자식 요소의 위치 기준 */
@@ -54,18 +52,20 @@
 	list-style: none; 
 }
 .profile-list li {
-	flex: 0 0 280px; /* 카드 하나의 너비 고정 */
+	flex: 0 0 250px; /* 카드 하나의 너비 고정 */
+	max-width: 250px;
+	min-width: 200px; /* 최소 너비 지정 */
 }
 .do-chat-btn { 
 	display: flex;
 	justify-content: center; 
 	align-items: center;    
 	text-align: center;
-	border-radius: 8px;	
-	font-size:20px;
+	border-radius: 50px;	
+	font-size:15px;
 	color: #fff;
-	width: 150px;
-	height: 40px;
+	width: 90px;
+	height: 35px;
 	background-color: #a3daff;
 	margin-top: 15px;
 	text-decoration: none;
@@ -73,6 +73,15 @@
 .do-chat-btn:hover { 
 	background-color: #53a5dc; 
 }
+.bi-arrow-right::before,
+.bi-arrow-left::before {
+	color: #797979;
+}
+.bi-arrow-right:hover::before,
+.bi-arrow-left:hover::before {
+	color: #a3daff;
+}
+
 .btn {
 	font-size: 40px;
 	color: #a3daff;
@@ -80,6 +89,24 @@
 .btn:hover {
 	color: #53a5dc; 
 }
+/* 반응형에서 최소 너비 안 넘게 조절 */
+@media (max-width: 768px) {
+  .profile-list li {
+    flex: 0 0 200px;
+    max-width: 200px;
+    min-width: 200px; /* 여기서도 최소 너비 고정 */
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-list li {
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-width: 100%; /* 모바일에서는 100% 너비, 더 안 줄음 */
+  }
+}
+
+
 
 
 /* 오픈채팅 */
