@@ -45,4 +45,19 @@
 		WHERE boardId = #{boardId}
 	</select>
 
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="map">
+		DELETE FROM reply
+		WHERE replyId = #{replyId}
+		AND replyWriter = #{currentUserId}; 
+	</delete>
+
+	<!-- 댓글 수정 -->	
+	<update id="updateReply" parameterType="map">
+		UPDATE reply
+		SET replyCont = #{replyCont}
+		WHERE replyId = #{replyId} AND replyWriter = #{replyWriter}
+	</update>
+
+
 </mapper>

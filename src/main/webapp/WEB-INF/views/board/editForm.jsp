@@ -4,147 +4,148 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<form action="${contextPath}/board/update" method="post"
-	enctype="multipart/form-data" class="board-form">
-	<input type="hidden" name="boardId" value="${board.boardId}">
+<div class="container board">
+	<form action="${contextPath}/board/update" method="post"
+		enctype="multipart/form-data" class="board-form">
+		<input type="hidden" name="boardId" value="${board.boardId}">
 
-	<div class="form-section">
-		<div class="form-row">
-			<div class="form-label">게시글 번호</div>
-			<div class="form-value">
-				<c:out value="${board.boardId}" />
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">작성자</div>
-			<div class="form-value">
-				<c:out value="${board.boardWriter}" />
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">작성일</div>
-			<div class="form-value">
-				<fmt:formatDate value="${board.boardDate}"
-					pattern="yyyy-MM-dd HH:mm" />
-			</div>
-		</div>
-		<c:if test="${not empty board.boardModDate}">
+		<div class="form-section">
 			<div class="form-row">
-				<div class="form-label">수정일</div>
+				<div class="form-label">게시글 번호</div>
 				<div class="form-value">
-					<fmt:formatDate value="${board.boardModDate}"
+					<c:out value="${board.boardId}" />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-label">작성자</div>
+				<div class="form-value">
+					<c:out value="${board.boardWriter}" />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-label">작성일</div>
+				<div class="form-value">
+					<fmt:formatDate value="${board.boardDate}"
 						pattern="yyyy-MM-dd HH:mm" />
 				</div>
 			</div>
-		</c:if>
-		<div class="form-row">
-			<div class="form-label">조회수</div>
-			<div class="form-value">
-				<c:out value="${board.boardCount}" />
+			<c:if test="${not empty board.boardModDate}">
+				<div class="form-row">
+					<div class="form-label">수정일</div>
+					<div class="form-value">
+						<fmt:formatDate value="${board.boardModDate}"
+							pattern="yyyy-MM-dd HH:mm" />
+					</div>
+				</div>
+			</c:if>
+			<div class="form-row">
+				<div class="form-label">조회수</div>
+				<div class="form-value">
+					<c:out value="${board.boardCount}" />
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">추천수</div>
-			<div class="form-value">
-				<c:out value="${board.boardLike}" />
+			<div class="form-row">
+				<div class="form-label">추천수</div>
+				<div class="form-value">
+					<c:out value="${board.boardLike}" />
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">답글수</div>
-			<div class="form-value">
-				<c:out value="${board.boardRe}" />
+			<div class="form-row">
+				<div class="form-label">답글수</div>
+				<div class="form-value">
+					<c:out value="${board.boardRe}" />
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">카테고리</div>
-			<div class="form-value">
-				<select name="boardCate" required>
-					<option value="" disabled>--카테고리 선택--</option>
-					<option value="생활정보"
-						<c:if test="${board.boardCate eq '생활정보'}">selected</c:if>>생활정보</option>
-					<option value="맛집,카페"
-						<c:if test="${board.boardCate eq '맛집,카페'}">selected</c:if>>맛집,카페</option>
-					<option value="일상"
-						<c:if test="${board.boardCate eq '일상'}">selected</c:if>>일상</option>
-					<option value="찾습니다"
-						<c:if test="${board.boardCate eq '찾습니다'}">selected</c:if>>찾습니다</option>
-					<option value="건강,운동"
-						<c:if test="${board.boardCate eq '건강,운동'}">selected</c:if>>건강,운동</option>
-					<option value="육아,교육"
-						<c:if test="${board.boardCate eq '육아,교육'}">selected</c:if>>육아,교육</option>
-					<%--TODO: 카테고리가 DB에서 관리된다면, 게시글 등록 폼처럼
+			<div class="form-row">
+				<div class="form-label">카테고리</div>
+				<div class="form-value">
+					<select name="boardCate" required>
+						<option value="" disabled>--카테고리 선택--</option>
+						<option value="생활정보"
+							<c:if test="${board.boardCate eq '생활정보'}">selected</c:if>>생활정보</option>
+						<option value="맛집,카페"
+							<c:if test="${board.boardCate eq '맛집,카페'}">selected</c:if>>맛집,카페</option>
+						<option value="일상"
+							<c:if test="${board.boardCate eq '일상'}">selected</c:if>>일상</option>
+						<option value="찾습니다"
+							<c:if test="${board.boardCate eq '찾습니다'}">selected</c:if>>찾습니다</option>
+						<option value="건강,운동"
+							<c:if test="${board.boardCate eq '건강,운동'}">selected</c:if>>건강,운동</option>
+						<option value="육아,교육"
+							<c:if test="${board.boardCate eq '육아,교육'}">selected</c:if>>육아,교육</option>
+						<%--TODO: 카테고리가 DB에서 관리된다면, 게시글 등록 폼처럼
                     <c:forEach var="category" items="${categoryList}">
                         <option value="${category.categoryId}" <c:if test="${board.boardCate eq category.categoryId}">selected</c:if>>${category.categoryName}</option>
                     </c:forEach>
                     --%>
-				</select>
+					</select>
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">내용</div>
-			<div class="form-value">
-				<textarea name="boardCont" rows="10" cols="80" required><c:out
-						value="${board.boardCont}" /></textarea>
+			<div class="form-row">
+				<div class="form-label">내용</div>
+				<div class="form-value">
+					<textarea name="boardCont" rows="10" cols="80" required><c:out
+							value="${board.boardCont}" /></textarea>
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-label">첨부 이미지</div>
-			<div class="form-value image-upload-section">
-				<%-- 기존 이미지 목록 및 삭제 체크박스 --%>
-				<c:if test="${board.boardImg1 != null}">
-					<div class="existing-image-item">
-						<img src="/resources/images/board/${board.boardImg1}"
-							style="max-width: 100px;" /> <label
-							class="delete-checkbox-label"> <input type="checkbox"
-							name="deleteIndices" value="1"> 삭제
-						</label>
-					</div>
-				</c:if>
-				<c:if test="${board.boardImg2 != null}">
-					<div class="existing-image-item">
-						<img src="/resources/images/board/${board.boardImg2}"
-							style="max-width: 100px;" /> <label
-							class="delete-checkbox-label"> <input type="checkbox"
-							name="deleteIndices" value="2"> 삭제
-						</label>
-					</div>
-				</c:if>
-				<c:if test="${board.boardImg3 != null}">
-					<div class="existing-image-item">
-						<img src="/resources/images/board/${board.boardImg3}"
-							style="max-width: 100px;" /> <label
-							class="delete-checkbox-label"> <input type="checkbox"
-							name="deleteIndices" value="3"> 삭제
-						</label>
-					</div>
-				</c:if>
-				<c:if test="${board.boardImg4 != null}">
-					<div class="existing-image-item">
-						<img src="/resources/images/board/${board.boardImg4}"
-							style="max-width: 100px;" /> <label
-							class="delete-checkbox-label"> <input type="checkbox"
-							name="deleteIndices" value="4"> 삭제
-						</label>
-					</div>
-				</c:if>
+			<div class="form-row">
+				<div class="form-label">첨부 이미지</div>
+				<div class="form-value image-upload-section">
+					<%-- 기존 이미지 목록 및 삭제 체크박스 --%>
+					<c:if test="${board.boardImg1 != null}">
+						<div class="existing-image-item">
+							<img src="/resources/images/board/${board.boardImg1}"
+								style="max-width: 100px;" /> <label
+								class="delete-checkbox-label"> <input type="checkbox"
+								name="deleteIndices" value="1"> 삭제
+							</label>
+						</div>
+					</c:if>
+					<c:if test="${board.boardImg2 != null}">
+						<div class="existing-image-item">
+							<img src="/resources/images/board/${board.boardImg2}"
+								style="max-width: 100px;" /> <label
+								class="delete-checkbox-label"> <input type="checkbox"
+								name="deleteIndices" value="2"> 삭제
+							</label>
+						</div>
+					</c:if>
+					<c:if test="${board.boardImg3 != null}">
+						<div class="existing-image-item">
+							<img src="/resources/images/board/${board.boardImg3}"
+								style="max-width: 100px;" /> <label
+								class="delete-checkbox-label"> <input type="checkbox"
+								name="deleteIndices" value="3"> 삭제
+							</label>
+						</div>
+					</c:if>
+					<c:if test="${board.boardImg4 != null}">
+						<div class="existing-image-item">
+							<img src="/resources/images/board/${board.boardImg4}"
+								style="max-width: 100px;" /> <label
+								class="delete-checkbox-label"> <input type="checkbox"
+								name="deleteIndices" value="4"> 삭제
+							</label>
+						</div>
+					</c:if>
 
-				<%-- 새로운 이미지 업로드 필드 --%>
-				<div class="new-image-upload">
-					<label for="imageFiles">새 이미지 추가:</label> <input type="file"
-						id="imageFiles" name="imageFiles" multiple="multiple"
-						accept="image/*">
+					<%-- 새로운 이미지 업로드 필드 --%>
+					<div class="new-image-upload">
+						<label for="imageFiles">새 이미지 추가:</label> <input type="file"
+							id="imageFiles" name="imageFiles" multiple="multiple"
+							accept="image/*">
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<%-- .form-section 끝 --%>
-
-	<div class="button-group">
-		<input type="submit" value="수정 완료">
-		<button type="button" onclick="history.back()">취소</button>
-		<%--<button type="button" onclick="location.href='${contextPath}/board/list'">목록으로</button>--%>
-	</div>
-</form>
+		<%-- form-section 끝 --%>
+		<div class="button-group">
+			<input type="submit" value="수정 완료">
+			<button type="button" onclick="history.back()">취소</button>
+			<%--<button type="button" onclick="location.href='${contextPath}/board/list'">목록으로</button>--%>
+		</div>
+	</form>
+</div>
 
 <script>
 	$(document).ready(function() {

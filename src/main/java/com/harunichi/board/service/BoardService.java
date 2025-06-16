@@ -31,4 +31,10 @@ public interface BoardService {
 	// 특정 게시물의 댓글 갯수
 	public int getReplyCountByBoardId(int boardId) throws Exception;
 
+	// 댓글 삭제
+	public int deleteReply(int replyId, String replyWriter) throws Exception;
+
+	// 댓글 수정
+	public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception;
+
 }

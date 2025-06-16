@@ -1,15 +1,66 @@
+.board-article {
+	padding: 0;
+}
+
+.board.container {
+	width: 100%;
+}
+
+.board.main {
+	display: flex;
+}
+
+.board .board-list {
+	width: 70%;
+}
+
+.board .post-btn {
+	position: fixed;
+	bottom: 1rem;
+	right: 2rem;
+}
+
+.board-side {
+	width: 30%;
+	position: relative;
+	padding: 1rem;
+}
+
+.board-side:after {
+	content: "";
+	width: 1px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background-color: #eee;
+}
+
 .board .board-list .list-wrap {
 	display: flex;
 	flex-direction: column;
-	gap: 1rem;
 }
 
 .board .board-list .list-item {
 	display: flex;
 	flex-direction: column;
+	padding: 2rem;
 	position: relative;
-	border-bottom: 10px solid #eee;
-	padding: 1rem;
+	transition: .3s;
+}
+
+.board .board-list .list-item:hover {
+	background-color: rgba(0,0,0,0.03);
+}
+
+.board .board-list .list-item:after {
+	content: "";
+	position: absolute;
+	height: 1px;
+	width: 100%;
+	background-color: #eee;
+	bottom: 0;
+	left: 0;
 }
 
 .board .board-list .list-item .item-cate {
@@ -51,5 +102,9 @@
 }
 
 .board .board-list .list-item .item-info {
+	display: flex;
+}
+
+.board .conmment-list .comment {
 	display: flex;
 }

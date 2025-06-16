@@ -11,7 +11,7 @@
 	<table>
 		<tr>
 			<td>작성자:</td>
-			<td><input type="text" name="boardWriter"></td>
+			<td>${sessionScope.member.nick}</td>
 		</tr>
 		<tr>
 			<td>내용:</td>

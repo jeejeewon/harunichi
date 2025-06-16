@@ -1,7 +1,9 @@
 package com.harunichi.board.service;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service("BoardService")
 public class BoardServiceImpl implements BoardService {
+	
 	@Autowired
 	private BoardDao boardDao;
 
@@ -115,5 +118,22 @@ public class BoardServiceImpl implements BoardService {
 		log.info(">>BoardServiceImpl-getReplyCountByBoardId() 호출 종료. 댓글 개수:{}", replyCount);
 		return replyCount; // 댓글 개수 반환
 	}
+	
+	@Override
+    public int deleteReply(int replyId, String replyWriter) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("replyId", replyId);
+        paramMap.put("currentUserId", replyWriter);
+        return replyDao.deleteReply(paramMap);
+    }
+
+    @Override
+    public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("replyId", replyId);
+        paramMap.put("replyCont", replyCont);
+        paramMap.put("replyWriter", replyWriter); 
+        return replyDao.updateReply(paramMap);
+    }
 
 }
