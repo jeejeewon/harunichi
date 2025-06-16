@@ -44,7 +44,7 @@
 
 <script>
     const IMP = window.IMP;
-    IMP.init("imp78561661");
+    IMP.init("imp78561661"); // 포트원 상점 아이디
 
     function requestPayment(productId, productName, amount, buyerEmail, buyerName, buyerTel, buyerAddr, buyerPostcode) {
         const selectedPg = document.getElementById("pgSelect").value;
