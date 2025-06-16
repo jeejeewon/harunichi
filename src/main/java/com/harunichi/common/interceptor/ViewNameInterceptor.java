@@ -12,37 +12,8 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 
 	// 컨트롤러 클래스 실행전 요청한 주소에 관하여 뷰주소를 얻어 request메모리에 뷰주소를 저장하는 메소드
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-	
-/*
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {	
 
-//추후 로그인 폼으로 location.href 경로 변경 바람
-		
-		//로그인 유무 판단
-		try {			
-			request.setCharacterEncoding("UTF-8");
-			response.setContentType("text/html;charset=utf-8");
-			HttpSession session = request.getSession();
-			String userId = (String)session.getAttribute("id");	
-			String contextPath = request.getContextPath();
-			PrintWriter out = response.getWriter();
-			
-			System.out.println("userId : " + userId);
-					
-			//로그인을 하지 않은 경우
-			if(userId == null || userId.equals("")) {
-				//로그인 페이지로 이동
-				response.setContentType("text/html;charset=utf-8");
-				out.println("<script>alert('로그인 후 이용 가능합니다.'); location.href='" + contextPath + "/chat/login';</script>");
-				out.flush();
-				out.close();
-				return false;
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-*/		
-		
 		//뷰 경로 얻기
 		try {
 			String viewName = getViewName(request);
@@ -51,13 +22,14 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		// 클라이언트가 요청한 주소와 매핑된 특정 컨트롤러 클래스의 @RequestMapping된 메소드로 다시 재요청해 이동 되게 된다.
 		return true;
 	}
 
 	
 	//뷰 전체 주소를 얻기 위한 메소드
-	//메인 화면 요청 주소 - http://localhost:8090/harunichi/main/main.do를 입력하면 
+	//메인 화면 요청 주소 - http://localhost:8090/harunichi/main/main.do 를 입력하면 
 	//                 요청한 전체 주소에서 main/main 뷰 전체 주소를 얻기 위한 메소드 
 	private String getViewName(HttpServletRequest request) throws Exception {
 		String contextPath = request.getContextPath();

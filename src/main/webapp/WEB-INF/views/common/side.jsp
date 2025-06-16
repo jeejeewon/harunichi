@@ -42,7 +42,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="${contextPath}/chat/main.do">
+				<a href="${contextPath}/chat/main">
 					<span class="material-symbols-outlined">sms</span>
 					<span>채팅</span>
 				</a>

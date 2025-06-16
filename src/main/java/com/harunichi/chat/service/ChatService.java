@@ -21,7 +21,6 @@ public class ChatService {
 	@Autowired
 	private ChatDao chatDao;
 	
-	
 	//채팅 메세지 DB에 저장
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("---ChatService의 saveMessage메소드 호출");		
@@ -127,7 +126,7 @@ public class ChatService {
 	
 
 	//채팅방 타이틀 확인(개인채팅)
-	public String selectNick(String receiverId) {
+	public MemberVo selectNick(String receiverId) {
 		System.out.println("---ChatService의 selectNick메소드 호출");
 		return chatDao.selectNick(receiverId);
 	}

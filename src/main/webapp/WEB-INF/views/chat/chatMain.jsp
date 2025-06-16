@@ -1,3 +1,4 @@
+<%@page import="com.harunichi.common.util.LoginCheck"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
@@ -76,7 +77,7 @@
 		    <p>최대 8명까지 입장 가능합니다.</p>
 		    <div class="modal-btn-wrap">
 			    <button class="modal-btn" onclick="confirmAction()">만들기</button>
-			    <button class="modal-btn" onclick="closeModal()">취소</button>
+			    <button class="modal-btn" type="button" onclick="closeModal()">취소</button>
 		    </div>
 		    <input type="hidden" name="chatType" value="group">
 	    </form>
@@ -128,19 +129,25 @@
 	
 	//모달창
 	function openModal() {
-		  document.getElementById("myModal").style.display = "block";
-		}
+		
+		event.preventDefault();
+		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
 
-		function closeModal() {
-		  document.getElementById("myModal").style.display = "none";
-		}
+		  if (!userId) {
+		    location.href = "<%= request.getContextPath() %>/chat/window";
+		    return;
+		  }
+	  document.getElementById("myModal").style.display = "block";
+	}
 
-		function confirmAction() {
-		  
-		  document.getElementById("newChatForm").submit();	
+	function closeModal() {
+	  document.getElementById("myModal").style.display = "none";
+	}
 
-		}
-	
+	function confirmAction() {	
+		document.getElementById("newChatForm").submit();	
+	}
+
 	
 </script>
 

@@ -17,7 +17,8 @@
 			<div id="chatTop">
 				<div class="chat-top-left">
 					<a href="#">
-						<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
+						<img class="profile-img" src="../resources/images/chat/${profileImg}" alt="프로필사진">
+						<!-- <img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진"> -->
 					</a>
 					<div class="room-info">
 						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>

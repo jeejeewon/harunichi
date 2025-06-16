@@ -2,11 +2,11 @@ package com.harunichi.chat.controller;
 
 import java.io.Console;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.harunichi.chat.service.ChatService;
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
+import com.harunichi.common.util.LoginCheck;
 import com.harunichi.member.vo.MemberVo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 	
 	@Autowired
-	private ChatService chatService;	
-	
-	
-	@RequestMapping("/login")
-	public String loginTest(HttpServletRequest request, HttpServletResponse response) throws Exception{		
-		System.out.println("chatController의 loginTest 메소드 실행 -------------");		
-		return "/chat/loginTest";		
-	}
-	
-	
+	private ChatService chatService;
 	
 	@RequestMapping("/main")
 	public String chatMain(HttpServletRequest request, 
@@ -52,7 +43,7 @@ public class ChatController {
 		String nick = null;
 		
 		if(member != null) {
-			id = (String)session.getAttribute("id");
+			id = member.getId();
 			nick = member.getNick();
 		}
 		
@@ -66,29 +57,45 @@ public class ChatController {
 		
 		return "/chatMain";		
 	}
+
 	
+	@RequestMapping(value = "/window", method = RequestMethod.GET)
+	public String loginChek (HttpServletRequest request, 
+			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
+		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
+		
+		if (!LoginCheck.loginCheck(session, request, response)) {
+		    return null; 
+		}
+		return null;
+	}
+
 	
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
 		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
 		
+		if (!LoginCheck.loginCheck(session, request, response)) {
+		    return null; 
+		}
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		
 		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
-		String senderId = (String)session.getAttribute("id");		
+		String senderId = member.getId();
 		String chatType = request.getParameter("chatType");
 		String receiverId = null;
-		if(chatType == "personal") {
+		if(chatType.equals("personal")) {
 			receiverId = request.getParameter("receiverId");	
-			System.out.println(receiverId.toString());
+			System.out.println("receiverId : " + receiverId);
 		}
 		
 		int persons = 0;
 		
 		System.out.println(senderId.toString());	
 		System.out.println(chatType.toString());
-		
-		
-		
+	
 		String chatTitle = request.getParameter("title");		
 		if(chatType.equals("group")) {
 			persons = Integer.parseInt(request.getParameter("persons"));
@@ -97,8 +104,8 @@ public class ChatController {
 		String roomId = "";
 		
 		//개인채팅일 경우
-		if(chatType.equals("personal")) {		
-			roomId = chatService.selectRoomId(senderId, receiverId, chatType);		
+		if(chatType.equals("personal")) {	
+			roomId = chatService.selectRoomId(senderId, receiverId, chatType);	
 			model.addAttribute("roomId", roomId);
 		}else { //단체채팅 생성이므로 바로 채팅방 ID 생성
 			ChatRoomVo vo = new ChatRoomVo();
@@ -120,8 +127,9 @@ public class ChatController {
 		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
 		if(chatType.equals("personal")) {
-			title = chatService.selectNick(receiverId);
-			model.addAttribute("title", title);	
+			MemberVo vo = chatService.selectNick(receiverId);
+			model.addAttribute("title", vo.getNick());	
+			model.addAttribute("profileImg", vo.getProfileImg());	
 		}else {
 			//단체 채팅일 경우 지정한 타이틀 표시
 			title = chatService.selectTitle(roomId);

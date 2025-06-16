@@ -36,16 +36,7 @@
 			<mvc:mapping path="/*/*/*.do"/>  
 			<beans:bean class="com.harunichi.common.interceptor.ViewNameInterceptor" />
   		</mvc:interceptor>
-  		
-  		<!-- 로그인 체크 인터셉터 -->	
-<!--    		<mvc:interceptor>		 -->
-	    
-<!-- 	        <mvc:mapping path="/product/write"/> -->
-<!-- 	        <mvc:mapping path="/product/edit"/> -->
-<!-- 	        <mvc:mapping path="/product/delete"/> -->
-
-<!--         	<beans:bean class="com.harunichi.common.interceptor.LoginCheckInterceptor" /> -->
-<!--   		</mvc:interceptor>  		 -->
+	
 	</mvc:interceptors>
 	
  	<!-- 파일업로드 기능을 위한 멀티파트 뷰리졸버 설정 -->

@@ -111,10 +111,10 @@
 		]]>
 	</select>
 		
-	<!-- 채팅방 타이틀 조회(개인 채팅) -->
-	<select id="selectNick" parameterType="String" resultType="String">
+	<!-- 채팅방 타이틀과 프로필 사진 조회(개인 채팅) -->
+	<select id="selectNick" parameterType="String" resultType="memberVo">
 		<![CDATA[
-			SELECT nick
+			SELECT nick, profileImg
 			FROM member
 			WHERE id = #{String}
 		]]>
