@@ -22,7 +22,7 @@
         	<div class="profile-image-area">
 			    <c:choose>
 			        <c:when test="${not empty member.profileImg}">
-			            <img id="profileImage" src="${contextPath}/resources/images/profile/${member.profileImg}" alt="프로필 이미지">
+			            <img id="profileImage" src="${sessionScope.member.profileImg}" alt="프로필 이미지">
 			        </c:when>
 			        <c:otherwise>
 			            <img id="profileImage" src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 프로필 이미지">
