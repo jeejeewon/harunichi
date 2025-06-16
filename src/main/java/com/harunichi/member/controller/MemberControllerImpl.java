@@ -847,12 +847,129 @@ public class MemberControllerImpl implements MemberController{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+    
+    //회원 정보 수정 메소드
+    @RequestMapping(value = "/updateMyInfoProcess.do", method = RequestMethod.POST)
+    public String updateMyInfoProcess(
+            @RequestParam("id") String id,
+            @RequestParam(value = "pass", required = false) String pass,
+            @RequestParam("name") String name,
+            @RequestParam("nick") String nick,
+            @RequestParam("email") String email,
+            @RequestParam("year") String yearString,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "tel", required = false) String tel,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "detailAddress", required = false) String detailAddress,
+            @RequestParam(value = "contry") String contry,
+            @RequestParam(value = "myLike", required = false) String[] myLikes,
+            @RequestParam(value = "profileImg", required = false) MultipartFile profileImg,
+            HttpSession session,
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
-	@Override
-	public String profileImgAndMyLikeSettingProcess(MultipartFile profileImg, String[] myLikes,
-			HttpServletRequest request, Model model) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        MemberVo dbMember = memberService.selectMemberById(id);
+        if (dbMember == null) {
+        	try {
+                response.setContentType("text/html;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<script>");
+                out.println("alert('회원 정보를 찾을 수 없습니다.');");
+                out.println("location.href='/harunichi/';");  // 메인 페이지로 이동
+                out.println("</script>");
+                out.flush();
+                return null;  // 이미 응답 완료
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        MemberVo memberVo = dbMember;
+
+        // 비밀번호: 입력 없으면 기존 유지
+        if (pass != null && !pass.trim().isEmpty()) {
+            memberVo.setPass(pass);
+        }
+
+        memberVo.setName(name);
+        memberVo.setNick(nick);
+        memberVo.setEmail(email);
+        memberVo.setContry(contry);
+        
+        //관심사(MyLike) 배열로 받기
+        if (myLikes != null) {
+            memberVo.setMyLike(String.join(",", myLikes));
+        } else {
+            memberVo.setMyLike("");
+        }
+
+        // 생년월일 변환
+        if (yearString != null && !yearString.trim().isEmpty()) {
+            try {
+                LocalDate localDate = LocalDate.parse(yearString);
+                Date year = Date.valueOf(localDate);
+                memberVo.setYear(year);
+                System.out.println("생년월일 변환 성공: " + year);
+            } catch (DateTimeParseException e) {
+                System.err.println("생년월일 파싱 오류: " + yearString + " - " + e.getMessage());
+            }
+        }
+
+        // 성별 변환
+        String standardizedGender = null;
+        if (gender != null && !gender.isEmpty()) {
+            if ("male".equalsIgnoreCase(gender)) {
+                standardizedGender = "M";
+            } else if ("female".equalsIgnoreCase(gender)) {
+                standardizedGender = "F";
+            }
+        }
+        memberVo.setGender(standardizedGender);
+
+        // 전화번호 국가코드 처리
+        if (tel != null && tel.startsWith("0")) {
+            String country = memberVo.getContry(); 
+            if ("kr".equalsIgnoreCase(country)) {
+                tel = "+82" + tel.substring(1);
+            } else if ("jp".equalsIgnoreCase(country)) {
+                tel = "+81" + tel.substring(1);
+            }
+        }
+        memberVo.setTel(tel);
+
+        // 주소 + 상세주소 합치기
+        String fullAddress = address != null ? address.trim() : "";
+        if (detailAddress != null && !detailAddress.trim().isEmpty()) {
+            fullAddress += " " + detailAddress.trim();
+        }
+        memberVo.setAddress(fullAddress);
+
+        // 프로필 이미지 업로드
+        String filePath = handleProfileImage(profileImg, request);
+        if (filePath != null) {
+            memberVo.setProfileImg(filePath);
+        }
+
+        try {
+            memberService.updateMember(memberVo);
+            session.setAttribute("member", memberVo);
+            System.out.println("회원정보 수정 완료!");
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.printStackTrace();
+            response.setContentType("text/html;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>");
+            out.println("alert('회원정보 수정 중 오류가 발생했습니다.');");
+            out.println("location.href='/harunichi/';");
+            out.println("</script>");
+            out.flush();
+            return null;
+        }
+    }
+
+
+    
 	
 }

@@ -81,6 +81,7 @@ form > div{
     background-color: #A3DAFF;
 }
 
+
 .member-form-inner > p{
 	font-size: 14px;
 	margin-left: 10px;
@@ -227,13 +228,12 @@ input[type="radio"]{
 	font-size: 16px;
 	border: none;
 	border-radius: 6px;
-	background-color: #ccc;
+	background-color: #A3DAFF;
 	color: white;
-	cursor: default;
 	transition: background-color 0.2s ease;
 }
 
-#nextBtn:enabled {
-  background-color: #A3DAFF;  /* 활성화 시 파란색 */
-  cursor: pointer;
+#nextBtn:disabled {
+    background-color: #ccc;
+    cursor: default;
 }

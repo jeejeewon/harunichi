@@ -120,7 +120,6 @@
 			    </div>
 			</div>			
 			<div class="member-form-inner">
-				<p>*필수입력</p>
 				<div id="required-form">
 					<div class="form-group id-area">
 						<p>아이디</p>
@@ -161,7 +160,6 @@
 			</div>
 			<hr>
 			<div class="member-form-inner">
-				<p>선택입력</p>
 				<div id="other-form">
 					<div class="form-group gender-group">
 					    <input type="radio" id="male" name="gender" value="male" <c:if test="${member.gender == 'M'}">checked</c:if>>
@@ -192,7 +190,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<button type="submit" id="nextBtn" disabled>수정완료</button>
+				<button type="submit" id="nextBtn">수정완료</button>
 			</div>
     </form>
 </section>
@@ -325,178 +323,55 @@ $(document).ready(function() {
 	        $(this).val(raw);
 	    }
 	});
-
-
-	// 아이디 입력 시 안내문 표시
-	$('#id').on('input', function () {
-	    checkIdConfirmed = false;
-	    $('#id-check-result').text('');
-	    const id = $(this).val().trim();
-	    $('#id-check-required').toggle(id !== "");
-	    toggleNextButton();
-	});
-
-	// 아이디 중복 확인 문구
-	$('#id-check-required').hide();
-	$('#id').on('input', function () {
-	    checkIdConfirmed = false;
-	    $('#id-check-result').text('');
-	    const id = $(this).val().trim();
-
-	    // 조건: 입력은 했는데 중복확인 안 누른 경우에만 보이게
-	    if (id !== "") {
-	        $('#id-check-required').show();
-	    } else {
-	        $('#id-check-required').hide();
-	    }
-
-	    toggleNextButton();
-	});
-	// 아이디 중복 확인
-	let checkIdConfirmed = false;
-	$('#checkIdBtn').on('click', function() {
-	    $('#id-check-required').hide();
-	    const id = $('#id').val().trim();
-	    const $resultSpan = $('#id-check-result');
-	    const $errorSpan = $('#error-id');
-	    $('.error').text('');
-	    $resultSpan.text('');
-
-	    if (id === "") {
-	        $resultSpan.css('color', 'red').text('아이디를 입력해주세요.');
-	        checkIdConfirmed = false;
-	        toggleNextButton();
-	        return;
-	    }
-
-	    $.ajax({
-	        url: '${contextPath}/member/checkId.do',
-	        type: 'GET',
-	        data: { id: id },
-	        dataType: 'json',
-	        success: function(data) {
-	            if (data.exists) {
-	                $resultSpan.css('color', 'red').text('이미 사용 중인 아이디입니다.');
-	                checkIdConfirmed = false;
-	            } else {
-	                $resultSpan.css('color', '#A3DAFF').text('사용 가능한 아이디입니다!');
-	                checkIdConfirmed = true;
-	            }
-	            toggleNextButton();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("오류:", error);
-	            $resultSpan.css('color', 'red').text('아이디 중복 확인 중 오류 발생.');
-	            checkIdConfirmed = false;
-	            toggleNextButton();
-	        }
-	    });
-	});
-
-		// 비밀번호 입력 후 포커스 벗어났을 때 6자 이상인지 체크
-	$('#pass').on('blur', function() {
-	    const pass = $(this).val();
-	    const $errorSpan = $('#error-pass');
-
-	    if (pass.length < 6) {
-	        $errorSpan.text('비밀번호는 6자 이상 입력해주세요.');
-	    } else {
-	        $errorSpan.text('');
-	    }
-	});
-
-	// 비밀번호 일치 확인
+	
+	
+	
+	//비밀번호 처리
 	const $passInput = $('#pass');
-	const $passConfirmInput = $('#passConfirm');
-	const $passwordMatchIcon = $('#password-match-icon');
+    const $passConfirmInput = $('#passConfirm');
+    const $passwordMatchIcon = $('#password-match-icon');
+    const $errorPass = $('#error-pass');
+    const $errorPassConfirm = $('#error-passConfirm');
+    const $nextBtn = $('#nextBtn');
+    function checkPasswordState() {
+        const pass = $passInput.val();
+        const passConfirm = $passConfirmInput.val();
 
-	function updatePasswordMatchIcon() {
-	    const pass = $passInput.val();
-	    const passConfirm = $passConfirmInput.val();
-	    const $errorSpan = $('#error-passConfirm');
+        // 초기화
+        $passwordMatchIcon.text('').removeClass('match mismatch');
+        $errorPass.text('');
+        $errorPassConfirm.text('');
 
-	    $errorSpan.text('');
-	    $passwordMatchIcon.text('').removeClass('match mismatch');
+        if (pass.trim() === "") {
+            // 공백이면 버튼 활성화
+            $nextBtn.prop('disabled', false);
+            return;
+        }
 
-	    if (passConfirm.trim() === "") return false;
-	    if (pass === passConfirm) {
-	        $passwordMatchIcon.text('✅').addClass('match');
-	        return true;
-	    } else {
-	        $passwordMatchIcon.text('❌').addClass('mismatch');
-	        return false;
-	    }
-	}
+        if (pass.length < 6) {
+            $errorPass.text('비밀번호는 6자 이상 입력해주세요.');
+            $nextBtn.prop('disabled', true);
+            return;
+        }
 
-	$('#passConfirm').on('blur', function() {
-	    const pass = $passInput.val();
-	    const passConfirm = $passConfirmInput.val();
-	    const $errorSpan = $('#error-passConfirm');
+        if (passConfirm.trim() === "") {
+            // 비밀번호 확인 공백
+            $errorPassConfirm.text('비밀번호 확인을 입력해주세요.');
+            $nextBtn.prop('disabled', true);
+            return;
+        }
 
-	    if (passConfirm.trim() === "") {
-	        $errorSpan.text('비밀번호 확인을 입력해주세요.');
-	    } else if (pass !== passConfirm) {
-	        $errorSpan.text('비밀번호가 일치하지 않습니다.');
-	    } else {
-	        $errorSpan.text('');
-	    }
-	});
-
-	// 필수 필드 체크 함수 + 다음 버튼 활성화
-	const $requiredFields = $('#id, #pass, #passConfirm, #name, #nick, #year');
-	const $nextBtn = $('#nextBtn');
-
-	function areRequiredFieldsFilled() {
-	    let allFilled = true;
-	    $requiredFields.each(function() {
-	        if ($(this).val().trim() === "") {
-	            allFilled = false;
-	            return false;
-	        }
-	    });
-	    return allFilled;
-	}
-
-	function toggleNextButton() {
-	    if (areRequiredFieldsFilled() && checkIdConfirmed && updatePasswordMatchIcon()) {
-	        $nextBtn.prop('disabled', false);
-	    } else {
-	        $nextBtn.prop('disabled', true);
-	    }
-	}
-
-	$requiredFields.on('input change', function() {
-	    if ($(this).attr('id') === 'pass' || $(this).attr('id') === 'passConfirm') {
-	        updatePasswordMatchIcon();
-	    }
-	    toggleNextButton();
-	});
-
-	toggleNextButton(); // 초기 상태
-
-		// 폼 전송 Ajax로 처리
-	$('#memberForm').on('submit', function(e) {
-	    e.preventDefault(); // 기본 제출 막기
-
-	    const formData = $(this).serialize(); // 폼 데이터 직렬화
-
-	    $.ajax({
-	        url: '${contextPath}/member/addMemberProcess.do',
-	        type: 'POST',
-	        data: formData,
-	        success: function(response) {
-	            if (response === 'success') {
-	                window.location.href = '${contextPath}/member/profileImgAndMyLikeSetting.do';
-	            } else {
-	                alert("회원가입 처리 중 오류가 발생했습니다.");
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("서버 통신 오류:", error);
-	            alert("서버와 통신 중 문제가 발생했습니다.");
-	        }
-	    });
-	});
+        if (pass === passConfirm) {
+            $passwordMatchIcon.text('✅').addClass('match');
+            $nextBtn.prop('disabled', false);
+        } else {
+            $passwordMatchIcon.text('❌').addClass('mismatch');
+            $errorPassConfirm.text('비밀번호가 일치하지 않습니다.');
+            $nextBtn.prop('disabled', true);
+        }
+    }
+    $passInput.on('input', checkPasswordState);
+    $passConfirmInput.on('input', checkPasswordState);
 	
 	
 });
@@ -520,6 +395,18 @@ function previewImage(input) {
     }
     reader.readAsDataURL(file);
 }
+//비밀번호 입력 후 포커스 벗어났을 때 6자 이상인지 체크
+$('#pass').on('blur', function() {
+    const pass = $(this).val();
+    const $errorSpan = $('#error-pass');
+
+    if (pass.length < 6) {
+        $errorSpan.text('비밀번호는 6자 이상 입력해주세요.');
+    } else {
+        $errorSpan.text('');
+    }
+});
+
 
 
 </script>
