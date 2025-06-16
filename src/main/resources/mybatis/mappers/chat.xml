@@ -58,6 +58,16 @@
 		 	LIMIT #{shortage}
 	 	]]>	
 	</select>	
+	
+	<!-- 랜덤 추천 친구 조회 (비로그인) -->
+	<select id="selectRandomMembers" resultType="memberVo">
+		<![CDATA[
+			SELECT * 
+			FROM member
+			ORDER BY RAND()
+			LIMIT 10
+		]]>
+	</select>
 					
 	<!-- 채팅방 ID 조회 (개인) -->
 	<select id="selectRoomId" parameterType="map" resultType="String">

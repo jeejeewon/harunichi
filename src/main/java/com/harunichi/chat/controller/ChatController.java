@@ -48,8 +48,13 @@ public class ChatController {
 	
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		
-		String id = (String)session.getAttribute("id");	
-		String nick = member.getNick();
+		String id = null;
+		String nick = null;
+		
+		if(member != null) {
+			id = (String)session.getAttribute("id");
+			nick = member.getNick();
+		}
 		
 		//DB에서 채팅친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);		

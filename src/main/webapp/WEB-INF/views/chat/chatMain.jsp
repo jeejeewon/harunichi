@@ -49,7 +49,7 @@
 				<c:forEach var="openChat" items="${openChatList}">
 					<li>
 						<div class="open-chat-item">
-							<a href="#">
+							<a href="<%=request.getContextPath()%>/chat/window?roomId=${openChat.roomId}">
 								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
 							</a>	
 							<div class="open-chat-info">

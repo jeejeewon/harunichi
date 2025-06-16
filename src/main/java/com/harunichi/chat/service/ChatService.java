@@ -29,11 +29,19 @@ public class ChatService {
 		chatDao.saveMessage(chatMsg);
 	}
 
+	
 	//DB에서 친구 추천 리스트 조회
 	public List<MemberVo> selectMembers(String id) {
-		System.out.println("---ChatService의 selectMembers메소드 호출");	
-		return chatDao.selectMembers(id);
+		System.out.println("---ChatService의 selectMembers메소드 호출");			
+		//비로그인
+		if(id == null) {
+			return chatDao.selectRandomMembers();
+		//로그인
+		}else {
+			return chatDao.selectMembers(id);
+		}	
 	}
+	
 	
 	//채팅방 ID 조회
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
@@ -56,6 +64,7 @@ public class ChatService {
 		//DB에서 조회된 채팅방ID 반환
 		return roomId;
 	}
+	
 	
 	public String insertRoomId(ChatRoomVo vo) {
 		
@@ -107,6 +116,7 @@ public class ChatService {
 		System.out.println("---ChatService의 selectUserCount메소드 호출");		
 		return chatDao.selectUserCount(roomId);
 	}
+	
 
 	//채팅방 타이틀 확인(단체채팅)
 	public String selectTitle(String roomId) {
@@ -114,6 +124,7 @@ public class ChatService {
 		System.out.println("roomId : " + roomId);
 		return chatDao.selectTitle(roomId);
 	}
+	
 
 	//채팅방 타이틀 확인(개인채팅)
 	public String selectNick(String receiverId) {
@@ -121,6 +132,7 @@ public class ChatService {
 		return chatDao.selectNick(receiverId);
 	}
 
+	
 	//오픈 채팅방 리스트 조회
 	public List<ChatRoomVo> selectOpenChat() {	
 		System.out.println("---ChatService의 selectOpenChat메소드 호출");

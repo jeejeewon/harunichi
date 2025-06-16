@@ -78,7 +78,12 @@ public class ChatDao {
 		}
 		return resultList;		
 	}
-
+	
+	
+	//친구 추천 리스트 조회(비로그인)
+	public List<MemberVo> selectRandomMembers() {
+		return sqlSession.selectList(NAMESPACE + "selectRandomMembers");
+	}
 
 		
 	//DB에서 채팅방 ID 조회
@@ -133,6 +138,10 @@ public class ChatDao {
 		System.out.println("===ChatDao의 selectOpenChat 메소드 실행");
 		return sqlSession.selectList(NAMESPACE + "selectOpenChat");
 	}
+
+
+
+
 
 
 
