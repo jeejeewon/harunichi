@@ -58,7 +58,7 @@ public class MemberControllerImpl implements MemberController{
 	private MemberService memberService;
 	
 	@Override //요청 페이지 보여주는 메소드
-	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/loginpage.do", "/addMemberForm.do", "/emailAuthForm.do", "/profileImgAndMyLikeSetting.do", "updateProfileForm.do"}, method = RequestMethod.GET)
 	public ModelAndView showForms(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 	    String viewName = (String) request.getAttribute("viewName");
@@ -297,6 +297,30 @@ public class MemberControllerImpl implements MemberController{
 		    }
 
 		} else if ("join".equals(mode)) {
+			if (dbMember != null && dbMember.getId() != null) {
+				// 이미 카카오 ID로 가입된 계정 
+			    try {
+			        // 세션 값 세팅: 서버에서 즉시 로그인 처리
+			        session.setAttribute("member", dbMember);
+			        session.setAttribute("isLogOn", true);
+			        session.setAttribute("id", dbMember.getId());
+
+			        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+			        response.setContentType("text/html;charset=UTF-8");
+			        PrintWriter out = response.getWriter();
+
+			        String contextPath = request.getContextPath();
+
+			        out.println("<script>");
+			        out.println("alert('이미 가입된 카카오 계정입니다. 해당 아이디로 로그인합니다.');");
+			        out.println("location.href='" + contextPath + "/';");
+			        out.println("</script>");
+			        out.flush();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			    return null; // 응답 끝냈으니 Spring 렌더링 X
+			}
 			// 이메일 중복 체크
 		    if (memberService.isEmailDuplicate(memberVo.getEmail())) {
 		        try {
@@ -305,7 +329,7 @@ public class MemberControllerImpl implements MemberController{
 		            PrintWriter out = response.getWriter();
 
 		            out.println("<script>");
-		            out.println("alert('이미 가입된 이메일입니다. 로그인 페이지로 이동합니다.');");
+		            out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
 		            out.println("location.href='" + request.getContextPath() + "/member/loginpage.do';");
 		            out.println("</script>");
 		            out.flush();
@@ -313,13 +337,8 @@ public class MemberControllerImpl implements MemberController{
 		            e.printStackTrace();
 		        }
 		        return null;
-		    }
-		    if (dbMember != null && dbMember.getId() != null) {
-		        // 이미 가입된 카카오 계정으로 회원가입 시도한 경우
-		        session.setAttribute("message", "이미 가입된 카카오 계정입니다. 로그인해주세요.");
-		        mav.setViewName("redirect:/member/loginForm.jsp");
 		    } else {
-		        // 회원가입 로직 그대로
+		    	// 진짜 비회원 → 가입 유도
 		        session.setAttribute("memberVo", memberVo);
 		        session.setAttribute("authType", "kakao");
 		        mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
@@ -471,31 +490,48 @@ public class MemberControllerImpl implements MemberController{
                 return null;
             }
         } else if ("join".equals(mode)) {
-            if (dbMember != null && dbMember.getId() != null) {
-                session.setAttribute("message", "이미 가입된 네이버 계정입니다. 로그인해주세요.");
-                mav.setViewName("redirect:/member/loginForm.jsp");
-            } else {
-            	// 이메일 중복 검사
-                boolean isEmailDuplicate = memberService.isEmailDuplicate(memberVo.getEmail());
-                if (isEmailDuplicate) {
-                    try {
-                        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-                        response.setContentType("text/html;charset=UTF-8");
-                        PrintWriter out = response.getWriter();
+			if (dbMember != null && dbMember.getId() != null) {
+				// 이미 네이버 ID로 가입된 계정 
+			    try {
+			        // 세션 값 세팅: 서버에서 즉시 로그인 처리
+			        session.setAttribute("member", dbMember);
+			        session.setAttribute("isLogOn", true);
+			        session.setAttribute("id", dbMember.getId());
 
-                        String contextPath = request.getContextPath();
-                        out.println("<script>");
-                        out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 로그인 페이지로 이동합니다.');");
-                        out.println("location.href='" + contextPath + "/member/loginpage.do';");
-                        out.println("</script>");
-                        out.flush();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-                
-                //진짜 신규회월인경우
+			        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+			        response.setContentType("text/html;charset=UTF-8");
+			        PrintWriter out = response.getWriter();
+
+			        String contextPath = request.getContextPath();
+
+			        out.println("<script>");
+			        out.println("alert('이미 가입된 네이버 계정입니다. 해당 아이디로 로그인합니다.');");
+			        out.println("location.href='" + contextPath + "/';");
+			        out.println("</script>");
+			        out.flush();
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			    return null; // 응답 끝냈으니 Spring 렌더링 X
+			}
+			// 이메일 중복 체크
+		    if (memberService.isEmailDuplicate(memberVo.getEmail())) {
+		        try {
+		            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		            response.setContentType("text/html;charset=UTF-8");
+		            PrintWriter out = response.getWriter();
+
+		            out.println("<script>");
+		            out.println("alert('이미 이 이메일로 가입된 계정이 있습니다. 일반 로그인을 시도해주세요.');");
+		            out.println("location.href='" + request.getContextPath() + "/member/loginpage.do';");
+		            out.println("</script>");
+		            out.flush();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return null;
+		    } else {
+		    	// 진짜 비회원 → 가입 유도
                 session.setAttribute("memberVo", memberVo);
                 session.setAttribute("authType", "naver");
                 mav.setViewName("redirect:/member/profileImgAndMyLikeSetting.do");
