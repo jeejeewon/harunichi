@@ -52,9 +52,12 @@ public class ChatController {
 		String nick = member.getNick();
 		
 		//DB에서 채팅친구추천 리스트 조회
-		List<MemberVo> memberList = chatService.selectMembers(id);
-		
+		List<MemberVo> memberList = chatService.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
+		
+		//오픈 채팅방 리스트 조회
+		List<ChatRoomVo> openChatList = chatService.selectOpenChat();
+		model.addAttribute("openChatList", openChatList);
 		
 		return "/chatMain";		
 	}
@@ -66,13 +69,17 @@ public class ChatController {
 		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
 		
 		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
-		String senderId = (String)session.getAttribute("id");	
-		String receiverId = request.getParameter("receiverId");		
+		String senderId = (String)session.getAttribute("id");		
 		String chatType = request.getParameter("chatType");
+		String receiverId = null;
+		if(chatType == "personal") {
+			receiverId = request.getParameter("receiverId");	
+			System.out.println(receiverId.toString());
+		}
+		
 		int persons = 0;
 		
-		System.out.println(senderId.toString());
-		System.out.println(receiverId.toString());
+		System.out.println(senderId.toString());	
 		System.out.println(chatType.toString());
 		
 		

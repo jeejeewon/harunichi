@@ -121,6 +121,21 @@ public class ChatService {
 		return chatDao.selectNick(receiverId);
 	}
 
+	//오픈 채팅방 리스트 조회
+	public List<ChatRoomVo> selectOpenChat() {	
+		System.out.println("---ChatService의 selectOpenChat메소드 호출");
+		List<ChatRoomVo> openChatList = chatDao.selectOpenChat();
+		
+		//채팅방 참여 인원 확인
+		for(ChatRoomVo vo : openChatList) {
+			int count = selectUserCount(vo.getRoomId());
+			vo.setUserCount(count);
+		}
+		
+		return openChatList;
+	}
+	
+
 
 
 }

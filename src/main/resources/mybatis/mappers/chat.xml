@@ -58,8 +58,7 @@
 		 	LIMIT #{shortage}
 	 	]]>	
 	</select>	
-			
-		
+					
 	<!-- 채팅방 ID 조회 (개인) -->
 	<select id="selectRoomId" parameterType="map" resultType="String">
 		<![CDATA[
@@ -73,8 +72,7 @@
 			AND chatType = #{chatType})	
 		]]>		
 	</select>
-	
-	
+		
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
 		<if test="'personal' == chatType">
@@ -102,8 +100,7 @@
 			WHERE roomId = #{roomId}
 		]]>
 	</select>
-	
-	
+		
 	<!-- 채팅방 타이틀 조회(개인 채팅) -->
 	<select id="selectNick" parameterType="String" resultType="String">
 		<![CDATA[
@@ -113,23 +110,30 @@
 		]]>
 	</select>
 
-
 	<!-- 과거 채팅 내역 조회 -->
-	<select id="selectChatHistory" parameterType="String" resultType="chatVo">
+	<select id="selectChatHistory" parameterType="String" resultType="ChatVo">
 		<![CDATA[
 			SELECT * 
 			FROM chat
 			WHERE roomId = #{roomId}
 		]]>
 	</select>
-
-
+	
 	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
 	<select id="selectUserCount" parameterType="String" resultType="int">
 		<![CDATA[
 			SELECT count(*)
 			FROM chatRoom
 			WHERE roomId = #{roomId}
+		]]>
+	</select>
+	
+	<!-- 오픈 채팅방 조회 -->
+	<select id="selectOpenChat" resultType="ChatRoomVo">
+		<![CDATA[
+			SELECT *
+			FROM chatRoom
+			WHERE chatType = 'group'
 		]]>
 	</select>
 

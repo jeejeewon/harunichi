@@ -46,39 +46,19 @@
 	</div>
 		<div id="openChatCon">
 			<ul class="open-chat-list">
-				<li>
-					<div class="open-chat-item">
-						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
-						</a>	
-						<div class="open-chat-info">
-							<p class="open-chat-title">채팅방 제목 (인원수)</p>
-							<p class="open-chat-content">채팅방 소개</p>
+				<c:forEach var="openChat" items="${openChatList}">
+					<li>
+						<div class="open-chat-item">
+							<a href="#">
+								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
+							</a>	
+							<div class="open-chat-info">
+								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>
+								<p class="open-chat-content">채팅방 소개</p>
+							</div>
 						</div>
-					</div>
-				</li>
-				<li>
-					<div class="open-chat-item">
-						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile5.png" alt="오픈채팅방 프로필사진">						
-						</a>
-						<div class="open-chat-info">						
-							<p class="open-chat-title">채팅방 제목 (인원수)</p>
-							<p class="open-chat-content">채팅방 소개</p>						
-						</div>
-					</div>
-				</li>
-				<li>
-					<div class="open-chat-item">
-						<a href="#">
-							<img class="open-chat-img" src="../resources/images/chat/profile6.png" alt="오픈채팅방 프로필사진">						
-						</a>
-						<div class="open-chat-info">
-							<p class="open-chat-title">채팅방 제목 (인원수)</p>
-							<p class="open-chat-content">채팅방 소개</p>
-						</div>
-					</div>
-				</li>								
+					</li>
+				</c:forEach>					
 			</ul>
 		</div>	
 	</div>
