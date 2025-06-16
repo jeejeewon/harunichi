@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+.chat-center-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 채팅 전체 화면 */
+#chatContainer {
+	width: 100%;
+	max-width: 800px;
+	min-width: 400px;
+	height: 67vh;
+	min-height: 300px;
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 20px;
+}
+
+/* 채팅방 상단 부분 */
+#chatTop {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	background-color: #d4edf7;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+.chat-top-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.profile-img {
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	object-fit: cover;
+}
+.room-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.room-title {
+	font-weight: bold;
+	font-size: 18px;
+}
+.user-count {
+	margin-left: 4px;
+}
+.chat-top-right {
+	position: absolute;
+	top: 5px;
+  	right: 10px;
+	align-items: center;
+	justify-content:flex-start;
+	gap: 5px;
+}
+.disconnect-btn {
+	font-size: 15px;
+}
+
+
+/* 대화창 */
+#messageContainer {
+	width: 100%;
+	height: 90%;
+	padding: 10px;
+	overflow: scroll;
+	padding: 5px;
+	display: flex;
+  	flex-direction: column;
+}
+/* 채팅알림 */
+.chat-text {
+	text-align: center;
+	background-color: #fcfcfc;
+	margin: 5px 0;
+}
+/* 하단 입력창 전체 */
+#inputContainer {
+	width: 100%;
+	display: flex;
+	align-content: center;
+	border: 1px solid #d1d1d1;
+	padding: 5px 10px;
+	margin-top: 10px;
+	align-items: center;
+}
+/* 메세지 입력창 input */
+#chatMessage {
+	flex: 1;
+	border: none;
+	outline: none;
+	font-size: 14px;
+	padding: 8px;
+	height: 100px;
+}
+/* 전송 버튼 */
+#sendBtn {
+	position: relative;
+	background-color: #d4edf7;
+	border: none;
+	padding: 8px 20px;
+	margin-left: 10px;
+	border-radius: 15px;
+	cursor: pointer;
+	font-weight: bold;
+	height: 60px;
+}
+
+
+/* 메세지 */
+.my-msg, .other-msg {
+  max-width: 60%;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 10px;
+  position: relative;
+  display: inline-block;
+  word-break: break-word;
+  color: black;
+}
+.my-msg {
+	background-color: #d4edf7;
+	align-self: flex-end;
+}
+.other-msg {
+	background-color: #f1f0f0;
+	align-self: flex-start;
+}
+.my-msg .time,
+.other-msg .time {
+  display: block;
+  font-size: 0.75em;
+  color: #666;
+  text-align: right;
+  margin-top: 5px;
+}
+.date-text {
+    margin: 5px 0;
+    width: 150px;
+    text-align: center;
+    align-self: center;
+    border-bottom: 2px solid #d4edf7;
+    padding-bottom: 2px;
+}
+
+

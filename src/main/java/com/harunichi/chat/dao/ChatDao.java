@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.member.vo.MemberVo;
 
@@ -20,12 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatDao {
 
 	@Autowired
-	private SqlSession sqlSession;	
+	private SqlSession sqlSession;		
+	@Autowired
+	private ChatRoomVo chatRoomVo;
 	
 	private static final String NAMESPACE = "mapper.chat.";
 
-	
-	
+		
 	//채팅 저장
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("===ChatDao의 saveMessage 메소드 실행");	
@@ -40,7 +42,8 @@ public class ChatDao {
 		
 		//사용자의 관심사 조회하여 변수에 저장
 		String myLike = sqlSession.selectOne(NAMESPACE + "selectMyLike", id);		
-//		System.out.println(myLike);
+		System.out.println("myLike : " + myLike);
+		System.out.println("id : " + id);
 		
 		//조회한 관심사를 ","로 구분하여 자른 후 List에 저장
 		List<String> likeList = Arrays.stream(myLike.split(","))
@@ -75,7 +78,12 @@ public class ChatDao {
 		}
 		return resultList;		
 	}
-
+	
+	
+	//친구 추천 리스트 조회(비로그인)
+	public List<MemberVo> selectRandomMembers() {
+		return sqlSession.selectList(NAMESPACE + "selectRandomMembers");
+	}
 
 		
 	//DB에서 채팅방 ID 조회
@@ -119,10 +127,21 @@ public class ChatDao {
 
 
 	//채팅방 타이틀 조회(개인)
-	public String selectNick(String receiverId) {
+	public MemberVo selectNick(String receiverId) {
 		System.out.println("===ChatDao의 selectNick 메소드 실행");
 		return sqlSession.selectOne(NAMESPACE + "selectNick", receiverId);
 	}
+
+	
+	//오픈 채팅방 조회
+	public List<ChatRoomVo> selectOpenChat() {
+		System.out.println("===ChatDao의 selectOpenChat 메소드 실행");
+		return sqlSession.selectList(NAMESPACE + "selectOpenChat");
+	}
+
+
+
+
 
 
 

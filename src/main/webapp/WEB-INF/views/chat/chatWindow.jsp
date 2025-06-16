@@ -1,189 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>채팅창</title>
+<link href="${contextPath}/resources/css/chat/chatWindow.css" rel="stylesheet" >
 <style type="text/css">
-body {
-	margin: 0;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-/* 채팅 전체 화면 */
-#chatContainer {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	background-color: white;
-	align-items: center;
-}
-
-/* 채팅방 상단 부분 */
-#chatTop {
-	position: relative;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	background-color: #d4edf7;
-	margin-bottom: 10px;
-	padding: 10px;
-}
-.chat-top-left {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-}
-.profile-img {
-	width: 50px;
-	height: 50px;
-	border-radius: 100%;
-	object-fit: cover;
-}
-.room-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-.room-title {
-	font-weight: bold;
-	font-size: 18px;
-}
-.user-count {
-	margin-left: 4px;
-}
-.chat-top-right {
-	position: absolute;
-	top: 5px;
-  	right: 10px;
-	align-items: center;
-	justify-content:flex-start;
-	gap: 5px;
-}
-.disconnect-btn {
-	font-size: 15px;
-}
-
-
-/* 대화창 */
-#messageContainer {
-	width: 100%;
-	height: 90%;
-	padding: 10px;
-	overflow: scroll;
-	padding: 5px;
-	display: flex;
-  	flex-direction: column;
-}
-/* 채팅알림 */
-.chat-text {
-	text-align: center;
-	background-color: #fcfcfc;
-	margin: 5px 0;
-}
-/* 하단 입력창 전체 */
-#inputContainer {
-	width: 100%;
-	display: flex;
-	align-content: center;
-	border: 1px solid #d1d1d1;
-	padding: 5px 10px;
-	margin-top: 10px;
-	align-items: center;
-}
-/* 메세지 입력창 input */
-#chatMessage {
-	flex: 1;
-	border: none;
-	outline: none;
-	font-size: 14px;
-	padding: 8px;
-	height: 100px;
-}
-/* 전송 버튼 */
-#sendBtn {
-	position: relative;
-	background-color: #d4edf7;
-	border: none;
-	padding: 8px 20px;
-	margin-left: 10px;
-	border-radius: 15px;
-	cursor: pointer;
-	font-weight: bold;
-	height: 60px;
-}
-
-#senderId {
-	width: 158px; /* 대화명 입력창 너비 설정 */
-	height: 24px; /* 대화명 입력창 높이 설정 */
-	border: 1px solid #AAAAAA; /* 대화명 입력창 테두리 설정 */
-	background-color: #EEEEEE; /* 대화명 입력창 배경색 설정 */
-}
-
-/* 메세지 */
-.my-msg, .other-msg {
-  max-width: 60%;
-  padding: 8px 12px;
-  margin: 4px 0;
-  border-radius: 10px;
-  position: relative;
-  display: inline-block;
-  word-break: break-word;
-  color: black;
-}
-.my-msg {
-	background-color: #d4edf7;
-	align-self: flex-end;
-}
-.other-msg {
-	background-color: #f1f0f0;
-	align-self: flex-start;
-}
-.my-msg .time,
-.other-msg .time {
-  display: block;
-  font-size: 0.75em;
-  color: #666;
-  text-align: right;
-  margin-top: 5px;
-}
-
 </style>
 </head>
 <body>
-	<div id="chatContainer">
-		<div id="chatTop">
-			<div class="chat-top-left">
-				<a href="#">
-					<img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진">
-				</a>
-				<div class="room-info">
-					<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
+	<div class="chat-center-wrapper">
+		<div id="chatContainer">
+			<div id="chatTop">
+				<div class="chat-top-left">
+					<a href="#">
+						<img class="profile-img" src="../resources/images/chat/${profileImg}" alt="프로필사진">
+						<!-- <img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진"> -->
+					</a>
+					<div class="room-info">
+						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
+					</div>		
+				</div>
+				<div class="chat-top-right">
+				    <button class="disconnect-btn" onclick="disconnect();">×</button>
 				</div>		
 			</div>
-			<div class="chat-top-right">
-			    <button class="disconnect-btn" onclick="disconnect();">×</button>
-			</div>		
-		</div>
-		<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
-		<div id="messageContainer"></div>
-
-		<div id="inputContainer">
-			<!-- 메세지 입력창,  키보드 이벤트 발생시 enterKey() 함수 호출 -->
-			<input type="text" id="chatMessage" onkeyup="enterKey();">
-
-			<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
-			<button id="sendBtn" onclick="sendMessage();">전송</button>
-		</div>
-		<a>나의 닉네임 : <input type="text" id="senderId" value="${param.id}" readonly>	</a>	
-	</div>
+			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
+			<div id="messageContainer"></div>
 	
+			<div id="inputContainer">
+				<!-- 메세지 입력창,  키보드 이벤트 발생시 enterKey() 함수 호출 -->
+				<input type="text" id="chatMessage" onkeyup="enterKey();">
+	
+				<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
+				<button id="sendBtn" onclick="sendMessage();">전송</button>
+			</div>
+		</div>
+	</div>
 	
 </body>
 
@@ -198,25 +54,37 @@ body {
 	var webSocket;
 	var receiverId;
 	var roomId = "${roomId}";	 //채팅방 ID 저장
-
+	var senderId = "${sessionScope.id}";
+	var lastDate;
+	
 	window.onload = function() {
 		chatWindow = document.getElementById("messageContainer");	//대화 내용이 표시될 대화창 영역
-		chatMessage = document.getElementById("chatMessage");		//메세지 입력창
-		senderId = document.getElementById("senderId").value;		//채팅 하는 사용자의 대화명 요소에서 대화명값 얻기 
-		
+		chatMessage = document.getElementById("chatMessage");		//메세지 입력창	
 		receiverId = document.getElementById("receiverId").value;	//받는 사람 ID 저장								
-//   	console.log("id : " + "${param.id}");
-//   	console.log("nick : " + "${param.nick}");
-//   	console.log("receiverId : " + "${param.receiverId}");
 
 		//과거 메세지 불러오기
 		fetch("${pageContext.request.contextPath}/chat/history?roomId=" + roomId)
 			.then(response => response.json())
 			.then(messages => {
 				messages.forEach(msg => {
+					const sentDate = new Date(msg.sentTime);
+					
+				    // 로컬 날짜 기준으로 YYYY-MM-DD 만들기
+				    const year = sentDate.getFullYear();
+				    const month = (sentDate.getMonth() + 1).toString().padStart(2, '0');
+				    const day = sentDate.getDate().toString().padStart(2, '0');
+				    const currentDateStr = year + "-" + month + "-" + day;
+							
+					//메세지 보낸 날짜 표시
+					if(lastDate !== currentDateStr){
+						const dateDisplay = new Date(sentDate).toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric'});
+						chatWindow.innerHTML += "<div class='date-text'>" + dateDisplay + "</div>";
+						lastDate = currentDateStr;
+					}
+					
 					const sender = msg.senderId;
 					const message = msg.message;
-					const time = formatTime(new Date(msg.sentTime));
+					const time = formatTime(sentDate);
 					
 					chatWindow.innerHTML += "<div class='" + (sender === senderId ? "my-msg" : "other-msg") + "'>" 
 										  + "<div class='message'>" 
@@ -297,7 +165,22 @@ body {
 		
 	}
 	
-
+	
+	//1000바이트까지 입력 가능하도록 하는 함수
+	function getByteLength(str) {
+		return new Blob([str]).size;
+	}
+	document.getElementById("chatMessage").addEventListener("input", function () {
+		let msg = this.value;
+		let maxByte = 1000;
+		
+		//입력한 메세지가 1000바이트를 넘는다면 뒤에 입력한 내용을 잘라냄
+		while (getByteLength(msg) > maxByte) {
+		  msg = msg.slice(0, -1); // 뒤에서부터 잘라냄
+		}		
+		this.value = msg;
+	});
+	
 	
 	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
 	function sendMessage() {
