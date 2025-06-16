@@ -6,11 +6,11 @@
 <link href="${contextPath}/resources/css/board.css" rel="stylesheet"
 	type="text/css">
 
-<div class="container board">
-
-	<a href="${contextPath}/board/postForm">새 게시글 작성</a>
-
+<div class="container board main">
 	<div class="board-list">
+		<c:if test="${not empty sessionScope.id}">
+			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
+		</c:if>
 		<div class="list-wrap">
 			<c:forEach var="board" items="${boardList}">
 				<div class="list-item">
@@ -31,8 +31,10 @@
 							<div class="item-more">
 								<ul class="popup">
 									<li><a>링크 복사</a></li>
-									<li><a
-										href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>
+									<c:if
+										test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
+										<li><a
+											href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a></li>									
 									<li>
 										<form action="${contextPath}/board/delete" method="post"
 											style="display: inline;">
@@ -41,6 +43,7 @@
 												onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
 										</form>
 									</li>
+									</c:if>
 								</ul>
 							</div>
 						</div>
@@ -73,6 +76,7 @@
 			</c:if>
 		</div>
 	</div>
+	<jsp:include page="side.jsp" />
 </div>
 <script>
 function formatTimeAgo(timestamp) {

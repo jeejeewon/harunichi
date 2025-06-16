@@ -1,3 +1,28 @@
+.board.container {width: 100%;}
+.board.main {
+	display: flex;
+}
+
+.board .board-list {
+	width: 70%;
+}
+
+.board-side {
+	width: 30%;
+	position: relative;
+	padding: 1rem;
+}
+
+.board-side:after {
+	content: "";
+	width: 1px;
+	position: absolute;
+	top: -20px;
+	left: 0;	
+	height: calc(100% + 40px);
+	background-color: #eee;
+}
+
 .board .board-list .list-wrap {
 	display: flex;
 	flex-direction: column;
@@ -10,6 +35,10 @@
 	position: relative;
 	border-bottom: 10px solid #eee;
 	padding: 1rem;
+	position: relative;
+}
+.board .board-list .list-item:after {
+	content: "";
 }
 
 .board .board-list .list-item .item-cate {
@@ -53,4 +82,7 @@
 .board .board-list .list-item .item-info {
 	display: flex;
 }
-.board .conmment-list .comment {display: flex;}
+
+.board .conmment-list .comment {
+	display: flex;
+}

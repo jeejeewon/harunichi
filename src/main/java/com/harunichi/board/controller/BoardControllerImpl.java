@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.harunichi.board.service.BoardService;
 import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
+import com.harunichi.member.vo.MemberVo;
 
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -55,27 +57,27 @@ public class BoardControllerImpl implements BoardController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView boardList(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-	ModelAndView mav = new ModelAndView("/board/list");		
-		
+		ModelAndView mav = new ModelAndView("/board/list");
+
 		try {
-	      
-	        List<BoardVo> boardList = boardService.selectBoardList();
 
-	        if (boardList != null && !boardList.isEmpty()) {
-	            for (BoardVo board : boardList) {
-	                int boardId = board.getBoardId();
-	                // boardService의 getReplyCountByBoardId 메서드를 호출하여 실제 댓글 수를 가져옴
-	                int actualReplyCount = boardService.getReplyCountByBoardId(boardId);
-	                // boardRe 필드를 업데이트
-	                board.setBoardRe(actualReplyCount);
-	            }
-	        }
-	        mav.addObject("boardList", boardList);
+			List<BoardVo> boardList = boardService.selectBoardList();
 
-	    } catch (Exception e) {
-	        log.error("게시글 목록 조회 및 댓글 수 업데이트 중 오류 발생", e);
-	        mav.addObject("msg", "게시글 목록을 불러오는 중 오류가 발생했습니다.");	      
-	    }
+			if (boardList != null && !boardList.isEmpty()) {
+				for (BoardVo board : boardList) {
+					int boardId = board.getBoardId();
+					// boardService의 getReplyCountByBoardId 메서드를 호출하여 실제 댓글 수를 가져옴
+					int actualReplyCount = boardService.getReplyCountByBoardId(boardId);
+					// boardRe 필드를 업데이트
+					board.setBoardRe(actualReplyCount);
+				}
+			}
+			mav.addObject("boardList", boardList);
+
+		} catch (Exception e) {
+			log.error("게시글 목록 조회 및 댓글 수 업데이트 중 오류 발생", e);
+			mav.addObject("msg", "게시글 목록을 불러오는 중 오류가 발생했습니다.");
+		}
 		return mav;
 	}
 
@@ -85,7 +87,7 @@ public class BoardControllerImpl implements BoardController {
 		return "/board/postForm";
 	}
 
-	// 게시글 등록 
+	// 게시글 등록
 	@Override
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	public ModelAndView boardPost(HttpServletRequest request, HttpServletResponse response,
@@ -95,21 +97,36 @@ public class BoardControllerImpl implements BoardController {
 
 		try {
 			// 1. 파라미터 받기 (작성자, 내용 등)
-			String boardWriter = request.getParameter("boardWriter");
+			// String boardWriter = request.getParameter("boardWriter");
 			String boardCont = request.getParameter("boardCont");
 			String boardCate = request.getParameter("boardCate");
 
 			// 2. BoardVo 객체 생성 및 데이터 설정
 			BoardVo boardVo = new BoardVo();
-			boardVo.setBoardWriter(boardWriter);
+
+			// boardVo.setBoardWriter(boardWriter);
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+			if (loginUser != null) {
+
+				boardVo.setBoardWriter(loginUser.getNick());
+				log.info(">> 게시글 등록: boardWriter 설정됨 - {}", loginUser.getNick());
+			} else {
+				log.warn(">> 게시글 작성 실패: 로그인되지 않은 사용자 요청");
+				mav.addObject("msg", "게시글을 작성하려면 로그인이 필요합니다.");
+				mav.setViewName("redirect:/board/postForm");
+				return mav;
+			}
+
 			boardVo.setBoardCate(boardCate);
 			boardVo.setBoardCont(boardCont);
 
 			// boardDate에 현재 시간 설정
 			boardVo.setBoardDate(new Timestamp(System.currentTimeMillis())); // 현재 시간 설정
 
-			// 3. 파일 업로드 처리 및 파일명 설정		
-			List<String> fileNames = uploadFiles(servletContext, imageFiles); 
+			// 3. 파일 업로드 처리 및 파일명 설정
+			List<String> fileNames = uploadFiles(servletContext, imageFiles);
 			if (fileNames != null && !fileNames.isEmpty()) {
 				if (fileNames.size() > 0)
 					boardVo.setBoardImg1(fileNames.get(0));
@@ -125,12 +142,12 @@ public class BoardControllerImpl implements BoardController {
 			boardService.insertBoard(boardVo);
 
 			// 5. 결과 설정 및 뷰 반환
-			mav.setViewName("redirect:/board/list"); 
-			
+			mav.setViewName("redirect:/board/list");
+
 		} catch (Exception e) {
 			log.error("게시글 등록 중 오류 발생", e);
 			mav.addObject("msg", "게시글 등록 중 오류가 발생했습니다.");
-			mav.setViewName("errorPage"); 
+			mav.setViewName("errorPage");
 		}
 
 		return mav;
@@ -139,31 +156,32 @@ public class BoardControllerImpl implements BoardController {
 	// 게시글 상세 요청 URL: /board/view?boardId=숫자
 	@Override
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response, @RequestParam("boardId") int boardId) throws Exception {
-		
-		ModelAndView mav = new ModelAndView("/board/view"); 
-		
+	public ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("boardId") int boardId) throws Exception {
+
+		ModelAndView mav = new ModelAndView("/board/view");
+
 		try {
-			
+
 			BoardVo boardVo = boardService.getBoardById(boardId);
 
-			if (boardVo != null) {			
+			if (boardVo != null) {
 
-				//  게시글의 댓글 개수를 별도로 조회
-				int replyCount = boardService.getReplyCountByBoardId(boardId); 
+				// 게시글의 댓글 개수를 별도로 조회
+				int replyCount = boardService.getReplyCountByBoardId(boardId);
 				// BoardVo 객체에 댓글 개수 설정
-				boardVo.setBoardRe(replyCount); 			
+				boardVo.setBoardRe(replyCount);
 
 				// 해당 게시글의 댓글 목록을 불러와서 mav에 추가
 				List<ReplyVo> replyList = boardService.getRepliesByBoardId(boardId);
-				mav.addObject("replyList", replyList); 		
+				mav.addObject("replyList", replyList);
 
 				// 게시글 정보 (댓글 개수 포함)를 mav에 추가
 				mav.addObject("board", boardVo); // boardRe
 
 			} else {
 				log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
-				mav.setViewName("redirect:/board/list"); 
+				mav.setViewName("redirect:/board/list");
 				mav.addObject("msg", "notfound");
 			}
 		} catch (Exception e) {
@@ -175,14 +193,13 @@ public class BoardControllerImpl implements BoardController {
 		return mav;
 	}
 
-
 	// 게시글 수정 폼 요청
 	@RequestMapping(value = "/editForm", method = RequestMethod.GET)
 	public ModelAndView editBoardForm(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("boardId") int boardId) throws Exception {
-		
+
 		ModelAndView mav = new ModelAndView("/board/editForm");
-		
+
 		try {
 			// 조회수 증가 로직이 없는 서비스 메소드
 			BoardVo boardVo = boardService.getBoardByIdWithoutIncrement(boardId);
@@ -231,7 +248,8 @@ public class BoardControllerImpl implements BoardController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public ModelAndView updateBoard(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles, // 새로 업로드할 파일 리스트
-			@RequestParam(value = "deleteIndices", required = false) List<Integer> deleteIndices // 삭제할 기존 이미지의 순서(1, 2, 3, 4) 리스트
+			@RequestParam(value = "deleteIndices", required = false) List<Integer> deleteIndices // 삭제할 기존 이미지의 순서(1, 2,
+																									// 3, 4) 리스트
 	) {
 		ModelAndView mav = new ModelAndView();
 		log.info(">>BoardControllerImpl-updateBoard() 호출 시작");
@@ -431,9 +449,9 @@ public class BoardControllerImpl implements BoardController {
 	// 파일 업로드 처리 메소드 (ServletContext 파라미터 추가)
 	private List<String> uploadFiles(ServletContext context, List<MultipartFile> imageFiles) throws Exception {
 		List<String> fileNames = new ArrayList<>();
-		
+
 		String realPath = context.getRealPath("/");
-		
+
 		// File.separator를 사용하여 OS에 맞는 경로 구분자를 사용
 		String uploadPath = realPath + "resources" + File.separator + "images" + File.separator + "board";
 
@@ -541,7 +559,7 @@ public class BoardControllerImpl implements BoardController {
 				}
 			} else {
 				log.warn(">>데이터베이스 삭제 실패 (삭제된 행 수 0), boardId:{}", boardId);
-				
+
 				mav.setViewName("redirect:/board/list");
 				mav.addObject("msg", "db_delete_failed");
 				return mav;
@@ -568,79 +586,83 @@ public class BoardControllerImpl implements BoardController {
 	public String addReply(@ModelAttribute("reply") ReplyVo reply, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		// TODO: 작성자 정보 설정 로직 추가 (예: 세션에서 사용자 ID 가져오기)
-		// reply.setReplyWriter(로그인된 사용자 ID);	
-		
-		// 임시로 replyWriter를 "admin"으로 고정 설정
-		reply.setReplyWriter("admin");
-		boardService.addReply(reply); // BoardService의 addReply 메소드 호출
+		HttpSession session = request.getSession();
+
+		MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+		if (loginUser != null) {
+			reply.setReplyWriter(loginUser.getNick());
+			log.info(">> 댓글 등록: replyWriter 설정됨 - {}", loginUser.getNick());
+		} else {
+			log.warn(">> 댓글 작성 실패: 로그인되지 않은 사용자 요청");
+			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired"; 
+		}
+		boardService.addReply(reply);
 		return "redirect:/board/view?boardId=" + reply.getBoardId();
 	}
-	
+
 	// 댓글 삭제 처리
-    @RequestMapping(value="/deleteReply", method=RequestMethod.POST) // 또는 GET, AJAX 사용 시 POST 권장
-    public ModelAndView deleteReply(HttpServletRequest request, HttpServletResponse response,
-                                    @RequestParam("replyId") int replyId,
-                                    @RequestParam("boardId") int boardId) throws Exception {
+	@RequestMapping(value = "/deleteReply", method = RequestMethod.POST) // 또는 GET, AJAX 사용 시 POST 권장
+	public ModelAndView deleteReply(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("replyId") int replyId, @RequestParam("boardId") int boardId) throws Exception {
 
-        ModelAndView mav = new ModelAndView();
-        // 임시로 member_id를 "admin"으로 설정
-        String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
+		ModelAndView mav = new ModelAndView();
+		// 임시로 member_id를 "admin"으로 설정
+		String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
 
-        try {
-            // Service를 통해 댓글 삭제 로직 수행
-            // Service 메서드 내부에서 replyWriter와 currentUserId 비교 로직은 DAO 쿼리에서 처리됨
-            int result = boardService.deleteReply(replyId, currentUserId);
+		try {
+			// Service를 통해 댓글 삭제 로직 수행
+			// Service 메서드 내부에서 replyWriter와 currentUserId 비교 로직은 DAO 쿼리에서 처리됨
+			int result = boardService.deleteReply(replyId, currentUserId);
 
-            if (result > 0) {
-                // 삭제 성공 시 해당 게시글 상세 페이지로 리다이렉트
-                mav.setViewName("redirect:/board/view?boardId=" + boardId);
-                // mav.addObject("msg", "댓글이 삭제되었습니다."); // 메시지 전달은 필요에 따라 추가
-            } else {
-                // 삭제 실패 (해당 댓글이 없거나 작성자가 일치하지 않음)
-                log.warn(">>댓글 삭제 실패: replyId={}, 요청 사용자={}", replyId, currentUserId);
-                mav.setViewName("redirect:/board/view?boardId=" + boardId); // 실패해도 상세 페이지로
-                mav.addObject("msg", "댓글 삭제에 실패했거나 권한이 없습니다."); // 실패 메시지
-            }
-        } catch (Exception e) {
-            log.error("댓글 삭제 중 오류 발생, replyId:{}", replyId, e);
-            mav.addObject("msg", "댓글 삭제 중 오류가 발생했습니다.");
-            mav.setViewName("errorPage"); // 오류 페이지로 이동
-        }
-        log.info(">>BoardControllerImpl-deleteReply() 호출 종료");
-        return mav;
-    }
+			if (result > 0) {
+				// 삭제 성공 시 해당 게시글 상세 페이지로 리다이렉트
+				mav.setViewName("redirect:/board/view?boardId=" + boardId);
+				// mav.addObject("msg", "댓글이 삭제되었습니다."); // 메시지 전달은 필요에 따라 추가
+			} else {
+				// 삭제 실패 (해당 댓글이 없거나 작성자가 일치하지 않음)
+				log.warn(">>댓글 삭제 실패: replyId={}, 요청 사용자={}", replyId, currentUserId);
+				mav.setViewName("redirect:/board/view?boardId=" + boardId); // 실패해도 상세 페이지로
+				mav.addObject("msg", "댓글 삭제에 실패했거나 권한이 없습니다."); // 실패 메시지
+			}
+		} catch (Exception e) {
+			log.error("댓글 삭제 중 오류 발생, replyId:{}", replyId, e);
+			mav.addObject("msg", "댓글 삭제 중 오류가 발생했습니다.");
+			mav.setViewName("errorPage"); // 오류 페이지로 이동
+		}
+		log.info(">>BoardControllerImpl-deleteReply() 호출 종료");
+		return mav;
+	}
 
-    // 댓글 수정 처리 (AJAX 요청)
-    @RequestMapping(value="/updateReply", method=RequestMethod.POST)
-    @ResponseBody // JSON 응답을 위해 추가
-    public Map<String, Object> updateReply(HttpServletRequest request, HttpServletResponse response,
-                                           @RequestParam("replyId") int replyId,
-                                           @RequestParam("replyCont") String replyCont) throws Exception {
+	// 댓글 수정 처리 (AJAX 요청)
+	@RequestMapping(value = "/updateReply", method = RequestMethod.POST)
+	@ResponseBody // JSON 응답을 위해 추가
+	public Map<String, Object> updateReply(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("replyId") int replyId, @RequestParam("replyCont") String replyCont) throws Exception {
 
-        Map<String, Object> resultMap = new HashMap<>();
-        // 임시로 member_id를 "admin"으로 설정
-        String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
+		Map<String, Object> resultMap = new HashMap<>();
+		// 임시로 member_id를 "admin"으로 설정
+		String currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
 
-        try {
-            // Service를 통해 댓글 수정 로직 수행
-            int result = boardService.updateReply(replyId, replyCont, currentUserId);
+		try {
+			// Service를 통해 댓글 수정 로직 수행
+			int result = boardService.updateReply(replyId, replyCont, currentUserId);
 
-            if (result > 0) {
-                resultMap.put("status", "success");
-                resultMap.put("message", "댓글이 수정되었습니다.");
-            } else {
-                log.warn(">>댓글 수정 실패: replyId={}, 요청 사용자={}", replyId, currentUserId);
-                resultMap.put("status", "fail");
-                resultMap.put("message", "댓글 수정에 실패했거나 권한이 없습니다.");
-            }
-        } catch (Exception e) {
-            log.error("댓글 수정 중 오류 발생, replyId:{}", replyId, e);
-            resultMap.put("status", "error");
-            resultMap.put("message", "댓글 수정 중 오류가 발생했습니다.");
-        }
-        log.info(">>BoardControllerImpl-updateReply() 호출 종료");
-        return resultMap;
-    }
+			if (result > 0) {
+				resultMap.put("status", "success");
+				resultMap.put("message", "댓글이 수정되었습니다.");
+			} else {
+				log.warn(">>댓글 수정 실패: replyId={}, 요청 사용자={}", replyId, currentUserId);
+				resultMap.put("status", "fail");
+				resultMap.put("message", "댓글 수정에 실패했거나 권한이 없습니다.");
+			}
+		} catch (Exception e) {
+			log.error("댓글 수정 중 오류 발생, replyId:{}", replyId, e);
+			resultMap.put("status", "error");
+			resultMap.put("message", "댓글 수정 중 오류가 발생했습니다.");
+		}
+		log.info(">>BoardControllerImpl-updateReply() 호출 종료");
+		return resultMap;
+	}
 
 }

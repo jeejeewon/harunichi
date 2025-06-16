@@ -53,11 +53,10 @@
 			<c:forEach var="reply" items="${replyList}">
 				<div class="comment" id="reply-${reply.replyId}">
 					<%-- 댓글 div에 ID 추가 --%>
-					<div class="comment-author">${reply.replyWriter}</div>
+					<div class="comment-author">${sessionScope.member.nick}</div>
 					<div class="comment-content">${reply.replyCont}</div>
 					<div class="comment-date">${reply.replyDate}</div>
 
-					<%-- 수정/삭제 버튼 추가 --%>
 					<%-- 임시 member_id와 replyWriter 비교 --%>
 					<c:set var="currentUserId" value="admin" />
 					<%-- <<<<<<< 임시 member_id 설정 --%>
@@ -79,18 +78,23 @@
 			</c:forEach>
 		</div>
 
-		<%-- 댓글 작성 폼 추가 --%>
-		<div class="comment-form">
-			<h3>댓글 작성</h3>
-			<form action="${contextPath}/board/reply/write" method="post">
-				<input type="hidden" name="boardId" value="${board.boardId}">
-				<textarea name="replyCont" placeholder="댓글을 입력하세요." required></textarea>
-				<button type="submit">등록</button>
-			</form>
-		</div>
+		<c:if test="${not empty sessionScope.id}">
+			<%-- 댓글 작성 폼 추가 --%>
+			<div class="comment-form">
+				<h3>댓글 작성</h3>
+				<form action="${contextPath}/board/reply/write" method="post">
+					<input type="hidden" name="replyWriter"
+						value="${sessionScope.member.nick}"> <input type="hidden"
+						name="boardId" value="${board.boardId}">
+					<textarea name="replyCont" placeholder="댓글을 입력하세요." required></textarea>
+					<button type="submit">등록</button>
+				</form>
+			</div>
+		</c:if>
+		<c:if test="${empty sessionScope.id}">
+			<p>로그인 후 댓글 작성 가능합니다.</p>
+		</c:if>
 	</div>
-</div>
-
 </div>
 
 <%-- 날짜 포맷팅 스크립트 등 필요한 스크립트 추가 --%>
