@@ -10,7 +10,7 @@
 	<nav>
 		<ul>
 			<li>
-				<a href="${contextPath}">
+				<a href="#">
 					<i class="fa-solid fa-cloud"></i>
 					<span class="material-symbols-outlined">home</span>
 					<span>홈</span>
@@ -24,14 +24,13 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="${contextPath}/product/list">
 					<span class="material-symbols-outlined">shopping_bag</span>
 					<span>중고거래</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
-				
+				<a href="#">				
 					<span class="material-symbols-outlined">local_fire_department</span>
 					<span>인기글</span>
 				</a>
@@ -43,7 +42,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="${contextPath}/chat/main">
 					<span class="material-symbols-outlined">sms</span>
 					<span>채팅</span>
 				</a>

@@ -11,6 +11,7 @@ request.setCharacterEncoding("utf-8");
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title><tiles:insertAttribute name="title" /></title>
+
 	<!-- 스타일 및 폰트 -->
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
 	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
