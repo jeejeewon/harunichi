@@ -6,22 +6,23 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
-    <!-- Select2 CSS (국가 선택 드롭다운에 Select2 사용한다면 필요) -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
-    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+	<!-- 스타일 및 폰트 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
     <link href="${contextPath}/resources/css/member/addMemberForm.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
 	<section class="addmemberform-wrap">
-		<div class="header-area">
-			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
+		<div class="header-area" style="background-color: pink;">
+			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
+		     	<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
+		        <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
 		<div class="addmemberform-middle">
-			<img src="${contextPath}/resources/image/party-icon.png">
+			<img src="${contextPath}/resources/icon/party-icon.png">
 			<p>회원가입을 환영합니다!</p>
 		</div>
 		<!-- 국가를 선택하는 select가 있는 영역 -->
@@ -29,8 +30,8 @@
 	        <label for="nationality-select"></label>
 	        <select id="nationality-select">
 	        	<option value="">국적을 선택해 주세요</option>
-	            <option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png">대한민국</option>
-	            <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png">일본</option>
+	            <option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png">대한민국</option>
+	            <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png">일본</option>
 	        </select>
 	    </div>
 	    <!-- 선택된 국적에 따른 회원가입 폼이 로딩될 영역 -->
@@ -51,7 +52,7 @@
             // Kakao SDK 초기화
             if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
                 Kakao.init('8da16305d90fb5864eea32886df24211');
-                console.log('[초기 페이지에서] Kakao SDK initialized:', Kakao.isInitialized());
+                console.log('Kakao SDK initialized:', Kakao.isInitialized());
             }
 
             // Select2 공통 formatState 함수
@@ -116,9 +117,9 @@
             });
         });
 
-        // toggleSocialLogin 함수 (상단 Select2 관련)
+        // toggleSocialLogin 함수
         function toggleSocialLogin(countryCode) {
-            // 소셜 로그인 버튼 표시 로직 (예시)
+            // 소셜 로그인 버튼 표시 로직
             if (countryCode === 'kr') {
                 // 한국
             } else if (countryCode === 'jp') {

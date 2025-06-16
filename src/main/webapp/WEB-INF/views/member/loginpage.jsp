@@ -6,24 +6,25 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-    <!-- Select2 CSS (국가 선택 드롭다운에 Select2 사용한다면 필요) -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
-    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+	<!-- 스타일 및 폰트 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
+	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
     <link href="${contextPath}/resources/css/member/loginpage.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
 	<section class="loginpage-wrap">
 		<div class="header-area">
-			<a href="${contextPath}"><img src="${contextPath}/resources/image/logo2.svg"></a>
+			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
 	        <select id="country-select" name="country">
-		     	<option value="kr" data-image="${contextPath}/resources/image/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-		        <option value="jp" data-image="${contextPath}/resources/image/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
+		     	<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
+		        <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
 		     </select>
 		</div>
 		<div class="loginpage-middle">
 			<p>로그인</p>
 		</div>
-		<form action="${contextPath}/member/loginProcess.do" method="post">
+		<form action="${contextPath}/member/login.do" method="post">
 			<input type="text" id="userId" name="id" placeholder="아이디" required>
 			<input type="password" id="userPw" name="password" placeholder="비밀번호" required>
 			<p class="error_message" style="display: none;">아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.</p>
@@ -32,12 +33,12 @@
         		<p class="separator">
   					<span>또는</span>
 				</p>
-				<button type="button" id="social-login-button kakao">
-        			<img src="${contextPath}/resources/image/kakao_icon.png" alt="카카오 아이콘">
+				<button type="button" id="kakao-login-btn">
+        			<img src="${contextPath}/resources/icon/kakao_icon.png" alt="카카오 아이콘">
         			<span>카카오로 로그인</span>
     			</button>
-    			<button type="button" id="social-login-button naver">
-        			<img src="${contextPath}/resources/image/naver_icon.svg" alt="네이버 아이콘">
+    			<button type="button" id="naver-login-btn">
+        			<img src="${contextPath}/resources/icon/naver_icon.svg" alt="네이버 아이콘">
         			<span>네이버로 로그인</span>
     			</button>
         	</div>
@@ -50,9 +51,16 @@
 	</section>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><!-- 제이쿼리 -->
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><!-- 셀렉트 라이브러리 -->
+	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script><!-- 카카오 SDK -->
 	<script>
 		//국가선택 로직
 		$(document).ready(function() {
+			// Kakao SDK 초기화
+            if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+                Kakao.init('8da16305d90fb5864eea32886df24211');
+                console.log('Kakao SDK initialized:', Kakao.isInitialized());
+            }
+			
 			$('#country-select').select2({
 				minimumResultsForSearch: -1,
 				templateResult: formatState,
@@ -108,7 +116,52 @@
 			}
 			
 			//로그인버튼 클릭시 함수 (아이디비번이 맞으면 메인으로, 맞지않으면 에러메시지 띄워주기)
+			$('form').on('submit', function(e) {
+				e.preventDefault(); // 폼 기본 제출 막기
+				
+				$.post($(this).attr('action'), $(this).serialize(), function(result) {
+			    	if (result === 'success') {
+			        	location.href = '/harunichi'; // 메인페이지로 이동
+			        } else {
+			        	$('.error_message').show();
+			        }
+			       }).fail(function() {
+			            alert("서버 통신 오류");
+			        });
+			    });
+		});
+		
+		//카카오로로그인 버튼 클릭시
+		$(document).on('click', '#kakao-login-btn', function () {
+		    console.log('[카카오로 로그인] 클릭됨');
+
+		    if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
+		        alert('Kakao SDK 초기화되지 않았습니다.');
+		        return;
+		    }
+
+		    Kakao.Auth.authorize({
+	            redirectUri: 'http://localhost:8090/harunichi/member/KakaoCallback.do',
+	            state: 'login',
+	            scope: 'profile_nickname,account_email,name,gender,birthday,birthyear,phone_number,shipping_address'
+	        });
+		});
+		
+		//네이버로로그인 버튼 클릭시
+		$(document).on('click', '#naver-login-btn', function () {
 			
+			const clientId = 'v80rEgQ4aPt_g050ZNtj';
+		    const redirectUri = 'http://localhost:8090/harunichi/member/NaverCallback.do';
+		    const state = 'login'; // 로그인요청인지 회원가입요청인지 구분하기 위해서 설정함
+
+		    const encodedRedirectUri = encodeURIComponent(redirectUri);
+			const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
+				+ "?response_type=code"
+				+ "&client_id=" + clientId
+				+ "&redirect_uri=" + encodedRedirectUri
+				+ "&state=" + state;
+		    
+		    window.location.href = naverLoginUrl; 
 		});
 	</script>
 </body>

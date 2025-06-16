@@ -7,7 +7,7 @@
 <section class="register-options">
     <%-- 이메일 인증 버튼 --%>
     <button type="button" id="email-auth-btn">
-		<img src="${contextPath}/resources/image/email_icon.svg" alt="이메일 아이콘">
+		<img src="${contextPath}/resources/icon/email_icon.svg" alt="이메일 아이콘">
         <span>メールでの認証</span>
     </button>
 </section>
