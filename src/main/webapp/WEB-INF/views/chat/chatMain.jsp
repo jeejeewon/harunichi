@@ -28,7 +28,15 @@
 						<li>
 							<div class="profile-con">
 								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
-									<img class="profile-img" src="<c:url value='/resources/images/chat/${member.profileImg}'/>" alt="프로필사진">
+									<c:choose>
+								    	<c:when test="${not empty member.profileImg}">
+								        	<img class="profile-img" src="/harunichi/resources/images/profile/${member.profileImg}">
+								        	<!-- <img class="profile-img" src="${member.profileImg}"> -->
+								    	</c:when>
+								    	<c:otherwise>
+								        	<img class="profile-img" src="${contextPath}/resources/icon/basic_profile.jpg">
+								    	</c:otherwise>
+									</c:choose>
 								</a>
 								<p class="nick">${member.nick}</p>
 								<p><span style="color: #a3daff; font-weight: bold; ">LIKE </span>${member.myLike}</p>
@@ -86,11 +94,15 @@
 					<li data-room-id="${openChat.roomId}" onclick="doOpenChat(this);">
 						<div class="open-chat-item">
 							<a id="doOpenChat" href="#" >
-								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
+								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">												
 							</a>	
 							<div class="open-chat-info">
-								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>
-								<p class="open-chat-content">채팅방 소개</p>
+								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>								
+								<c:forEach var="messageVo" items="${messageList}" >
+									<c:if test="${openChat.roomId eq messageVo.roomId}">
+										<p class="open-chat-content">${messageVo.message}</p>	
+									</c:if>
+								</c:forEach>						
 							</div>
 						</div>
 					</li>

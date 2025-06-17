@@ -1,5 +1,6 @@
 package com.harunichi.chat.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +46,6 @@ public class ChatControllerImpl implements ChatController {
 				//참여중인 채팅 목록 조회
 				List<ChatVo> myChatList = chatService.selectMyChat(id);
 				model.addAttribute("myChatList", myChatList);
-				System.out.println("myChatMap ---------> " + myChatList);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("⚠" + id + "의 채팅 목록을 조회할 수 없습니다.");
@@ -54,11 +54,26 @@ public class ChatControllerImpl implements ChatController {
 		//DB에서 채팅친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
+		
+		//오픈채팅방 최신 메세지 담을 변수
+		String message = "";
+		List<ChatVo> messageList = new ArrayList<ChatVo>();
 				
 		try {
 			//오픈 채팅방 리스트 조회
 			List<ChatRoomVo> openChatList = chatService.selectOpenChat();
+			
+			//최신 메세지 조회
+			for(ChatRoomVo vo : openChatList) {				
+				ChatVo chatVo = new ChatVo();
+				chatVo.setRoomId(vo.getRoomId());				
+				message = chatService.selectMessage(chatVo.getRoomId());				
+				chatVo.setMessage(message);
+				messageList.add(chatVo);
+			}
+			model.addAttribute("messageList", messageList);
 			model.addAttribute("openChatList", openChatList);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("⚠오픈 채팅 목록을 조회할 수 없습니다.");
@@ -100,41 +115,34 @@ public class ChatControllerImpl implements ChatController {
 		String receiverId = null;
 		if(chatType.equals("personal")) {
 			receiverId = request.getParameter("receiverId");	
-			System.out.println("receiverId : " + receiverId);
-		}
-		
+		}		
 		int persons = 0;
-		
-		System.out.println(senderId.toString());	
-		System.out.println(chatType.toString());
-	
 		String chatTitle = request.getParameter("title");		
 		if(chatType.equals("group")) {
 			persons = Integer.parseInt(request.getParameter("persons"));
-		}	
-		
+		}		
 		String roomId = "";
 		
 		//개인채팅일 경우
 		if(chatType.equals("personal")) {	
 			roomId = chatService.selectRoomId(senderId, receiverId, chatType);	
 			model.addAttribute("roomId", roomId);
-		}else { //단체채팅 생성이므로 바로 채팅방 ID 생성
+		//단체채팅 생성이므로 바로 채팅방 ID 생성	
+		}else { 
 			ChatRoomVo vo = new ChatRoomVo();
 			vo.setUserId(senderId);
 			vo.setChatType(chatType);
 			vo.setTitle(chatTitle);
-			vo.setPersons(persons);
-			
+			vo.setPersons(persons);			
 			roomId = chatService.insertRoomId(vo);
 			model.addAttribute("roomId", roomId);
 		}
 		
-		//채팅방 참여 인원 확인
+		//채팅방 참여 인원 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 		
-		//채팅방 타이틀 제목 확인
+		//채팅방 타이틀 조회
 		String title; 
 		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)

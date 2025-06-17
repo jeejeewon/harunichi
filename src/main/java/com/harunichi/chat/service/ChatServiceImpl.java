@@ -35,21 +35,16 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.saveMessage(chatMsg);
 	}
 
-	
-	//DB에서 친구 추천 리스트 조회
+	//친구 추천 리스트 조회
 	@Override
 	public List<MemberVo> selectMembers(String id) {
 		System.out.println("---ChatService의 selectMembers메소드 호출");			
 		//비로그인
-		if(id == null) {
-			return chatDao.selectRandomMembers();
+		if(id == null) { return chatDao.selectRandomMembers();
 		//로그인
-		}else {
-			return chatDao.selectMembers(id);
-		}	
+		}else { return chatDao.selectMembers(id); }	
 	}
-	
-	
+		
 	//채팅방 ID 조회
 	@Override
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
@@ -60,26 +55,21 @@ public class ChatServiceImpl implements ChatService {
 		ChatRoomVo vo = new ChatRoomVo();
 		vo.setUserId(senderId);
 		vo.setReceiverId(receiverId);
-		vo.setChatType(chatType);
-		
+		vo.setChatType(chatType);		
 		MemberVo memberVo = chatDao.selectNick(receiverId);
-		vo.setTitle(memberVo.getNick());
-					
+		vo.setTitle(memberVo.getNick());					
 		System.out.println("roomId : " + roomId);
 		
 		//DB에 조회된 채팅방ID가 없다면?
-		if(roomId == null) {		
-			roomId = insertRoomId(vo);
-		}	
+		if(roomId == null) { roomId = insertRoomId(vo); }	
 		
 		//DB에서 조회된 채팅방ID 반환
 		return roomId;
 	}
 	
-	
+	//채팅방 ID DB에 저장
 	@Override
-	public String insertRoomId(ChatRoomVo vo) {
-		
+	public String insertRoomId(ChatRoomVo vo) {		
 		System.out.println("---ChatService의 insertRoomId메소드 호출");		
 		
 		Map<String, Object> roomMap = new HashMap<String, Object>();
@@ -93,15 +83,13 @@ public class ChatServiceImpl implements ChatService {
 		String random = String.format("%06d", randomInt);			
 		//새로운 채팅방 ID 생성 후 반환
 		String newRoomId = now + "_" + random;			
-		System.out.println("newRoomId : " + newRoomId);
-		
+		System.out.println("newRoomId : " + newRoomId);		
 		roomMap.put("roomId", newRoomId);
 		
 		//단체 채팅일 경우
 		if(vo.getChatType().equals("group")) {			
 			roomMap.put("userId", vo.getUserId());
-			roomMap.put("title", vo.getTitle());
-		
+			roomMap.put("title", vo.getTitle());		
 		//개인 채팅일 경우
 		}else {
 			List<String> userList = new ArrayList<String>();		
@@ -120,14 +108,12 @@ public class ChatServiceImpl implements ChatService {
 		return newRoomId;		
 	}
 
-	
 	//과거 채팅 내역 불러오기
 	@Override
 	public List<ChatVo> selectChatHistory(String roomId) {
 		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
 		return chatDao.selectChatHistory(roomId);
 	}
-
 	
 	//채팅방 참여 인원 확인
 	@Override
@@ -136,8 +122,7 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.selectUserCount(roomId);
 	}
 	
-
-	//채팅방 타이틀 확인(단체채팅)
+	//채팅방 타이틀 확인(단체채팅 - 방장이 정한 타이틀)
 	@Override
 	public String selectTitle(String roomId) {
 		System.out.println("---ChatService의 selectTitle메소드 호출");
@@ -145,31 +130,26 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.selectTitle(roomId);
 	}
 	
-
-	//채팅방 타이틀 확인(개인채팅)
+	//채팅방 타이틀 확인(개인채팅 - 상대방 닉네임)
 	@Override
 	public MemberVo selectNick(String receiverId) {
 		System.out.println("---ChatService의 selectNick메소드 호출");
 		return chatDao.selectNick(receiverId);
 	}
 
-	
 	//오픈 채팅방 리스트 조회
 	@Override
 	public List<ChatRoomVo> selectOpenChat() {	
 		System.out.println("---ChatService의 selectOpenChat메소드 호출");
-		List<ChatRoomVo> openChatList = chatDao.selectOpenChat();
-		
+		List<ChatRoomVo> openChatList = chatDao.selectOpenChat();		
 		//채팅방 참여 인원 확인
 		for(ChatRoomVo vo : openChatList) {
 			int count = selectUserCount(vo.getRoomId());
 			vo.setUserCount(count);
-		}
-		
+		}	
 		return openChatList;
 	}
 
-	
 	//내 채팅 목록 조회
 	@Override
 	public List<ChatVo> selectMyChat(String id) {
@@ -177,8 +157,7 @@ public class ChatServiceImpl implements ChatService {
 		
 		//최신 채팅 정보 조회
 		List<ChatVo> myChatList = chatDao.selectMyChat(id);
-					
-		
+						
 		//채팅 목록에 나타낼 최신 메세지 시간 나타내기 위한 반복문
 		for(ChatVo vo : myChatList) {
 			Timestamp sentTime = vo.getSentTime();
@@ -202,10 +181,19 @@ public class ChatServiceImpl implements ChatService {
 			    displayTime = sentDateTime.format(dateFormatter);
 			}
 			vo.setDisplayTime(displayTime);	
-		}
-		
-		return myChatList;
-		
+		}		
+		return myChatList;		
 	}
+
+	//오픈 채팅방 최신 메세지 조회
+	@Override
+	public String selectMessage(String roomId) {
+		return chatDao.selectMessage(roomId);
+	}
+	
+	
+	
+	
+	
 }
 

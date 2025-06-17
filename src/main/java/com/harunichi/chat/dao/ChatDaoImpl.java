@@ -27,7 +27,7 @@ public class ChatDaoImpl implements ChatDao {
 	
 	private static final String NAMESPACE = "mapper.chat.";
 	
-	//채팅 저장
+	//채팅 메세지 DB에 저장
 	@Override	
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("===ChatDao의 saveMessage 메소드 실행");	
@@ -132,7 +132,7 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "selectNick", receiverId);
 	}
 
-	//오픈 채팅방 조회
+	//오픈 채팅방 리스트 조회
 	@Override
 	public List<ChatRoomVo> selectOpenChat() {
 		System.out.println("===ChatDao의 selectOpenChat 메소드 실행");
@@ -144,6 +144,12 @@ public class ChatDaoImpl implements ChatDao {
 	public List<ChatVo> selectMyChat(String id) {
 		System.out.println("===ChatDao의 selectMyChat 메소드 실행");
 		return sqlSession.selectList(NAMESPACE + "selectMyChat", id);
+	}
+
+	//오픈 채팅방 최신 메세지 조회
+	@Override
+	public String selectMessage(String roomId) {
+		return sqlSession.selectOne(NAMESPACE + "selectMessage", roomId);
 	}
 
 

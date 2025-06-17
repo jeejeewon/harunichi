@@ -64,6 +64,8 @@
 		<beans:property name="order" value="1"/>
 	</beans:bean>
 	
+	<!-- 프로필이미지 경로 읽어오기 -->
+	<mvc:resources mapping="/images/profile/**" location="file:/C:/harunichi/images/profile/" />
 	
 </beans:beans>
 
