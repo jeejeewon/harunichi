@@ -13,14 +13,8 @@
     <link href="${contextPath}/resources/css/member/addMemberForm.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
+	<jsp:include page="../common/lightHeader.jsp" />
 	<section class="addmemberform-wrap">
-		<div class="header-area" style="background-color: pink;">
-			<a href="${contextPath}"><img src="${contextPath}/resources/icon/logo2.svg"></a>
-	        <select id="country-select" name="country">
-		     	<option value="kr" data-image="${contextPath}/resources/icon/south-korea_icon.png"${selectedCountry == 'kr' ? 'selected' : ''}>Korea</option>
-		        <option value="jp" data-image="${contextPath}/resources/icon/japan_icon.png"${selectedCountry == 'jp' ? 'selected' : ''}>Japan</option>
-		     </select>
-		</div>
 		<div class="addmemberform-middle">
 			<img src="${contextPath}/resources/icon/party-icon.png">
 			<p>회원가입을 환영합니다!</p>
@@ -44,7 +38,7 @@
 	   		<a href="${contextPath}/member/loginpage.do">로그인</a>
 	    </div>
 		</section>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
