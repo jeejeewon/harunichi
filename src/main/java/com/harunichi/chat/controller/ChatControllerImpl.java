@@ -16,7 +16,6 @@ import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.common.util.LoginCheck;
 import com.harunichi.member.vo.MemberVo;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

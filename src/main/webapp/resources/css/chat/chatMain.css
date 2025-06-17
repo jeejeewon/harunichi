@@ -37,7 +37,7 @@
 	font-size: 20px;
 	color: #797979;
 	font-weight: bold;
-	margin-bottom: 40px;
+	margin: 10px 0;
 }
 .chat-slider-container {
 	width: 1000px;
@@ -129,7 +129,7 @@
 	background-color: white;
 	font-weight: bold;
 	border: 1px solid #a3daff;
-	margin: 0 0 35px 20px;
+	margin-left: 10px;
 }
 #newOpenChatBtn:hover {
 	background-color: #a3daff;
@@ -145,7 +145,7 @@
 .open-chat-list {
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	margin-bottom: 20px;
 }
 .open-chat-item {
 	display: flex;
@@ -176,11 +176,11 @@
 	color: #888;
 	margin-top: 4px;
 }
-#openChatCon {
+.openChatCon {
   display: flex;
   justify-content: center;  /* 가로 중앙 */
   flex-direction: column;
-  padding: 0 90px 0 80px;
+  padding: 0 20px;
 }
 .open-chat-item:hover {
   background-color: #f0f8ff;

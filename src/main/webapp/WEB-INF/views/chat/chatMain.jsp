@@ -46,7 +46,7 @@
 			<div id="">
 				<p id="recText">내 채팅 목록</p>
 			</div>
-			<div id="">	
+			<div class="openChatCon">	
 				<ul class="open-chat-list">
 					<c:if test="${empty myChatList}">
 						<li><p>아직 참여 중인 채팅방이 없어요. 새로운 채팅을 시작해보세요!💬</p></li>
@@ -80,7 +80,7 @@
 			<p id="recText">오픈채팅방</p>
 			<a href="#" id="newOpenChatBtn" onclick="openModal()">만들기</a>
 		</div>
-		<div id="openChatCon">	
+		<div class="openChatCon">	
 			<ul class="open-chat-list">
 				<c:forEach var="openChat" items="${openChatList}">
 					<li data-room-id="${openChat.roomId}" onclick="doOpenChat(this);">
