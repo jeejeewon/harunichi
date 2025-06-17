@@ -90,30 +90,28 @@
         WHERE productId = #{productId}
     </update>
 
-    <!-- 검색 + 필터 + 페이징 -->
-    <select id="searchFiltered" parameterType="map" resultType="com.harunichi.product.vo.ProductVo">
-        SELECT 
-            p.*, 
-            m.nick AS writerNick,
-            m.profileImg AS writerProfileImg
-        FROM product p
-        LEFT JOIN member m ON p.productWriterId = m.id
-        WHERE 1=1
-        <if test="keyword != null and keyword != ''">
-            AND (p.productTitle LIKE CONCAT('%', #{keyword}, '%')
-              OR p.productContent LIKE CONCAT('%', #{keyword}, '%'))
-        </if>
-        <if test="category != null and category != ''">
-            AND p.productCategory = #{category}
-        </if>
-        <if test="minPrice != null">
-            AND p.productPrice &gt;= #{minPrice}
-        </if>
-        <if test="maxPrice != null">
-            AND p.productPrice &lt;= #{maxPrice}
-        </if>
-        ORDER BY p.productDate DESC
-        LIMIT #{offset}, #{limit}
-    </select>
+	<!-- 검색 + 필터 + 페이징 -->
+	<select id="searchFiltered" parameterType="map" resultType="com.harunichi.product.vo.ProductVo">
+	    SELECT 
+	        p.*, 
+	        m.nick AS writerNick,
+	        m.profileImg AS writerProfileImg
+	    FROM product p
+	    LEFT JOIN member m ON p.productWriterId = m.id
+	    WHERE 1=1
+	    <if test="keyword != null and keyword != ''">
+	        AND (p.productTitle LIKE CONCAT('%', #{keyword}, '%')
+	          OR p.productContent LIKE CONCAT('%', #{keyword}, '%'))
+	    </if>
+	    <if test="category != null and category != ''">
+	        AND p.productCategory = #{category}
+	    </if>
+	    <if test="status != null">
+	        AND p.productStatus = #{status}
+	    </if>
+	    ORDER BY p.productDate DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
 
 </mapper>

@@ -56,6 +56,21 @@
     background-color: #f2f2f2;
 }
 
+.btn-status {
+    padding: 5px 10px;
+    margin: 0 2px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-status.selected {
+    background-color: #A3DAFF;
+    font-weight: bold;
+}
+
+
 /* --------------------------
     검색/필터 영역, 글쓰기 버튼
 --------------------------- */
@@ -181,12 +196,13 @@
 }
 
 .product-image {
-    width: 300px;
+	width: 300px;
     height: 250px;
     object-fit: cover;
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: #f9f9f9;
+    margin-top: 10px;
 }
 
 .product-info-box {

@@ -56,12 +56,11 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
+    public List<ProductVo> searchFiltered(String keyword, String category, Integer status, int offset, int limit) throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("keyword", keyword);
         params.put("category", category);
-        params.put("minPrice", minPrice);
-        params.put("maxPrice", maxPrice);
+        params.put("status", status);
         params.put("offset", offset);
         params.put("limit", limit);
         return sqlSession.selectList(NAMESPACE + "searchFiltered", params);

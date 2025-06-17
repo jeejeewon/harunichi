@@ -11,6 +11,7 @@
 <div class="search-bar">
     <div class="filter-group">
         <input type="text" id="keyword" placeholder="검색어 입력 (제목/내용)" />
+
         <select id="category">
             <option value="">상품카테고리</option>
             <option value="book">📚도서</option>
@@ -20,9 +21,17 @@
             <option value="music">💿음반</option>
             <option value="etc">🎁기타</option>
         </select>
-        <button class="btn-sky" onclick="searchProducts()">검색</button>
+		<button class="btn-sky" onclick="searchProducts()">검색</button>
+		
+        <button type="button" class="btn-status" data-status="">전체</button>
+        <button type="button" class="btn-status" data-status="0">판매</button>
+        <button type="button" class="btn-status" data-status="1">나눔</button> 
+    
     </div>
-
+        
+    <!-- 숨겨진 거래방식 상태값 -->
+	<input type="hidden" id="status" value="">
+	  
     <button class="btn-sky" onclick="location.href='${pageContext.request.contextPath}/product/write'">글쓰기</button>
 </div>
 
@@ -69,13 +78,22 @@ function renderProducts(products) {
         const rawCategory = (p.productCategory || '').toLowerCase();
         const displayCategory = categoryMap[rawCategory] || '카테고리 없음';
 
-        // 이미지 처리
-		const productImg = p.productImg ? ctx + p.productImg : ctx + '/resources/images/product/no_image.png';
-		const profileImg = p.writerProfileImg ? ctx + p.writerProfileImg : ctx + '/resources/images/member/default_profile.png';
-        const writerNick = p.writerNick;
+		// 상품 이미지 처리
+		const productImg = (p.productImg && p.productImg.trim() !== '')
+	    	? ctx + '/resources/images/product/' + p.productImg  // DB에 'file.jpg, png'만 들어 있을 때(경로 없을때)
+	    	: ctx + '/resources/images/product/no_image.png';
+		
+		// 프로필 이미지 처리
+		const profileImg = p.writerProfileImg
+		    ? ctx + '/resources/images/profile/' + p.writerProfileImg  // DB에 'admin.png'만 들어 있을 때(경로 없을때)
+		    : ctx + '/resources/images/profile/default_profile.png';
+		
+		// 작성자 닉네임
+		const writerNick = p.writerNick;
+
 
         // 상태 처리 (문자열 "1" 또는 숫자 1 모두 처리)
-        const statusText = p.productStatus == 1 || p.productStatus === "1" ? '나눔' : '판매';
+        const statusText = p.productStatus == 1 ? '나눔' : '판매';
 
         const productHtml =
             '<div class="product-card" onclick="location.href=\'' + ctx + '/product/view?productId=' + p.productId + '\'">' +
@@ -123,6 +141,7 @@ function loadProducts() {
 function searchProducts(reset = true) {
     const keyword = $('#keyword').val();
     const category = $('#category').val();
+    const status = $('#status').val();
 
     if (reset) {
         page = 1;
@@ -134,9 +153,23 @@ function searchProducts(reset = true) {
     fetchProducts(ctx + '/product/search', {
         keyword: keyword,
         category: category,
+        status: status,
         page: page
     });
 }
+
+//거래방식 버튼 클릭 시 selected 스타일 적용 및 값 저장
+$('.btn-status').on('click', function () {
+    $('.btn-status').removeClass('selected'); // 다른 버튼 선택 해제
+    $(this).addClass('selected'); // 현재 클릭한 버튼 선택
+
+    const statusValue = $(this).data('status');
+    $('#status').val(statusValue); // 숨겨진 input에 저장
+    
+    // 버튼 클릭 시 즉시 검색 수행
+    searchProducts();
+});
+
 
 // 더보기 버튼 이벤트
 $('#loadMoreBtn').on('click', () => {

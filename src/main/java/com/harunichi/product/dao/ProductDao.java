@@ -22,7 +22,8 @@ public interface ProductDao {
 
     void incrementViewCount(int productId) throws Exception;
 
-    List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception;
+    List<ProductVo> searchFiltered(String keyword, String category, Integer status,
+            int offset, int pageSize) throws Exception;
 
     List<ProductVo> findOtherProducts(Map<String, Object> paramMap) throws Exception;
 }

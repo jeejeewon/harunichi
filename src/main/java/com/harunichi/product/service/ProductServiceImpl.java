@@ -49,11 +49,6 @@ public class ProductServiceImpl implements ProductService {
     public void incrementViewCount(int productId) throws Exception {
         productDao.incrementViewCount(productId);
     }
-    
-    @Override
-    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
-        return productDao.searchFiltered(keyword, category, minPrice, maxPrice, offset, limit);
-    }
 
     @Override
     public List<ProductVo> findOtherProducts(String writerId, int productId, int offset, int size) throws Exception {
@@ -64,6 +59,11 @@ public class ProductServiceImpl implements ProductService {
         paramMap.put("size", size);
         return productDao.findOtherProducts(paramMap);
     }
+
+	@Override
+	public List<ProductVo> searchFiltered(String keyword, String category, Integer status, int offset, int pageSize) throws Exception {
+		 return productDao.searchFiltered(keyword, category, status, offset, pageSize);
+	}
 
     
 }

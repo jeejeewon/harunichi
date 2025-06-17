@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.harunichi.common.util.FileUploadUtil;
+import com.harunichi.common.util.LoginCheck;
 import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
 
@@ -30,7 +30,12 @@ public class ProductControllerImpl implements ProductController {
 
     @Autowired
     private ProductService productService;
-
+    
+    // 로그인 공통화
+    private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return !LoginCheck.loginCheck(request.getSession(), request, response);
+    }
+    
     // 상품 목록
     @Override
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -88,6 +93,7 @@ public class ProductControllerImpl implements ProductController {
     @Override
     @RequestMapping(value = "/write", method = RequestMethod.GET)
     public ModelAndView writeForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
         return new ModelAndView("/product/write");
     }
 
@@ -98,6 +104,7 @@ public class ProductControllerImpl implements ProductController {
                               @RequestParam("uploadFile") MultipartFile uploadFile,
                               HttpServletRequest request,
                               HttpServletResponse response) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
         String loginId = (String) request.getSession().getAttribute("loginId");
         product.setProductWriterId(loginId);
 
@@ -117,6 +124,7 @@ public class ProductControllerImpl implements ProductController {
     public ModelAndView delete(@RequestParam("productId") int productId,
                                HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
         String loginId = (String) request.getSession().getAttribute("loginId");
         ProductVo product = productService.findById(productId);
 
@@ -127,7 +135,6 @@ public class ProductControllerImpl implements ProductController {
             String productImgPath = product.getProductImg();
             if (productImgPath != null && !productImgPath.trim().isEmpty()) {
                 String uploadDir = request.getSession().getServletContext().getRealPath("/resources/images/product");
-                
                 String fileName = new File(productImgPath).getName();
                 FileUploadUtil.deleteFile(uploadDir, fileName);
             }
@@ -142,6 +149,7 @@ public class ProductControllerImpl implements ProductController {
     public ModelAndView editForm(@RequestParam("productId") int productId,
                                  HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
         ProductVo product = productService.findById(productId);
         ModelAndView mav = new ModelAndView("/product/edit");
         mav.addObject("product", product);
@@ -156,13 +164,8 @@ public class ProductControllerImpl implements ProductController {
                              HttpServletRequest request,
                              HttpServletResponse response,
                              RedirectAttributes rttr) throws Exception {
-
+        if (isNotLoggedIn(request, response)) return null;
         String loginId = (String) request.getSession().getAttribute("loginId");
-
-        if (loginId == null) {
-            rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
-            return new ModelAndView("redirect:/member/login");
-        }
 
         ProductVo original = productService.findById(product.getProductId());
 
@@ -180,8 +183,6 @@ public class ProductControllerImpl implements ProductController {
         }
 
         String uploadDir = request.getSession().getServletContext().getRealPath("/resources/images/product");
-
-        // 기존 이미지 삭제
         String deleteImg = request.getParameter("deleteImg");
         boolean isDeleteRequested = (deleteImg != null);
 
@@ -193,7 +194,6 @@ public class ProductControllerImpl implements ProductController {
             product.setProductImg(original.getProductImg());
         }
 
-        // 새 이미지 업로드
         if (uploadFile != null && !uploadFile.isEmpty()) {
             if (original.getProductImg() != null) {
                 String fileName = new File(original.getProductImg()).getName();
@@ -210,21 +210,31 @@ public class ProductControllerImpl implements ProductController {
         return new ModelAndView("redirect:/product/view?productId=" + product.getProductId());
     }
 
-
     // 검색 + 필터 + Ajax 기반 목록
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> searchList(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "minPrice", required = false) Integer minPrice,
-            @RequestParam(value = "maxPrice", required = false) Integer maxPrice,
+            @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "page", defaultValue = "1") int page) throws Exception {
 
         int pageSize = 8;
         int offset = (page - 1) * pageSize;
 
-        List<ProductVo> products = productService.searchFiltered(keyword, category, minPrice, maxPrice, offset, pageSize);
+        // 문자열 상태를 Integer로 변환
+        Integer statusVal = null;
+        if (status != null && !status.isEmpty()) {
+            try {
+                statusVal = Integer.valueOf(status); // "0" 또는 "1"
+            } catch (NumberFormatException e) {
+                statusVal = null;
+            }
+        }
+
+        List<ProductVo> products = productService.searchFiltered(
+                keyword, category, statusVal, offset, pageSize
+        );
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (ProductVo product : products) {
@@ -233,6 +243,7 @@ public class ProductControllerImpl implements ProductController {
             map.put("productTitle", product.getProductTitle());
             map.put("productPrice", product.getProductPrice());
             map.put("productImg", product.getProductImg());
+            map.put("productStatus", product.getProductStatus());
             map.put("productCount", product.getProductCount());
             map.put("writerNick", product.getWriterNick());
             map.put("writerProfileImg", product.getWriterProfileImg());
