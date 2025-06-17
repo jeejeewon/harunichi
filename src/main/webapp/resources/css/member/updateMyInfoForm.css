@@ -48,6 +48,20 @@ form > div{
 .profile-img-upload input[type="file"] {
     display: none;
 }
+
+#resetProfileBtn{
+	color: #777;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    padding: 2px 7px;
+    border-radius: 5px;
+    white-space: nowrap;
+    width: auto;
+    margin-top: 10px;
+}
+#resetProfileBtn:hover{
+	background-color: #ddd;
+}
 	
 /*관심사 설정*/
 .interest-buttons {

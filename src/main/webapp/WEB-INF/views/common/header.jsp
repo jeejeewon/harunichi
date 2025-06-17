@@ -36,7 +36,7 @@
 									<%-- 세션에 profileImg 값이 있을 경우 이미지 경로 사용, 없으면 기본 이미지 --%>
 									<c:choose>
 								    	<c:when test="${not empty sessionScope.member.profileImg}">
-								        	<img class="profile-image" src="${sessionScope.member.profileImg}">
+								        	<img class="profile-image" src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}" alt="프로필 이미지">
 								    	</c:when>
 								    	<c:otherwise>
 								        	<img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">

@@ -22,7 +22,10 @@
         	<div class="profile-image-area">
 			    <c:choose>
 			        <c:when test="${not empty member.profileImg}">
-			            <img id="profileImage" src="${sessionScope.member.profileImg}" alt="프로필 이미지">
+			            <img id="profileImage" src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}" alt="프로필 이미지">
+			            <!-- [기본이미지] 버튼 : 현재 이미지가 기본 이미지 아닐 때만 표시 -->
+            			<button type="button" id="resetProfileBtn">기본 이미지 적용</button>
+            			<input type="hidden" name="resetProfile" id="resetProfile" value="false"><!-- 이미지를 기본이미지로 설정했을때 데이터보낼 히든인풋 -->
 			        </c:when>
 			        <c:otherwise>
 			            <img id="profileImage" src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 프로필 이미지">
@@ -406,6 +409,23 @@ $('#pass').on('blur', function() {
         $errorSpan.text('');
     }
 });
+
+	//기본이미지 버튼 클릭시 프로필이미지 기본이미지로 변경
+    $('#resetProfileBtn').on('click', function() {
+        // 기본 이미지로 src 변경
+        $('#profileImage').attr('src', '${contextPath}/resources/icon/basic_profile.jpg');
+        // 파일 업로드 input 비움
+        $('#profileImg').val('');
+     // 버튼 숨김
+        $(this).hide();
+     // resetProfile hidden input 값을 true로 설정
+        $('#resetProfile').val('true');
+    });
+    //다시 프로필이미지를 업로드했을때 기본이미지버튼 나타남
+    $('#profileImg').on('change', function() {
+    	$('#resetProfile').val('false'); // 파일 업로드 시 기본이미지 초기화 플래그 해제
+        $('#resetProfileBtn').show();
+    });
 
 
 

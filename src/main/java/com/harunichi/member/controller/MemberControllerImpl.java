@@ -3,6 +3,8 @@ package com.harunichi.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,6 +54,14 @@ import com.harunichi.test.controller.TestController;
 @Controller("memberController")
 @RequestMapping(value="/member")
 public class MemberControllerImpl implements MemberController{
+	
+	//더미 이미지 복사 메소드 자동호출
+	@Autowired
+    private ServletContext servletContext;
+    @PostConstruct
+    public void init() {
+        copyDummyImagesOnStartup(servletContext);
+    }
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberControllerImpl.class);
@@ -748,27 +760,81 @@ public class MemberControllerImpl implements MemberController{
 	
 
 	// 프로필 이미지 처리 메소드
-	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
-		String uploadDir = request.getServletContext().getRealPath("/resources/images/profile");
-		System.out.println("파일 저장 경로: " + uploadDir);
-		String fileName = null;
-		try {
-			if(profileImg != null && !profileImg.isEmpty()) {
-				File dir = new File(uploadDir);
-	            if (!dir.exists()) {
-					boolean success = dir.mkdirs(); // 디렉토리 없으면 생성
-					if (!success) {
-						System.err.println("폴더 생성 실패!");
-						return null; // 폴더 생성 실패 시 null 반환
-					}
+//	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
+//		String uploadDir = request.getServletContext().getRealPath("/resources/images/profile");
+//		System.out.println("파일 저장 경로: " + uploadDir);
+//		String fileName = null;
+//		try {
+//			if(profileImg != null && !profileImg.isEmpty()) {
+//				File dir = new File(uploadDir);
+//	            if (!dir.exists()) {
+//					boolean success = dir.mkdirs(); // 디렉토리 없으면 생성
+//					if (!success) {
+//						System.err.println("폴더 생성 실패!");
+//						return null; // 폴더 생성 실패 시 null 반환
+//					}
+//	            }
+//				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
+//				return request.getContextPath() + "/resources/images/profile/" + fileName;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null; //파일이 없을 경우에 null 반환
+//	}
+	//프로젝트 시작 시 더미 이미지 복사 메소드
+	public void copyDummyImagesOnStartup(ServletContext context) {
+		String sourceDirPath = context.getRealPath("/resources/images/profile");
+	    String targetDirPath = "C:/harunichi/images/profile";
+	    
+	    File sourceDir = new File(sourceDirPath);
+	    File targetDir = new File(targetDirPath);
+	    
+	    if (!targetDir.exists()) {
+	        targetDir.mkdirs();
+	    }
+	    
+	    File[] files = sourceDir.listFiles();
+	    if (files != null) {
+	        for (File file : files) {
+	            System.out.println("복사 시도 파일: " + file.getName());
+	            if (file.isFile()) {
+	                File targetFile = new File(targetDir, file.getName());
+	                try {
+	                    Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	                    System.out.println("복사됨: " + file.getName());
+	                } catch (IOException e) {
+	                    System.err.println("복사 실패: " + file.getName());
+	                    e.printStackTrace();
+	                }
 	            }
-				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
-				return request.getContextPath() + "/resources/images/profile/" + fileName;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null; //파일이 없을 경우에 null 반환
+	        }
+	    }
+	    System.out.println("복사 소스 경로: " + sourceDirPath);
+	    System.out.println("복사 대상 경로: " + targetDirPath);
+	}
+
+	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
+	    String uploadDir = "C:/harunichi/images/profile";
+	    System.out.println("파일 저장 경로: " + uploadDir);
+	    String fileName = null;
+	    try {
+	        if (profileImg != null && !profileImg.isEmpty()) {
+	            File dir = new File(uploadDir);
+	            if (!dir.exists()) {
+	                boolean success = dir.mkdirs();
+	                if (!success) {
+	                    System.err.println("폴더 생성 실패!");
+	                    return null;
+	                }
+	            }
+	            fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);
+	            return "/images/profile/" + fileName; // DB에 상대경로 저장하도록
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 	// 관심사 처리 메소드
@@ -864,6 +930,7 @@ public class MemberControllerImpl implements MemberController{
             @RequestParam(value = "contry") String contry,
             @RequestParam(value = "myLike", required = false) String[] myLikes,
             @RequestParam(value = "profileImg", required = false) MultipartFile profileImg,
+            @RequestParam(value = "resetProfile", required = false) String resetProfile,
             HttpSession session,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
@@ -945,11 +1012,17 @@ public class MemberControllerImpl implements MemberController{
         memberVo.setAddress(fullAddress);
 
         // 프로필 이미지 업로드
-        String filePath = handleProfileImage(profileImg, request);
-        if (filePath != null) {
-            memberVo.setProfileImg(filePath);
+        if ("true".equals(resetProfile)) {
+            memberVo.setProfileImg(null);//기본이미지로 바꿨을경우 null세팅
+        } else {
+            String filePath = handleProfileImage(profileImg, request);
+            if (filePath != null) {
+            	String fileName = new File(filePath).getName();  // 파일명만
+                memberVo.setProfileImg(fileName);
+            }
         }
-
+        
+        // 회원 정보 업데이트
         try {
             memberService.updateMember(memberVo);
             session.setAttribute("member", memberVo);
@@ -966,7 +1039,11 @@ public class MemberControllerImpl implements MemberController{
             out.println("</script>");
             out.flush();
             return null;
+           
         }
+
+        
+        
     }
 
 
