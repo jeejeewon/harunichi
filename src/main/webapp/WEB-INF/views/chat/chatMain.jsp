@@ -19,7 +19,7 @@
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
 	<div style="margin-bottom: 80px;">
-	<p id="recText">채팅친구추천</p>
+		<p id="recText">채팅친구추천</p>
 		<div id="chatMainCon">		
 			<a href="#" class="btn pre"><i class="bi bi-arrow-left"></i></a>
 			<div class="chat-slider-container">
@@ -41,12 +41,46 @@
 			<a href="#" class="btn next"><i class="bi bi-arrow-right"></i></a>
 		</div>
 	</div>
+	<c:if test="${!empty sessionScope.id}">
+		<div>
+			<div id="">
+				<p id="recText">내 채팅 목록</p>
+			</div>
+			<div id="">	
+				<ul class="open-chat-list">
+					<c:if test="${empty myChatList}">
+						<li><p>아직 참여 중인 채팅방이 없어요. 새로운 채팅을 시작해보세요!💬</p></li>
+					</c:if>
+					<c:forEach var="myChat" items="${myChatList}">
+						<li>
+							<div class="open-chat-item">
+								<a href="<%=request.getContextPath()%>/chat/window?roomId=${myChat.roomId}">
+									<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
+								</a>	
+								<div class="open-chat-info">
+									<c:choose>
+										<c:when test="${myChat.chatType eq 'personal'}">
+											<p class="open-chat-title">제목 <span class="sent-time">${myChat.displayTime}</span></p>
+										</c:when>
+										<c:otherwise>
+											<p class="open-chat-title">제목 <span>(<span>참여인원 / </span>총 인원)</span><span class="sent-time">${myChat.displayTime}</span></p>
+										</c:otherwise>
+									</c:choose>
+									<p class="open-chat-content">${myChat.message}</p>
+								</div>
+							</div>
+						</li>
+					</c:forEach>				
+				</ul>
+			</div>	
+		</div>
+	</c:if>
 	<div>
-	<div id="openTitle">
-		<p id="recText">오픈채팅방</p>
-		<a href="#" id="newOpenChatBtn" onclick="openModal()">만들기</a>
-	</div>
-		<div id="openChatCon">
+		<div id="openTitle">
+			<p id="recText">오픈채팅방</p>
+			<a href="#" id="newOpenChatBtn" onclick="openModal()">만들기</a>
+		</div>
+		<div id="openChatCon">	
 			<ul class="open-chat-list">
 				<c:forEach var="openChat" items="${openChatList}">
 					<li>

@@ -20,6 +20,6 @@ public class ChatRoomVo {
 	private Timestamp admissionTime;	//채팅방 입장 시간 (채팅 내역 불러올 때 사용)
 	
 	private String receiverId; 			//채팅방 ID 조회시 값 저장을 위한 변수
-	private int userCount;
+	private int userCount;				//오픈 채팅방에 참여중인 인원 수 카운팅
 	
 }

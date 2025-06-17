@@ -41,21 +41,34 @@ public class ChatController {
 		
 		String id = null;
 		String nick = null;
-		
-		if(member != null) {
+				
+		//로그인 했다면?
+		if(member != null && member.getId() != null && !member.getId().isEmpty()) {
 			id = member.getId();
-			nick = member.getNick();
+			nick = member.getNick();			
+			try {
+				//참여중인 채팅 목록 조회
+				List<ChatVo> myChatList = chatService.selectMyChat(id);
+				model.addAttribute("myChatList", myChatList);
+				System.out.println("myChatMap ---------> " + myChatList);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("⚠" + id + "의 채팅 목록을 조회할 수 없습니다.");
+			}	
 		}
-		
 		//DB에서 채팅친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
-		
-		//오픈 채팅방 리스트 조회
-		List<ChatRoomVo> openChatList = chatService.selectOpenChat();
-		model.addAttribute("openChatList", openChatList);
-		
-		return "/chatMain";		
+				
+		try {
+			//오픈 채팅방 리스트 조회
+			List<ChatRoomVo> openChatList = chatService.selectOpenChat();
+			model.addAttribute("openChatList", openChatList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("⚠오픈 채팅 목록을 조회할 수 없습니다.");
+		}
+		return "/chatMain";
 	}
 
 	

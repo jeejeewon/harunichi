@@ -161,9 +161,15 @@
 	justify-content: center;
 }
 .open-chat-title {
-	font-weight: bold;
-	color: #444;
-	margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* optional: 요소들 간 살짝 띄우기 */
+}
+
+.sent-time {
+  margin-left: auto;
+  color: #999; /* optional: 회색 텍스트 */
+  font-size: 0.9em;
 }
 .open-chat-content {
 	font-size: 0.9rem;

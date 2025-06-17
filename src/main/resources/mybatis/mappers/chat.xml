@@ -105,7 +105,7 @@
 	<!-- 채팅방 타이틀 조회(단체 채팅) -->
 	<select id="selectTitle" parameterType="String" resultType="String">
 		<![CDATA[
-			SELECT title
+			SELECT DISTINCT title 
 			FROM chatroom
 			WHERE roomId = #{roomId}
 		]]>
@@ -146,6 +146,26 @@
 			WHERE chatType = 'group'
 		]]>
 	</select>
+
+	<!-- 내 채팅 목록 -->
+	<select id="selectMyChat" parameterType="String" resultType="ChatVo">
+		<![CDATA[
+			SELECT c.*
+			FROM chat c
+			JOIN chatroom r 
+			ON c.roomId = r.roomId
+			WHERE r.userId = #{id}
+			AND c.sentTime = (
+			    SELECT MAX(c2.sentTime)
+			    FROM chat c2
+			    WHERE c2.roomId = c.roomId)
+		]]>
+		
+
+	
+	
+	</select>
+
 
 
 </mapper>

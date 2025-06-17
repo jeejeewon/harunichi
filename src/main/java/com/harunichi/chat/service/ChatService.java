@@ -1,10 +1,15 @@
 package com.harunichi.chat.service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -46,13 +51,16 @@ public class ChatService {
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
 		System.out.println("---ChatService의 selectRoomId메소드 호출");		
 		
-		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);
-		
+		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);		
+				
 		ChatRoomVo vo = new ChatRoomVo();
 		vo.setUserId(senderId);
 		vo.setReceiverId(receiverId);
 		vo.setChatType(chatType);
-				
+		
+		MemberVo memberVo = chatDao.selectNick(receiverId);
+		vo.setTitle(memberVo.getNick());
+					
 		System.out.println("roomId : " + roomId);
 		
 		//DB에 조회된 채팅방ID가 없다면?
@@ -71,6 +79,7 @@ public class ChatService {
 		
 		Map<String, Object> roomMap = new HashMap<String, Object>();
 	
+		//새로운 채팅방 아이디 생성
 		//현재 날짜
 		String now = new SimpleDateFormat("yyyyMMdd").format(new Date());		
 		//랜덤 숫자 (0 ~ 999999)
@@ -83,17 +92,21 @@ public class ChatService {
 		
 		roomMap.put("roomId", newRoomId);
 		
+		//단체 채팅일 경우
 		if(vo.getChatType().equals("group")) {			
 			roomMap.put("userId", vo.getUserId());
+			roomMap.put("title", vo.getTitle());
+		
+		//개인 채팅일 경우
 		}else {
 			List<String> userList = new ArrayList<String>();		
 			userList.add(vo.getReceiverId());
 			userList.add(vo.getUserId());
 			roomMap.put("userList", userList);
+			roomMap.put("title", vo.getTitle());
 		}
 		
 		roomMap.put("chatType", vo.getChatType());
-		roomMap.put("title", vo.getTitle());
 		roomMap.put("persons", vo.getPersons());
 						
 		//DB의 chatRoom테이블에 채팅방 정보 저장
@@ -145,8 +158,43 @@ public class ChatService {
 		
 		return openChatList;
 	}
+
 	
-
-
-
+	//내 채팅 목록 조회
+	public List<ChatVo> selectMyChat(String id) {
+		System.out.println("---ChatService의 selectMyChat메소드 호출");
+		
+		//최신 채팅 정보 조회
+		List<ChatVo> myChatList = chatDao.selectMyChat(id);
+					
+		
+		//채팅 목록에 나타낼 최신 메세지 시간 나타내기 위한 반복문
+		for(ChatVo vo : myChatList) {
+			Timestamp sentTime = vo.getSentTime();
+			
+			//Timestamp -> LocalDateTime 데이터타입 변환
+			LocalDateTime sentDateTime = sentTime.toLocalDateTime();
+			
+			LocalDate today = LocalDate.now();
+			LocalDate sentDate = sentDateTime.toLocalDate();
+			
+			//날짜와 시간 포맷팅
+			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("a hh:mm", Locale.KOREAN); 
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			
+			//조건문에서 포맷팅한 날짜와 시간 담을 변수
+			String displayTime;
+			
+			if (sentDate.equals(today)) {
+			    displayTime = sentDateTime.format(timeFormatter);
+			} else {
+			    displayTime = sentDateTime.format(dateFormatter);
+			}
+			vo.setDisplayTime(displayTime);	
+		}
+		
+		return myChatList;
+		
+	}
 }
+

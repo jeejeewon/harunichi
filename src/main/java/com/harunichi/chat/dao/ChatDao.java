@@ -140,6 +140,13 @@ public class ChatDao {
 	}
 
 
+	//내가 참여중인 채팅방 조회
+	public List<ChatVo> selectMyChat(String id) {
+		System.out.println("===ChatDao의 selectMyChat 메소드 실행");
+		return sqlSession.selectList(NAMESPACE + "selectMyChat", id);
+	}
+
+
 
 
 
