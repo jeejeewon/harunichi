@@ -83,9 +83,9 @@
 		<div id="openChatCon">	
 			<ul class="open-chat-list">
 				<c:forEach var="openChat" items="${openChatList}">
-					<li>
+					<li data-room-id="${openChat.roomId}" onclick="doOpenChat(this);">
 						<div class="open-chat-item">
-							<a href="<%=request.getContextPath()%>/chat/window?roomId=${openChat.roomId}">
+							<a id="doOpenChat" href="#" >
 								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
 							</a>	
 							<div class="open-chat-info">
@@ -183,6 +183,19 @@
 		document.getElementById("newChatForm").submit();	
 	}
 
+	
+	//생성된 오픈 채팅에 참여하는 함수
+	function doOpenChat(btn){
+		console.log("클릭함");	
+		
+		const roomId = btn.getAttribute("data-room-id");
+		
+		location.href = "<%= request.getContextPath()%>/chat/window?roomId=" + roomId;
+		
+	}
+		
+
+	
 	
 </script>
 

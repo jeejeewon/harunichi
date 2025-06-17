@@ -75,19 +75,22 @@ public class ChatController {
 	@RequestMapping(value = "/window", method = RequestMethod.GET)
 	public String loginChek (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
-		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
+		System.out.println("GET chatController의 chatWindow 메소드 실행 -------------");
 		
 		if (!LoginCheck.loginCheck(session, request, response)) {
 		    return null; 
 		}
-		return null;
+		
+		String roomId = request.getParameter("roomId");
+		
+		return "/chatWindow";
 	}
 
 	
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
-		System.out.println("chatController의 chatWindow 메소드 실행 -------------");
+		System.out.println("POST chatController의 chatWindow 메소드 실행 -------------");
 		
 		if (!LoginCheck.loginCheck(session, request, response)) {
 		    return null; 
