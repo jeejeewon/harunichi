@@ -699,12 +699,14 @@ public class MemberControllerImpl implements MemberController{
 	        //2. 프로필 이미지 처리
 	        String filePath = handleProfileImage(profileImg, request);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
+	        
 	        //3. 관심사 처리
 	        String myLikeStr = handleMyLikes(myLikes);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
 	        //4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
 	        if (filePath != null) {
-	            memberVo.setProfileImg(filePath);
+	        	String fileName = new File(filePath).getName();  // 파일명만 추출
+	            memberVo.setProfileImg(fileName);
 	        }
 	        memberVo.setMyLike(myLikeStr);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
