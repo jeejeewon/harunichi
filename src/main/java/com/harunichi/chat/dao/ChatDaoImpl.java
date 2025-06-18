@@ -138,12 +138,19 @@ public class ChatDaoImpl implements ChatDao {
 		System.out.println("===ChatDao의 selectOpenChat 메소드 실행");
 		return sqlSession.selectList(NAMESPACE + "selectOpenChat");
 	}
-
-	//내가 참여중인 채팅방 조회
+	
+	//참여중인 채팅방 정보 조회
 	@Override
-	public List<ChatVo> selectMyChat(String id) {
+	public List<ChatRoomVo> selectMyChatList(String id) {
+		log.info("===ChatDao의 selectMyChatList 메소드 실행");
+		return sqlSession.selectList(NAMESPACE + "selectMyChatList",  id);
+	}
+
+	//참여중인 채팅의 메세지 정보 조회
+	@Override
+	public ChatVo selectMyChatMessage(String roomId) {
 		System.out.println("===ChatDao의 selectMyChat 메소드 실행");
-		return sqlSession.selectList(NAMESPACE + "selectMyChat", id);
+		return sqlSession.selectOne(NAMESPACE + "selectMyChatMessage", roomId);
 	}
 
 	//오픈 채팅방 최신 메세지 조회
@@ -151,6 +158,8 @@ public class ChatDaoImpl implements ChatDao {
 	public String selectMessage(String roomId) {
 		return sqlSession.selectOne(NAMESPACE + "selectMessage", roomId);
 	}
+
+
 
 
 

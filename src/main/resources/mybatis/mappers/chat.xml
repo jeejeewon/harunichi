@@ -87,12 +87,9 @@
 	<insert id="insertRoomId" parameterType="map">
 		<if test="'personal' == chatType">
 			<![CDATA[
-				INSERT INTO chatRoom(roomId, userId, admissionTime)
-				VALUES 
-			]]>	
-			<foreach collection="userList" item="userId" separator="," >
-				(#{roomId}, #{userId}, NOW())
-			</foreach>
+				INSERT INTO chatRoom(roomId, userId, title, admissionTime)
+				VALUES (#{roomId}, #{userId}, #{title}, NOW())
+			]]>				
 		</if>
 		<if test="'group' == chatType">
 			<![CDATA[
@@ -101,7 +98,7 @@
 			]]>	
 		</if>
 	</insert>
-	
+
 	<!-- 채팅방 타이틀 조회(단체 채팅) -->
 	<select id="selectTitle" parameterType="String" resultType="String">
 		<![CDATA[
@@ -147,18 +144,23 @@
 		]]>
 	</select>
 
-	<!-- 내 채팅 목록 조회 -->
-	<select id="selectMyChat" parameterType="String" resultType="ChatVo">
+	<!-- 참여중인 채팅방 정보 조회 -->
+	<select id="selectMyChatList" parameterType="String" resultType="ChatRoomVo">
 		<![CDATA[
-			SELECT c.*
-			FROM chat c
-			JOIN chatroom r 
-			ON c.roomId = r.roomId
-			WHERE r.userId = #{id}
-			AND c.sentTime = (
-			    SELECT MAX(c2.sentTime)
-			    FROM chat c2
-			    WHERE c2.roomId = c.roomId)
+			SELECT *
+			FROM chatRoom
+			WHERE userId = #{id}
+		]]>
+	</select>
+
+	<!-- 참여중인 채팅의 메세지 정보 조회 -->
+	<select id="selectMyChatMessage" parameterType="String" resultType="ChatVo">
+		<![CDATA[  
+			SELECT *
+			FROM chat
+			WHERE roomId = #{roomId}
+			ORDER BY sentTime DESC
+			LIMIT 1   
 		]]>
 	</select>
 	

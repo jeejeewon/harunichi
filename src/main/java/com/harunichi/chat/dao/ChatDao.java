@@ -39,10 +39,15 @@ public interface ChatDao {
 	//오픈 채팅방 리스트 조회
 	List<ChatRoomVo> selectOpenChat();
 
-	//내가 참여중인 채팅방 조회
-	List<ChatVo> selectMyChat(String id);
+	//참여중인 채팅방 정보 조회
+	List<ChatRoomVo> selectMyChatList(String id);
+	
+	//참여중인 채팅의 메세지 정보 조회
+	ChatVo selectMyChatMessage(String roomId);
 
 	//오픈 채팅방 최신 메세지 조회
 	String selectMessage(String roomId);
+
+
 
 }

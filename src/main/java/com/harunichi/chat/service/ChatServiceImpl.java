@@ -21,6 +21,9 @@ import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.member.vo.MemberVo;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class ChatServiceImpl implements ChatService {
 
@@ -50,15 +53,13 @@ public class ChatServiceImpl implements ChatService {
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
 		System.out.println("---ChatService의 selectRoomId메소드 호출");		
 		
-		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);		
+		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);	
+		log.info("roomId : " + roomId);
 				
 		ChatRoomVo vo = new ChatRoomVo();
 		vo.setUserId(senderId);
 		vo.setReceiverId(receiverId);
-		vo.setChatType(chatType);		
-		MemberVo memberVo = chatDao.selectNick(receiverId);
-		vo.setTitle(memberVo.getNick());					
-		System.out.println("roomId : " + roomId);
+		vo.setChatType(chatType);	
 		
 		//DB에 조회된 채팅방ID가 없다면?
 		if(roomId == null) { roomId = insertRoomId(vo); }	
@@ -90,22 +91,30 @@ public class ChatServiceImpl implements ChatService {
 		if(vo.getChatType().equals("group")) {			
 			roomMap.put("userId", vo.getUserId());
 			roomMap.put("title", vo.getTitle());		
+			roomMap.put("chatType", vo.getChatType());
+			roomMap.put("persons", vo.getPersons());
+			//DB의 chatRoom테이블에 채팅방 정보 저장
+			chatDao.insertRoomId(roomMap);
 		//개인 채팅일 경우
-		}else {
-			List<String> userList = new ArrayList<String>();		
-			userList.add(vo.getReceiverId());
-			userList.add(vo.getUserId());
-			roomMap.put("userList", userList);
-			roomMap.put("title", vo.getTitle());
-		}
-		
-		roomMap.put("chatType", vo.getChatType());
-		roomMap.put("persons", vo.getPersons());
-						
-		//DB의 chatRoom테이블에 채팅방 정보 저장
-		chatDao.insertRoomId(roomMap);
-		
-		return newRoomId;		
+		}else {			
+			List<String> userList = new ArrayList<String>();
+			userList.add(vo.getReceiverId()); //상대방
+			userList.add(vo.getUserId());	  //로그인 사용자
+			
+			for(String userId : userList) {
+				roomMap.put("roomId", newRoomId);
+				roomMap.put("userId", userId);		
+				roomMap.put("chatType", vo.getChatType());
+				
+				// 상대방 닉네임을 타이틀로 보여주기 위해, 상대 ID 기준으로 닉네임 조회
+				String id = userId.equals(vo.getUserId()) ? vo.getReceiverId() : vo.getUserId();
+				String title = chatDao.selectNick(id).getNick();
+				roomMap.put("title", title);
+				
+				chatDao.insertRoomId(roomMap);
+			}		
+		}		
+		return newRoomId;
 	}
 
 	//과거 채팅 내역 불러오기
@@ -149,18 +158,25 @@ public class ChatServiceImpl implements ChatService {
 		}	
 		return openChatList;
 	}
-
-	//내 채팅 목록 조회
+	
+	//참여중인 채팅방 정보 조회
 	@Override
-	public List<ChatVo> selectMyChat(String id) {
+	public List<ChatRoomVo> selectMyChatList(String id) {
+		System.out.println("---ChatService의 selectMyChatList메소드 호출");
+		return chatDao.selectMyChatList(id);
+	}
+	
+	//참여중인 채팅의 메세지 정보 조회
+	@Override
+	public ChatVo selectMyChatMessage(String roomId) {
 		System.out.println("---ChatService의 selectMyChat메소드 호출");
 		
 		//최신 채팅 정보 조회
-		List<ChatVo> myChatList = chatDao.selectMyChat(id);
+		ChatVo myChatMessage = chatDao.selectMyChatMessage(roomId);
 						
-		//채팅 목록에 나타낼 최신 메세지 시간 나타내기 위한 반복문
-		for(ChatVo vo : myChatList) {
-			Timestamp sentTime = vo.getSentTime();
+		try {
+			//채팅 목록에 나타낼 최신 메세지 시간 나타내기 위한 반복문
+			Timestamp sentTime = myChatMessage.getSentTime();
 			
 			//Timestamp -> LocalDateTime 데이터타입 변환
 			LocalDateTime sentDateTime = sentTime.toLocalDateTime();
@@ -180,9 +196,12 @@ public class ChatServiceImpl implements ChatService {
 			} else {
 			    displayTime = sentDateTime.format(dateFormatter);
 			}
-			vo.setDisplayTime(displayTime);	
-		}		
-		return myChatList;		
+			myChatMessage.setDisplayTime(displayTime);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		return myChatMessage;		
 	}
 
 	//오픈 채팅방 최신 메세지 조회
@@ -190,6 +209,8 @@ public class ChatServiceImpl implements ChatService {
 	public String selectMessage(String roomId) {
 		return chatDao.selectMessage(roomId);
 	}
+
+
 	
 	
 	

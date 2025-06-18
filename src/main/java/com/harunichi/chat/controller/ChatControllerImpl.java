@@ -40,12 +40,21 @@ public class ChatControllerImpl implements ChatController {
 				
 		//로그인 했다면?
 		if(member != null && member.getId() != null && !member.getId().isEmpty()) {
+			log.info("나의 채팅방 정보 조회중....");	
 			id = member.getId();
 			nick = member.getNick();			
-			try {
-				//참여중인 채팅 목록 조회
-				List<ChatVo> myChatList = chatService.selectMyChat(id);
+			try {							
+				//참여중인 채팅방 정보 조회
+				List<ChatRoomVo> myChatList = chatService.selectMyChatList(id);
 				model.addAttribute("myChatList", myChatList);
+				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
+				
+				//참여중인 채팅의 메세지 정보 조회
+				for(ChatRoomVo chatRoomVo : myChatList) {
+					String roomId = chatRoomVo.getRoomId();										
+					myChatMessage.add(chatService.selectMyChatMessage(roomId));							
+				}
+				model.addAttribute("myChatMessage", myChatMessage);								
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("⚠" + id + "의 채팅 목록을 조회할 수 없습니다.");
