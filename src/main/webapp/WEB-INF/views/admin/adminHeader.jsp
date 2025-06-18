@@ -7,6 +7,5 @@
 <title>Insert title here</title>
 </head>
 <body>
-	어드민헤더
 </body>
 </html>

@@ -17,13 +17,7 @@
 		<put-attribute name="title" value="메인페이지" />
 		<put-attribute name="body" value="/WEB-INF/views/main/main.jsp" />
 	</definition>
-	
-	
-	<definition name="/mypage" extends="baseLayout">
-		<put-attribute name="title" value="마이페이지" />
-		<put-attribute name="body" value="/WEB-INF/views/member/mypage.jsp" />
-	</definition>
-	
+
 </tiles-definitions>
 
 

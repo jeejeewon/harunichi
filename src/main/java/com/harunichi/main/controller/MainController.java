@@ -47,10 +47,6 @@ public class MainController {
 
 	    // 세션에 저장된 국가 정보를 Model에 담아서 JSP로 전달
 	    model.addAttribute("selectedCountry", selectedCountry);
-	    
-	    // 현재 요청 URI를 JSP에 넘기기
-	    String currentUri = request.getRequestURI();
-	    model.addAttribute("currentUri", currentUri);
 		
 		logger.info("MainController - showMainPage() 메소드 종료. Returning view name: /main");
 		return "/main"; 

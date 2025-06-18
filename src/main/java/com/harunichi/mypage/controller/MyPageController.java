@@ -24,10 +24,6 @@ public class MyPageController {
 		String viewName = (String) request.getAttribute("viewName");
 		System.out.println("컨트롤러에서 가져온 viewName: " + viewName);
 		
-		// 현재 요청 URI를 JSP에 넘기기
-	    String currentUri = request.getRequestURI();
-	    model.addAttribute("currentUri", currentUri);
-	    
 		return "/mypage"; 
 	}
 	

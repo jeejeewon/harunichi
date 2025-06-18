@@ -15,17 +15,14 @@
 </head>
 <body>
 	<div id="wrap">
-		<header>
-			<tiles:insertAttribute name="header" />
-		</header>
-		<div id="inner-wrap">
-			<aside>
-				<tiles:insertAttribute name="side" />
-			</aside>
-			<article>
+		<aside>
+			<tiles:insertAttribute name="side" />
+		</aside>
+		<article>
+			<div class="article-inner">
 				<tiles:insertAttribute name="body" />
-			</article>
-		</div>
+			</div>
+		</article>
 	</div>
 </body>
 </html>

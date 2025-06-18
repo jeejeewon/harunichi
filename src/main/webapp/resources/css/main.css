@@ -99,6 +99,17 @@ header {
 .header-menu ul li {
 
 }
+.header-menu ul li .go-to-admin-page-btn{
+	padding: 5px 10px;
+	border-radius: 10px;
+	color: #A3DAFF;
+	border: 1px solid #A3DAFF;
+}
+.header-menu ul li .go-to-admin-page-btn:hover{
+	background-color: #A3DAFF;
+	color: #fff;
+}
+
 .header-menu ul li .login-status{
 	display: flex;
 	align-items: center;
@@ -361,6 +372,9 @@ article {
 
 .menu-inner nav ul li a.active {
 	background-color: #A3DAFF;
+}
+.menu-inner nav ul li a.active span{
+	color: white;
 }
 
 

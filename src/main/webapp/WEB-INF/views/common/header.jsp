@@ -28,6 +28,11 @@
 	                </select>
 	            </li>
 	            <li>
+	            	<c:if test="${sessionScope.id == 'admin'}">
+					    <a href="${contextPath}/admin" class="go-to-admin-page-btn">어드민 페이지</a>
+					</c:if>
+	            </li>
+	            <li>
 	            	<%-- 세션에 id 값이 있을 경우 --> 로그인, 채팅, 알림 아이콘 노출 --%>
 	            	<c:if test="${not empty sessionScope.id}">
 	            		<div class="login-status">
