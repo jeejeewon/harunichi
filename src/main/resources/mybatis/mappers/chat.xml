@@ -87,9 +87,12 @@
 	<insert id="insertRoomId" parameterType="map">
 		<if test="'personal' == chatType">
 			<![CDATA[
-				INSERT INTO chatRoom(roomId, userId, title, admissionTime)
-				VALUES (#{roomId}, #{userId}, #{title}, NOW())
-			]]>				
+				INSERT INTO chatRoom(roomId, userId, admissionTime)	
+				VALUES			
+			]]>		
+			<foreach collection="userList" item="user" separator="," >
+				(#{roomId}, #{user}, NOW())
+			</foreach>						
 		</if>
 		<if test="'group' == chatType">
 			<![CDATA[

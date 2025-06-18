@@ -85,35 +85,26 @@ public class ChatServiceImpl implements ChatService {
 		//새로운 채팅방 ID 생성 후 반환
 		String newRoomId = now + "_" + random;			
 		System.out.println("newRoomId : " + newRoomId);		
-		roomMap.put("roomId", newRoomId);
 		
+		roomMap.put("roomId", newRoomId);
+		roomMap.put("chatType", vo.getChatType());
+	
 		//단체 채팅일 경우
 		if(vo.getChatType().equals("group")) {			
 			roomMap.put("userId", vo.getUserId());
 			roomMap.put("title", vo.getTitle());		
-			roomMap.put("chatType", vo.getChatType());
 			roomMap.put("persons", vo.getPersons());
-			//DB의 chatRoom테이블에 채팅방 정보 저장
-			chatDao.insertRoomId(roomMap);
+
 		//개인 채팅일 경우
 		}else {			
 			List<String> userList = new ArrayList<String>();
 			userList.add(vo.getReceiverId()); //상대방
-			userList.add(vo.getUserId());	  //로그인 사용자
-			
-			for(String userId : userList) {
-				roomMap.put("roomId", newRoomId);
-				roomMap.put("userId", userId);		
-				roomMap.put("chatType", vo.getChatType());
-				
-				// 상대방 닉네임을 타이틀로 보여주기 위해, 상대 ID 기준으로 닉네임 조회
-				String id = userId.equals(vo.getUserId()) ? vo.getReceiverId() : vo.getUserId();
-				String title = chatDao.selectNick(id).getNick();
-				roomMap.put("title", title);
-				
-				chatDao.insertRoomId(roomMap);
-			}		
+			userList.add(vo.getUserId());	  //로그인 사용자			
+			roomMap.put("userList", userList);	
 		}		
+			
+		chatDao.insertRoomId(roomMap);
+		
 		return newRoomId;
 	}
 
