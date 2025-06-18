@@ -72,13 +72,11 @@ public class ChatControllerImpl implements ChatController {
 			//오픈 채팅방 리스트 조회
 			List<ChatRoomVo> openChatList = chatService.selectOpenChat();
 			
-			//최신 메세지 조회
+			//최신 채팅 메세지 정보 조회
 			for(ChatRoomVo vo : openChatList) {				
-				ChatVo chatVo = new ChatVo();
-				chatVo.setRoomId(vo.getRoomId());				
-				message = chatService.selectMessage(chatVo.getRoomId());				
-				chatVo.setMessage(message);
-				messageList.add(chatVo);
+				String roomId = vo.getRoomId();				
+				ChatVo myChatMessage = chatService.selectMyChatMessage(roomId);
+				messageList.add(myChatMessage);
 			}
 			model.addAttribute("messageList", messageList);
 			model.addAttribute("openChatList", openChatList);

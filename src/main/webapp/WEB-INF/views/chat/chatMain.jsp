@@ -63,25 +63,29 @@
 						<c:set var="chatMessage" value="${myChatMessage[status.index]}" />
 						<c:if test="${not empty chatMessage}">
 							<li>
-								<div class="open-chat-item">
+								<div class="open-chat-item">																	
 									<a href="<%=request.getContextPath()%>/chat/window?roomId=${myChat.roomId}">
-										<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">						
+										<c:choose>
+											<c:when test="${myChat.chatType eq 'personal'}">
+												<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="개인채팅방 프로필사진">
+											</c:when>
+											<c:otherwise>
+												<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">
+											</c:otherwise>
+										</c:choose>								
 									</a>	
 									<div class="open-chat-info">					
 										<c:choose>
 											<c:when test="${myChat.chatType eq 'personal'}">
-												<p class="open-chat-title">${myChat.title}
-													<span class="sent-time">${chatMessage.displayTime}</span>
-												</p>
+												<p class="open-chat-title">${myChat.title}</p>
 											</c:when>
 											<c:otherwise>
 												<p class="open-chat-title">${myChat.title} 
 													<span>(<span>참여인원 / </span>${myChat.persons})</span>
-													<span class="sent-time">${chatMessage.displayTime}</span>
 												</p>
 											</c:otherwise>
 										</c:choose>									
-										<p class="open-chat-content">${chatMessage.message}</p>
+										<p class="open-chat-content">${chatMessage.message} <span class="sent-time">${chatMessage.displayTime}</span></p>									
 									</div>
 								</div>
 							</li>
@@ -108,7 +112,7 @@
 								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>								
 								<c:forEach var="messageVo" items="${messageList}" >
 									<c:if test="${openChat.roomId eq messageVo.roomId}">
-										<p class="open-chat-content">${messageVo.message}</p>	
+										<p class="open-chat-content">${messageVo.message} <span class="sent-time">${messageVo.displayTime}</span></p>	
 									</c:if>
 								</c:forEach>						
 							</div>

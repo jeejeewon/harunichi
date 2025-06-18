@@ -153,20 +153,6 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "selectMyChatMessage", roomId);
 	}
 
-	//오픈 채팅방 최신 메세지 조회
-	@Override
-	public String selectMessage(String roomId) {
-		return sqlSession.selectOne(NAMESPACE + "selectMessage", roomId);
-	}
-
-
-
-
-
-
-
-
-
 
 
 	

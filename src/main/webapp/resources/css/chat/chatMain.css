@@ -167,7 +167,7 @@
 }
 
 .sent-time {
-  margin-left: auto;
+  margin-left: 10px;
   color: #999; /* optional: 회색 텍스트 */
   font-size: 0.9em;
 }

@@ -204,17 +204,7 @@ public class ChatServiceImpl implements ChatService {
 		return myChatMessage;		
 	}
 
-	//오픈 채팅방 최신 메세지 조회
-	@Override
-	public String selectMessage(String roomId) {
-		return chatDao.selectMessage(roomId);
-	}
 
-
-	
-	
-	
-	
 	
 }
 

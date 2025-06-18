@@ -41,8 +41,4 @@ public interface ChatService {
 	//참여중인 채팅의 메세지 정보 조회
 	ChatVo selectMyChatMessage(String roomId);
 
-	//오픈 채팅방 최신 메세지 조회
-	String selectMessage(String roomId);
-
-
 }
