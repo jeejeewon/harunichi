@@ -18,14 +18,20 @@
                    value="${product.productTitle}" required />
         </div>
 
-        <div class="form-row">
-            <label>기존 이미지</label>
-            <c:if test="${not empty product.productImg}">
-                <img id="currentPreview" src="${pageContext.request.contextPath}${product.productImg}" width="100"
-                     style="border:1px solid #ccc; border-radius:4px;"><br>
-                <label><input type="checkbox" name="deleteImg" value="true"> 기존 이미지 삭제</label>
-            </c:if>
-        </div>
+		<div class="form-row">
+		    <label>기존 이미지</label>
+		    <c:choose>
+		        <c:when test="${not empty product.productImg}">
+		            <img id="currentPreview" src="${pageContext.request.contextPath}/resources/images/product/${product.productImg}" width="100"
+		                 style="border:1px solid #ccc; border-radius:4px;"><br>
+		            <label><input type="checkbox" name="deleteImg" value="true"> 기존 이미지 삭제</label>
+		        </c:when>
+		        <c:otherwise>
+		            <img id="currentPreview" src="${pageContext.request.contextPath}/resources/images/product/no-image.png" width="100"
+		                 style="border:1px solid #ccc; border-radius:4px;">
+		        </c:otherwise>
+		    </c:choose>
+		</div>
 
         <div class="form-row">
             <label>새 이미지</label>

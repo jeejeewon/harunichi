@@ -9,8 +9,8 @@
     <h2>❌ 결제에 실패했습니다.</h2>
     <p>${errorMessage}</p>
 
-    <div class="buttons">
-        <a href="${ctx}/product/list" class="btn">상품 목록으로</a>
-        <a href="javascript:history.back();" class="btn">이전 페이지</a>
-    </div>
+	<div class="buttons">
+	    <a href="${ctx}/product/list" class="btn">목록으로</a>
+	    <a href="${ctx}/product/view?productId=${productId}" class="btn">상품으로</a>
+	</div>
 </div>

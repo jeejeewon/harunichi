@@ -33,7 +33,8 @@ public class ProductControllerImpl implements ProductController {
     
     // 로그인 공통화
     private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return !LoginCheck.loginCheck(request.getSession(), request, response);
+ //       return !LoginCheck.loginCheck(request.getSession(), request, response);
+    	  return false;
     }
     
     // 상품 목록

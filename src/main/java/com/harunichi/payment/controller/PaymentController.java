@@ -33,7 +33,8 @@ public class PaymentController {
 	
     // 공통 로그인 확인 메서드
     private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return !LoginCheck.loginCheck(request.getSession(), request, response);
+//        return !LoginCheck.loginCheck(request.getSession(), request, response);
+        return false;
     }
 
     // 결제 화면 진입 시 로그인 확인
@@ -67,32 +68,35 @@ public class PaymentController {
         String buyerName = (String) request.getSession().getAttribute("loginName");
 
         try {
-            // 포트원 액세스 토큰 발급
-            String accessToken = iamportService.getAccessToken();
+            boolean isFree = amount == 0 || impUid.startsWith("FREE_");
 
-            // 결제 상태 확인
-            Map<String, Object> paymentData = iamportService.getPaymentData(impUid, accessToken);
-            String status = (String) paymentData.get("status");
+            if (!isFree) {
+                // 포트원 액세스 토큰 발급 및 결제 상태 확인
+                String accessToken = iamportService.getAccessToken();
+                Map<String, Object> paymentData = iamportService.getPaymentData(impUid, accessToken);
+                String status = (String) paymentData.get("status");
 
-            if ("paid".equals(status)) {
-                // 주문 정보 저장
-                OrderVo order = new OrderVo();
-                order.setImpUid(impUid);
-                order.setMerchantUid(merchantUid);
-                order.setProductName(productName);
-                order.setAmount(amount);
-                order.setBuyerId(buyerId);
-                order.setBuyerName(buyerName);
-                order.setStatus("결제완료");
-
-                orderService.insertOrder(order);
-
-                result.put("success", true);
-                result.put("message", "주문이 성공적으로 저장되었습니다.");
-            } else {
-                result.put("success", false);
-                result.put("message", "결제 상태가 유효하지 않습니다: " + status);
+                if (!"paid".equals(status)) {
+                    result.put("success", false);
+                    result.put("message", "결제 상태가 유효하지 않습니다: " + status);
+                    return result;
+                }
             }
+
+            // 주문 정보 저장
+            OrderVo order = new OrderVo();
+            order.setImpUid(impUid);
+            order.setMerchantUid(merchantUid);
+            order.setProductName(productName);
+            order.setAmount(amount);
+            order.setBuyerId(buyerId);
+            order.setBuyerName(buyerName);
+            order.setStatus("결제완료");
+
+            orderService.insertOrder(order);
+
+            result.put("success", true);
+            result.put("message", "주문이 성공적으로 저장되었습니다.");
 
         } catch (Exception e) {
             result.put("success", false);
@@ -110,8 +114,14 @@ public class PaymentController {
 
 	// 결제 실패 시 이동할 페이지
 	@RequestMapping(value = "/fail", method = RequestMethod.GET)
-	public ModelAndView fail() {
-		return new ModelAndView("/payment/fail");
+	public ModelAndView fail(
+	        @RequestParam(value = "productId", required = false) Integer productId,
+	        @RequestParam(value = "errorMessage", required = false) String errorMessage) {
+
+	    ModelAndView mav = new ModelAndView("/payment/fail");
+	    mav.addObject("productId", productId != null ? productId : 0);
+	    mav.addObject("errorMessage", errorMessage != null ? errorMessage : "결제에 실패했습니다.");
+	    return mav;
 	}
 
     // 주문 내역 확인 (로그인 필요)

@@ -146,11 +146,11 @@
     }
   
   function payment(productId) {
- 	    if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
- 	        alert("결제는 로그인 후 이용 가능합니다.");
- 	        location.href = ctx + '/member/loginpage';
- 	        return;
- 	    }
+//  	    if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
+//  	        alert("결제는 로그인 후 이용 가능합니다.");
+//  	        location.href = ctx + '/member/loginpage';
+//  	        return;
+//  	    }
 	    location.href = ctx + '/payment/form?productId=' + productId;
 	}
 
@@ -228,13 +228,13 @@
   }
   
   // 수정, 삭제 버튼 클릭시 로그인 여부
-  function checkLogin() {
-	  const currentUserId = '${sessionScope.loginId}';
- 	  if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
- 	    alert('로그인 후 이용 가능합니다.');
- 	    location.href = ctx + '/member/loginpage';
- 	    return false;
- 	  }
- 	  return true;
- 	}
+//   function checkLogin() {
+// 	  const currentUserId = '${sessionScope.loginId}';
+//  	  if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
+//  	    alert('로그인 후 이용 가능합니다.');
+//  	    location.href = ctx + '/member/loginpage';
+//  	    return false;
+//  	  }
+//  	  return true;
+//  	}
 </script>
