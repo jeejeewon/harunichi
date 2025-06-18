@@ -47,9 +47,19 @@ public class ChatControllerImpl implements ChatController {
 				//참여중인 채팅방 정보 조회
 				List<ChatRoomVo> myChatList = chatService.selectMyChatList(id);
 				model.addAttribute("myChatList", myChatList);
-				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
+				
+				//참여중인 채팅방 프로필 사진 조회
+				for(ChatRoomVo vo : myChatList) {
+					
+					//개인채팅방은 상대방 프로필 사진이 보이도록 설정
+					if(vo.getChatType().equals("personal")) {
+						
+					}
+					//오픈채팅방은 방장이 설정한 프로필 사진으로 설정
+				}
 				
 				//참여중인 채팅의 메세지 정보 조회
+				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
 				for(ChatRoomVo chatRoomVo : myChatList) {
 					String roomId = chatRoomVo.getRoomId();										
 					myChatMessage.add(chatService.selectMyChatMessage(roomId));							
