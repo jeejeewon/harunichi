@@ -134,10 +134,17 @@
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h2>오픈채팅방 만들기</h2>
 	    <form action="<%=request.getContextPath()%>/chat/window" id="newChatForm" method="POST">
-		    <label>채팅방 제목</label>	    
+		    <label>프로필 이미지</label>	
+		    <div class="open-chat-img-wrap">
+		    	<img class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
+				<a href="#" class="adit-profile-img">
+					<img src="${contextPath}/resources/icon/camera_icon.svg">
+				</a>
+		    </div>		   
+		    <label>채팅방 이름</label>	    
 		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20">
 		    <p>최대 20자까지 입력 가능합니다.</p>
-		    <label>채팅방 인원</label>		    
+		    <label>최대 인원</label>		    
 		    <input id="openChatPersons" name="persons" class="open-chat-form" type="number" min="2" max="8">
 		    <p>최대 8명까지 입장 가능합니다.</p>
 		    <div class="modal-btn-wrap">

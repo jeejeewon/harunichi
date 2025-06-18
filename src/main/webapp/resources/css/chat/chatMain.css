@@ -205,10 +205,36 @@
 	color: #a3daff;
 	text-align: center;
 }
+.open-chat-img-wrap {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+}
+.open-chat-profile-img{
+
+  	width: 120px;
+	height: 120px;
+	border-radius: 100%;
+	object-fit: cover;
+	cursor: pointer;
+	
+}
+.adit-profile-img {
+  position: absolute;
+  bottom: 0;
+  right: 115px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .modal-content {
   background-color: #fff;
-  margin: 15% auto;
+  margin: 10% auto auto;
   padding: 20px;
   border-radius: 8px;
   width: 400px;
