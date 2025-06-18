@@ -359,6 +359,11 @@ article {
 	background-color: #e6e6e6;
 }
 
+.menu-inner nav ul li a.active {
+	background-color: #A3DAFF;
+}
+
+
 
 
 /*------푸터(footer)----*/
