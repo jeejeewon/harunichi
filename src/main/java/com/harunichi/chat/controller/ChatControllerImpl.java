@@ -47,16 +47,42 @@ public class ChatControllerImpl implements ChatController {
 				//참여중인 채팅방 정보 조회
 				List<ChatRoomVo> myChatList = chatService.selectMyChatList(id);
 				model.addAttribute("myChatList", myChatList);
+									
+				//상대방 프로필 담을 변수
+				List<MemberVo> profileList = new ArrayList<MemberVo>();	
+				MemberVo memberProfile = new MemberVo();
+				
+				//상대방 프로필 사진이 없을 경우 기본 이미지 사용
+				String basicProfileImg = "/harunichi/resources/icon/basic_profile.jpg";
 				
 				//참여중인 채팅방 프로필 사진 조회
 				for(ChatRoomVo vo : myChatList) {
 					
 					//개인채팅방은 상대방 프로필 사진이 보이도록 설정
-					if(vo.getChatType().equals("personal")) {
+					if(vo.getChatType().equals("personal")) {			
+						//개인 채팅 상대방 ID 조회
+						String chatMemberId = chatService.selectChatMemberId(id, vo.getRoomId());					
+						//상대방 프로필 조회
+						memberProfile = chatService.selectProfile(chatMemberId);					
 						
+						String profileImg = null;
+						profileImg = memberProfile.getProfileImg();				
+							
+						//상대방 프로필 없을 경우 기본 이미지 보여주기
+						if(profileImg == null || profileImg == "") {							
+							memberProfile.setProfileImg(basicProfileImg);
+							profileList.add(memberProfile);	
+						}
+											
+					//오픈채팅방은 방장이 설정한 프로필 사진으로 설정		
+					}else {
+						memberProfile = null;
 					}
-					//오픈채팅방은 방장이 설정한 프로필 사진으로 설정
+					
+					profileList.add(memberProfile);	
 				}
+				
+				model.addAttribute("profileList", profileList);	
 				
 				//참여중인 채팅의 메세지 정보 조회
 				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
@@ -164,7 +190,7 @@ public class ChatControllerImpl implements ChatController {
 		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
 		if(chatType.equals("personal")) {
-			MemberVo vo = chatService.selectNick(receiverId);
+			MemberVo vo = chatService.selectProfile(receiverId);
 			model.addAttribute("title", vo.getNick());	
 			model.addAttribute("profileImg", vo.getProfileImg());	
 		}else {

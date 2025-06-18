@@ -110,11 +110,20 @@
 			WHERE roomId = #{roomId}
 		]]>
 	</select>
-		
-	<!-- 채팅방 타이틀과 프로필 사진 조회(개인 채팅) -->
-	<select id="selectNick" parameterType="String" resultType="memberVo">
+	
+	<!-- 나와 채팅 중인 상대방 ID 조회 -->
+	<select id="selectChatMemberId" parameterType="map" resultType="String">
 		<![CDATA[
-			SELECT nick, profileImg
+			SELECT userId
+			FROM chatRoom
+			WHERE roomId = #{roomId} AND userId != #{userId}
+		]]>
+	</select>
+		
+	<!-- 채팅 상대 프로필 정보 조회 -->
+	<select id="selectProfile" parameterType="String" resultType="memberVo">
+		<![CDATA[
+			SELECT *
 			FROM member
 			WHERE id = #{String}
 		]]>

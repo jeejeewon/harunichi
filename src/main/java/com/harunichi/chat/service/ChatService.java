@@ -28,9 +28,12 @@ public interface ChatService {
 
 	//채팅방 타이틀 확인(단체채팅 - 방장이 정한 타이틀)
 	String selectTitle(String roomId);
+	
+	//나와 채팅 중인 상대방 ID 조회
+	String selectChatMemberId(String userId, String roomId);
 
-	//채팅방 타이틀 확인(개인채팅 - 상대방 닉네임)
-	MemberVo selectNick(String receiverId);
+	//채팅 상대 프로필 정보 조회
+	MemberVo selectProfile(String receiverId);
 
 	//오픈 채팅방 리스트 조회
 	List<ChatRoomVo> selectOpenChat();
@@ -40,5 +43,9 @@ public interface ChatService {
 	
 	//참여중인 채팅의 메세지 정보 조회
 	ChatVo selectMyChatMessage(String roomId);
+
+
+
+
 
 }

@@ -12,6 +12,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
+
+<!-- 프로필 이미지 경로 -->
+<c:set var="profileImgPath" value="/harunichi/resources/images/profile/" />
+
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
 		<input type="hidden" id="receiverId" name="receiverId"> 
 		<input type="hidden" id="receiverNick" name="receiverNick"> 		
@@ -30,7 +34,7 @@
 								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
 									<c:choose>
 								    	<c:when test="${not empty member.profileImg}">
-								        	<img class="profile-img" src="/harunichi/resources/images/profile/${member.profileImg}">
+								        	<img class="profile-img" src="${profileImgPath}${member.profileImg}">
 								        	<!-- <img class="profile-img" src="${member.profileImg}"> -->
 								    	</c:when>
 								    	<c:otherwise>
@@ -61,13 +65,15 @@
 					</c:if>
 					<c:forEach var="myChat" items="${myChatList}" varStatus="status">
 						<c:set var="chatMessage" value="${myChatMessage[status.index]}" />
+						<c:set var="profile" value="${profileList[status.index]}" />
 						<c:if test="${not empty chatMessage}">
 							<li>
 								<div class="open-chat-item">																	
 									<a href="<%=request.getContextPath()%>/chat/window?roomId=${myChat.roomId}">
 										<c:choose>
 											<c:when test="${myChat.chatType eq 'personal'}">
-												<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="개인채팅방 프로필사진">
+												<img class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="개인채팅방 프로필사진">
+												<!-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> -->
 											</c:when>
 											<c:otherwise>
 												<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">
@@ -77,7 +83,7 @@
 									<div class="open-chat-info">					
 										<c:choose>
 											<c:when test="${myChat.chatType eq 'personal'}">
-												<p class="open-chat-title">${myChat.title}</p>
+												<p class="open-chat-title">${profile.nick}</p>
 											</c:when>
 											<c:otherwise>
 												<p class="open-chat-title">${myChat.title} 

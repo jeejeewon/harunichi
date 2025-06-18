@@ -130,11 +130,18 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.selectTitle(roomId);
 	}
 	
-	//채팅방 타이틀 확인(개인채팅 - 상대방 닉네임)
+	//나와 채팅 중인 상대방 ID 조회
 	@Override
-	public MemberVo selectNick(String receiverId) {
-		System.out.println("---ChatService의 selectNick메소드 호출");
-		return chatDao.selectNick(receiverId);
+	public String selectChatMemberId(String userId, String roomId) {
+		log.info("---ChatService의 selectChatMemberId메소드 호출");
+		return chatDao.selectChatMemberId(userId, roomId);
+	}
+
+	//채팅 상대 프로필 정보 조회
+	@Override
+	public MemberVo selectProfile(String receiverId) {
+		System.out.println("---ChatService의 selectProfile메소드 호출");
+		return chatDao.selectProfile(receiverId);
 	}
 
 	//오픈 채팅방 리스트 조회

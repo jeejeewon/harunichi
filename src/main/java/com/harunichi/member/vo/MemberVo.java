@@ -3,7 +3,6 @@ package com.harunichi.member.vo;
 import java.security.Timestamp;
 import java.sql.Date;
 
-
 public class MemberVo {
 	
 		private String id; //아이디

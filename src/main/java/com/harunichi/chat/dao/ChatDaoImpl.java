@@ -125,11 +125,21 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "selectTitle", roomId);
 	}
 	
-	//채팅방 타이틀 조회(개인)
+	//나와 채팅 중인 상대방 ID 조회
 	@Override
-	public MemberVo selectNick(String receiverId) {
-		System.out.println("===ChatDao의 selectNick 메소드 실행");
-		return sqlSession.selectOne(NAMESPACE + "selectNick", receiverId);
+	public String selectChatMemberId(String userId, String roomId) {
+		log.info("===ChatDao의 selectChatMemberId 메소드 실행");
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", userId);
+		map.put("roomId", roomId);
+		return sqlSession.selectOne(NAMESPACE + "selectChatMemberId", map);
+	}
+
+	//채팅 상대 프로필 정보 조회
+	@Override
+	public MemberVo selectProfile(String receiverId) {
+		System.out.println("===ChatDao의 selectProfile 메소드 실행");
+		return sqlSession.selectOne(NAMESPACE + "selectProfile", receiverId);
 	}
 
 	//오픈 채팅방 리스트 조회
