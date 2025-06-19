@@ -17,11 +17,11 @@
 						<img src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 이미지" />
 					</c:otherwise>
 				</c:choose>
-				<!-- 프로필 수정 버튼 -->
-				<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-img">
-				<img src="${contextPath}/resources/icon/camera_icon.svg">
-				</a>
 			</div>
+			<!-- 프로필 수정 버튼 -->
+			<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-img">
+				<img src="${contextPath}/resources/icon/camera_icon.svg">
+			</a>
 		</div>
 
 		<div class="profile-window-right">

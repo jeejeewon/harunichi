@@ -1,6 +1,6 @@
 package com.harunichi.member.vo;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.sql.Date;
 
 public class MemberVo {
