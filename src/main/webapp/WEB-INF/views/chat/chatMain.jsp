@@ -104,7 +104,7 @@
 	<div>
 		<div id="openTitle">
 			<p id="recText">오픈채팅방</p>
-			<a href="#" id="newOpenChatBtn" onclick="openModal()">만들기</a>
+			<a href="#" id="newOpenChatBtn" onclick="openModal(event)">만들기</a>
 		</div>
 		<div class="openChatCon">	
 			<ul class="open-chat-list">
@@ -136,10 +136,11 @@
 	    <form action="<%=request.getContextPath()%>/chat/window" id="newChatForm" method="POST">
 		    <label>프로필 이미지</label>	
 		    <div class="open-chat-img-wrap">
-		    	<img class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
-				<a href="#" class="adit-profile-img">
-					<img src="${contextPath}/resources/icon/camera_icon.svg">
-				</a>
+		    	<img id="openChatImg" class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
+				<label for="imgUpload" class="adit-profile-img">
+					<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
+				</label>
+				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
 		    </div>		   
 		    <label>채팅방 이름</label>	    
 		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20">
@@ -166,8 +167,7 @@
 		document.getElementById("chatForm").submit();		
 	}	
 	
-	
-	//추천친구 캐러셀
+	//추천친구 캐러셀 --------------------------------------------------------------
 	let currentIndex = 0;
 	
 	const list = document.querySelector(".profile-list");
@@ -197,11 +197,9 @@
 		const moveX = currentIndex * cardWidth;
 		list.style.transform = "translateX(-" + moveX + "px)";
 	}
-	
-	
-	//모달창
-	function openModal() {
 		
+	//모달창 --------------------------------------------------------------
+	function openModal(event) {		
 		event.preventDefault();
 		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
 
@@ -212,16 +210,12 @@
 	  document.getElementById("myModal").style.display = "block";
 	}
 
-	function closeModal() {
-	  document.getElementById("myModal").style.display = "none";
-	}
+	function closeModal() { document.getElementById("myModal").style.display = "none"; }
 
-	function confirmAction() {	
-		document.getElementById("newChatForm").submit();	
-	}
+	function confirmAction() {	 document.getElementById("newChatForm").submit(); }
 
 	
-	//생성된 오픈 채팅에 참여하는 함수
+	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
 	function doOpenChat(btn){
 		console.log("클릭함");	
 		
@@ -231,6 +225,27 @@
 		
 	}
 		
+	//오픈채팅방 프로필 이미지 업로드 --------------------------------------------------------------
+	function uploadImg(input) {
+	    const file = input.files[0];
+	    if (!file) return;
+
+	    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+	    if (!allowedTypes.includes(file.type)) {
+	        alert("이미지 파일만 업로드 가능합니다 (JPG, PNG, GIF)");
+	        input.value = "";
+	        return;
+	    }
+
+	    const reader = new FileReader();
+	    reader.onload = function (e) {
+	        document.getElementById('openChatImg').src = e.target.result;
+	    }
+	    reader.readAsDataURL(file);
+	}
+	
+	
+	
 
 	
 	

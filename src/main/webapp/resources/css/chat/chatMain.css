@@ -230,6 +230,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  right: calc(50% - 60px + 5px);
+}
+
+#imgUpload{
+	display: none;
 }
 
 .modal-content {
@@ -248,7 +254,7 @@
 }
 
 #newChatForm label {
-	display: block;
+	display: flex;
 }
 #newChatForm p {
 	font-size: 13px;
