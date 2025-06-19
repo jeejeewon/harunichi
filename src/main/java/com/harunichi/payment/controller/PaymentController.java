@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -131,8 +132,10 @@ public class PaymentController {
         if (isNotLoggedIn(request, response)) return null;
 
         String loginId = (String) request.getSession().getAttribute("loginId");
+        List<OrderVo> orderList = orderService.findByBuyerId(loginId);
+
         ModelAndView mav = new ModelAndView("/payment/orderList");
-        mav.addObject("orderList", orderService.findByBuyerId(loginId));
+        mav.addObject("orderList", orderList);
         return mav;
     }
 }
