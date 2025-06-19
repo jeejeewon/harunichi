@@ -125,7 +125,7 @@
     stroke: var(--fuschia);
   }
   
-  &.active {
+  &.liked {
     color: var(--fuschia);
     fill: var(--fuschia);
     animation: beat_on 400ms forwards;

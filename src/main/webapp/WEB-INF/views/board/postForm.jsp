@@ -50,92 +50,81 @@
 </form>
 
 <script>
-$(document).ready(function(){
-    $('input[name="imageFiles"]').change(function(){
+$(document).ready(function() {
+    // 파일 선택 시 유효성 검사
+    $('input[name="imageFiles"]').change(function() {
         validateFileType(this);
     });
-
-    $('#postForm').submit(function(event){
+    
+    // 폼 제출 시 유효성 검사
+    $('#postForm').submit(function(event) {
         console.log("폼 제출 이벤트 발생");
-      
-        if (!validateForm()) {
+        if(!validateForm()) {
             console.log("validateForm 실패. 폼 제출 막기.");
-            event.preventDefault();            
+            event.preventDefault();
         } else {
-             console.log("validateForm 통과. 폼 제출 진행.");
-             // 필요하다면 여기서 파일 유효성도 다시 검사
-             // const fileInput = $('input[name="imageFiles"]')[0];
-             // if (!validateFileType(fileInput)) {
-             //     event.preventDefault();
-             //     console.log("validateFileType 실패. 폼 제출 막기.");
-             // }
+            console.log("validateForm 통과. 폼 제출 진행.");
         }
     });
 });
 
 // 파일 타입 및 개수 유효성 검사 함수
-function validateFileType(input){
+function validateFileType(input) {
     const files = input.files; // 선택된 파일 목록 가져오기
     const maxFiles = 4; // 허용되는 최대 파일 개수
-
-    if(files.length === 0){
+    
+    if(files.length === 0) {
         console.log("선택된 파일 없음");
-        return true; // 파일 선택이 안 된 경우는 유효성 통과로 간주
+        return true; // 파일 선택이 안된 경우는 유효성 통과로 간주
     }
-
+    
     console.log("파일 유효성 검사 시작");
-
+    
     // 1. 파일 개수 확인
-    if (files.length > maxFiles) {
+    if(files.length > maxFiles) {
         alert('이미지는 최대 ' + maxFiles + '개까지 업로드할 수 있습니다.');
-        input.value = ''; 
+        input.value = '';
         console.log("파일 개수 초과. 파일 선택 초기화.");
         return false; // 유효성 검사 실패
     }
-
+    
     // 2. 파일 타입 검사 (파일 개수 검사 통과 후 실행)
     console.log("파일 개수 유효성 검사 통과.");
-    for(let i = 0; i < files.length; i++){
+    for(let i = 0; i < files.length; i++) {
         const file = files[i];
         console.log("검사 중 파일:", file.name, "타입:", file.type);
-
+        
         // 파일 타입이 'image/'로 시작하는지 확인
-        if(!file.type.startsWith('image/')){
+        if(!file.type.startsWith('image/')) {
             alert('이미지 파일만 업로드할 수 있습니다.\n잘못된 파일: ' + file.name);
             input.value = ''; // 파일 선택 필드 초기화 (선택된 모든 파일 제거)
             console.log("유효하지 않은 파일 타입 감지. 파일 선택 초기화.");
             return false; // 유효성 검사 실패
         }
     }
-
+    
     console.log("모든 파일 유효성 검사 통과.");
     return true; // 모든 유효성 검사 통과
 }
 
-// 필수 필드 유효성 검사 함수 (기존 코드)
+// 필수 필드 유효성 검사 함수
 function validateForm() {
-    const writer = $('input[name="boardWriter"]').val().trim(); // 작성자 값 가져오기 및 공백 제거
+    // 작성자는 세션에서 가져오므로 검사하지 않음
     const content = $('textarea[name="boardCont"]').val().trim(); // 내용 값 가져오기 및 공백 제거
     const category = $('select[name="boardCate"]').val(); // 카테고리 선택 값 가져오기
-
-    if (writer === '') {
-        alert('작성자를 입력해주세요.'); // <-- 경고 알림
-        $('input[name="boardWriter"]').focus(); // 해당 필드로 포커스 이동
-        return false; // 유효성 검사 실패
-    }
-
-    if (content === '') {
+    
+    if(content === '') {
         alert('내용을 입력해주세요.'); // <-- 경고 알림
         $('textarea[name="boardCont"]').focus(); // 해당 필드로 포커스 이동
         return false; // 유효성 검사 실패
     }
-
-    if (category === '' || category === null) {
+    
+    if(category === '' || category === null) {
         alert('카테고리를 선택해주세요.'); // <-- 경고 알림
         $('select[name="boardCate"]').focus(); // 해당 필드로 포커스 이동
         return false; // 유효성 검사 실패
     }
-
+    
     console.log("필수 필드 유효성 검사 통과.");
     return true; // 모든 필수 필드 유효성 검사 통과
 }

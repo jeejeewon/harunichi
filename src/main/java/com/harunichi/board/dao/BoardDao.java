@@ -26,5 +26,8 @@ public interface BoardDao {
 	
 	// 게시글 삭제
 	public int deleteBoard(int boardId) throws Exception;
+	
+    // 게시글 좋아요 수 업데이트
+    void updateBoardLikeCount(BoardVo boardVo) throws Exception;
 
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.harunichi.board.service.BoardService;
+import com.harunichi.board.vo.BoardLikeVo;
 import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
 import com.harunichi.member.vo.MemberVo;
@@ -60,7 +62,10 @@ public class BoardControllerImpl implements BoardController {
 		ModelAndView mav = new ModelAndView("/board/list");
 
 		try {
-
+			// 로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+			
 			List<BoardVo> boardList = boardService.selectBoardList();
 
 			if (boardList != null && !boardList.isEmpty()) {
@@ -68,8 +73,25 @@ public class BoardControllerImpl implements BoardController {
 					int boardId = board.getBoardId();
 					// boardService의 getReplyCountByBoardId 메서드를 호출하여 실제 댓글 수를 가져옴
 					int actualReplyCount = boardService.getReplyCountByBoardId(boardId);
-					// boardRe 필드를 업데이트
 					board.setBoardRe(actualReplyCount);
+					// 좋아요 수 업데이트 (이미 DB에서 가져온 값이 있을 수 있지만, 최신 상태 보장)
+					int likeCount = boardService.getBoardLikeCount(boardId);
+					board.setBoardLike(likeCount);
+
+					// 로그인한 사용자가 있는 경우 좋아요 상태 확인
+					if (loginUser != null) {
+						BoardLikeVo likeVo = new BoardLikeVo();
+						likeVo.setBoardLikeUser(loginUser.getId());
+						likeVo.setBoardLikePost(boardId);
+
+						boolean isLiked = boardService.checkBoardLikeStatus(likeVo);
+
+						// 각 게시글의 좋아요 상태를 Map에 저장
+						if (mav.getModel().get("likedPosts") == null) {
+							mav.addObject("likedPosts", new HashMap<Integer, Boolean>());
+						}
+						((Map<Integer, Boolean>) mav.getModel().get("likedPosts")).put(boardId, isLiked);
+					}
 				}
 			}
 			mav.addObject("boardList", boardList);
@@ -176,8 +198,27 @@ public class BoardControllerImpl implements BoardController {
 				List<ReplyVo> replyList = boardService.getRepliesByBoardId(boardId);
 				mav.addObject("replyList", replyList);
 
+				// 로그인한 사용자 정보 가져오기
+				HttpSession session = request.getSession();
+				MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+				// 좋아요 상태 확인
+				boolean isLiked = false;
+				if (loginUser != null) {
+					BoardLikeVo likeVo = new BoardLikeVo();
+					likeVo.setBoardLikeUser(loginUser.getId());
+					likeVo.setBoardLikePost(boardId);
+
+					isLiked = boardService.checkBoardLikeStatus(likeVo);
+					mav.addObject("isLiked", isLiked);
+				}
+
 				// 게시글 정보 (댓글 개수 포함)를 mav에 추가
 				mav.addObject("board", boardVo); // boardRe
+
+				// 좋아요 수 조회
+				int likeCount = boardService.getBoardLikeCount(boardId);
+				mav.addObject("likeCount", likeCount);
 
 			} else {
 				log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
@@ -652,14 +693,14 @@ public class BoardControllerImpl implements BoardController {
 		Map<String, Object> resultMap = new HashMap<>();
 		// 임시로 member_id를 "admin"으로 설정
 		// String currentUserId = "admin";
-		
-		HttpSession session = request.getSession();		
-		MemberVo loginUser = (MemberVo) session.getAttribute("member"); 
-		String currentUserId = null; 
-	
-		if (loginUser != null) {		
-			currentUserId = loginUser.getNick(); 
-			log.info(">> 댓글 수정 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId); 
+
+		HttpSession session = request.getSession();
+		MemberVo loginUser = (MemberVo) session.getAttribute("member");
+		String currentUserId = null;
+
+		if (loginUser != null) {
+			currentUserId = loginUser.getNick();
+			log.info(">> 댓글 수정 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId);
 		} else {
 			log.warn(">> 댓글 수정 실패: 로그인되지 않은 사용자 요청, replyId={}", replyId);
 			resultMap.put("status", "fail");
@@ -686,6 +727,150 @@ public class BoardControllerImpl implements BoardController {
 		}
 		log.info(">>BoardControllerImpl-updateReply() 호출 종료");
 		return resultMap;
+	}
+
+	@Override
+	@RequestMapping(value = "/like", method = RequestMethod.POST)
+	@ResponseBody
+	public String boardLike(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception {
+		log.info(">> 게시글 좋아요 처리, boardId: {}", boardId);
+
+		try {
+			// 세션에서 로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+			// 로그인 체크
+			if (loginUser == null) {
+				log.warn(">> 게시글 좋아요 실패: 로그인되지 않은 사용자 요청");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("login"); // 클라이언트에게 로그인 필요 메시지 전달
+				return null;
+			}
+
+			String userId = loginUser.getId(); // 로그인한 사용자 ID
+			log.info(">> userId: {}", userId);
+
+			BoardLikeVo likeVo = new BoardLikeVo();
+			likeVo.setBoardLikeUser(userId);
+			likeVo.setBoardLikePost(boardId);
+
+			boolean result = boardService.addBoardLike(likeVo);
+
+			if (result) {
+				// 좋아요 추가 성공 시 해당 게시글의 총 좋아요 수 반환
+				int totalLikes = boardService.getBoardLikeCount(boardId);
+
+				// 게시글의 좋아요 수도 업데이트
+				boardService.updateBoardLikeCount(boardId, totalLikes);
+
+				return String.valueOf(totalLikes);
+			} else {
+				return "fail"; // 이미 좋아요를 누른 경우 등 실패
+			}
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 처리 중 예외 발생", e);
+			return "error"; // 서버 오류
+		}
+	}
+
+	@Override
+	@RequestMapping(value = "/like/cancel", method = RequestMethod.POST)
+	@ResponseBody
+	public String boardLikeCancel(HttpServletRequest request, HttpServletResponse response, int boardId)
+			throws Exception {
+		log.info(">> 게시글 좋아요 취소 처리, boardId: {}", boardId);
+
+		try {
+			// 세션에서 로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+			// 로그인 체크
+			if (loginUser == null) {
+				log.warn(">> 게시글 좋아요 취소 실패: 로그인되지 않은 사용자 요청");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("login"); // 클라이언트에게 로그인 필요 메시지 전달
+				return null;
+			}
+
+			String userId = loginUser.getId(); // 로그인한 사용자 ID
+			log.info(">> userId: {}", userId);
+
+			BoardLikeVo likeVo = new BoardLikeVo();
+			likeVo.setBoardLikeUser(userId);
+			likeVo.setBoardLikePost(boardId);
+
+			boolean result = boardService.cancelBoardLike(likeVo);
+
+			if (result) {
+				// 좋아요 취소 성공 시 해당 게시글의 총 좋아요 수 반환
+				int totalLikes = boardService.getBoardLikeCount(boardId);
+
+				// 게시글의 좋아요 수도 업데이트
+				boardService.updateBoardLikeCount(boardId, totalLikes);
+
+				return String.valueOf(totalLikes);
+			} else {
+				return "fail"; // 좋아요를 누르지 않은 경우 등 실패
+			}
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 취소 처리 중 예외 발생", e);
+			return "error"; // 서버 오류
+		}
+	}
+
+	@Override
+	@RequestMapping(value = "/like/status", method = RequestMethod.POST)
+	@ResponseBody
+	public String boardLikeStatus(HttpServletRequest request, HttpServletResponse response, int boardId)
+			throws Exception {
+
+		try {
+			// 세션에서 로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+			// 로그인 체크
+			if (loginUser == null) {
+				log.warn(">> 게시글 좋아요 상태 확인 실패: 로그인되지 않은 사용자 요청");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("login"); // 클라이언트에게 로그인 필요 메시지 전달
+				return null;
+			}
+
+			String userId = loginUser.getId(); // 로그인한 사용자 ID
+			log.info(">> userId: {}", userId);
+
+			BoardLikeVo likeVo = new BoardLikeVo();
+			likeVo.setBoardLikeUser(userId);
+			likeVo.setBoardLikePost(boardId);
+
+			boolean isLiked = boardService.checkBoardLikeStatus(likeVo);
+			return String.valueOf(isLiked); // true 또는 false 문자열 반환
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 상태 확인 중 예외 발생", e);
+			return "error"; // 서버 오류
+		}
+	}
+
+	@Override
+	@RequestMapping(value = "/like/count", method = RequestMethod.POST)
+	@ResponseBody
+	public String boardLikeCount(HttpServletRequest request, HttpServletResponse response, int boardId)
+			throws Exception {
+		log.info(">> 게시글 총 좋아요 수 조회, boardId: {}", boardId);
+
+		try {
+			int totalLikes = boardService.getBoardLikeCount(boardId);
+			return String.valueOf(totalLikes); // 좋아요 수 문자열 반환
+		} catch (Exception e) {
+			log.error(">> 게시글 총 좋아요 수 조회 중 예외 발생", e);
+			return "error"; // 서버 오류
+		}
 	}
 
 }

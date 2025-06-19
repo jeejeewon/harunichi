@@ -26,8 +26,7 @@ public class BoardLikeDaoImpl implements BoardLikeDao {
 
 	@Override
 	public void deleteBoardLike(BoardLikeVo likeVo) {
-		 sqlSession.delete(NAMESPACE + "deleteBoardLike", likeVo);
-		
+		 sqlSession.delete(NAMESPACE + "deleteBoardLike", likeVo);		
 	}
 
 	@Override

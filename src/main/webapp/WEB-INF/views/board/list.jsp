@@ -65,8 +65,8 @@
 							</div>
 						</a>
 						<div class="item-info">
-							<div class="like" data-board-id="${board.boardId}">
-							  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							<div class="like  ${likedPosts[board.boardId] ? 'liked' : ''}" data-board-id="${board.boardId}">
+							  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="${isLiked ? 'liked' : ''}">
 							    <path d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z"/>
 							  </svg>
 							</div>						
@@ -85,6 +85,7 @@
 	</div>
 	<jsp:include page="side.jsp" />
 </div>
+
 <script>
 $('article').has('.board').addClass('board-article');
 
@@ -156,62 +157,58 @@ $(document).ready(function() {
     }
 });
 
-// 좋아요
-Array.from(document.querySelectorAll('.like')).forEach(el => {
-    el.addEventListener('click', async (e) => { // async 키워드 추가
-        // 클릭된 요소에서 게시글 ID와 좋아요 개수 표시할 span 가져오기
-        const boardId = el.dataset.boardId; // data-board-id 값 가져오기
-        const likeCountSpan = el.querySelector('.like-count'); // 좋아요 개수 표시 span
 
-        if (!boardId) {
-            console.error('게시글 ID가 없습니다!');
-            return; // 게시글 ID 없으면 중단
+//좋아요 버튼 클릭 이벤트 (AJAX) - 목록 페이지 버전
+$('.like').on('click', function() {
+    var $likeBtn = $(this); // 클릭된 .like 요소
+    var boardId = $likeBtn.data('board-id');
+
+    // 로그인 상태 확인 (JSP EL 변수 사용)
+    var isLoggedIn = ${not empty sessionScope.member};
+
+    if (!isLoggedIn) {
+        // 로그인하지 않은 경우 팝업 표시
+        alert('좋아요 기능은 로그인 후 이용 가능합니다.');
+        if (confirm('로그인 페이지로 이동하시겠습니까?')) {
+            window.location.href = '${contextPath}/member/loginForm';
         }
+        return; // AJAX 요청 중단
+    }
 
-        try {            
-            const response = await fetch(`/board/like/${boardId}`, {
-                method: 'POST', // 좋아요/취소는 보통 POST나 PUT 사용
-                headers: {
-                    'Content-Type': 'application/json',                    
-                },
-                // 만약 사용자 ID 등을 body에 담아 보낼 경우:
-                // body: JSON.stringify({ boardId: boardId, userId: 현재사용자ID })
-            });
+    var isLiked = $likeBtn.hasClass('liked');
+    var url = isLiked ? '${contextPath}/board/like/cancel' : '${contextPath}/board/like';
 
-            if (!response.ok) {
-                console.error('좋아요 처리 실패:', response.statusText);
-                alert('좋아요 처리에 실패했습니다. 다시 시도해주세요.'); 
-                return;
-            }
-
-            // 서버에서 받은 JSON 응답 파싱
-            const result = await response.json(); // { success: true, totalLikes: 16, likedByUser: true } 
-
-            if (result.success) {
-                // 서버 처리가 성공했으면 UI 업데이트
-                if (result.likedByUser !== undefined) {                  
-                     if (result.likedByUser) {
-                         el.classList.add('active'); 
-                     } else {
-                         el.classList.remove('active'); 
-                     }
-                } else {                    
-                     el.classList.toggle('active');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: { boardId: boardId },
+        success: function(response) {
+            if (response === 'login') {
+                // 서버에서도 로그인 체크를 하므로 이 경우에도 처리
+                alert('좋아요 기능은 로그인 후 이용 가능합니다.');
+                if (confirm('로그인 페이지로 이동하시겠습니까?')) {
+                    window.location.href = '${contextPath}/member/loginForm';
                 }
+            } else if (response === 'fail') {
+                // 이미 좋아요/취소 상태인 경우 등
+                console.log('Action failed: ' + (isLiked ? 'Already not liked' : 'Already liked'));
+                // 필요하다면 여기서 좋아요 상태를 다시 확인하여 UI를 동기화할 수 있습니다.
+            } else if (response === 'error') {
+                alert('처리 중 오류가 발생했습니다.');
+            } else {
+                // 성공 시 좋아요 수 업데이트 및 클래스 토글
+                // 클릭된 .like 요소의 형제 요소 중 "좋아요" 텍스트를 포함하는 <p> 태그를 찾습니다.
+                var $likeCountParagraph = $likeBtn.siblings('p:contains("좋아요")');
+                // 해당 <p> 태그의 텍스트를 업데이트합니다.
+                $likeCountParagraph.text('좋아요 ' + response);
 
-                // 좋아요 개수 업데이트
-                if (likeCountSpan && result.totalLikes !== undefined) {
-                    likeCountSpan.textContent = result.totalLikes;
-                }
-
-            } else {              
-                 console.error('좋아요 처리 로직 실패:', result.message);
-                 alert(result.message || '좋아요 처리에 실패했습니다.');
+                // .like 요소에 liked 클래스 토글
+                $likeBtn.toggleClass('liked');
             }
-
-        } catch (error) {        
-            console.error('좋아요 요청 중 오류 발생:', error);
-            alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + status + error);
+            alert('처리 중 오류가 발생했습니다.');
         }
     });
 });

@@ -2,6 +2,7 @@ package com.harunichi.board.service;
 
 import java.util.List;
 
+import com.harunichi.board.vo.BoardLikeVo;
 import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
 
@@ -36,5 +37,20 @@ public interface BoardService {
 
 	// 댓글 수정
 	public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception;
+	
+	// 게시글 좋아요
+    boolean addBoardLike(BoardLikeVo likeVo) throws Exception;
+    
+    // 게시글 좋아요 취소
+    boolean cancelBoardLike(BoardLikeVo likeVo) throws Exception;
+    
+    // 게시글 좋아요 상태
+    boolean checkBoardLikeStatus(BoardLikeVo likeVo) throws Exception;
+    
+    // 게시글 총 좋아요 수 조회
+    int getBoardLikeCount(int boardId) throws Exception;
+    
+    // 게시글 좋아요 수 업데이트
+    void updateBoardLikeCount(int boardId, int likeCount) throws Exception;
 
 }
