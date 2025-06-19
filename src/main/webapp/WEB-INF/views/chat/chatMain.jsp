@@ -66,8 +66,8 @@
 						<c:set var="profile" value="${profileList[status.index]}" />
 						<c:if test="${not empty chatMessage}">
 							<li>
-								<div class="open-chat-item">																	
-									<a href="<%=request.getContextPath()%>/chat/window?roomId=${myChat.roomId}">
+								<div class="open-chat-item" data-room-id="${myChat.roomId}" data-room-type="${myChat.chatType}" onclick="doChat(this)">																	
+									<a href="#">
 										<c:choose>
 											<c:when test="${myChat.chatType eq 'personal'}">
 												<img class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="개인채팅방 프로필사진">
@@ -207,7 +207,7 @@
 		list.style.transform = "translateX(-" + moveX + "px)";
 	}
 		
-	//모달창 --------------------------------------------------------------
+	//모달창 -------------------------------------------------------------------------------
 	function openModal(event) {		
 		event.preventDefault();
 		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
@@ -224,10 +224,28 @@
 	function confirmAction() {	 document.getElementById("newChatForm").submit(); }
 
 	
+	//채팅목록에서 채팅방을 눌렀을 때 함수 -----------------------------------------------------------
+	function doChat(event){
+		
+		const roomId = event.getAttribute("data-room-id");
+		const chatType = event.getAttribute("data-room-type");
+		
+		
+		console.log(roomId + "클릭");
+		
+		location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;
+		
+		
+	}
+	
+	
+	
+	
+	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
 	function doOpenChat(btn){
 		
-		const roomId = btn.getAttribute("data-room-id");
+		//const roomId = btn.getAttribute("data-room-id");
 		
 		location.href = "<%= request.getContextPath()%>/chat/window?roomId=" + roomId;
 		
@@ -252,6 +270,7 @@
 	    }
 	    reader.readAsDataURL(file);
 	}
+	
 	
 	
 	

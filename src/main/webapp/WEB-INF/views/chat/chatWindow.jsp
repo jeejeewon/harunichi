@@ -191,9 +191,9 @@
 		//새로운 채팅!
 		const chatData = {
 							roomId : "${roomId}",
-							chatType : "${param.chatType}", //개인채팅인지, 단체채팅인지
+							chatType : "${param.chatType}", //개인채팅인지, 단체채팅인지		
 							senderId : senderId, //보낸 사람
-							receiverId : "${param.receiverId}",
+							receiverId : "${receiverId != null ? receiverId : param.receiverId}",
 							message : chatMessage.value //메세지	
 		};
 		

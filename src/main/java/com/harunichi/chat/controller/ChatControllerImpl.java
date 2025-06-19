@@ -179,9 +179,7 @@ public class ChatControllerImpl implements ChatController {
 		int count = chatServiceImpl.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 			
-		//채팅방 타이틀 조회
-		String title = chatServiceImpl.selectTitle(roomId);
-		model.addAttribute("title", title);
+		model.addAttribute("title", vo.getTitle());
 				
 		return "/chatWindow";		
 	}
@@ -219,6 +217,58 @@ public class ChatControllerImpl implements ChatController {
 	}
 	
 	
+	//채팅 목록에서 채팅방을 눌렀을 경우 실행
+	@Override
+	@RequestMapping(value = "/doChat")
+	public String doChat(@RequestParam("roomId") String roomId,
+			HttpServletRequest request, HttpServletResponse response, 
+						 Model model, HttpSession session) throws Exception{
+		log.info("ChatController의 doChat 메소드 실행 -------------");
+		
+		//로그인 유무 확인
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		String userId = member.getId();
+		
+		String chatType = request.getParameter("chatType");
+
+		//채팅방 참여 인원 조회
+		int count = chatServiceImpl.selectUserCount(roomId);		
+		model.addAttribute("count", count);
+		
+		//채팅 상대 ID 조회
+		String memberId = chatServiceImpl.selectChatMemberId(userId, roomId);
+			
+		//채팅 상대 프로필 정보 조회
+		if(chatType.equals("personal")) {
+			MemberVo memberVo = chatServiceImpl.selectProfile(memberId);
+			model.addAttribute("title", memberVo.getNick());	
+			model.addAttribute("profileImg", memberVo.getProfileImg());	
+			model.addAttribute("roomId", roomId);			
+			model.addAttribute("receiverId", memberId);	
+		}
+
+		
+		//오픈 채팅방 구현
+	/*	
+		ChatRoomVo vo = new ChatRoomVo();
+		vo.setUserId(senderId);
+		vo.setPersons(persons);
+		vo.setProfileImg(fileName);
+		vo.setTitle(request.getParameter("title"));
+		vo.setChatType(request.getParameter("chatType"));
+			
+		//채팅방 타이틀 조회
+		String title = chatServiceImpl.selectTitle(roomId);
+		model.addAttribute("title", title);
+		
+	*/		
+		return "/chatWindow";		
+	}
+	
+	
+	
 	@Override
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
@@ -249,6 +299,10 @@ public class ChatControllerImpl implements ChatController {
 		return "/chatWindow";	
 	}
 		
+	
+
+	
+	
 	
 	//과거 채팅 내역 불러오기
 	@Override
