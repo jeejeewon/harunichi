@@ -3,42 +3,33 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-
-<!-- 어드민이 아닐경우엔 접근 불가 처리 -->
-<c:if test="${sessionScope.member == null || sessionScope.member.id ne 'admin'}">
-  <script type="text/javascript">
-    alert('잘못된 접근입니다.');
-    history.back();
-  </script>
-</c:if>
-
 <%-- 현재 요청 URI를 JSP에서 직접 가져오기 (원래 요청 URI를 속성에서 가져옴) --%>
 <c:set var="uri" value="${requestScope['javax.servlet.forward.request_uri']}" />
 
 <c:set var="uriWithoutCtx" value="${fn:substringAfter(uri, contextPath)}" />
 
-<!-- 홈 메뉴 active 처리 -->
+<!-- 홈 메뉴 active -->
 <c:set var="homeClass" value="" />
-<c:if test="${fn:contains(uriWithoutCtx, '/admin')}">
+<c:if test="${uriWithoutCtx eq '/admin' || uriWithoutCtx eq '/admin/'}">
   <c:set var="homeClass" value="active" />
 </c:if>
 
-<!-- 일상/교류 메뉴 active 처리 -->
+<!-- 일상/교류 메뉴 active -->
 <c:set var="boardClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/board')}">
-  <c:set var="mypageClass" value="active" />
+  <c:set var="memberClass" value="active" />
 </c:if>
 
-<!-- 중고거래 메뉴 active 처리 -->
+<!-- 중고거래 관리 메뉴 active -->
 <c:set var="productClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/product')}">
   <c:set var="productClass" value="active" />
 </c:if>
 
-<!-- 마이페이지 메뉴 active 처리 -->
-<c:set var="mypageClass" value="" />
-<c:if test="${fn:contains(uriWithoutCtx, '/mypage')}">
-  <c:set var="mypageClass" value="active" />
+<!-- 회원 관리 메뉴 active -->
+<c:set var="memberClass" value="" />
+<c:if test="${fn:contains(uriWithoutCtx, '/member')}">
+  <c:set var="memberClass" value="active" />
 </c:if>
 
 <!-- 채팅 메뉴 active 처리 -->
@@ -80,7 +71,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="${contextPath}/admin/mypage" class="${mypageClass}">
+					<a href="${contextPath}/admin/member" class="${memberClass}">
 						<span class="material-symbols-outlined">account_circle</span>
 						<span>마이페이지 관리</span>
 					</a>

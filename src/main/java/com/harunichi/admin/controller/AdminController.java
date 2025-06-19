@@ -18,8 +18,14 @@ import com.harunichi.main.controller.MainController;
 public class AdminController {
 
     @RequestMapping({"", "/"})
-    public String adminMain(HttpServletRequest request, Model model) {
+    public String showAdminMain(HttpServletRequest request, Model model) {
         model.addAttribute("currentUri", request.getRequestURI());
-        return "/admin/main";  // Tiles에 정의된 어드민 메인 body
+        return "/admin/main";  // tiles_admin.xml에 적어둔 name값 적기!
+    }
+    
+    @RequestMapping({"/member"})
+    public String showAdminMember(HttpServletRequest request, Model model) {
+    	model.addAttribute("currentUri", request.getRequestURI());
+    	return "/admin/member";  // tiles_admin.xml에 적어둔 name값 적기!
     }
 }

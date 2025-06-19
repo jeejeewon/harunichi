@@ -1,0 +1,79 @@
+@charset "UTF-8";
+.mypage-wrap{
+	background-color: orange;
+}
+.mypage-inner-header{
+	padding: 10px 0;
+}
+.mypage-inner-header a img{
+	width: 20px;
+	height: auto;
+}
+.mypage-profile-area{
+	display: flex;
+	gap: 10px;
+	background-color: pink;
+}
+.profile-area-left{
+	flex: 0 0 150px;  /* 150px 고정 */
+}
+.profile-area-left img{
+	border-radius: 50%;
+	overflow: hidden;
+	border: 1px solid #eee;
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+    display: block;
+}
+.profile-area-middle{
+	flex: 1 1 auto;
+	background-color: #ddd;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+.nick-and-email p:first-child{
+	font-size: 16px;
+	font-weight: bold;
+}
+.nick-and-email p:last-child{
+	font-size: 12px;
+	color: #888;
+}
+.profile-area-right{
+	flex: 0 0 auto;
+	background: #ccc;
+	display: flex;
+	gap : 5px;
+}
+.profile-area-right a{
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+}
+.profile-area-right a:hover{
+	background-color: #e6e6e6;
+}
+.profile-area-right a img{
+	width: 20px;
+	height: auto;
+	transform: translate(-2px, -1px);
+	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg) brightness(96%) contrast(89%);
+}
+.profile-area-right .follow-btn{
+	width: 90px;
+	height: 35px;
+	border-radius: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+}
+.profile-area-right .follow-btn:hover {
+	
+}
