@@ -140,12 +140,12 @@ public class ChatServiceImpl implements ChatService {
 		return chatDaoImpl.selectUserCount(roomId);
 	}
 	
-	//채팅방 타이틀 확인(단체채팅 - 방장이 정한 타이틀)
+	//특정 오픈 채팅방 정보 조회
 	@Override
-	public String selectTitle(String roomId) {
-		System.out.println("---ChatService의 selectTitle메소드 호출");
+	public ChatRoomVo selectOpenChatById(String roomId) {
+		System.out.println("---ChatService의 selectOpenChatById메소드 호출");
 		System.out.println("roomId : " + roomId);
-		return chatDaoImpl.selectTitle(roomId);
+		return chatDaoImpl.selectOpenChatById(roomId);
 	}
 	
 	//나와 채팅 중인 상대방 ID 조회

@@ -102,12 +102,13 @@
 		</if>
 	</insert>
 
-	<!-- 채팅방 타이틀 조회(단체 채팅) -->
-	<select id="selectTitle" parameterType="String" resultType="String">
+	<!-- 특정 오픈 채팅방 정보 조회 -->
+	<select id="selectOpenChatById" parameterType="String" resultType="ChatRoomVo">
 		<![CDATA[
-			SELECT DISTINCT title 
+			SELECT *
 			FROM chatroom
 			WHERE roomId = #{roomId}
+			LIMIT 1
 		]]>
 	</select>
 	

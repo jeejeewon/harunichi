@@ -186,6 +186,7 @@ public class ChatControllerImpl implements ChatController {
 	
 	
 	//개인 채팅방 생성
+	@Override
 	@RequestMapping(value = "/createChat", method = RequestMethod.POST)
 	public String createChat (HttpServletRequest request, 
 							  HttpServletResponse response, Model model, HttpSession session) throws Exception{			
@@ -232,38 +233,34 @@ public class ChatControllerImpl implements ChatController {
 		String userId = member.getId();
 		
 		String chatType = request.getParameter("chatType");
+		model.addAttribute("chatType", chatType);
 
 		//채팅방 참여 인원 조회
 		int count = chatServiceImpl.selectUserCount(roomId);		
 		model.addAttribute("count", count);
-		
-		//채팅 상대 ID 조회
-		String memberId = chatServiceImpl.selectChatMemberId(userId, roomId);
-			
+				
 		//채팅 상대 프로필 정보 조회
-		if(chatType.equals("personal")) {
+		if(chatType.equals("personal")) { //개인채팅
+		
+			//채팅 상대 ID 조회
+			String memberId = chatServiceImpl.selectChatMemberId(userId, roomId);
+			
 			MemberVo memberVo = chatServiceImpl.selectProfile(memberId);
 			model.addAttribute("title", memberVo.getNick());	
-			model.addAttribute("profileImg", memberVo.getProfileImg());	
-			model.addAttribute("roomId", roomId);			
+			model.addAttribute("profileImg", memberVo.getProfileImg());				
 			model.addAttribute("receiverId", memberId);	
+		
+		}else {	//오픈채팅			
+			//채팅방 ID로 채팅방 정보 조회
+			ChatRoomVo chatRoomVo = chatServiceImpl.selectOpenChatById(roomId);
+			String title = chatRoomVo.getTitle();
+			String profileImg = chatRoomVo.getProfileImg();
+			model.addAttribute("title", title);	
+			model.addAttribute("profileImg", profileImg);	
 		}
+		
+		model.addAttribute("roomId", roomId);
 
-		
-		//오픈 채팅방 구현
-	/*	
-		ChatRoomVo vo = new ChatRoomVo();
-		vo.setUserId(senderId);
-		vo.setPersons(persons);
-		vo.setProfileImg(fileName);
-		vo.setTitle(request.getParameter("title"));
-		vo.setChatType(request.getParameter("chatType"));
-			
-		//채팅방 타이틀 조회
-		String title = chatServiceImpl.selectTitle(roomId);
-		model.addAttribute("title", title);
-		
-	*/		
 		return "/chatWindow";		
 	}
 	

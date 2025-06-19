@@ -12,13 +12,26 @@
 </style>
 </head>
 <body>
+
+<!-- 프로필 이미지 경로 -->
+<c:set var="profileImgPath" value="/harunichi/resources/images/profile/" />
+
 	<div class="chat-center-wrapper">
 		<div id="chatContainer">
 			<div id="chatTop">
 				<div class="chat-top-left">
 					<a href="#">
-						<img class="profile-img" src="../resources/images/chat/${profileImg}" alt="프로필사진">
-						<!-- <img class="profile-img" src="../resources/images/chat/profile1.png" alt="프로필사진"> -->
+						<c:choose>
+							<c:when test="${empty profileImg}">
+								<img class="profile-img" src="../resources/icon/basic_profile.jpg" alt="기본 프로필사진">												
+							</c:when>
+							<c:when test="${chatType eq 'personal'}">
+								<img class="profile-img" src="${profileImgPath}${profileImg}" alt="개인채팅방 프로필사진">
+							</c:when>
+							<c:otherwise>
+								<img class="profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
+							</c:otherwise>
+						</c:choose>						
 					</a>
 					<div class="room-info">
 						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>

@@ -30,8 +30,8 @@ public interface ChatDao {
 	//채팅방에 참여하고 있는 유저 조회
 	int selectUserCount(String roomId);
 
-	//채팅방 타이틀 조회(단체)
-	String selectTitle(String roomId);
+	//특정 오픈 채팅방 정보 조회
+	ChatRoomVo selectOpenChatById(String roomId);
 	
 	//나와 채팅 중인 상대방 ID 조회
 	String selectChatMemberId(String userId, String roomId);

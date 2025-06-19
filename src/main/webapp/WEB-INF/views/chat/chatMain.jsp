@@ -88,7 +88,7 @@
 											</c:when>
 											<c:otherwise>
 												<p class="open-chat-title">${myChat.title} 
-													<span>(<span>${myChat.userCount} / </span>${myChat.persons})</span>
+													<span>(<span>${myChat.userCount}/</span>${myChat.persons})</span>
 												</p>
 											</c:otherwise>
 										</c:choose>									
@@ -126,7 +126,7 @@
 								</c:choose>						
 							</a>	
 							<div class="open-chat-info">
-								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>								
+								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount}/</span>${openChat.persons})</span></p>								
 								<c:forEach var="messageVo" items="${messageList}" >
 									<c:if test="${openChat.roomId eq messageVo.roomId}">
 										<p class="open-chat-content">${messageVo.message} <span class="sent-time">${messageVo.displayTime}</span></p>	
@@ -290,17 +290,11 @@
 
 	
 	//채팅목록에서 채팅방을 눌렀을 때 함수 -----------------------------------------------------------
-	function doChat(event){
-		
+	function doChat(event){		
 		const roomId = event.getAttribute("data-room-id");
 		const chatType = event.getAttribute("data-room-type");
 		
-		
-		console.log(roomId + "클릭");
-		
-		location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;
-		
-		
+		location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;		
 	}
 	
 	

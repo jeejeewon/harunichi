@@ -118,10 +118,10 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "selectUserCount", roomId);
 	}
 
-	//채팅방 타이틀 조회(단체)
+	//특정 오픈 채팅방 정보 조회
 	@Override
-	public String selectTitle(String roomId) {		
-		System.out.println("===ChatDao의 selectTitle 메소드 실행");
+	public ChatRoomVo selectOpenChatById(String roomId) {		
+		System.out.println("===ChatDao의 selectOpenChatById 메소드 실행");
 		return sqlSession.selectOne(NAMESPACE + "selectTitle", roomId);
 	}
 	
