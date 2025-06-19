@@ -59,7 +59,7 @@
 			<div class="openChatCon">	
 				<ul class="open-chat-list">
 					<c:if test="${empty myChatList}">
-						<li><p>아직 참여 중인 채팅방이 없어요. 새로운 채팅을 시작해보세요!💬</p></li>
+						<li><p class="empty-chat">아직 참여 중인 채팅방이 없어요. 새로운 채팅을 시작해보세요!💬</p></li>
 					</c:if>
 					<c:forEach var="myChat" items="${myChatList}" varStatus="status">
 						<c:set var="chatMessage" value="${myChatMessage[status.index]}" />
@@ -104,11 +104,14 @@
 	</c:if>
 	<div>
 		<div id="openTitle">
-			<p id="recText">오픈채팅방</p>
+			<p id="recText">오픈 채팅방</p>
 			<a href="#" id="newOpenChatBtn" onclick="openModal(event)">만들기</a>
 		</div>
 		<div class="openChatCon">	
 			<ul class="open-chat-list">
+				<c:if test="${empty openChatList}">
+					<li><p class="empty-chat">만들어진 오픈 채팅방이 없어요. 채팅방을 만들어 많은 사람들과 대화를 나눠보세요!💬</p></li>
+				</c:if>
 				<c:forEach var="openChat" items="${openChatList}">
 					<li data-room-id="${openChat.roomId}" onclick="doOpenChat(this);">
 						<div class="open-chat-item">
@@ -145,20 +148,20 @@
 		    <label>프로필 이미지</label>	
 		    <div class="open-chat-img-wrap">
 		    	<img id="openChatImg"  class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
-				<input type="hidden" id="OpenchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">
+				<input type="hidden" id="openchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">
 				<label for="imgUpload" class="adit-profile-img">
 					<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
 				</label>
 				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
 		    </div>		   
 		    <label>채팅방 이름</label>	    
-		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20">
-		    <p>최대 20자까지 입력 가능합니다.</p>
+		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20" onkeyup="validateTitle()">
+		    <p class="modal-input-msg">최대 20자까지 입력 가능합니다.</p>	    
 		    <label>최대 인원</label>		    
-		    <input id="openChatPersons" name="persons" class="open-chat-form" type="number" min="2" max="8">
-		    <p>최대 8명까지 입장 가능합니다.</p>
+		    <input id="openChatPersons" name="persons" class="open-chat-form" type="number" min="2" max="8" onkeyup="validatePersons()">
+		    <p class="modal-input-msg">최대 8명까지 입장 가능합니다.</p>
 		    <div class="modal-btn-wrap">
-			    <button class="modal-btn" onclick="confirmAction()">만들기</button>
+			    <button class="modal-btn" onclick="confirmAction(event)">만들기</button>
 			    <button class="modal-btn" type="button" onclick="closeModal()">취소</button>
 		    </div>
 		    <input type="hidden" name="chatType" value="group">
@@ -207,11 +210,11 @@
 		list.style.transform = "translateX(-" + moveX + "px)";
 	}
 		
-	//모달창 -------------------------------------------------------------------------------
+	//모달창 -------------------------------------------------------------------------------	
+	//모달창 열기
 	function openModal(event) {		
 		event.preventDefault();
 		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
-
 		  if (!userId) {
 		    location.href = "<%= request.getContextPath() %>/chat/window";
 		    return;
@@ -219,9 +222,71 @@
 	  document.getElementById("myModal").style.display = "block";
 	}
 
-	function closeModal() { document.getElementById("myModal").style.display = "none"; }
+	//모달창 닫기
+	function closeModal() { 	
+		//입력된 값 및 폼 초기화
+		document.getElementById("newChatForm").reset();
 
-	function confirmAction() {	 document.getElementById("newChatForm").submit(); }
+		//유효성 검사 메시지 초기화
+		const msgAll = document.querySelectorAll(".modal-input-msg");
+		msgAll.forEach((msg, index) => {
+			if (index === 0) msg.textContent = "최대 20자까지 입력 가능합니다.";  
+			if (index === 1) msg.textContent = "최대 8명까지 입장 가능합니다.";  
+			msg.classList.remove("err")});  
+
+		//프로필 이미지 초기화
+		document.getElementById("openChatImg").src = "${contextPath}/resources/icon/basic_profile.jpg";
+		document.getElementById("openchatProfileImg").value = "${contextPath}/resources/icon/basic_profile.jpg";
+
+		document.getElementById("myModal").style.display = "none"; 
+	}
+
+	//모달창 컨펌
+	function confirmAction(event) {	
+		event.preventDefault();	
+		//유효성 검사
+		const isValid = validate();
+		if (isValid) { document.getElementById("newChatForm").submit(); }
+	}	
+	
+	//유효성 검사 결과 리턴
+	function validate() {
+		const isTitleValid = validateTitle();
+		const isPersonsValid = validatePersons();
+		return isTitleValid && isPersonsValid;
+	}
+	
+	//채팅방 이름 유효성 검사
+	function validateTitle() {
+		const titleInput = document.getElementById("openChatTitle");
+		const msgTag = titleInput.nextElementSibling;
+		const title = titleInput.value.trim();
+
+		if (title.length === 0) {
+			msgTag.textContent = "채팅방 이름을 입력해주세요.";
+			msgTag.classList.add("err");
+			return false;
+		} else {
+			msgTag.textContent = "";
+			return true;
+		}
+	}
+
+	//채팅방 인원 유효성 검사
+	function validatePersons() {
+		const personInput = document.getElementById("openChatPersons");
+		const msgTag = personInput.nextElementSibling;
+		const value = Number(personInput.value);
+
+		if (isNaN(value) || value < 2 || value > 8) {
+			msgTag.textContent = "2명 이상 8명 이하로 입력해주세요.";
+			msgTag.classList.add("err");
+			return false;
+		} else {
+			msgTag.textContent = "";
+			return true;
+		}
+	}
 
 	
 	//채팅목록에서 채팅방을 눌렀을 때 함수 -----------------------------------------------------------
@@ -266,7 +331,7 @@
 	    const reader = new FileReader();
 	    reader.onload = function (e) {
 	        document.getElementById('openChatImg').src = e.target.result;
-	        document.getElementById('OpenchatProfileImg').value = file.name;
+	        document.getElementById('openchatProfileImg').value = file.name;
 	    }
 	    reader.readAsDataURL(file);
 	}
