@@ -179,7 +179,16 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public List<ChatRoomVo> selectMyChatList(String id) {
 		System.out.println("---ChatService의 selectMyChatList메소드 호출");
-		return chatDaoImpl.selectMyChatList(id);
+		
+		List<ChatRoomVo> myChatList = chatDaoImpl.selectMyChatList(id);
+		
+		//채팅방 참여 인원 확인
+		for(ChatRoomVo vo : myChatList) {
+			int count = selectUserCount(vo.getRoomId());
+			vo.setUserCount(count);
+		}	
+			
+		return myChatList;
 	}
 	
 	//참여중인 채팅의 메세지 정보 조회

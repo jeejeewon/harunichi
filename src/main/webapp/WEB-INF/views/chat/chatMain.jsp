@@ -88,7 +88,7 @@
 											</c:when>
 											<c:otherwise>
 												<p class="open-chat-title">${myChat.title} 
-													<span>(<span>참여인원 / </span>${myChat.persons})</span>
+													<span>(<span>${myChat.userCount} / </span>${myChat.persons})</span>
 												</p>
 											</c:otherwise>
 										</c:choose>									
