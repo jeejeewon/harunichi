@@ -229,6 +229,11 @@ public class ChatServiceImpl implements ChatService {
 		return myChatMessage;		
 	}
 
+	//오픈 채팅 참여
+	public void doOpenChat(ChatRoomVo chatRoomVo) {
+		chatDaoImpl.doOpenChat(chatRoomVo);	
+	}
+
 
 	
 }

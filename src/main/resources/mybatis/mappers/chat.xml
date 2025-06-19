@@ -177,6 +177,13 @@
 		]]>
 	</select>
 	
+	<!-- 오픈 채팅 참여 -->
+	<insert id="doOpenChat" parameterType="ChatRoomVo">
+		<![CDATA[
+			INSERT INTO chatRoom(roomId, userId, title, chatType, persons, profileImg, admissionTime)
+				   VALUES (#{roomId}, #{userId}, #{title}, #{chatType}, #{persons}, #{profileImg}, NOW())			
+		]]>
+	</insert>
 	
 
 

@@ -200,6 +200,7 @@ public class ChatControllerImpl implements ChatController {
 		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
 		String senderId = member.getId();
 		String chatType = request.getParameter("chatType");
+		model.addAttribute("chatType", chatType);
 		String receiverId = request.getParameter("receiverId");
 	
 		String roomId = chatServiceImpl.selectRoomId(senderId, receiverId, chatType);
@@ -262,6 +263,39 @@ public class ChatControllerImpl implements ChatController {
 		model.addAttribute("roomId", roomId);
 
 		return "/chatWindow";		
+	}
+	
+	
+	//오픈 채팅 참여
+	@Override
+	@RequestMapping(value = "/doOpenChat")
+	public String doOpenChat (@RequestParam("roomId") String roomId,
+							HttpServletRequest request, HttpServletResponse response, 
+							Model model, HttpSession session) throws Exception{	
+		log.info("ChatController의 doOpenChat 메소드 실행 -------------");
+		
+		//로그인 유무 확인
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		String userId = member.getId();
+		
+		//오픈 채팅방 정보 조회
+		ChatRoomVo chatRoomVo = chatServiceImpl.selectOpenChatById(roomId);
+		chatRoomVo.setUserId(userId);
+		
+		//해당 채팅방에 로그인한 사용자 ID 추가
+		chatServiceImpl.doOpenChat(chatRoomVo);
+		
+		int count = chatServiceImpl.selectUserCount(roomId);
+		model.addAttribute("count", count);
+		
+		model.addAttribute("roomId", roomId);	
+		model.addAttribute("title", chatRoomVo.getTitle());	
+		model.addAttribute("profileImg", chatRoomVo.getProfileImg());		
+		model.addAttribute("chatType", chatRoomVo.getChatType());
+		
+		return "/chatWindow";	
 	}
 	
 	

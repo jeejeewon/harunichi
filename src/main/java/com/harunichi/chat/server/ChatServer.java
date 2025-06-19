@@ -73,7 +73,7 @@ public class ChatServer {
 		
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록
         System.out.println("✉️ [서버 로그] 메시지 도착! 보낸 사람 ID:" +  senderId + ", 내용: \"" + chatMessage + "\"");        
-        
+          
         String roomId = (String)session.getUserProperties().get("roomId");
         Set<Session> sessionsInRoom = chatRooms.get(roomId);       
         

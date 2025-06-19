@@ -30,5 +30,8 @@ public interface ChatController {
 
 	String createChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session)
 			throws Exception;
+
+	String doOpenChat(String roomId, HttpServletRequest request, HttpServletResponse response, Model model,
+			HttpSession session) throws Exception;
 	
 }

@@ -122,7 +122,7 @@ public class ChatDaoImpl implements ChatDao {
 	@Override
 	public ChatRoomVo selectOpenChatById(String roomId) {		
 		System.out.println("===ChatDao의 selectOpenChatById 메소드 실행");
-		return sqlSession.selectOne(NAMESPACE + "selectTitle", roomId);
+		return sqlSession.selectOne(NAMESPACE + "selectOpenChatById", roomId);
 	}
 	
 	//나와 채팅 중인 상대방 ID 조회
@@ -161,6 +161,10 @@ public class ChatDaoImpl implements ChatDao {
 	public ChatVo selectMyChatMessage(String roomId) {
 		System.out.println("===ChatDao의 selectMyChat 메소드 실행");
 		return sqlSession.selectOne(NAMESPACE + "selectMyChatMessage", roomId);
+	}
+
+	public void doOpenChat(ChatRoomVo chatRoomVo) {
+		sqlSession.insert(NAMESPACE + "doOpenChat", chatRoomVo);		
 	}
 
 

@@ -302,12 +302,9 @@
 	
 	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
-	function doOpenChat(btn){
-		
-		//const roomId = btn.getAttribute("data-room-id");
-		
-		location.href = "<%= request.getContextPath()%>/chat/window?roomId=" + roomId;
-		
+	function doOpenChat(btn){		
+		const roomId = btn.getAttribute("data-room-id");		
+		location.href = "<%= request.getContextPath()%>/chat/doOpenChat?roomId=" + roomId;		
 	}
 		
 	//오픈채팅방 프로필 이미지 업로드 --------------------------------------------------------------
