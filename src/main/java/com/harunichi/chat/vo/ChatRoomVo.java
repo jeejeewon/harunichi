@@ -18,6 +18,7 @@ public class ChatRoomVo {
 	private String chatType;			//채팅방 타입 (개인채팅 or 단체채팅)
 	private boolean isDeleted; 			//채팅방 삭제 여부 (0/false: 안 지움, 1/true: 삭제됨)
 	private Timestamp admissionTime;	//채팅방 입장 시간 (채팅 내역 불러올 때 사용)
+	private String profileImg;			//채팅방 프로필 이미지
 	
 	private String receiverId; 			//채팅방 ID 조회시 값 저장을 위한 변수
 	private int userCount;				//오픈 채팅방에 참여중인 인원 수 카운팅

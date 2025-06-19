@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.harunichi.chat.service.ChatService;
+import org.springframework.web.multipart.MultipartFile;
+import com.harunichi.chat.service.ChatServiceImpl;
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.common.util.LoginCheck;
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatControllerImpl implements ChatController {
 	
 	@Autowired
-	private ChatService chatService;
+	private ChatServiceImpl chatServiceImpl;
 	
 	@Override
 	@RequestMapping("/main")
@@ -45,7 +46,7 @@ public class ChatControllerImpl implements ChatController {
 			nick = member.getNick();			
 			try {							
 				//참여중인 채팅방 정보 조회
-				List<ChatRoomVo> myChatList = chatService.selectMyChatList(id);
+				List<ChatRoomVo> myChatList = chatServiceImpl.selectMyChatList(id);
 				model.addAttribute("myChatList", myChatList);
 									
 				//상대방 프로필 담을 변수
@@ -61,9 +62,9 @@ public class ChatControllerImpl implements ChatController {
 					//개인채팅방은 상대방 프로필 사진이 보이도록 설정
 					if(vo.getChatType().equals("personal")) {			
 						//개인 채팅 상대방 ID 조회
-						String chatMemberId = chatService.selectChatMemberId(id, vo.getRoomId());					
+						String chatMemberId = chatServiceImpl.selectChatMemberId(id, vo.getRoomId());					
 						//상대방 프로필 조회
-						memberProfile = chatService.selectProfile(chatMemberId);					
+						memberProfile = chatServiceImpl.selectProfile(chatMemberId);					
 						
 						String profileImg = null;
 						profileImg = memberProfile.getProfileImg();				
@@ -88,7 +89,7 @@ public class ChatControllerImpl implements ChatController {
 				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
 				for(ChatRoomVo chatRoomVo : myChatList) {
 					String roomId = chatRoomVo.getRoomId();										
-					myChatMessage.add(chatService.selectMyChatMessage(roomId));							
+					myChatMessage.add(chatServiceImpl.selectMyChatMessage(roomId));							
 				}
 				model.addAttribute("myChatMessage", myChatMessage);								
 			} catch (Exception e) {
@@ -97,7 +98,7 @@ public class ChatControllerImpl implements ChatController {
 			}	
 		}
 		//DB에서 채팅친구추천 리스트 조회
-		List<MemberVo> memberList = chatService.selectMembers(id);		
+		List<MemberVo> memberList = chatServiceImpl.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
 		
 		//오픈채팅방 최신 메세지 담을 변수
@@ -106,12 +107,12 @@ public class ChatControllerImpl implements ChatController {
 				
 		try {
 			//오픈 채팅방 리스트 조회
-			List<ChatRoomVo> openChatList = chatService.selectOpenChat();
+			List<ChatRoomVo> openChatList = chatServiceImpl.selectOpenChat();
 			
 			//최신 채팅 메세지 정보 조회
 			for(ChatRoomVo vo : openChatList) {				
 				String roomId = vo.getRoomId();				
-				ChatVo myChatMessage = chatService.selectMyChatMessage(roomId);
+				ChatVo myChatMessage = chatServiceImpl.selectMyChatMessage(roomId);
 				messageList.add(myChatMessage);
 			}
 			model.addAttribute("messageList", messageList);
@@ -140,65 +141,76 @@ public class ChatControllerImpl implements ChatController {
 	}
 
 	
+	@RequestMapping(value = "createOpenChat", method = RequestMethod.POST)
+	public String createOpenChat(HttpServletRequest request, HttpServletResponse response, 
+			   				   Model model, HttpSession session,
+			   				   @RequestParam("imgUpload") MultipartFile file) throws Exception{	
+		log.info("chatController의 createOpenChat 메소드 실행 -------------");
+			
+		//로그인 유무 확인
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		//프로필 이미지 파일이 없으면 리턴
+		if(file.isEmpty()) { return null; }
+		
+		//이미지 파일을 C드라이브에 저장
+		String fileName = chatServiceImpl.chatProfileImgUpload(file);
+					
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		String senderId = member.getId();
+		int	persons = Integer.parseInt(request.getParameter("persons"));
+		
+		ChatRoomVo vo = new ChatRoomVo();
+		vo.setUserId(senderId);
+		vo.setPersons(persons);
+		vo.setProfileImg(fileName);
+		vo.setTitle(request.getParameter("title"));
+		vo.setChatType(request.getParameter("chatType"));
+		
+		//채팅방 ID 생성 후 DB에 채팅방 정보 저장
+		String roomId = chatServiceImpl.insertRoomId(vo);
+		model.addAttribute("roomId", roomId);
+
+		//채팅방 참여 인원 조회
+		int count = chatServiceImpl.selectUserCount(roomId);		
+		model.addAttribute("count", count);
+			
+		//채팅방 타이틀 조회
+		String title = chatServiceImpl.selectTitle(roomId);
+		model.addAttribute("title", title);
+				
+		return "/chatWindow";		
+	}
+	
+	
+	
 	@Override
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
 		System.out.println("POST chatController의 chatWindow 메소드 실행 -------------");
 		
-		if (!LoginCheck.loginCheck(session, request, response)) {
-		    return null; 
-		}
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
 		
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		
 		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
 		String senderId = member.getId();
 		String chatType = request.getParameter("chatType");
-		String receiverId = null;
-		if(chatType.equals("personal")) {
-			receiverId = request.getParameter("receiverId");	
-		}		
-		int persons = 0;
-		String chatTitle = request.getParameter("title");		
-		if(chatType.equals("group")) {
-			persons = Integer.parseInt(request.getParameter("persons"));
-		}		
-		String roomId = "";
-		
-		//개인채팅일 경우
-		if(chatType.equals("personal")) {	
-			roomId = chatService.selectRoomId(senderId, receiverId, chatType);	
-			model.addAttribute("roomId", roomId);
-		//단체채팅 생성이므로 바로 채팅방 ID 생성	
-		}else { 
-			ChatRoomVo vo = new ChatRoomVo();
-			vo.setUserId(senderId);
-			vo.setChatType(chatType);
-			vo.setTitle(chatTitle);
-			vo.setPersons(persons);			
-			roomId = chatService.insertRoomId(vo);
-			model.addAttribute("roomId", roomId);
-		}
-		
+		String receiverId = request.getParameter("receiverId");
+	
+		String roomId = chatServiceImpl.selectRoomId(senderId, receiverId, chatType);	
+		model.addAttribute("roomId", roomId);		
+				
 		//채팅방 참여 인원 조회
-		int count = chatService.selectUserCount(roomId);		
+		int count = chatServiceImpl.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 		
-		//채팅방 타이틀 조회
-		String title; 
-		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
-		if(chatType.equals("personal")) {
-			MemberVo vo = chatService.selectProfile(receiverId);
-			model.addAttribute("title", vo.getNick());	
-			model.addAttribute("profileImg", vo.getProfileImg());	
-		}else {
-			//단체 채팅일 경우 지정한 타이틀 표시
-			title = chatService.selectTitle(roomId);
-			model.addAttribute("title", title);
-		}
-		
+		MemberVo vo = chatServiceImpl.selectProfile(receiverId);
+		model.addAttribute("title", vo.getNick());	
+		model.addAttribute("profileImg", vo.getProfileImg());	
+
 		return "/chatWindow";	
 	}
 		
@@ -209,7 +221,7 @@ public class ChatControllerImpl implements ChatController {
 	@ResponseBody
 	public List<ChatVo> selectChatHistory(@RequestParam String roomId){
 		System.out.println("chatController의 selectChatHistory 메소드 실행 -------------");
-		return chatService.selectChatHistory(roomId);
+		return chatServiceImpl.selectChatHistory(roomId);
 	}
 	
 	

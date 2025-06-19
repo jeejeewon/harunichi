@@ -17,9 +17,7 @@
 <c:set var="profileImgPath" value="/harunichi/resources/images/profile/" />
 
 	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
-		<input type="hidden" id="receiverId" name="receiverId"> 
-		<input type="hidden" id="receiverNick" name="receiverNick"> 		
-		<!-- 개인채팅일 경우! 나중에 단체채팅과 구분할 조건값 필요 -->
+		<input type="hidden" id="receiverId" name="receiverId"> 		
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
 	<div style="margin-bottom: 80px;">
@@ -133,10 +131,11 @@
 	  <div class="modal-content">
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h2>오픈채팅방 만들기</h2>
-	    <form action="<%=request.getContextPath()%>/chat/window" id="newChatForm" method="POST">
+	    <form action="<%=request.getContextPath()%>/chat/createOpenChat" id="newChatForm" method="POST" enctype="multipart/form-data">
 		    <label>프로필 이미지</label>	
 		    <div class="open-chat-img-wrap">
-		    	<img id="openChatImg" class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
+		    	<img id="openChatImg"  class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
+				<input type="hidden" id="OpenchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">
 				<label for="imgUpload" class="adit-profile-img">
 					<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
 				</label>
@@ -217,7 +216,6 @@
 	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
 	function doOpenChat(btn){
-		console.log("클릭함");	
 		
 		const roomId = btn.getAttribute("data-room-id");
 		
@@ -236,10 +234,11 @@
 	        input.value = "";
 	        return;
 	    }
-
+	    	    
 	    const reader = new FileReader();
 	    reader.onload = function (e) {
 	        document.getElementById('openChatImg').src = e.target.result;
+	        document.getElementById('OpenchatProfileImg').value = file.name;
 	    }
 	    reader.readAsDataURL(file);
 	}

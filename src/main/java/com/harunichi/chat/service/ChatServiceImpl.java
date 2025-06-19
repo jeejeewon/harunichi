@@ -12,15 +12,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.harunichi.chat.dao.ChatDao;
+import org.springframework.web.multipart.MultipartFile;
 import com.harunichi.chat.dao.ChatDaoImpl;
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
+import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.member.vo.MemberVo;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,14 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatServiceImpl implements ChatService {
 
 	@Autowired
-	private ChatDao chatDao;
+	private ChatDaoImpl chatDaoImpl;
 	
 	//채팅 메세지 DB에 저장
 	@Override
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("---ChatService의 saveMessage메소드 호출");		
 		//DAO로 DB작업 요청시키기
-		chatDao.saveMessage(chatMsg);
+		chatDaoImpl.saveMessage(chatMsg);
 	}
 
 	//친구 추천 리스트 조회
@@ -43,9 +42,9 @@ public class ChatServiceImpl implements ChatService {
 	public List<MemberVo> selectMembers(String id) {
 		System.out.println("---ChatService의 selectMembers메소드 호출");			
 		//비로그인
-		if(id == null) { return chatDao.selectRandomMembers();
+		if(id == null) { return chatDaoImpl.selectRandomMembers();
 		//로그인
-		}else { return chatDao.selectMembers(id); }	
+		}else { return chatDaoImpl.selectMembers(id); }	
 	}
 		
 	//채팅방 ID 조회
@@ -53,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
 	public String selectRoomId(String senderId, String receiverId,  String chatType) {
 		System.out.println("---ChatService의 selectRoomId메소드 호출");		
 		
-		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);	
+		String roomId = chatDaoImpl.selectRoomId(senderId, receiverId, chatType);	
 		log.info("roomId : " + roomId);
 				
 		ChatRoomVo vo = new ChatRoomVo();
@@ -90,10 +89,12 @@ public class ChatServiceImpl implements ChatService {
 		roomMap.put("chatType", vo.getChatType());
 	
 		//단체 채팅일 경우
-		if(vo.getChatType().equals("group")) {			
+		if(vo.getChatType().equals("group")) {		
+				
 			roomMap.put("userId", vo.getUserId());
 			roomMap.put("title", vo.getTitle());		
 			roomMap.put("persons", vo.getPersons());
+			roomMap.put("profileImg", vo.getProfileImg());			
 
 		//개인 채팅일 경우
 		}else {			
@@ -103,23 +104,40 @@ public class ChatServiceImpl implements ChatService {
 			roomMap.put("userList", userList);	
 		}		
 			
-		chatDao.insertRoomId(roomMap);
+		chatDaoImpl.insertRoomId(roomMap);
 		
 		return newRoomId;
 	}
-
+	
+	//채팅방 프로필 이미지 C드라이브에 저장
+	public String chatProfileImgUpload(MultipartFile file) {
+		log.info("---ChatService의 chatProfileImgUpload메소드 호출");
+		
+		String imgPath = "C:\\harunichi\\images\\chat";
+		String fileName = "";
+		
+		try {
+			fileName = FileUploadUtil.uploadFile(file, imgPath);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("⚠ 프로필 이미지 저장 실패");
+		}	
+		
+		return fileName;		
+	}
+	
 	//과거 채팅 내역 불러오기
 	@Override
 	public List<ChatVo> selectChatHistory(String roomId) {
 		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
-		return chatDao.selectChatHistory(roomId);
+		return chatDaoImpl.selectChatHistory(roomId);
 	}
 	
 	//채팅방 참여 인원 확인
 	@Override
 	public int selectUserCount(String roomId) {		
 		System.out.println("---ChatService의 selectUserCount메소드 호출");		
-		return chatDao.selectUserCount(roomId);
+		return chatDaoImpl.selectUserCount(roomId);
 	}
 	
 	//채팅방 타이틀 확인(단체채팅 - 방장이 정한 타이틀)
@@ -127,28 +145,28 @@ public class ChatServiceImpl implements ChatService {
 	public String selectTitle(String roomId) {
 		System.out.println("---ChatService의 selectTitle메소드 호출");
 		System.out.println("roomId : " + roomId);
-		return chatDao.selectTitle(roomId);
+		return chatDaoImpl.selectTitle(roomId);
 	}
 	
 	//나와 채팅 중인 상대방 ID 조회
 	@Override
 	public String selectChatMemberId(String userId, String roomId) {
 		log.info("---ChatService의 selectChatMemberId메소드 호출");
-		return chatDao.selectChatMemberId(userId, roomId);
+		return chatDaoImpl.selectChatMemberId(userId, roomId);
 	}
 
 	//채팅 상대 프로필 정보 조회
 	@Override
 	public MemberVo selectProfile(String receiverId) {
 		System.out.println("---ChatService의 selectProfile메소드 호출");
-		return chatDao.selectProfile(receiverId);
+		return chatDaoImpl.selectProfile(receiverId);
 	}
 
 	//오픈 채팅방 리스트 조회
 	@Override
 	public List<ChatRoomVo> selectOpenChat() {	
 		System.out.println("---ChatService의 selectOpenChat메소드 호출");
-		List<ChatRoomVo> openChatList = chatDao.selectOpenChat();		
+		List<ChatRoomVo> openChatList = chatDaoImpl.selectOpenChat();		
 		//채팅방 참여 인원 확인
 		for(ChatRoomVo vo : openChatList) {
 			int count = selectUserCount(vo.getRoomId());
@@ -161,7 +179,7 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public List<ChatRoomVo> selectMyChatList(String id) {
 		System.out.println("---ChatService의 selectMyChatList메소드 호출");
-		return chatDao.selectMyChatList(id);
+		return chatDaoImpl.selectMyChatList(id);
 	}
 	
 	//참여중인 채팅의 메세지 정보 조회
@@ -170,7 +188,7 @@ public class ChatServiceImpl implements ChatService {
 		System.out.println("---ChatService의 selectMyChat메소드 호출");
 		
 		//최신 채팅 정보 조회
-		ChatVo myChatMessage = chatDao.selectMyChatMessage(roomId);
+		ChatVo myChatMessage = chatDaoImpl.selectMyChatMessage(roomId);
 						
 		try {
 			//채팅 목록에 나타낼 최신 메세지 시간 나타내기 위한 반복문

@@ -96,8 +96,8 @@
 		</if>
 		<if test="'group' == chatType">
 			<![CDATA[
-				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime)
-				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW())
+				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime, profileImg)
+				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW(), #{profileImg})
 			]]>	
 		</if>
 	</insert>
