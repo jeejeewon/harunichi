@@ -32,8 +32,8 @@ public class ChatControllerImpl implements ChatController {
 	@RequestMapping("/main")
 	public String chatMain(HttpServletRequest request, 
 						   HttpServletResponse response, HttpSession session, Model model) throws Exception{		
-		System.out.println("chatController의 chatMain 메소드 실행 -------------");
-	
+		log.info("chatController의 chatMain 메소드 실행 -------------");
+		
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		
 		String id = null;
@@ -94,7 +94,7 @@ public class ChatControllerImpl implements ChatController {
 				model.addAttribute("myChatMessage", myChatMessage);								
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("⚠" + id + "의 채팅 목록을 조회할 수 없습니다.");
+				log.error("⚠" + id + "의 채팅 목록을 조회할 수 없습니다.");
 			}	
 		}
 		//DB에서 채팅친구추천 리스트 조회
@@ -120,7 +120,7 @@ public class ChatControllerImpl implements ChatController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("⚠오픈 채팅 목록을 조회할 수 없습니다.");
+			log.error("⚠오픈 채팅 목록을 조회할 수 없습니다.");
 		}
 		return "/chatMain";
 	}
@@ -129,7 +129,7 @@ public class ChatControllerImpl implements ChatController {
 	@RequestMapping(value = "/window", method = RequestMethod.GET)
 	public String loginChek (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
-		System.out.println("GET chatController의 chatWindow 메소드 실행 -------------");
+		log.info("GET chatController의 chatWindow 메소드 실행 -------------");
 		
 		if (!LoginCheck.loginCheck(session, request, response)) {
 		    return null; 
@@ -141,6 +141,8 @@ public class ChatControllerImpl implements ChatController {
 	}
 
 	
+	//오픈 채팅방 생성
+	@Override
 	@RequestMapping(value = "createOpenChat", method = RequestMethod.POST)
 	public String createOpenChat(HttpServletRequest request, HttpServletResponse response, 
 			   				   Model model, HttpSession session,
@@ -150,12 +152,14 @@ public class ChatControllerImpl implements ChatController {
 		//로그인 유무 확인
 		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
 		
-		//프로필 이미지 파일이 없으면 리턴
-		if(file.isEmpty()) { return null; }
+		String fileName = "";
 		
-		//이미지 파일을 C드라이브에 저장
-		String fileName = chatServiceImpl.chatProfileImgUpload(file);
-					
+		//이미지 파일이 있다면?
+		if(file != null && !file.isEmpty()) {
+			//이미지 파일을 C드라이브에 저장
+			fileName = chatServiceImpl.chatProfileImgUpload(file);
+		}
+		
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String senderId = member.getId();
 		int	persons = Integer.parseInt(request.getParameter("persons"));
@@ -183,12 +187,43 @@ public class ChatControllerImpl implements ChatController {
 	}
 	
 	
+	//개인 채팅방 생성
+	@RequestMapping(value = "/createChat", method = RequestMethod.POST)
+	public String createChat (HttpServletRequest request, 
+							  HttpServletResponse response, Model model, HttpSession session) throws Exception{			
+		log.info("hatController의 createChat 메소드 실행 -------------");
+		
+		//로그인 유무 확인
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		
+		//채팅방 고유 ID 확인 후 신규채팅일 경우 DB에 저장
+		String senderId = member.getId();
+		String chatType = request.getParameter("chatType");
+		String receiverId = request.getParameter("receiverId");
+	
+		String roomId = chatServiceImpl.selectRoomId(senderId, receiverId, chatType);
+		model.addAttribute("roomId", roomId);		
+				
+		//채팅방 참여 인원 조회
+		int count = chatServiceImpl.selectUserCount(roomId);		
+		model.addAttribute("count", count);
+		
+		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
+		MemberVo vo = chatServiceImpl.selectProfile(receiverId);
+		model.addAttribute("title", vo.getNick());	
+		model.addAttribute("profileImg", vo.getProfileImg());	
+
+		return "/chatWindow";	
+	}
+	
 	
 	@Override
 	@RequestMapping(value = "/window", method = RequestMethod.POST)
 	public String chatWindow (HttpServletRequest request, 
 			   HttpServletResponse response, Model model, HttpSession session) throws Exception{		
-		System.out.println("POST chatController의 chatWindow 메소드 실행 -------------");
+		log.info("POST chatController의 chatWindow 메소드 실행 -------------");
 		
 		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
 		
@@ -220,7 +255,7 @@ public class ChatControllerImpl implements ChatController {
 	@RequestMapping("/history")
 	@ResponseBody
 	public List<ChatVo> selectChatHistory(@RequestParam String roomId){
-		System.out.println("chatController의 selectChatHistory 메소드 실행 -------------");
+		log.info("chatController의 selectChatHistory 메소드 실행 -------------");
 		return chatServiceImpl.selectChatHistory(roomId);
 	}
 	

@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.harunichi.chat.vo.ChatVo;
 
 public interface ChatController {
@@ -19,5 +21,8 @@ public interface ChatController {
 			throws Exception;
 
 	List<ChatVo> selectChatHistory(String roomId);
+
+	String createOpenChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session,
+			MultipartFile file) throws Exception;
 	
 }

@@ -16,7 +16,7 @@
 <!-- 프로필 이미지 경로 -->
 <c:set var="profileImgPath" value="/harunichi/resources/images/profile/" />
 
-	<form id="chatForm" action="<%=request.getContextPath()%>/chat/window" method="POST">
+	<form id="chatForm" action="<%=request.getContextPath()%>/chat/createChat" method="POST">
 		<input type="hidden" id="receiverId" name="receiverId"> 		
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
@@ -73,8 +73,11 @@
 												<img class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="개인채팅방 프로필사진">
 												<!-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> -->
 											</c:when>
+											<c:when test="${empty myChat.profileImg}">
+												<img class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="오픈채팅방 프로필사진">												
+											</c:when>
 											<c:otherwise>
-												<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">
+												<img class="open-chat-img" src="${contextPath}/images/chat/${myChat.profileImg}" alt="오픈채팅방 프로필사진">									
 											</c:otherwise>
 										</c:choose>								
 									</a>	
@@ -110,7 +113,14 @@
 					<li data-room-id="${openChat.roomId}" onclick="doOpenChat(this);">
 						<div class="open-chat-item">
 							<a id="doOpenChat" href="#" >
-								<img class="open-chat-img" src="../resources/images/chat/profile4.png" alt="오픈채팅방 프로필사진">												
+								<c:choose>
+									<c:when test="${empty openChat.profileImg}">
+										<img class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="오픈채팅방 프로필사진">												
+									</c:when>
+									<c:otherwise>
+										<img class="open-chat-img" src="${contextPath}/images/chat/${openChat.profileImg}" alt="오픈채팅방 프로필사진">												
+									</c:otherwise>
+								</c:choose>						
 							</a>	
 							<div class="open-chat-info">
 								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount} / </span>${openChat.persons})</span></p>								
