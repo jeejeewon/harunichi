@@ -22,9 +22,7 @@ public class ChatDaoImpl implements ChatDao {
 
 	@Autowired
 	private SqlSession sqlSession;		
-	@Autowired
-	private ChatRoomVo chatRoomVo;
-	
+
 	private static final String NAMESPACE = "mapper.chat.";
 	
 	//채팅 메세지 DB에 저장

@@ -18,6 +18,7 @@
 
 	<div class="chat-center-wrapper">
 		<div id="chatContainer">
+			<!-- 채팅방 상단 영역 -->
 			<div id="chatTop">
 				<div class="chat-top-left">
 					<a href="#">
@@ -41,7 +42,27 @@
 				    <button class="disconnect-btn" onclick="disconnect();">×</button>
 				</div>		
 			</div>
-			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->
+			<!-- 중고거래에서 요청온 채팅일 경우 상품 정보 보여주는 영역 -->
+			<div id="productWrap">
+				<div id="productImg">
+					<a href="#">
+						<img class="product-img" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+					</a>	
+				</div>
+				<div id="productInfo">
+					<p>
+						<span class="product-status bold">
+							<c:if test="${productVo.productStatus eq 1}">나눔</c:if>
+							<c:if test="${productVo.productStatus eq 0}">판매</c:if>
+							<c:if test="${productVo.productStatus eq -1}">거래완료</c:if>
+						</span>
+						<span>${productVo.productTitle}</span>
+					</p>
+					<p class="bold">${productVo.productPrice} 원</p>
+				</div>	
+				<a href="#" class="product-close">닫기</a>			
+			</div>			
+			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->	
 			<div id="messageContainer"></div>
 	
 			<div id="inputContainer">

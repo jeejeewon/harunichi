@@ -218,7 +218,7 @@
 		  if (!userId) {
 		    location.href = "<%= request.getContextPath() %>/chat/window";
 		    return;
-		  }
+		  } 
 	  document.getElementById("myModal").style.display = "block";
 	}
 
@@ -288,18 +288,12 @@
 		}
 	}
 
-	
 	//채팅목록에서 채팅방을 눌렀을 때 함수 -----------------------------------------------------------
 	function doChat(event){		
 		const roomId = event.getAttribute("data-room-id");
-		const chatType = event.getAttribute("data-room-type");
-		
+		const chatType = event.getAttribute("data-room-type");	
 		location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;		
 	}
-	
-	
-	
-	
 	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
 	function doOpenChat(event){		
@@ -319,8 +313,7 @@
 		if(persons <= count){
 			alert("이 채팅방은 이미 인원이 다 찼어요.");
 			return;			
-		}
-					
+		}					
 		location.href = "<%= request.getContextPath()%>/chat/doOpenChat?roomId=" + roomId;		
 	}
 		

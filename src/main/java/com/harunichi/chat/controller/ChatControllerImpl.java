@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.harunichi.chat.service.ChatServiceImpl;
+import com.harunichi.chat.service.ChatService;
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.common.util.LoginCheck;
+import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
+import com.harunichi.product.service.ProductService;
+import com.harunichi.product.service.ProductServiceImpl;
+import com.harunichi.product.vo.ProductVo;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,8 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/chat")
 public class ChatControllerImpl implements ChatController {
 	
-	@Autowired
-	private ChatServiceImpl chatServiceImpl;
+	@Autowired private ChatService chatService;
+	@Autowired private ProductService productService;
+	@Autowired private MemberService memberService;
 	
 	@Override
 	@RequestMapping("/main")
@@ -46,7 +51,7 @@ public class ChatControllerImpl implements ChatController {
 			nick = member.getNick();			
 			try {							
 				//참여중인 채팅방 정보 조회
-				List<ChatRoomVo> myChatList = chatServiceImpl.selectMyChatList(id);
+				List<ChatRoomVo> myChatList = chatService.selectMyChatList(id);
 				model.addAttribute("myChatList", myChatList);
 									
 				//상대방 프로필 담을 변수
@@ -62,9 +67,9 @@ public class ChatControllerImpl implements ChatController {
 					//개인채팅방은 상대방 프로필 사진이 보이도록 설정
 					if(vo.getChatType().equals("personal")) {			
 						//개인 채팅 상대방 ID 조회
-						String chatMemberId = chatServiceImpl.selectChatMemberId(id, vo.getRoomId());					
+						String chatMemberId = chatService.selectChatMemberId(id, vo.getRoomId());					
 						//상대방 프로필 조회
-						memberProfile = chatServiceImpl.selectProfile(chatMemberId);					
+						memberProfile = chatService.selectProfile(chatMemberId);					
 						
 						String profileImg = null;
 						profileImg = memberProfile.getProfileImg();				
@@ -88,7 +93,7 @@ public class ChatControllerImpl implements ChatController {
 				List<ChatVo> myChatMessage = new ArrayList<ChatVo>();
 				for(ChatRoomVo chatRoomVo : myChatList) {
 					String roomId = chatRoomVo.getRoomId();										
-					myChatMessage.add(chatServiceImpl.selectMyChatMessage(roomId));							
+					myChatMessage.add(chatService.selectMyChatMessage(roomId));							
 				}
 				model.addAttribute("myChatMessage", myChatMessage);								
 			} catch (Exception e) {
@@ -97,7 +102,7 @@ public class ChatControllerImpl implements ChatController {
 			}	
 		}
 		//DB에서 채팅친구추천 리스트 조회
-		List<MemberVo> memberList = chatServiceImpl.selectMembers(id);		
+		List<MemberVo> memberList = chatService.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
 		
 		//오픈채팅방 최신 메세지 담을 변수
@@ -106,12 +111,12 @@ public class ChatControllerImpl implements ChatController {
 				
 		try {		
 			//오픈 채팅방 리스트 조회
-			List<ChatRoomVo> openChatList = chatServiceImpl.selectOpenChat();
+			List<ChatRoomVo> openChatList = chatService.selectOpenChat();
 			
 			//최신 채팅 메세지 정보 조회
 			for(ChatRoomVo vo : openChatList) {				
 				String roomId = vo.getRoomId();				
-				ChatVo myChatMessage = chatServiceImpl.selectMyChatMessage(roomId);
+				ChatVo myChatMessage = chatService.selectMyChatMessage(roomId);
 				messageList.add(myChatMessage);
 			}
 			model.addAttribute("messageList", messageList);
@@ -156,7 +161,7 @@ public class ChatControllerImpl implements ChatController {
 		//이미지 파일이 있다면?
 		if(file != null && !file.isEmpty()) {
 			//이미지 파일을 C드라이브에 저장
-			fileName = chatServiceImpl.chatProfileImgUpload(file);
+			fileName = chatService.chatProfileImgUpload(file);
 		}
 		
 		MemberVo member = (MemberVo) session.getAttribute("member");
@@ -171,12 +176,12 @@ public class ChatControllerImpl implements ChatController {
 		vo.setChatType(request.getParameter("chatType"));
 		
 		//채팅방 ID 생성 후 DB에 채팅방 정보 저장
-		String roomId = chatServiceImpl.insertRoomId(vo);
+		String roomId = chatService.insertRoomId(vo);
 		model.addAttribute("roomId", roomId);
 		model.addAttribute("profileImg", vo.getProfileImg());
 
 		//채팅방 참여 인원 조회
-		int count = chatServiceImpl.selectUserCount(roomId);		
+		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 			
 		model.addAttribute("title", vo.getTitle());
@@ -203,15 +208,15 @@ public class ChatControllerImpl implements ChatController {
 		model.addAttribute("chatType", chatType);
 		String receiverId = request.getParameter("receiverId");
 	
-		String roomId = chatServiceImpl.selectRoomId(senderId, receiverId, chatType);
+		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);
 		model.addAttribute("roomId", roomId);		
 				
 		//채팅방 참여 인원 조회
-		int count = chatServiceImpl.selectUserCount(roomId);		
+		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
-		MemberVo vo = chatServiceImpl.selectProfile(receiverId);
+		MemberVo vo = chatService.selectProfile(receiverId);
 		model.addAttribute("title", vo.getNick());	
 		model.addAttribute("profileImg", vo.getProfileImg());	
 
@@ -237,23 +242,23 @@ public class ChatControllerImpl implements ChatController {
 		model.addAttribute("chatType", chatType);
 
 		//채팅방 참여 인원 조회
-		int count = chatServiceImpl.selectUserCount(roomId);		
+		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 				
 		//채팅 상대 프로필 정보 조회
 		if(chatType.equals("personal")) { //개인채팅
 		
 			//채팅 상대 ID 조회
-			String memberId = chatServiceImpl.selectChatMemberId(userId, roomId);
+			String memberId = chatService.selectChatMemberId(userId, roomId);
 			
-			MemberVo memberVo = chatServiceImpl.selectProfile(memberId);
+			MemberVo memberVo = chatService.selectProfile(memberId);
 			model.addAttribute("title", memberVo.getNick());	
 			model.addAttribute("profileImg", memberVo.getProfileImg());				
 			model.addAttribute("receiverId", memberId);	
 		
 		}else {	//오픈채팅			
 			//채팅방 ID로 채팅방 정보 조회
-			ChatRoomVo chatRoomVo = chatServiceImpl.selectOpenChatById(roomId);
+			ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);
 			String title = chatRoomVo.getTitle();
 			String profileImg = chatRoomVo.getProfileImg();
 			model.addAttribute("title", title);	
@@ -282,19 +287,19 @@ public class ChatControllerImpl implements ChatController {
 		
 		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
 //이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		
-		boolean isUserInRoom = chatServiceImpl.isUserInRoom(roomId, userId);
+		boolean isUserInRoom = chatService.isUserInRoom(roomId, userId);
 		
 		//오픈 채팅방 정보 조회
-		ChatRoomVo chatRoomVo = chatServiceImpl.selectOpenChatById(roomId);
+		ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);
 		chatRoomVo.setUserId(userId);
 		
 		//채팅방에 참여하고 있다면 doChat으로 리다이렉트
 		if(isUserInRoom) { return "redirect:/chat/doChat?roomId=" + roomId + "&chatType=" + chatRoomVo.getChatType(); }	
 		
 		//해당 채팅방에 로그인한 사용자 ID 추가
-		chatServiceImpl.doOpenChat(chatRoomVo);
+		chatService.doOpenChat(chatRoomVo);
 		
-		int count = chatServiceImpl.selectUserCount(roomId);
+		int count = chatService.selectUserCount(roomId);
 		model.addAttribute("count", count);
 		
 		model.addAttribute("roomId", roomId);	
@@ -322,25 +327,57 @@ public class ChatControllerImpl implements ChatController {
 		String chatType = request.getParameter("chatType");
 		String receiverId = request.getParameter("receiverId");
 	
-		String roomId = chatServiceImpl.selectRoomId(senderId, receiverId, chatType);	
+		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);	
 		model.addAttribute("roomId", roomId);		
 				
 		//채팅방 참여 인원 조회
-		int count = chatServiceImpl.selectUserCount(roomId);		
+		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 		
 		//채팅방 타이틀이 없을 경우 상대방 유저 닉네임 사용(개인채팅)
-		MemberVo vo = chatServiceImpl.selectProfile(receiverId);
+		MemberVo vo = chatService.selectProfile(receiverId);
 		model.addAttribute("title", vo.getNick());	
 		model.addAttribute("profileImg", vo.getProfileImg());	
 
 		return "/chatWindow";	
 	}
+			
+	//중고거래에서 요청받은 채팅
+	@RequestMapping(value = "/productChat")
+	public String productChat(@RequestParam("productId") int productId,
+							  HttpServletRequest request, HttpServletResponse response, 
+							  Model model, HttpSession session) throws Exception{		
+		log.info("chatController의 productChat 메소드 실행 -------------");
 		
-	
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");				
+		String senderId = member.getId();
+		String chatType = "personal";
+		model.addAttribute("chatType", chatType);		
+		
+		//판매글 ID로 판매글 정보 조회
+		ProductVo productVo = productService.findById(productId);
+		model.addAttribute("productVo", productVo);
+		
+		//판매자 ID
+		String receiverId = productVo.getProductWriterId();
+		
+		//판매자 정보 조회
+		MemberVo memberVo = memberService.selectMemberById(receiverId);
+		model.addAttribute("title", memberVo.getNick());	
+		model.addAttribute("profileImg", memberVo.getProfileImg());	
+		
+		//채팅방 ID 조회
+		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);
+		model.addAttribute("roomId", roomId);
+		
+		//채팅방 참여 인원 조회
+		int count = chatService.selectUserCount(roomId);		
+		model.addAttribute("count", count);
 
-	
-	
+		return "/chatWindow";	
+	}
 	
 	//과거 채팅 내역 불러오기
 	@Override
@@ -348,7 +385,7 @@ public class ChatControllerImpl implements ChatController {
 	@ResponseBody
 	public List<ChatVo> selectChatHistory(@RequestParam String roomId){
 		log.info("chatController의 selectChatHistory 메소드 실행 -------------");
-		return chatServiceImpl.selectChatHistory(roomId);
+		return chatService.selectChatHistory(roomId);
 	}
 	
 	

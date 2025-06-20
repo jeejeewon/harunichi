@@ -2,6 +2,8 @@ package com.harunichi.chat.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.member.vo.MemberVo;
@@ -49,6 +51,9 @@ public interface ChatService {
 
 	//오픈 채팅 참여
 	void doOpenChat(ChatRoomVo chatRoomVo);
+
+	//채팅방 프로필 이미지 C드라이브에 저장
+	String chatProfileImgUpload(MultipartFile file);
 
 	
 
