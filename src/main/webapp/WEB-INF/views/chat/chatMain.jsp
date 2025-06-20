@@ -126,7 +126,7 @@
 								</c:choose>						
 							</a>	
 							<div class="open-chat-info">
-								<p class="open-chat-title">${openChat.title} <span>(<span>${openChat.userCount}/</span>${openChat.persons})</span></p>								
+								<p class="open-chat-title">${openChat.title} <span data-persons="${openChat.persons}">(<span data-user-count="${openChat.userCount}">${openChat.userCount}/</span>${openChat.persons})</span></p>								
 								<c:forEach var="messageVo" items="${messageList}" >
 									<c:if test="${openChat.roomId eq messageVo.roomId}">
 										<p class="open-chat-content">${messageVo.message} <span class="sent-time">${messageVo.displayTime}</span></p>	
@@ -302,8 +302,25 @@
 	
 	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------
-	function doOpenChat(btn){		
-		const roomId = btn.getAttribute("data-room-id");		
+	function doOpenChat(event){		
+		
+		const roomId = event.getAttribute("data-room-id");
+		
+		//채팅방 인원 확인
+	    const personsEl = event.querySelector("span[data-persons]");
+	    const countEl = event.querySelector("span[data-user-count]");
+	    
+	    const persons = parseInt(personsEl.getAttribute("data-persons"), 10);
+	    const count = parseInt(countEl.getAttribute("data-user-count"), 10);
+		
+		console.log("persons : " + persons);
+		console.log("count : " + count);
+		
+		if(persons <= count){
+			alert("이 채팅방은 이미 인원이 다 찼어요.");
+			return;			
+		}
+					
 		location.href = "<%= request.getContextPath()%>/chat/doOpenChat?roomId=" + roomId;		
 	}
 		

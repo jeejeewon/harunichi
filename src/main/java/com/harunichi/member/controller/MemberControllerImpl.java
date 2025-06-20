@@ -3,6 +3,8 @@ package com.harunichi.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,6 +54,14 @@ import com.harunichi.test.controller.TestController;
 @Controller("memberController")
 @RequestMapping(value="/member")
 public class MemberControllerImpl implements MemberController{
+	
+	//더미 이미지 복사 메소드 자동호출
+	@Autowired
+    private ServletContext servletContext;
+    @PostConstruct
+    public void init() {
+        copyDummyImagesOnStartup(servletContext);
+    }
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(MemberControllerImpl.class);
@@ -687,12 +699,14 @@ public class MemberControllerImpl implements MemberController{
 	        //2. 프로필 이미지 처리
 	        String filePath = handleProfileImage(profileImg, request);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 파일 경로: " + filePath);
+	        
 	        //3. 관심사 처리
 	        String myLikeStr = handleMyLikes(myLikes);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 관심사: " + myLikeStr);
 	        //4. 세션에서 가져온 MemberVo 객체에 프로필 이미지, 관심사 정보 설정하기
 	        if (filePath != null) {
-	            memberVo.setProfileImg(filePath);
+	        	String fileName = new File(filePath).getName();  // 파일명만 추출
+	            memberVo.setProfileImg(fileName);
 	        }
 	        memberVo.setMyLike(myLikeStr);
 	        System.out.println("profileImgAndMyLikeSettingProcess - 설정 후 memberVo: " + memberVo.toString());
@@ -748,27 +762,81 @@ public class MemberControllerImpl implements MemberController{
 	
 
 	// 프로필 이미지 처리 메소드
-	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
-		String uploadDir = request.getServletContext().getRealPath("/resources/images/profile");
-		System.out.println("파일 저장 경로: " + uploadDir);
-		String fileName = null;
-		try {
-			if(profileImg != null && !profileImg.isEmpty()) {
-				File dir = new File(uploadDir);
-	            if (!dir.exists()) {
-					boolean success = dir.mkdirs(); // 디렉토리 없으면 생성
-					if (!success) {
-						System.err.println("폴더 생성 실패!");
-						return null; // 폴더 생성 실패 시 null 반환
-					}
+//	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
+//		String uploadDir = request.getServletContext().getRealPath("/resources/images/profile");
+//		System.out.println("파일 저장 경로: " + uploadDir);
+//		String fileName = null;
+//		try {
+//			if(profileImg != null && !profileImg.isEmpty()) {
+//				File dir = new File(uploadDir);
+//	            if (!dir.exists()) {
+//					boolean success = dir.mkdirs(); // 디렉토리 없으면 생성
+//					if (!success) {
+//						System.err.println("폴더 생성 실패!");
+//						return null; // 폴더 생성 실패 시 null 반환
+//					}
+//	            }
+//				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
+//				return request.getContextPath() + "/resources/images/profile/" + fileName;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null; //파일이 없을 경우에 null 반환
+//	}
+	//프로젝트 시작 시 더미 이미지 복사 메소드
+	public void copyDummyImagesOnStartup(ServletContext context) {
+		String sourceDirPath = context.getRealPath("/resources/images/profile");
+	    String targetDirPath = "C:/harunichi/images/profile";
+	    
+	    File sourceDir = new File(sourceDirPath);
+	    File targetDir = new File(targetDirPath);
+	    
+	    if (!targetDir.exists()) {
+	        targetDir.mkdirs();
+	    }
+	    
+	    File[] files = sourceDir.listFiles();
+	    if (files != null) {
+	        for (File file : files) {
+	            System.out.println("복사 시도 파일: " + file.getName());
+	            if (file.isFile()) {
+	                File targetFile = new File(targetDir, file.getName());
+	                try {
+	                    Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	                    System.out.println("복사됨: " + file.getName());
+	                } catch (IOException e) {
+	                    System.err.println("복사 실패: " + file.getName());
+	                    e.printStackTrace();
+	                }
 	            }
-				fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);//파일업로드
-				return request.getContextPath() + "/resources/images/profile/" + fileName;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null; //파일이 없을 경우에 null 반환
+	        }
+	    }
+	    System.out.println("복사 소스 경로: " + sourceDirPath);
+	    System.out.println("복사 대상 경로: " + targetDirPath);
+	}
+
+	private String handleProfileImage(MultipartFile profileImg, HttpServletRequest request) {
+	    String uploadDir = "C:/harunichi/images/profile";
+	    System.out.println("파일 저장 경로: " + uploadDir);
+	    String fileName = null;
+	    try {
+	        if (profileImg != null && !profileImg.isEmpty()) {
+	            File dir = new File(uploadDir);
+	            if (!dir.exists()) {
+	                boolean success = dir.mkdirs();
+	                if (!success) {
+	                    System.err.println("폴더 생성 실패!");
+	                    return null;
+	                }
+	            }
+	            fileName = FileUploadUtil.uploadFile(profileImg, uploadDir);
+	            return "/images/profile/" + fileName; // DB에 상대경로 저장하도록
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 	// 관심사 처리 메소드
@@ -847,12 +915,140 @@ public class MemberControllerImpl implements MemberController{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+    
+    //회원 정보 수정 메소드
+    @RequestMapping(value = "/updateMyInfoProcess.do", method = RequestMethod.POST)
+    public String updateMyInfoProcess(
+            @RequestParam("id") String id,
+            @RequestParam(value = "pass", required = false) String pass,
+            @RequestParam("name") String name,
+            @RequestParam("nick") String nick,
+            @RequestParam("email") String email,
+            @RequestParam("year") String yearString,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "tel", required = false) String tel,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "detailAddress", required = false) String detailAddress,
+            @RequestParam(value = "contry") String contry,
+            @RequestParam(value = "myLike", required = false) String[] myLikes,
+            @RequestParam(value = "profileImg", required = false) MultipartFile profileImg,
+            @RequestParam(value = "resetProfile", required = false) String resetProfile,
+            HttpSession session,
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
-	@Override
-	public String profileImgAndMyLikeSettingProcess(MultipartFile profileImg, String[] myLikes,
-			HttpServletRequest request, Model model) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        MemberVo dbMember = memberService.selectMemberById(id);
+        if (dbMember == null) {
+        	try {
+                response.setContentType("text/html;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<script>");
+                out.println("alert('회원 정보를 찾을 수 없습니다.');");
+                out.println("location.href='/harunichi/';");  // 메인 페이지로 이동
+                out.println("</script>");
+                out.flush();
+                return null;  // 이미 응답 완료
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        MemberVo memberVo = dbMember;
+
+        // 비밀번호: 입력 없으면 기존 유지
+        if (pass != null && !pass.trim().isEmpty()) {
+            memberVo.setPass(pass);
+        }
+
+        memberVo.setName(name);
+        memberVo.setNick(nick);
+        memberVo.setEmail(email);
+        memberVo.setContry(contry);
+        
+        //관심사(MyLike) 배열로 받기
+        if (myLikes != null) {
+            memberVo.setMyLike(String.join(",", myLikes));
+        } else {
+            memberVo.setMyLike("");
+        }
+
+        // 생년월일 변환
+        if (yearString != null && !yearString.trim().isEmpty()) {
+            try {
+                LocalDate localDate = LocalDate.parse(yearString);
+                Date year = Date.valueOf(localDate);
+                memberVo.setYear(year);
+                System.out.println("생년월일 변환 성공: " + year);
+            } catch (DateTimeParseException e) {
+                System.err.println("생년월일 파싱 오류: " + yearString + " - " + e.getMessage());
+            }
+        }
+
+        // 성별 변환
+        String standardizedGender = null;
+        if (gender != null && !gender.isEmpty()) {
+            if ("male".equalsIgnoreCase(gender)) {
+                standardizedGender = "M";
+            } else if ("female".equalsIgnoreCase(gender)) {
+                standardizedGender = "F";
+            }
+        }
+        memberVo.setGender(standardizedGender);
+
+        // 전화번호 국가코드 처리
+        if (tel != null && tel.startsWith("0")) {
+            String country = memberVo.getContry(); 
+            if ("kr".equalsIgnoreCase(country)) {
+                tel = "+82" + tel.substring(1);
+            } else if ("jp".equalsIgnoreCase(country)) {
+                tel = "+81" + tel.substring(1);
+            }
+        }
+        memberVo.setTel(tel);
+
+        // 주소 + 상세주소 합치기
+        String fullAddress = address != null ? address.trim() : "";
+        if (detailAddress != null && !detailAddress.trim().isEmpty()) {
+            fullAddress += " " + detailAddress.trim();
+        }
+        memberVo.setAddress(fullAddress);
+
+        // 프로필 이미지 업로드
+        if ("true".equals(resetProfile)) {
+            memberVo.setProfileImg(null);//기본이미지로 바꿨을경우 null세팅
+        } else {
+            String filePath = handleProfileImage(profileImg, request);
+            if (filePath != null) {
+            	String fileName = new File(filePath).getName();  // 파일명만
+                memberVo.setProfileImg(fileName);
+            }
+        }
+        
+        // 회원 정보 업데이트
+        try {
+            memberService.updateMember(memberVo);
+            session.setAttribute("member", memberVo);
+            System.out.println("회원정보 수정 완료!");
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.printStackTrace();
+            response.setContentType("text/html;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>");
+            out.println("alert('회원정보 수정 중 오류가 발생했습니다.');");
+            out.println("location.href='/harunichi/';");
+            out.println("</script>");
+            out.flush();
+            return null;
+           
+        }
+
+        
+        
+    }
+
+
+    
 	
 }

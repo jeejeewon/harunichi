@@ -1,6 +1,6 @@
 package com.harunichi.member.vo;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.sql.Date;
 
 public class MemberVo {
@@ -22,7 +22,12 @@ public class MemberVo {
 		private String kakao_id; //카카오아이디
 		private String naver_id; //네이버아이디
 		
-
+		
+		
+		
+		
+		
+		
 		public String getId() {
 			return id;
 		}
@@ -53,7 +58,6 @@ public class MemberVo {
 		public void setContry(String contry) {
 			this.contry = contry;
 		}
-
 		public Date getYear() {
 			return year;
 		}
@@ -121,6 +125,7 @@ public class MemberVo {
 			this.naver_id = naver_id;
 		}
 	
+		
 		
 }
 

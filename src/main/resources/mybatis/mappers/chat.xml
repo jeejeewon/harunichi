@@ -177,6 +177,17 @@
 		]]>
 	</select>
 	
+	<!-- 로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인 -->
+	<select id="isUserInRoom" parameterType="map" resultType="boolean">
+		<![CDATA[
+			SELECT EXISTS( 
+				SELECT 1
+				FROM chatRoom
+				WHERE roomId = #{roomId} AND userId = #{userId}
+			)
+		]]>
+	</select>
+	
 	<!-- 오픈 채팅 참여 -->
 	<insert id="doOpenChat" parameterType="ChatRoomVo">
 		<![CDATA[

@@ -48,6 +48,20 @@ public interface ChatDao {
 	//참여중인 채팅의 메세지 정보 조회
 	ChatVo selectMyChatMessage(String roomId);
 
+	//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
+	boolean isUserInRoom(Map<String, String> map);
+	
+	//오픈 채팅 참여
+	void doOpenChat(ChatRoomVo chatRoomVo);
+
+
+
+	
+
+
+
+
+
 	
 
 

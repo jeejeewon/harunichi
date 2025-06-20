@@ -78,8 +78,7 @@ public class ChatControllerImpl implements ChatController {
 					//오픈채팅방은 방장이 설정한 프로필 사진으로 설정		
 					}else {
 						memberProfile = null;
-					}
-					
+					}					
 					profileList.add(memberProfile);	
 				}
 				
@@ -105,7 +104,7 @@ public class ChatControllerImpl implements ChatController {
 		String message = "";
 		List<ChatVo> messageList = new ArrayList<ChatVo>();
 				
-		try {
+		try {		
 			//오픈 채팅방 리스트 조회
 			List<ChatRoomVo> openChatList = chatServiceImpl.selectOpenChat();
 			
@@ -174,6 +173,7 @@ public class ChatControllerImpl implements ChatController {
 		//채팅방 ID 생성 후 DB에 채팅방 정보 저장
 		String roomId = chatServiceImpl.insertRoomId(vo);
 		model.addAttribute("roomId", roomId);
+		model.addAttribute("profileImg", vo.getProfileImg());
 
 		//채팅방 참여 인원 조회
 		int count = chatServiceImpl.selectUserCount(roomId);		
@@ -280,9 +280,16 @@ public class ChatControllerImpl implements ChatController {
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String userId = member.getId();
 		
+		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
+//이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		
+		boolean isUserInRoom = chatServiceImpl.isUserInRoom(roomId, userId);
+		
 		//오픈 채팅방 정보 조회
 		ChatRoomVo chatRoomVo = chatServiceImpl.selectOpenChatById(roomId);
 		chatRoomVo.setUserId(userId);
+		
+		//채팅방에 참여하고 있다면 doChat으로 리다이렉트
+		if(isUserInRoom) { return "redirect:/chat/doChat?roomId=" + roomId + "&chatType=" + chatRoomVo.getChatType(); }	
 		
 		//해당 채팅방에 로그인한 사용자 ID 추가
 		chatServiceImpl.doOpenChat(chatRoomVo);

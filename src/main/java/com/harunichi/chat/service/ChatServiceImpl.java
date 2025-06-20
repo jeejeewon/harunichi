@@ -229,10 +229,22 @@ public class ChatServiceImpl implements ChatService {
 		return myChatMessage;		
 	}
 
+	//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
+	@Override
+	public boolean isUserInRoom(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);		
+		return chatDaoImpl.isUserInRoom(map);
+	}
+	
 	//오픈 채팅 참여
+	@Override
 	public void doOpenChat(ChatRoomVo chatRoomVo) {
 		chatDaoImpl.doOpenChat(chatRoomVo);	
 	}
+
+
 
 
 	

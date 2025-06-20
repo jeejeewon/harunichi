@@ -14,7 +14,7 @@ public class MemberDaoImpl implements MemberDao {
 
 	@Autowired
 	private SqlSession sqlSession;
-
+	
 	//회원가입 기능
 	@Override
 	public int insertMember(MemberVo memberVO) throws DataAccessException {
@@ -22,7 +22,6 @@ public class MemberDaoImpl implements MemberDao {
 		// insert 성공 시 : 반환값은 삽입된 row 수 (보통 1) , 실패 시 → 예외가 발생하거나 0
 	}
 	
-
 	//아이디로 회원 정보 조회 기능
 	@Override
 	public MemberVo selectMemberById(String id) throws DataAccessException {
@@ -57,14 +56,12 @@ public class MemberDaoImpl implements MemberDao {
 		int result = sqlSession.update("mapper.member.updateMember", memberVO);
 		return result;
 	}
-
 	
 	//아이디 중복 체크
 	@Override
 	public int checkId(String id) {
 		return sqlSession.selectOne("mapper.member.countById", id);
 	}
-
 	
 	
 

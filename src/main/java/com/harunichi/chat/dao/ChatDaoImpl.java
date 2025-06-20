@@ -162,10 +162,20 @@ public class ChatDaoImpl implements ChatDao {
 		System.out.println("===ChatDao의 selectMyChat 메소드 실행");
 		return sqlSession.selectOne(NAMESPACE + "selectMyChatMessage", roomId);
 	}
-
+	
+	//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
+	@Override
+	public boolean isUserInRoom(Map<String, String> map) {
+		return sqlSession.selectOne(NAMESPACE + "isUserInRoom", map);
+	}
+	
+	//오픈 채팅 참여
+	@Override
 	public void doOpenChat(ChatRoomVo chatRoomVo) {
 		sqlSession.insert(NAMESPACE + "doOpenChat", chatRoomVo);		
 	}
+
+
 
 
 
