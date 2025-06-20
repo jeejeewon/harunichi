@@ -47,6 +47,7 @@ public class BoardControllerImpl implements BoardController {
 
 	// 에러페이지 만들기
 	// 스마트에디터 적용
+	// 닉네임 기준 MemberVo 매핑하기
 
 	@Autowired
 	private BoardService boardService;
@@ -65,8 +66,11 @@ public class BoardControllerImpl implements BoardController {
 			// 로그인한 사용자 정보 가져오기
 			HttpSession session = request.getSession();
 			MemberVo loginUser = (MemberVo) session.getAttribute("member");
-			
+
 			List<BoardVo> boardList = boardService.selectBoardList();
+
+			// 닉네임 -> MemberVo 매핑 (작성자 정보 저장용)
+			Map<String, MemberVo> memberMap = new HashMap<>();
 
 			if (boardList != null && !boardList.isEmpty()) {
 				for (BoardVo board : boardList) {
@@ -92,6 +96,13 @@ public class BoardControllerImpl implements BoardController {
 						}
 						((Map<Integer, Boolean>) mav.getModel().get("likedPosts")).put(boardId, isLiked);
 					}
+					
+					 // 닉네임으로 작성자 프로필 이미지 조회
+//	                String writerNick = board.getBoardWriter();
+//	                if (!memberMap.containsKey(writerNick)) {
+//	                    MemberVo writerInfo = memberService.getMemberByNick(writerNick);
+//	                    memberMap.put(writerNick, writerInfo);
+//	                }
 				}
 			}
 			mav.addObject("boardList", boardList);
