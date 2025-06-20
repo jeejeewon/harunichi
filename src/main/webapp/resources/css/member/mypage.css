@@ -1,81 +1,97 @@
-@charset "UTF-8";
-.mypage-wrap{
+
+.mypage-inner-header {
+	padding: 20px;
 }
-.mypage-inner-header{
-	padding: 10px 0;
-}
-.mypage-inner-header a img{
+
+.mypage-inner-header a img {
 	width: 20px;
 	height: auto;
 }
-.mypage-profile-area{
+
+.mypage-profile-area {
 	display: flex;
 	gap: 10px;
 }
-.profile-area-left{
-	flex: 0 0 150px;  /* 150px 고정 */
+
+.profile-area-left {
+	flex: 0 0 150px; /* 150px 고정 */
 }
-.profile-area-left img{
+
+.profile-area-left img {
 	border-radius: 50%;
 	overflow: hidden;
 	border: 1px solid #eee;
 	width: 150px;
 	height: 150px;
 	object-fit: cover;
-    display: block;
+	display: block;
 }
-.profile-area-middle{
+
+.profile-area-middle {
 	flex: 1 1 auto;
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 }
-.nick-and-email{
+
+.nick-and-email {
 	display: flex;
 	gap: 5px;
 	align-items: center;
 }
-.nick-and-email span:first-child{
+
+.nick-and-email span:first-child {
 	font-size: 20px;
 	font-weight: bold;
 }
-.nick-and-email span:last-child{
+
+.nick-and-email span:last-child {
 	font-size: 12px;
 	color: #888;
 }
-.join-date{
+
+.join-date {
 	display: flex;
 	gap: 5px;
 }
-.join-date img{
+
+.join-date img {
 	width: 18px;
 	height: auto;
-	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg) brightness(96%) contrast(89%);
+	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg)
+		brightness(96%) contrast(89%);
 }
-.join-date p{
+
+.join-date p {
 	font-size: 12px;
 	color: #888;
 }
-.follow-area{
+
+.follow-area {
 	display: flex;
 	gap: 10px;
 }
-.follow-area a{
+
+.follow-area a {
 	font-size: 14px;
 	color: #888;
 }
+
 .follow-area a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
-.follow-area a span{
+
+.follow-area a span {
 	font-weight: bold;
 }
-.chat-edit-follow{
+
+.chat-edit-follow {
 	flex: 0 0 auto;
 	display: flex;
-	gap : 5px;
+	gap: 10px;
 }
-.chat-btn{
+
+.chat-btn {
 	width: 35px;
 	height: 35px;
 	border-radius: 50%;
@@ -85,34 +101,57 @@
 	border: 1px solid #ddd;
 	transition: all 0.3s ease;
 }
-.chat-btn:hover{
+
+.chat-btn:hover {
 	background-color: #e6e6e6;
 }
-.chat-btn img{
-	width: 20px;
+
+.chat-btn img {
+	width: 16px;
 	height: auto;
-	transform: translate(-2px, -1px);
-	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg) brightness(96%) contrast(89%);
+	transform: translate( -1px, -1px);
+	filter: invert(49%) sepia(0%) saturate(1%) hue-rotate(151deg)
+		brightness(96%) contrast(89%);
 }
-.edit-btn, .follow-btn{
-	padding:0 15px;
+
+.edit-btn, .follow-btn {
+	padding: 0 15px;
 	height: 35px;
 	border-radius: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	transition: all 0.3s ease;
+	font-size: 16px;
 }
-.edit-btn{
+
+.edit-btn {
 	border: 1px solid #ddd;
 }
-.edit-btn:hover{
+
+.edit-btn:hover {
 	background-color: #e6e6e6;
 }
 
-.follow-btn{
-	background-color: #A3DAFF;
+.follow-btn.follow {
+	color: #A3DAFF;
+	border: 1px solid #A3DAFF;
 }
-.follow-btn:hover {
-	background-color: #bfe6ff;
+
+.follow-btn.follow:hover {
+	background-color: rgba(163, 218, 255, 0.2);
+}
+
+/* 팔로잉 상태: 하늘색 배경 + 흰색 글씨 */
+.follow-btn.following {
+	background-color: #A3DAFF;
+	color: #fff;
+	border: 1px solid #A3DAFF;
+}
+
+/* 언팔로우 상태: 투명 배경 + 빨간 테두리 + 빨간 글씨 */
+.follow-btn.unfollow {
+	background-color: transparent;
+	color: #ff4d4d;
+	border: 1px solid #ff4d4d;
 }

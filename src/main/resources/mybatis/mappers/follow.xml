@@ -54,4 +54,25 @@
   </select>
 
 
+  <!-- 팔로잉 리스트 -->
+  <select id="getFollowingList" parameterType="String" resultType="com.harunichi.member.vo.MemberVo">
+    <![CDATA[
+    SELECT m.id, m.nick, m.email, m.profileImg
+    FROM follow f
+    JOIN member m ON f.followee_id = m.id
+    WHERE f.follower_id = #{follower_id}
+    ]]>
+  </select>
+
+  <!-- 팔로워 리스트 -->
+  <select id="getFollowerList" parameterType="String" resultType="com.harunichi.member.vo.MemberVo">
+    <![CDATA[
+    SELECT m.id, m.nick, m.email, m.profileImg
+    FROM follow f
+    JOIN member m ON f.follower_id = m.id
+    WHERE f.followee_id = #{followee_id}
+    ]]>
+  </select>
+
+
 </mapper>

@@ -29,7 +29,7 @@
 
 <!-- 마이페이지 메뉴 active 처리 -->
 <c:set var="mypageClass" value="" />
-<c:if test="${fn:contains(uriWithoutCtx, '/mypage')}">
+<c:if test="${fn:contains(uriWithoutCtx, '/mypage') and empty param.id}">
   <c:set var="mypageClass" value="active" />
 </c:if>
 

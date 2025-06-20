@@ -28,6 +28,9 @@ request.setCharacterEncoding("utf-8");
 				<tiles:insertAttribute name="side" />
 			</aside>
 			<article>
+				<button id="scrollTopBtn">
+			    	<span class="material-symbols-outlined">arrow_upward</span>
+			  	</button>
 				<tiles:insertAttribute name="body" />
 			</article>
 		</div>
@@ -100,6 +103,14 @@ request.setCharacterEncoding("utf-8");
 		    if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
 		        menu.style.display = "none";
 		    }
+		});
+		
+		//최상단 가기 버튼
+		document.getElementById("scrollTopBtn").addEventListener("click", function() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 부드럽게 스크롤
+			});
 		});
 		
 	</script>

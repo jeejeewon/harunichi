@@ -67,16 +67,13 @@ public class MyPageController {
         model.addAttribute("isMyPage", isMyPage);
         
         
-     // 팔로워, 팔로잉 수 조회
+        // pageOwner 기준 팔로우 수 조회
         int followerCount = sqlSession.selectOne("mapper.follow.getFollowerCount", pageOwner.getId());
-        int followingCount = 0;
-        if (loginMember != null) {
-            followingCount = sqlSession.selectOne("mapper.follow.getFollowingCount", loginMember.getId());
-        }
+        int followingCount = sqlSession.selectOne("mapper.follow.getFollowingCount", pageOwner.getId());
+
         model.addAttribute("followerCount", followerCount);
         model.addAttribute("followingCount", followingCount);
 
-        // 타일즈 definition 이름 반환 → /WEB-INF/tiles-defs.xml에서 name="/mypage"인 definition에 매핑
         return "/mypage";
     }
 
