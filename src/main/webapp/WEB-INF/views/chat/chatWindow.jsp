@@ -60,7 +60,10 @@
 					</p>
 					<p class="bold">${productVo.productPrice} 원</p>
 				</div>	
-				<a href="#" class="product-close">닫기</a>			
+				<div class="product-btn-wrap">
+					<a href="#" class="product-btn pay" onclick="doPay()" >결제하기</a>			
+					<a href="#" class="product-btn" onclick="closeProduct()" >닫기</a>		
+				</div>	
 			</div>			
 			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->	
 			<div id="messageContainer"></div>
@@ -91,6 +94,7 @@
 	var senderId = "${sessionScope.id}";
 	var lastDate;
 	
+	//채팅방 로딩시 실행되는 함수 --------------------------------------------------------------------
 	window.onload = function() {
 		chatWindow = document.getElementById("messageContainer");	//대화 내용이 표시될 대화창 영역
 		chatMessage = document.getElementById("chatMessage");		//메세지 입력창	
@@ -132,7 +136,7 @@
 	}
 	
 	
-	//보낸 시간 포맷팅
+	//보낸 시간 포맷팅 ---------------------------------------------------------------------------
 	function formatTime(date) {
 		const d = date ? new Date(date) : new Date(); // 인자 없으면 지금 시간
 		const hours = d.getHours();
@@ -144,7 +148,7 @@
 	
 	
 	
-	//웹소켓 연결
+	//웹소켓 연결 ------------------------------------------------------------------------------
 	function connectWebSocket(){
 		//웹 소켓 객체 생성 : JSP의 application내장객체를 통해 요청할 채팅 서버페이지 주소로 웹소켓을 만들어 연결 
 		webSocket = new WebSocket("<%=application.getInitParameter("CHAT_ADDR")%>/ChattingServer?roomId=" + roomId);
@@ -200,7 +204,7 @@
 	}
 	
 	
-	//1000바이트까지 입력 가능하도록 하는 함수
+	//1000바이트까지 입력 가능하도록 하는 함수 ---------------------------------------------------------
 	function getByteLength(str) {
 		return new Blob([str]).size;
 	}
@@ -216,11 +220,10 @@
 	});
 	
 	
-	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출
-	function sendMessage() {
-		
+	//메세지 전송 함수 : 채팅 사용자가 메세지 전송 버튼을 클릭하거나 엔터 키를 눌렀을때 호출 ---------------------
+	function sendMessage() {	
 		//아무것도 적지 않고 전송할 경우
-		if (chatMessage.value == "") { return; }
+		if (chatMessage.value == "") { return; }	
 		
 		//새로운 채팅!
 		const chatData = {
@@ -248,7 +251,7 @@
 	}
 
 	
-	//메세지 입력창에서 Enter키를 누르고 땠을 경우
+	//메세지 입력창에서 Enter키를 누르고 땠을 경우 ----------------------------------------------------
 	//자동으로 sendMessage함수를 호출하도록처리
 	function enterKey() {
 		//Enter키의 키코드값 = 13
@@ -258,11 +261,27 @@
 	}
 	
 	
-	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출
+	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출 -----------------------
 	function disconnect() {
 		webSocket.close(); //웹 소켓 통로연결 끊기 ( 웹브라우저, 서버페이지 연결 끊김 )
 		window.location.href="<%=request.getContextPath()%>/chat/main";
 	}
+	
+	
+	//채팅 상단의 상품 정보 닫기 (완전히 닫힘)
+	function closeProduct(){
+		const chatTop = document.getElementById("productWrap");
+		if (chatTop) {
+		  chatTop.remove();
+		}	
+	}
+	
+	//상품 결제창으로 이동
+	function doPay() {
+		const productId = "${productVo.productId}";
+		 location.href = "${contextPath}/payment/form?productId=${productVo.productId}";
+	}
+	
 
 
 </script>

@@ -65,6 +65,9 @@
 .disconnect-btn {
 	font-size: 15px;
 }
+.disconnect-btn:hover {
+	font-weight: bold;
+}
 
 /* 중고거래 상품 정보 보여주는 영역 */
 #productWrap {
@@ -93,18 +96,38 @@
 .bold {
 	font-weight: bold;
 }
-.product-close{
-  position: absolute;
-  right: 10px;
-  bottom: 8px;
-  padding: 4px 10px;
-  background-color: #eee;
-  border-radius: 5px;
-  font-size: 14px;
-  color: #333;
-  text-decoration: none;
+.product-btn-wrap {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    gap: 7px;
+    flex-direction: row;
+    align-items: center;
+    height: 25px;
+    align-items: center;
+}
+.product-btn {
+	padding: 4px 10px;
+	background-color: #eee;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #333;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.product-btn:hover {
+	background-color: #e2e2e2;
+}
+.pay {
+	background-color: #FFBFA3;
+}
+.pay:hover {
+	background-color: #FFA07A;	
 	
 }
+
+
 
 
 /* 대화창 */
