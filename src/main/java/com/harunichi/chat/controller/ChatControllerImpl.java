@@ -57,10 +57,7 @@ public class ChatControllerImpl implements ChatController {
 				//상대방 프로필 담을 변수
 				List<MemberVo> profileList = new ArrayList<MemberVo>();	
 				MemberVo memberProfile = new MemberVo();
-				
-				//상대방 프로필 사진이 없을 경우 기본 이미지 사용
-				String basicProfileImg = "/harunichi/resources/icon/basic_profile.jpg";
-				
+								
 				//참여중인 채팅방 프로필 사진 조회
 				for(ChatRoomVo vo : myChatList) {
 					
@@ -75,8 +72,8 @@ public class ChatControllerImpl implements ChatController {
 						profileImg = memberProfile.getProfileImg();				
 							
 						//상대방 프로필 없을 경우 기본 이미지 보여주기
-						if(profileImg == null || profileImg == "") {							
-							memberProfile.setProfileImg(basicProfileImg);
+						if(profileImg == null || profileImg == "") {										
+							memberProfile.setProfileImg(null);
 							profileList.add(memberProfile);	
 						}
 											
@@ -240,6 +237,16 @@ public class ChatControllerImpl implements ChatController {
 		
 		String chatType = request.getParameter("chatType");
 		model.addAttribute("chatType", chatType);
+		
+		//상품ID가 있을 경우
+		String param = request.getParameter("productId");	
+		int productId = 0;		
+		if(param != null) {
+			productId = Integer.parseInt(param);
+			//상품 정보 조회
+			ProductVo productVo = productService.findById(productId);
+			model.addAttribute("productVo", productVo);		
+		}
 
 		//채팅방 참여 인원 조회
 		int count = chatService.selectUserCount(roomId);		
@@ -365,6 +372,7 @@ public class ChatControllerImpl implements ChatController {
 		
 		//판매자 정보 조회
 		MemberVo memberVo = memberService.selectMemberById(receiverId);
+		model.addAttribute("receiverId", receiverId);	
 		model.addAttribute("title", memberVo.getNick());	
 		model.addAttribute("profileImg", memberVo.getProfileImg());	
 		
@@ -383,12 +391,16 @@ public class ChatControllerImpl implements ChatController {
 	}
 	
 	//채팅방 정보에 상품ID 제거
-	public void deleteProductId(@RequestParam("roomId") String roomId,
+	@RequestMapping(value = "/deleteProductId")
+	public String deleteProductId(@RequestParam("productId") int productId,
 							  HttpServletRequest request, HttpServletResponse response, 
 							  Model model, HttpSession session) throws Exception{				
 		log.info("chatController의 deleteProductId 메소드 실행 -------------");
 		
-		chatService.deleteProductId(roomId);
+		String roomId = request.getParameter("roomId");	
+		chatService.deleteProductId(roomId, productId);
+		
+		return "redirect:/chat/doChat?roomId=" + roomId + "&chatType=personal";
 	}
 	
 	

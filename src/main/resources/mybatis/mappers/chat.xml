@@ -207,9 +207,11 @@
 	
 	<!-- 채팅방 정보에 상품ID 제거 -->
 	<update id="deleteProductId" parameterType="map">
-		UPDATE chatRoom
-		SET productId = ""
-		WHERE roomId = #{roomId}
+		<![CDATA[
+			UPDATE chatRoom
+			SET productId = null
+			WHERE roomId = #{roomId}
+		]]>
 	</update>
 
 

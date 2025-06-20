@@ -253,8 +253,9 @@ public class ChatServiceImpl implements ChatService {
 
 	//채팅방 정보에 상품ID 제거
 	@Override
-	public void deleteProductId(String roomId) {
-		chatDao.deleteProductId(roomId);	
+	public void deleteProductId(String roomId, int productId) {
+		chatDao.deleteProductId(roomId, productId);
+		
 	}
 
 

@@ -58,7 +58,7 @@ public interface ChatDao {
 	void updateChatProduct(String roomId, int productId);
 
 	//채팅방 정보에 상품ID 제거
-	void deleteProductId(String roomId);
+	void deleteProductId(String roomId, int productId);
 
 
 

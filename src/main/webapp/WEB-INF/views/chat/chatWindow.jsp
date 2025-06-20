@@ -43,37 +43,39 @@
 				</div>		
 			</div>
 			<!-- 중고거래에서 요청온 채팅일 경우 상품 정보 보여주는 영역 -->
-			<div id="productWrap">
-				<div id="productImg">			
-					<c:if test="${productVo.productStatus eq -1}"> <!-- 거래완료 상품은 이미지 흑백으로 처리 -->
-						<a href="${contextPath}/product/view?productId=${productVo.productId}">
-							<img class="product-img sold-out" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
-						</a>					
-					</c:if>	
-					<c:if test="${productVo.productStatus != -1}">			
-						<a href="${contextPath}/product/view?productId=${productVo.productId}">
-							<img class="product-img" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
-						</a>	
-					</c:if>
-				</div>
-				<div id="productInfo">
-					<p>
-						<span class="product-status bold">
-							<c:if test="${productVo.productStatus eq 1}">나눔</c:if>
-							<c:if test="${productVo.productStatus eq 0}">판매</c:if>
-							<c:if test="${productVo.productStatus eq -1}">거래완료</c:if>
-						</span>
-						<span>${productVo.productTitle}</span>
-					</p>
-					<p class="bold">${productVo.productPrice} 원</p>
+			<c:if test="${!empty productVo}">
+				<div id="productWrap">
+					<div id="productImg">			
+						<c:if test="${productVo.productStatus eq -1}"> <!-- 거래완료 상품은 이미지 흑백으로 처리 -->
+							<a href="${contextPath}/product/view?productId=${productVo.productId}">
+								<img class="product-img sold-out" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+							</a>					
+						</c:if>	
+						<c:if test="${productVo.productStatus != -1}">			
+							<a href="${contextPath}/product/view?productId=${productVo.productId}">
+								<img class="product-img" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+							</a>	
+						</c:if>
+					</div>
+					<div id="productInfo">
+						<p>
+							<span class="product-status bold">
+								<c:if test="${productVo.productStatus eq 1}">나눔</c:if>
+								<c:if test="${productVo.productStatus eq 0}">판매</c:if>
+								<c:if test="${productVo.productStatus eq -1}">거래완료</c:if>
+							</span>
+							<span>${productVo.productTitle}</span>
+						</p>
+						<p class="bold">${productVo.productPrice} 원</p>
+					</div>	
+					<div class="product-btn-wrap">
+						<c:if test="${productVo.productStatus != -1}">
+							<a href="#" class="product-btn pay" onclick="doPay()" >결제하기</a>	
+						</c:if>		
+						<a href="#" class="product-btn" onclick="closeProduct()" >닫기</a>		
+					</div>	
 				</div>	
-				<div class="product-btn-wrap">
-					<c:if test="${productVo.productStatus != -1}">
-						<a href="#" class="product-btn pay" onclick="doPay()" >결제하기</a>	
-					</c:if>		
-					<a href="#" class="product-btn" onclick="closeProduct()" >닫기</a>		
-				</div>	
-			</div>			
+			</c:if>		
 			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->	
 			<div id="messageContainer"></div>
 	
@@ -282,7 +284,7 @@
 		const chatTop = document.getElementById("productWrap");
 		if (chatTop) {
 		  chatTop.remove();
-		  location.href = "${contextPath}/chat/deleteProductId?roomId=${roomId}";
+		  location.href = "${contextPath}/chat/deleteProductId?roomId=${roomId}&productId=${productVo.productId}";
 		}	
 	}
 	

@@ -184,8 +184,11 @@ public class ChatDaoImpl implements ChatDao {
 
 	//채팅방 정보에 상품ID 제거
 	@Override
-	public void deleteProductId(String roomId) {		
-		sqlSession.update(NAMESPACE + "deleteProductId", roomId);	
+	public void deleteProductId(String roomId, int productId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("roomId", roomId);
+		map.put("productId", productId);	
+		sqlSession.update(NAMESPACE + "deleteProductId", map);		
 	}
 
 
