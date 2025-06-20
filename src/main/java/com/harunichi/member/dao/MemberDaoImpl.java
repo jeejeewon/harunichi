@@ -1,5 +1,7 @@
 package com.harunichi.member.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -62,6 +64,22 @@ public class MemberDaoImpl implements MemberDao {
 	public int checkId(String id) {
 		return sqlSession.selectOne("mapper.member.countById", id);
 	}
+
+	@Override
+	public List<MemberVo> selectMemberList(String searchKeyword, int offset, int pageSize) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("offset", offset);
+	    params.put("pageSize", pageSize);
+	    return sqlSession.selectList("mapper.member.selectMemberList", params);
+	}
+
+	@Override
+	public int selectMemberCount(String searchKeyword) {
+	    return sqlSession.selectOne("mapper.member.selectMemberCount", searchKeyword);
+	}
+	
+	
 	
 	
 

@@ -1,5 +1,8 @@
 package com.harunichi.member.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -55,6 +58,21 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public MemberVo selectMemberById(String id) {
 		return memberDao.selectMemberById(id);
+	}
+	
+	//전체 회원정보 조회
+	@Override
+	public Map<String, Object> getMemberList(String searchKeyword, int page) {
+		int pageSize = 10;
+	    int offset = (page - 1) * pageSize;
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberDao.selectMemberList(searchKeyword, offset, pageSize));
+	    result.put("totalCount", memberDao.selectMemberCount(searchKeyword));
+	    result.put("currentPage", page);
+	    result.put("pageSize", pageSize);
+
+	    return result;
 	}
 	
 	

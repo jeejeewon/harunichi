@@ -22,10 +22,5 @@ public class AdminController {
         model.addAttribute("currentUri", request.getRequestURI());
         return "/admin/main";  // tiles_admin.xml에 적어둔 name값 적기!
     }
-    
-    @RequestMapping({"/member"})
-    public String showAdminMember(HttpServletRequest request, Model model) {
-    	model.addAttribute("currentUri", request.getRequestURI());
-    	return "/admin/member";  // tiles_admin.xml에 적어둔 name값 적기!
-    }
+  
 }

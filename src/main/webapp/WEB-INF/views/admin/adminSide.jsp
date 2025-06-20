@@ -48,37 +48,31 @@
 
 				<li>
 					<a href="${contextPath}/admin" class="${homeClass}">
-						<span class="material-symbols-outlined">home</span>
 						<span>홈</span>
 					</a>
 				</li>
 				<li>
 					<a href="${contextPath}/admin/board" class="${boardClass}">
-						<span class="material-symbols-outlined">cloud</span>
-						<span>일상/교류 관리</span>
+						<span>게시글 관리</span>
 					</a>
 				</li>
 				<li>
 					<a href="${contextPath}/admin/product" class="${productClass}">
-						<span class="material-symbols-outlined">shopping_bag</span>
 						<span>중고거래 관리</span>
 					</a>
 				</li>
 				<li>
 					<a href="${contextPath}/admin/인기글">
-						<span class="material-symbols-outlined">local_fire_department</span>
 						<span>인기글 관리</span>
 					</a>
 				</li>
 				<li>
 					<a href="${contextPath}/admin/member" class="${memberClass}">
-						<span class="material-symbols-outlined">account_circle</span>
-						<span>마이페이지 관리</span>
+						<span>회원 관리</span>
 					</a>
 				</li>
 				<li>
 					<a href="${contextPath}/admin/chat" class="${chatClass}">
-						<span class="material-symbols-outlined">sms</span>
 						<span>채팅 관리</span>
 					</a>
 				</li>
