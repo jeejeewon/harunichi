@@ -65,8 +65,16 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 				</div>
 			</div>
 		</div>
-		<div class="mypage-contents-area" style="height: 8000px; width: 1600px;">
-			
+		<div class="mypage-contents-area">
+			<div class="mypage-contents-tab">
+				<div class="mypage-contents-tab-inner">
+					<a>나의 게시글</a>
+					<a>좋아요한 게시글</a>
+					<a>나의 거래글</a>
+					<a>좋아요한 거래글</a>
+				</div>
+			</div>
+			<div class="mypage-contents-con"></div>
 		</div>
 	</section>
 	
