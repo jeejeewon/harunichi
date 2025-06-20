@@ -16,16 +16,20 @@
 		<div class="list-wrap">
 			<c:forEach var="board" items="${boardList}">
 				<div class="list-item">
-					<div class="item">				
+					<div class="item">
 						<div class="item-cate">
 							<span>${board.boardCate}</span>
 						</div>
 						<div class="user-profile">
-							<%-- member 프로필 사진 가져오기 --%>
 							<div class="user-pic">
-								<img
-									src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
-
+								<%-- member 프로필 사진 가져오기 --%>
+								<c:if test="${empty profileImgPath}">
+									<img
+										src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+								</c:if>
+								<c:if test="${not empty profileImgPath}">
+									<img id="profileImage" src="${profileImgPath}" alt="선택한 프로필 이미지" >
+								</c:if>
 							</div>
 							<div class="user-name">${board.boardWriter}</div>
 							<div class="item-date" data-date="${board.boardDate}"></div>
@@ -65,11 +69,14 @@
 							</div>
 						</a>
 						<div class="item-info">
-							<div class="like  ${likedPosts[board.boardId] ? 'liked' : ''}" data-board-id="${board.boardId}">
-							  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="${isLiked ? 'liked' : ''}">
-							    <path d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z"/>
+							<div class="like  ${likedPosts[board.boardId] ? 'liked' : ''}"
+								data-board-id="${board.boardId}">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+									class="${isLiked ? 'liked' : ''}">
+							    <path
+										d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z" />
 							  </svg>
-							</div>						
+							</div>
 							<p>좋아요 ${board.boardLike}</p>
 							<p>댓글수 ${board.boardRe}</p>
 						</div>
@@ -94,22 +101,23 @@ function formatTimeAgo(timestamp) {
     const postDate = new Date(timestamp);
     const diffSeconds = Math.floor((now - postDate) / 1000);
 
+    if (diffSeconds >= 86400) {
+        const year = postDate.getFullYear();
+        const month = ('0' + (postDate.getMonth() + 1)).slice(-2);
+        const day = ('0' + postDate.getDate()).slice(-2);  
+        return year + '.' + month + '.' + day + '.' ;
+    }
+
     if (diffSeconds < 60) {
         return diffSeconds + "초 전";
     } else if (diffSeconds < 3600) {
         return Math.floor(diffSeconds / 60) + "분 전";
-    } else if (diffSeconds < 86400) {
-        return Math.floor(diffSeconds / 3600) + "시간 전";
-    } else if (diffSeconds < 2592000) { // 30 days
-        return Math.floor(diffSeconds / 86400) + "일 전";
-    } else if (diffSeconds < 31536000) { // 365 days
-        return Math.floor(diffSeconds / 2592000) + "달 전";
     } else {
-        return Math.floor(diffSeconds / 31536000) + "년 전";
+        return Math.floor(diffSeconds / 3600) + "시간 전";
     }
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+function updateTimeElements() {
     document.querySelectorAll('.item-date').forEach(span => {
         const dateString = span.dataset.date;
         const postDate = new Date(dateString);
@@ -121,18 +129,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         const timestamp = postDate.getTime();
+        span.dataset.timestamp = timestamp;
         span.textContent = formatTimeAgo(timestamp);
     });
-});
+}
 
-// 시간이 지남에 따라 자동으로 업데이트되도록 setInterval을 사용
-// 1분마다 업데이트
+document.addEventListener('DOMContentLoaded', updateTimeElements);
+
 setInterval(() => {
     document.querySelectorAll('.item-date').forEach(span => {
         const timestamp = parseInt(span.dataset.timestamp);
-        span.textContent = formatTimeAgo(timestamp);
+        if (!isNaN(timestamp)) {
+            span.textContent = formatTimeAgo(timestamp);
+        }
     });
-}, 60000); 
+}, 60000);
 
 // 게시글 삭제 관련 메세지
 $(document).ready(function() {    
