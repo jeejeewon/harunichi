@@ -102,7 +102,8 @@ public class ChatServiceImpl implements ChatService {
 			userList.add(vo.getReceiverId()); //상대방
 			userList.add(vo.getUserId());	  //로그인 사용자			
 			roomMap.put("userList", userList);	
-		}		
+		}
+
 			
 		chatDao.insertRoomId(roomMap);
 		
@@ -242,6 +243,18 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void doOpenChat(ChatRoomVo chatRoomVo) {
 		chatDao.doOpenChat(chatRoomVo);	
+	}
+	
+	//채팅방 정보에 상품ID 업데이트
+	@Override
+	public void updateChatProduct(String roomId, int productId) {
+		chatDao.updateChatProduct(roomId, productId);		
+	}
+
+	//채팅방 정보에 상품ID 제거
+	@Override
+	public void deleteProductId(String roomId) {
+		chatDao.deleteProductId(roomId);	
 	}
 
 

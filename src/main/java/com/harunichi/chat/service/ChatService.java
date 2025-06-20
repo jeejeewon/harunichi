@@ -55,6 +55,12 @@ public interface ChatService {
 	//채팅방 프로필 이미지 C드라이브에 저장
 	String chatProfileImgUpload(MultipartFile file);
 
+	//채팅방 정보에 상품ID 업데이트
+	void updateChatProduct(String roomId, int productId);
+
+	//채팅방 정보에 상품ID 제거
+	void deleteProductId(String roomId);
+
 	
 
 

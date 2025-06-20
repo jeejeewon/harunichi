@@ -54,6 +54,12 @@ public interface ChatDao {
 	//오픈 채팅 참여
 	void doOpenChat(ChatRoomVo chatRoomVo);
 
+	//채팅방 정보에 상품ID 업데이트
+	void updateChatProduct(String roomId, int productId);
+
+	//채팅방 정보에 상품ID 제거
+	void deleteProductId(String roomId);
+
 
 
 	

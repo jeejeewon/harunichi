@@ -282,6 +282,7 @@
 		const chatTop = document.getElementById("productWrap");
 		if (chatTop) {
 		  chatTop.remove();
+		  location.href = "${contextPath}/chat/deleteProductId?roomId=${roomId}";
 		}	
 	}
 	

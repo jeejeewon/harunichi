@@ -372,12 +372,26 @@ public class ChatControllerImpl implements ChatController {
 		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);
 		model.addAttribute("roomId", roomId);
 		
+		//채팅방 정보에 상품ID 업데이트
+		chatService.updateChatProduct(roomId, productId);
+		
 		//채팅방 참여 인원 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
 
 		return "/chatWindow";	
 	}
+	
+	//채팅방 정보에 상품ID 제거
+	public void deleteProductId(@RequestParam("roomId") String roomId,
+							  HttpServletRequest request, HttpServletResponse response, 
+							  Model model, HttpSession session) throws Exception{				
+		log.info("chatController의 deleteProductId 메소드 실행 -------------");
+		
+		chatService.deleteProductId(roomId);
+	}
+	
+	
 	
 	//과거 채팅 내역 불러오기
 	@Override
@@ -387,6 +401,7 @@ public class ChatControllerImpl implements ChatController {
 		log.info("chatController의 selectChatHistory 메소드 실행 -------------");
 		return chatService.selectChatHistory(roomId);
 	}
+	
 	
 	
 }

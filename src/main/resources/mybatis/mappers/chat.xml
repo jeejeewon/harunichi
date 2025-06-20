@@ -196,6 +196,21 @@
 		]]>
 	</insert>
 	
+	<!-- 채팅방 정보에 상품ID 업데이트 -->
+	<update id="updateChatProduct" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET productId = #{productId}
+			WHERE roomId = #{roomId}
+		]]>
+	</update>
+	
+	<!-- 채팅방 정보에 상품ID 제거 -->
+	<update id="deleteProductId" parameterType="map">
+		UPDATE chatRoom
+		SET productId = ""
+		WHERE roomId = #{roomId}
+	</update>
 
 
 
