@@ -49,6 +49,11 @@ public class ProductDaoImpl implements ProductDao {
     public void delete(int productId) throws Exception {
         sqlSession.delete(NAMESPACE + "delete", productId);
     }
+    
+	@Override
+	public void markAsSoldOut(int productId) throws Exception {
+		sqlSession.update(NAMESPACE+"markAsSoldOut",productId);		
+	}
 
     @Override
     public void incrementViewCount(int productId) throws Exception {
@@ -70,5 +75,6 @@ public class ProductDaoImpl implements ProductDao {
     public List<ProductVo> findOtherProducts(Map<String, Object> paramMap) throws Exception {
         return sqlSession.selectList(NAMESPACE + "findOtherByWriter", paramMap);
     }
+
 
 }

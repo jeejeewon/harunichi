@@ -16,6 +16,8 @@ public interface ProductService {
     void update(ProductVo product) throws Exception;
 
     void delete(int productId) throws Exception;
+    
+    void markAsSoldOut(int productId) throws Exception;
 
     void incrementViewCount(int productId) throws Exception;
     

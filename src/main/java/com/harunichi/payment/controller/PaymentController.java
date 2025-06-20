@@ -88,6 +88,9 @@ public class PaymentController {
             OrderVo order = new OrderVo();
             order.setImpUid(impUid);
             order.setMerchantUid(merchantUid);
+            
+            int productId = Integer.parseInt(payload.get("product_id"));
+            order.setProductId(productId);
             order.setProductName(productName);
             order.setAmount(amount);
             order.setBuyerId(buyerId);
@@ -95,7 +98,8 @@ public class PaymentController {
             order.setStatus("결제완료");
 
             orderService.insertOrder(order);
-
+            productService.markAsSoldOut(productId); // 판매완료 상태 저장
+            
             result.put("success", true);
             result.put("message", "주문이 성공적으로 저장되었습니다.");
 
@@ -120,7 +124,7 @@ public class PaymentController {
 	        @RequestParam(value = "errorMessage", required = false) String errorMessage) {
 
 	    ModelAndView mav = new ModelAndView("/payment/fail");
-	    mav.addObject("productId", productId != null ? productId : 0);
+	    mav.addObject("productId", productId != null ? productId : null);
 	    mav.addObject("errorMessage", errorMessage != null ? errorMessage : "결제에 실패했습니다.");
 	    return mav;
 	}

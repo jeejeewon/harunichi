@@ -44,6 +44,10 @@ public class ProductServiceImpl implements ProductService {
     public void delete(int productId) throws Exception {
         productDao.delete(productId);
     }
+    @Override
+    public void markAsSoldOut(int productId) throws Exception {
+        productDao.markAsSoldOut(productId);
+    }
 
     @Override
     public void incrementViewCount(int productId) throws Exception {

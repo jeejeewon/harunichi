@@ -82,6 +82,13 @@
     <delete id="delete" parameterType="int">
         DELETE FROM product WHERE productId = #{productId}
     </delete>
+    
+    <!-- 상품 판매 완료 -->
+    <update id="markAsSoldOut" parameterType="int">
+    UPDATE product
+    SET productStatus = -1
+    WHERE productId = #{productId}
+	</update>
 
     <!-- 조회수 증가 -->
     <update id="incrementViewCount" parameterType="int">

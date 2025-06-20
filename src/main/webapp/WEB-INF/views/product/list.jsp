@@ -91,9 +91,10 @@ function renderProducts(products) {
 		// 작성자 닉네임
 		const writerNick = p.writerNick;
 
-
         // 상태 처리 (문자열 "1" 또는 숫자 1 모두 처리)
-        const statusText = p.productStatus == 1 ? '나눔' : '판매';
+        const statusNum = Number(p.productStatus);
+		let statusText = statusNum === -1 ? '판매완료' : statusNum === 1 ? '나눔' : '판매';
+
 
         const productHtml =
             '<div class="product-card" onclick="location.href=\'' + ctx + '/product/view?productId=' + p.productId + '\'">' +

@@ -40,6 +40,7 @@
 				<li><strong>거래방식:</strong>
 				    <span>
 				        <c:choose>
+				            <c:when test="${product.productStatus == -1}">판매완료</c:when>
 				            <c:when test="${product.productStatus == 1}">나눔</c:when>
 				            <c:otherwise>판매</c:otherwise>
 				        </c:choose>
@@ -65,13 +66,22 @@
                 </li>
             </ul>
 
-            <div class="action-buttons">
-                <button onclick="startChat('${product.productWriterId}')" class="btn btn-chat">채팅하기</button>
-                <button onclick="payment('${product.productId}')" class="btn btn-pay">결제하기</button>
-                <button id="likeButton" class="btn-like">
-                    <i class="fa-regular fa-heart">❤️</i> <span id="likeCount">0</span>
-                </button>
-            </div>
+			<div class="action-buttons">
+			    <c:choose>
+			        <c:when test="${product.productStatus == -1}">
+			            <p style="color: gray; font-weight: bold;">⚠️ 판매가 완료된 상품입니다.</p>
+			        </c:when>
+			        <c:otherwise>
+			            <button onclick="startChat('${product.productWriterId}')" class="btn btn-chat">채팅하기</button>
+			            <button onclick="payment('${product.productId}')" class="btn btn-pay">결제하기</button>
+			        </c:otherwise>
+			    </c:choose>
+			
+			    <button id="likeButton" class="btn-like">
+			        <i class="fa-regular fa-heart">❤️</i> <span id="likeCount">0</span>
+			    </button>
+			</div>
+
         </div>
     </div>
 
@@ -224,7 +234,7 @@
       alert("자신과는 채팅할 수 없습니다.");
       return;
     }
-    location.href = ctx + '/chat/chat?to=' + writerId;
+    location.href = ctx + '/chat/productChat?productId=' + productId;
   }
   
   // 수정, 삭제 버튼 클릭시 로그인 여부
