@@ -61,8 +61,10 @@ public class ProductServiceImpl implements ProductService {
         paramMap.put("productId", productId);
         paramMap.put("offset", offset);
         paramMap.put("size", size);
+
         return productDao.findOtherProducts(paramMap);
     }
+
 
 	@Override
 	public List<ProductVo> searchFiltered(String keyword, String category, Integer status, int offset, int pageSize) throws Exception {

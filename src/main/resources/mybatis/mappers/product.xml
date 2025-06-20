@@ -39,7 +39,7 @@
         WHERE p.productId = #{productId}
     </select>
 
-    <!-- 작성자의 다른 상품 목록 (현재 상품 제외 + 페이징) -->
+    <!-- 작성자의 다른 상품 목록 (현재 상품, 판매 완료 제외 + 페이징 ) -->
 	<select id="findOtherByWriter" parameterType="map" resultType="com.harunichi.product.vo.ProductVo">
 	    SELECT
 	        p.*,
@@ -49,6 +49,7 @@
 	    LEFT JOIN member m ON p.productWriterId = m.id
 	    WHERE p.productWriterId = #{writerId}
 	      AND p.productId != #{productId}
+	      AND productStatus != -1
 	    ORDER BY p.productDate DESC
 	    LIMIT #{size} OFFSET #{offset}
     </select>
