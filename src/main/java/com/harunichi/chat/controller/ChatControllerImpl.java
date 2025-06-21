@@ -181,7 +181,7 @@ public class ChatControllerImpl implements ChatController {
 		//채팅방 참여 인원 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
-			
+
 		model.addAttribute("title", vo.getTitle());
 				
 		return "/chatWindow";		

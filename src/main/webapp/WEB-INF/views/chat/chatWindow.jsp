@@ -327,9 +327,13 @@
 	
 	//채팅방 나가기 ----------------------------------------------------------------------------
 	function leaveChatRoom() {
-		const roomId = "";
-		if (confirm("정말 채팅방을 나가시겠습니까?")) {
-			location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
+		const isLeader = "${isLeader}";
+		if(isLeader){
+			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
+		}else{
+			if (confirm("정말 채팅방을 나가시겠습니까?")) {
+				location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
+			}	
 		}
 	}
 	
