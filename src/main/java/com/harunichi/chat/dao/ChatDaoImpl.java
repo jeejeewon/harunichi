@@ -31,6 +31,13 @@ public class ChatDaoImpl implements ChatDao {
 		System.out.println("===ChatDao의 saveMessage 메소드 실행");	
 		sqlSession.insert(NAMESPACE + "saveMessage", chatMsg);			
 	}
+	
+	//chatRoom 테이블에 최신 메세지 시간 업데이트
+	@Override
+	public void updateChatRoomTime(String roomId) {
+		log.info("===ChatDao의 updateChatRoomTime 메소드 실행");
+		sqlSession.update(NAMESPACE + "updateChatRoomTime", roomId);
+	}
 
 	//친구 추천 리스트 조회	
 	@Override

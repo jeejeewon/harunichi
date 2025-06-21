@@ -33,8 +33,9 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("---ChatService의 saveMessage메소드 호출");		
-		//DAO로 DB작업 요청시키기
 		chatDao.saveMessage(chatMsg);
+		//chatRoom 테이블에 최신 메세지 시간 업데이트
+		chatDao.updateChatRoomTime(chatMsg.getRoomId());		
 	}
 
 	//친구 추천 리스트 조회
