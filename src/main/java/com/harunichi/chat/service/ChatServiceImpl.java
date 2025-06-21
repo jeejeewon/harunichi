@@ -259,6 +259,15 @@ public class ChatServiceImpl implements ChatService {
 		
 	}
 
+	//채팅방 나가기
+	@Override
+	public void leaveChatRoom(String userId, String roomId) {
+		Map<String, String> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("roomId", roomId);
+		chatDao.leaveChatRoom(map);
+	}
+
 
 
 

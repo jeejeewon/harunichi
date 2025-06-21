@@ -329,8 +329,7 @@
 	function leaveChatRoom() {
 		const roomId = "";
 		if (confirm("정말 채팅방을 나가시겠습니까?")) {
-			// 나가기 로직
-			alert("빠잉");
+			location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
 		}
 	}
 	

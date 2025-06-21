@@ -224,6 +224,13 @@
 		]]>
 	</update>
 
+	<!-- 채팅방 나가기 -->
+	<delete id="leaveChatRoom" parameterType="map">
+		<![CDATA[
+			DELETE FROM chatRoom
+			WHERE roomId = #{roomId} AND userId = #{userId}
+		]]>
+	</delete>
 
 
 </mapper>

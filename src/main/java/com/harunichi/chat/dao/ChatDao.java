@@ -63,6 +63,9 @@ public interface ChatDao {
 	//채팅방 정보에 상품ID 제거
 	void deleteProductId(String roomId, int productId);
 
+	//채팅방 나가기
+	void leaveChatRoom(Map<String, String> map);
+
 
 
 

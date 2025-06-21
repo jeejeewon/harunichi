@@ -387,11 +387,12 @@ public class ChatControllerImpl implements ChatController {
 	//채팅방 나가기
 	@RequestMapping("/leaveChatRoom")
 	public String leaveChatRoom(@RequestParam String roomId, HttpSession session){
+		log.info("chatController의 leaveChatRoom 메소드 실행 -------------");
 		
+		MemberVo member = (MemberVo) session.getAttribute("member");				
+		String userId = member.getId();
 		
-		
-		
-		
+		chatService.leaveChatRoom(userId, roomId);
 		
 		return "redirect:/chat/main";
 	}
