@@ -1,6 +1,7 @@
 package com.harunichi.member.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,10 +82,19 @@ public class MemberServiceImpl implements MemberService{
 		memberDao.deleteMember(id);
 	}
 	
-	
 	//어드민 - 프로필이미지초기화
 	public void resetProfileImg(String id) throws Exception {
         memberDao.resetProfileImg(id);
     }
+	
+	@Override
+	public List<Map<String, Object>> getGenderDistribution() {
+	    return memberDao.selectGenderDistribution();
+	}
+
+	@Override
+	public List<Map<String, Object>> getCountryDistribution() {
+	    return memberDao.selectCountryDistribution();
+	}
 
 }

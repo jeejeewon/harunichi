@@ -1,5 +1,6 @@
 package com.harunichi.member.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -28,4 +29,8 @@ public interface MemberService {
     void deleteMember(String id);
 	//어드민 - 프로필이미지초기화
     void resetProfileImg(String id) throws Exception;
+    
+    List<Map<String, Object>> getGenderDistribution();
+
+    List<Map<String, Object>> getCountryDistribution();
 }

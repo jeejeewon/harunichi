@@ -3,7 +3,15 @@ package com.harunichi.visit.vo;
 public class VisitVo {
 	private String date;
 	private int cnt;
+	
+	public VisitVo() {
+    }
 
+	public VisitVo(String date, int cnt) {
+	    this.date = date;
+	    this.cnt = cnt;
+	}
+	
 	// getter & setter
 	public String getDate() {
 		return date;
@@ -25,4 +33,6 @@ public class VisitVo {
 	public String toString() {
 		return "VisitVo [date=" + date + ", cnt=" + cnt + "]";
 	}
+
+	
 }

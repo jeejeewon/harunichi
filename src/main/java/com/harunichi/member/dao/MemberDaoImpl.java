@@ -95,5 +95,15 @@ public class MemberDaoImpl implements MemberDao {
 	public void resetProfileImg(String id) {
 	    sqlSession.update("mapper.member.resetProfileImg", id);
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectGenderDistribution() {
+	    return sqlSession.selectList("mapper.member.selectGenderDistribution");
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCountryDistribution() {
+	    return sqlSession.selectList("mapper.member.selectCountryDistribution");
+	}
 
 }

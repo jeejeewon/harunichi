@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.harunichi.visit.service.VisitService;
+
 @Controller
 public class MainController {
+	
+	@Autowired
+    private VisitService visitService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
@@ -28,6 +34,9 @@ public class MainController {
 	public String showMainPage(Locale locale, Model model, HttpServletRequest request) {
 		
 		logger.info("메인페이지입니다.", locale);
+		
+		String ip = request.getRemoteAddr();
+        visitService.insertVisit(ip);
 		
 		// 인터셉터가 넣어둔 viewName 가져오기
 		String viewName = (String) request.getAttribute("viewName");

@@ -138,8 +138,6 @@ public class AdminMemberController {
 
         return "redirect:/admin/member/follow";
     }
-
-
     
     public static class MemberListWrapper {
         private List<MemberVo> members;

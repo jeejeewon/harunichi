@@ -41,4 +41,8 @@ public interface MemberDao {
 	
     //어드민 - 이미지초기화
     void resetProfileImg(String id);
+    
+    List<Map<String, Object>> selectGenderDistribution();
+
+    List<Map<String, Object>> selectCountryDistribution();
 }
