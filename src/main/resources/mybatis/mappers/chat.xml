@@ -172,7 +172,7 @@
 		<![CDATA[			
 			SELECT *
 			FROM chatRoom
-			WHERE userId = #{id}
+			WHERE userId = #{id} AND isDeleted = 0
 			ORDER BY lastMessageTime DESC
 		]]>
 	</select>
@@ -226,12 +226,13 @@
 	</update>
 
 	<!-- 채팅방 나가기 -->
-	<delete id="leaveChatRoom" parameterType="map">
+	<update id="leaveChatRoom" parameterType="map">
 		<![CDATA[
-			DELETE FROM chatRoom
+			UPDATE chatRoom
+			SET isDeleted = 1
 			WHERE roomId = #{roomId} AND userId = #{userId}
 		]]>
-	</delete>
+	</update>
 
 
 </mapper>

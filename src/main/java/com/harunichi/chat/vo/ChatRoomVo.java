@@ -20,6 +20,7 @@ public class ChatRoomVo {
 	private String profileImg;			//채팅방 프로필 이미지
 	private int productId;				//중고거래 채팅시 상품 ID
 	private Timestamp lastMessageTime;	//채팅방의 최신 메세지 시간
+	private boolean isdeleted;			//삭제 여부 (0/false: 삭제안함, 1/true: 삭제)
 	
 	private String receiverId; 			//채팅방 ID 조회시 값 저장을 위한 변수
 	private int userCount;				//오픈 채팅방에 참여중인 인원 수 카운팅

@@ -201,7 +201,7 @@ public class ChatDaoImpl implements ChatDao {
 	//채팅방 나가기
 	@Override
 	public void leaveChatRoom(Map<String, String> map) {
-		sqlSession.delete(NAMESPACE + "leaveChatRoom", map);
+		sqlSession.update(NAMESPACE + "leaveChatRoom", map);
 	}
 
 
