@@ -250,11 +250,11 @@
 		
 		//새로운 채팅!
 		const chatData = {
-							roomId : "${roomId}",
-							chatType : "${chatType != null ? chatType : param.chatType}", //개인채팅인지, 단체채팅인지		
-							senderId : senderId, //보낸 사람
-							receiverId : "${receiverId != null ? receiverId : param.receiverId}",
-							message : chatMessage.value //메세지	
+					roomId : "${roomId}",
+					chatType : "${chatType != null ? chatType : param.chatType}", //개인채팅인지, 단체채팅인지		
+					senderId : senderId, //보낸 사람
+					receiverId : "${receiverId != null ? receiverId : param.receiverId}",
+					message : chatMessage.value //메세지	
 		};
 		
 		//사용자가 입력한 메세지를 대화창에서 얻어 오른쪽 정렬로 디자인 추가
@@ -284,7 +284,7 @@
 	}
 	
 	
-	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 사용자가 '채팅종료' 버튼을 클릭했을때 호출 -----------------------
+	//서버와 웹 소켓 통로 연결을 종료하는 함수 : 채팅방 우측 상단 X 버튼 클릭시 호출 -----------------------------
 	function disconnect() {
 		webSocket.close(); //웹 소켓 통로연결 끊기 ( 웹브라우저, 서버페이지 연결 끊김 )
 		window.location.href="<%=request.getContextPath()%>/chat/main";
@@ -308,38 +308,39 @@
 	}
 	
 	
-	//채팅방 셋팅 -----------------------------------------------------------------------------
+	//채팅방 검색 -----------------------------------------------------------------------------
+	function chatSearch(){
+		const search = document.getElementById("searchBar");
+		search.classList.toggle("hidden");		
+		const searchIcon = document.getElementById("searchIcon");
+		searchIcon.classList.toggle("search-icon");		
+	}
+	
+	
+	//채팅방 설정 드롭다운 -----------------------------------------------------------------------
 	function chatSetting(){
 		console.log("클릭함");
 		const menu = document.getElementById("chatSettingMenu");
 		menu.classList.toggle("hidden");		
 	}
 	
-	function chatSearch(){
-		console.log("클릭함");
-		
-		const search = document.getElementById("searchBar");
-		search.classList.toggle("hidden");	
-		
-		const searchIcon = document.getElementById("searchIcon");
-		searchIcon.classList.toggle("search-icon");	
-
-		
+	
+	//채팅방 나가기 ----------------------------------------------------------------------------
+	function leaveChatRoom() {
+		const roomId = "";
+		if (confirm("정말 채팅방을 나가시겠습니까?")) {
+			// 나가기 로직
+			alert("빠잉");
+		}
+	}
+	
+	
+	function showChatInfo() {
+	  // 여기에 채팅방 정보 열기 로직
+	  alert("채팅방 정보 열기!");
 	}
 
 
-
-		function showChatInfo() {
-		  // 여기에 채팅방 정보 열기 로직
-		  alert("채팅방 정보 열기!");
-		}
-
-		function leaveChatRoom() {
-		  if (confirm("정말 채팅방을 나가시겠습니까?")) {
-		    // 나가기 로직
-		    alert("빠잉");
-		  }
-		}
 	
 	
 

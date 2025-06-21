@@ -240,18 +240,19 @@
 		
 	//모달창 -------------------------------------------------------------------------------	
 	//모달창 열기
-	function openModal(event) {		
-		event.preventDefault();
-		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
-		  if (!userId) {
-		    location.href = "<%= request.getContextPath() %>/chat/window";
-		    return;
-		  } 
-	  document.getElementById("myModal").style.display = "block";
+	function openModal(event) {	
+		event.preventDefault();		
+		//로그인 체크
+		const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
+		if (!userId) {
+		  location.href = "<%= request.getContextPath() %>/chat/loginChek";
+		  return;
+		} 
+		document.getElementById("myModal").style.display = "block";
 	}
 
 	//모달창 닫기
-	function closeModal() { 	
+	function closeModal() { 
 		//입력된 값 및 폼 초기화
 		document.getElementById("newChatForm").reset();
 

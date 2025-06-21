@@ -17,9 +17,6 @@ public interface ChatController {
 	String loginChek(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session)
 			throws Exception;
 
-	String chatWindow(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session)
-			throws Exception;
-
 	List<ChatVo> selectChatHistory(String roomId);
 
 	String createOpenChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session,

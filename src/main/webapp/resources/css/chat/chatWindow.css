@@ -128,8 +128,7 @@
 	top: 2px;
 	right: 55px;
 	height: 22px;
-	width: 155px
-	
+	width: 155px	
 }
 #searchBar.hidden {
 	display: none;
@@ -157,7 +156,6 @@
 #searchBar button:hover {
 	font-weight: bold;
 }
-
 
 /* 중고거래 상품 정보 보여주는 영역 */
 #productWrap {
