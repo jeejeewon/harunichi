@@ -32,9 +32,9 @@ public interface MemberDao {
 	public int checkId(String id);
 	
 	//전체 회원 조회
-	List<MemberVo> selectMemberList(String searchKeyword, int offset, int pageSize);
+	public List<MemberVo> selectMemberList(String searchKeyword, String searchType, int offset, int pageSize);
 	
-    int selectMemberCount(String searchKeyword);
+	public int selectMemberCount(String searchKeyword, String searchType);
 
     //회원 삭제
     void deleteMember(String id);

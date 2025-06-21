@@ -212,17 +212,22 @@
 	        member
 	    <where>
 	        <if test="searchKeyword != null and searchKeyword != ''">
-	            <![CDATA[
-	            (id LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[ 
-	            , '%')
-	            OR nick LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[
-	            , '%')
-	            OR email LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[
-	            , '%'))
-	            ]]>
+	            <choose>
+	                <when test="searchType == 'id'">
+	                    id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <when test="searchType == 'nick'">
+	                    nick LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <when test="searchType == 'email'">
+	                    email LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <otherwise>
+	                    (id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                    OR nick LIKE CONCAT('%', #{searchKeyword}, '%')
+	                    OR email LIKE CONCAT('%', #{searchKeyword}, '%'))
+	                </otherwise>
+	            </choose>
 	        </if>
 	    </where>
 	    ORDER BY joindate DESC
@@ -234,20 +239,25 @@
 	    SELECT COUNT(*)
 	    FROM member
 	    <where>
-		    <if test="_parameter != null and _parameter != ''">
-		        <![CDATA[
-		        (id LIKE CONCAT('%',
-		        ]]>#{_parameter}<![CDATA[
-		        , '%')
-		        OR nick LIKE CONCAT('%',
-		        ]]>#{_parameter}<![CDATA[
-		        , '%')
-		        OR email LIKE CONCAT('%',
-		        ]]>#{_parameter}<![CDATA[
-		        , '%'))
-		        ]]>
-		    </if>
-		</where>
+	        <if test="searchKeyword != null and searchKeyword != ''">
+	            <choose>
+	                <when test="searchType == 'id'">
+	                    id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <when test="searchType == 'nick'">
+	                    nick LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <when test="searchType == 'email'">
+	                    email LIKE CONCAT('%', #{searchKeyword}, '%')
+	                </when>
+	                <otherwise>
+	                    (id LIKE CONCAT('%', #{searchKeyword}, '%')
+	                    OR nick LIKE CONCAT('%', #{searchKeyword}, '%')
+	                    OR email LIKE CONCAT('%', #{searchKeyword}, '%'))
+	                </otherwise>
+	            </choose>
+	        </if>
+	    </where>
 	</select>
 	
 	<!-- 회원 삭제 -->

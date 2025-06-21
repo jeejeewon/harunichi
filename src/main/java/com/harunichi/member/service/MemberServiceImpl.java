@@ -62,13 +62,13 @@ public class MemberServiceImpl implements MemberService{
 	
 	//전체 회원정보 조회
 	@Override
-	public Map<String, Object> getMemberList(String searchKeyword, int page) {
-		int pageSize = 10;
+	public Map<String, Object> getMemberList(String searchKeyword, String searchType, int page) {
+	    int pageSize = 7;
 	    int offset = (page - 1) * pageSize;
 
 	    Map<String, Object> result = new HashMap<>();
-	    result.put("list", memberDao.selectMemberList(searchKeyword, offset, pageSize));
-	    result.put("totalCount", memberDao.selectMemberCount(searchKeyword));
+	    result.put("list", memberDao.selectMemberList(searchKeyword, searchType, offset, pageSize));
+	    result.put("totalCount", memberDao.selectMemberCount(searchKeyword, searchType));
 	    result.put("currentPage", page);
 	    result.put("pageSize", pageSize);
 

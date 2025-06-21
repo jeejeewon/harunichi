@@ -66,17 +66,21 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public List<MemberVo> selectMemberList(String searchKeyword, int offset, int pageSize) {
+	public List<MemberVo> selectMemberList(String searchKeyword, String searchType, int offset, int pageSize) {
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
 	    params.put("offset", offset);
 	    params.put("pageSize", pageSize);
 	    return sqlSession.selectList("mapper.member.selectMemberList", params);
 	}
 
 	@Override
-	public int selectMemberCount(String searchKeyword) {
-	    return sqlSession.selectOne("mapper.member.selectMemberCount", searchKeyword);
+	public int selectMemberCount(String searchKeyword, String searchType) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
+	    return sqlSession.selectOne("mapper.member.selectMemberCount", params);
 	}
 
 	//회원삭제

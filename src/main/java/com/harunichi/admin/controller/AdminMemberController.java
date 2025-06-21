@@ -36,34 +36,31 @@ public class AdminMemberController {
     // 전체 회원 조회
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String showMemberList(HttpServletRequest request, Model model,
-                                 @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
-                                 @RequestParam(value = "page", defaultValue = "1") int page) {
+            					 @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+            					 @RequestParam(value = "searchType", defaultValue = "all") String searchType,
+            					 @RequestParam(value = "page", defaultValue = "1") int page) {
+    		model.addAttribute("currentUri", request.getRequestURI());
+    	    model.addAttribute("activeTab", "member");
 
-        model.addAttribute("currentUri", request.getRequestURI());
-        model.addAttribute("activeTab", "member");
+    	    Map<String, Object> result = memberService.getMemberList(searchKeyword, searchType, page);
+    	    model.addAttribute("result", result);
+    	    model.addAttribute("searchKeyword", searchKeyword);
+    	    model.addAttribute("searchType", searchType);
 
-        Map<String, Object> result = memberService.getMemberList(searchKeyword, page);
-        model.addAttribute("result", result);
-        model.addAttribute("searchKeyword", searchKeyword);
-
-        logger.debug("회원 목록 페이지 요청 - 검색어: {}, 페이지: {}", searchKeyword, page);
-
-        return "/admin/member";
+    	    return "/admin/member";
     }
+    
     // 팔로우 조회
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public String showFollowList(HttpServletRequest request, Model model,
                                  @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
                                  @RequestParam(value = "page", defaultValue = "1") int page) {
-    	model.addAttribute("currentUri", request.getRequestURI());
+        model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("activeTab", "follow");
 
         Map<String, Object> result = followService.getFollowList(searchKeyword, page);
-        model.addAttribute("result", result);  // 팔로우 데이터도 result로 통일
-        model.addAttribute("followList", result.get("list"));
+        model.addAttribute("result", result);
         model.addAttribute("searchKeyword", searchKeyword);
-
-        logger.debug("팔로우 목록 페이지 요청 - 검색어: {}, 페이지: {}", searchKeyword, page);
 
         return "/admin/member";
     }

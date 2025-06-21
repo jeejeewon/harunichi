@@ -27,7 +27,9 @@
 		</aside>
 		<article>
 			<div class="article-inner">
-				<tiles:insertAttribute name="body" />
+				<div class="scroll-area">
+					<tiles:insertAttribute name="body" />
+				</div>
 			</div>
 		</article>
 	</div>
