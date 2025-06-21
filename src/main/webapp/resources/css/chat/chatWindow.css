@@ -1,9 +1,9 @@
 @charset "UTF-8";
 
 .chat-center-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
 /* 채팅 전체 화면 */
@@ -54,20 +54,110 @@
 .user-count {
 	margin-left: 4px;
 }
+
+/* 채팅방 상단 우츨 */
 .chat-top-right {
 	position: absolute;
 	top: 5px;
   	right: 10px;
 	align-items: center;
-	justify-content:flex-start;
-	gap: 5px;
 }
 .disconnect-btn {
 	font-size: 15px;
+	padding: 3px;
+	border-radius: 50%; 
+	transition: all 0.2s ease;
+	display: inline-block;
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
 }
 .disconnect-btn:hover {
+	background-color: #a3daff; 
+}
+.chat-setting {
+    border-radius: 50%;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px;
+}
+.chat-setting:hover {
+	background-color: #a3daff; 
+}
+.search-icon {
+	position: relative;
+	right: 154px;
+}
+
+
+/* 채팅방 설정 드롭다운 */
+#chatSettingMenu {
+	position: absolute;
+	top: 29px; 
+	right: -17px;
+	background: white;
+	border: 1px solid #ccc;
+	width: 130px;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	z-index: 999;
+}
+#chatSettingMenu span {
+	margin-right: 5px;	
+}
+.chat-setting-menu.hidden {
+	display: none;
+}
+
+.chat-setting-list {
+	padding: 7px 0 7px 10px;
+	cursor: pointer;
+	font-size: 14px;
+}
+.chat-setting-list:hover {
+	background-color: #e6e6e6;
+}
+#searchBar {
+	display: inline-block;
+	border: 1px solid #fff;
+	border-radius: 15px;
+	background-color: #fff;
+	overflow: hidden;
+	position: absolute;
+	top: 2px;
+	right: 55px;
+	height: 22px;
+	width: 155px
+	
+}
+#searchBar.hidden {
+	display: none;
+}
+#searchBar input[type="text"] {
+	border: none;
+	outline: none;
+	margin-left: 5px;
+	width: 115px;	
+}
+#searchBar input[type="text"]::placeholder {
+	color: #ccc;
+}
+#searchBar:has(input:focus) {
+  border: 1px solid #757575;
+}
+#searchBar button {
+	margin-right: 10px;
+	color: #757575;
+	position: relative;
+	top: -18px;
+	left: 122px;
+	font-size: 13px;
+}
+#searchBar button:hover {
 	font-weight: bold;
 }
+
 
 /* 중고거래 상품 정보 보여주는 영역 */
 #productWrap {
@@ -141,12 +231,14 @@
 	display: flex;
   	flex-direction: column;
 }
-/* 채팅알림 */
-.chat-text {
+
+/* 서버메세지 */
+.server-mag {
 	text-align: center;
 	background-color: #fcfcfc;
 	margin: 5px 0;
 }
+
 /* 하단 입력창 전체 */
 #inputContainer {
 	width: 100%;
@@ -182,14 +274,14 @@
 
 /* 메세지 */
 .my-msg, .other-msg {
-  max-width: 60%;
-  padding: 8px 12px;
-  margin: 4px 0;
-  border-radius: 10px;
-  position: relative;
-  display: inline-block;
-  word-break: break-word;
-  color: black;
+	max-width: 60%;
+	padding: 8px 12px;
+	margin: 4px 0;
+	border-radius: 10px;
+	position: relative;
+	display: inline-block;
+	word-break: break-word;
+	color: black;
 }
 .my-msg {
 	background-color: #d4edf7;
@@ -201,11 +293,11 @@
 }
 .my-msg .time,
 .other-msg .time {
-  display: block;
-  font-size: 0.75em;
-  color: #666;
-  text-align: right;
-  margin-top: 5px;
+	display: block;
+	font-size: 0.75em;
+	color: #666;
+	text-align: right;
+	margin-top: 5px;
 }
 .date-text {
     margin: 5px 0;

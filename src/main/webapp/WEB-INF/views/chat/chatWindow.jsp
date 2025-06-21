@@ -8,8 +8,7 @@
 <meta charset="UTF-8">
 <title>채팅창</title>
 <link href="${contextPath}/resources/css/chat/chatWindow.css" rel="stylesheet" >
-<style type="text/css">
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
@@ -38,9 +37,23 @@
 						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
 					</div>		
 				</div>
+				<!-- 채팅방 상단 우측 아이콘 -->
 				<div class="chat-top-right">
-				    <button class="disconnect-btn" onclick="disconnect();">×</button>
-				</div>		
+					<a href="#" id="searchIcon" class="chat-setting" onclick="chatSearch();"><i class="bi bi-search"></i></a>
+					<form action="#" id="searchBar" class="hidden">
+						<input type="text" placeholder="대화내용 입력" >
+						<button type="submit">검색</button>
+					</form>
+					<a href="#" class="chat-setting" onclick="chatSetting();"><i class="bi bi-list"></i></a>
+				    <button class="disconnect-btn" onclick="disconnect();"><i class="bi bi-x-lg"></i></button>
+				</div>					
+				<!-- 채팅방 설정 드롭다운 -->
+				<div id="chatSettingMenu" class="chat-setting-menu hidden">	  
+				  <ul>
+				    <li onclick="showChatInfo()" class="chat-setting-list"><span><i class="bi bi-info-circle"></i></span>채팅방 정보</li>
+				    <li onclick="leaveChatRoom()" class="chat-setting-list"><span><i class="bi bi-box-arrow-right"></i></span>채팅방 나가기</li>
+				  </ul>
+				</div>				
 			</div>
 			<!-- 중고거래에서 요청온 채팅일 경우 상품 정보 보여주는 영역 -->
 			<c:if test="${!empty productVo}">
@@ -157,8 +170,7 @@
 		return ampm + " " + displayHour + ":" + minutes;
 	}
 	
-	
-	
+		
 	//웹소켓 연결 ------------------------------------------------------------------------------
 	function connectWebSocket(){
 		//웹 소켓 객체 생성 : JSP의 application내장객체를 통해 요청할 채팅 서버페이지 주소로 웹소켓을 만들어 연결 
@@ -167,14 +179,14 @@
 		//서버에 웹소켓 통로 연결이 성공적으로 이루어진 이벤트가 발생했을때 호출되는 이벤트 핸들러 함수 설정
 		//대화창에 연결 성공 메세지를 보여주기 위해 출력
 		webSocket.onopen = function(event) {
-			chatWindow.innerHTML += "<p class='chat-text'>채팅방에 입장하였습니다.</p><br/>";
+			chatWindow.innerHTML += "<p class='server-mag'>채팅방에 입장하였습니다.</p><br/>";
 			chatWindow.scrollTop = chatWindow.scrollHeight;
 		};
 
 		//웹소켓 통로와 연결된 서버페이지와의 연결이 종료될때의 이벤트가 발생하면 호출되는 이벤트 핸들러 함수 설정
 		//대화창에 연결 종료 메세지를 출력
 		webSocket.onclose = function(event) {
-			chatWindow.innerHTML += "<p class='chat-text'>채팅방 연결이 종료되었습니다.</p><br/>";
+			chatWindow.innerHTML += "<p class='server-mag'>채팅방 연결이 종료되었습니다.</p><br/>";
 			chatWindow.scrollTop = chatWindow.scrollHeight;
 		};
 
@@ -182,7 +194,7 @@
 		//오류 발생시 알림창에 오류메시지 표시하고 대화창에 에러 메세지 출력
 		webSocket.onerror = function(event) {
 			alert(event.data);
-			chatWindow.innerHTML += "<p class='chat-text'>채팅 중에 에러가 발생하였습니다.</p><br/>";
+			chatWindow.innerHTML += "<p class='server-mag'>채팅 중에 에러가 발생하였습니다.</p><br/>";
 			chatWindow.scrollTop = chatWindow.scrollHeight;
 		};
 
@@ -279,7 +291,7 @@
 	}
 	
 	
-	//채팅 상단의 상품 정보 닫기 (완전히 닫힘)
+	//채팅 상단의 상품 정보 닫기 (완전히 닫힘) --------------------------------------------------------
 	function closeProduct(){
 		const chatTop = document.getElementById("productWrap");
 		if (chatTop) {
@@ -288,13 +300,48 @@
 		}	
 	}
 	
-	//상품 결제창으로 이동
+	
+	//상품 결제창으로 이동 -----------------------------------------------------------------------
 	function doPay() {
 		const productId = "${productVo.productId}";
 		 location.href = "${contextPath}/payment/form?productId=${productVo.productId}";
 	}
 	
+	
+	//채팅방 셋팅 -----------------------------------------------------------------------------
+	function chatSetting(){
+		console.log("클릭함");
+		const menu = document.getElementById("chatSettingMenu");
+		menu.classList.toggle("hidden");		
+	}
+	
+	function chatSearch(){
+		console.log("클릭함");
+		
+		const search = document.getElementById("searchBar");
+		search.classList.toggle("hidden");	
+		
+		const searchIcon = document.getElementById("searchIcon");
+		searchIcon.classList.toggle("search-icon");	
 
+		
+	}
+
+
+
+		function showChatInfo() {
+		  // 여기에 채팅방 정보 열기 로직
+		  alert("채팅방 정보 열기!");
+		}
+
+		function leaveChatRoom() {
+		  if (confirm("정말 채팅방을 나가시겠습니까?")) {
+		    // 나가기 로직
+		    alert("빠잉");
+		  }
+		}
+	
+	
 
 </script>
 </html>
