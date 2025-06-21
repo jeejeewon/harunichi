@@ -36,5 +36,9 @@ public interface MemberDao {
 	
     int selectMemberCount(String searchKeyword);
 
+    //회원 삭제
+    void deleteMember(String id);
 	
+    //어드민 - 이미지초기화
+    void resetProfileImg(String id);
 }

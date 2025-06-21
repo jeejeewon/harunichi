@@ -34,7 +34,7 @@
 	</select>
 	
 	<!-- 카카오 ID로 회원 정보 조회  -->
-    <select id="selectMemberByKakaoId" parameterType="java.lang.String" resultType="com.harunichi.member.vo.MemberVo">
+    <select id="selectMemberByKakaoId" parameterType="String" resultType="memberVo">
         <![CDATA[
         SELECT
             id,
@@ -61,7 +61,7 @@
     </select>
     
 	<!-- 네이버 ID로 회원 정보 조회  -->
-    <select id="selectMemberByNaverId" parameterType="java.lang.String" resultType="com.harunichi.member.vo.MemberVo">
+    <select id="selectMemberByNaverId" parameterType="String" resultType="memberVo">
         <![CDATA[
         SELECT
             id,
@@ -88,12 +88,12 @@
     </select>
 	
 	<!-- 이메일로 회원 정보 조회 -->
-	<select id="selectMemberByEmail" parameterType="string" resultType="com.harunichi.member.vo.MemberVo">
+	<select id="selectMemberByEmail" parameterType="String" resultType="memberVo">
 	    SELECT * FROM member WHERE email = #{email}
 	</select>
 
 	<!-- 아이디와 비밀번호로 회원 정보 조회 (로그인시 필요함) -->
-	<select id="loginByIdAndPw" parameterType="java.util.Map" resultType="memberVo">
+	<select id="loginByIdAndPw" parameterType="map" resultType="memberVo">
     <![CDATA[
         SELECT
             id,
@@ -123,7 +123,7 @@
 
 
 	<!-- 회원 가입 쿼리 --> <!-- joindate(가입일)은 테이블 생성시 자동생성되므로, insert쿼리문에서 삭제했음 -->
-	<insert id="insertMember" parameterType="com.harunichi.member.vo.MemberVo">
+	<insert id="insertMember" parameterType="memberVo">
         <![CDATA[
         INSERT INTO member (
             id,
@@ -161,11 +161,16 @@
         ]]>
 	</insert>
 	
+	<!-- DB에 id존재 여부 확인 -->
 	<select id="countById" parameterType="String" resultType="int">
     	SELECT COUNT(*) FROM member WHERE id = #{id}
 	</select>
 	
-	<update id="updateMember" parameterType="com.harunichi.member.vo.MemberVo">
+	
+	
+	<!-- 멤버어드민 -->
+	<!-- 회원 업데이트 -->
+	<update id="updateMember" parameterType="memberVo">
 		<![CDATA[
 		    UPDATE member
 		    SET
@@ -180,12 +185,12 @@
 		        contry = #{contry},
 		        profileImg = #{profileImg},
 		        myLike = #{myLike}
-		    WHERE id = #{id}
+		    	WHERE id = #{id}
 		]]>
 	</update>
 	
 	<!-- 전체 회원 목록 조회 -->
-	<select id="selectMemberList" parameterType="map" resultType="com.harunichi.member.vo.MemberVo">
+	<select id="selectMemberList" parameterType="map" resultType="memberVo">
 	    SELECT
 	        id,
 	        pass,
@@ -225,24 +230,35 @@
 	</select>
 	
 	<!-- 전체 회원 수 조회 -->
-	<select id="selectMemberCount" parameterType="map" resultType="int">
+	<select id="selectMemberCount" parameterType="String" resultType="int">
 	    SELECT COUNT(*)
 	    FROM member
 	    <where>
-	        <if test="searchKeyword != null and searchKeyword != ''">
-	            <![CDATA[
-	            (id LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[
-	            , '%')
-	            OR nick LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[
-	            , '%')
-	            OR email LIKE CONCAT('%', 
-	            ]]>#{searchKeyword}<![CDATA[
-	            , '%'))
-	            ]]>
-	        </if>
-	    </where>
+		    <if test="_parameter != null and _parameter != ''">
+		        <![CDATA[
+		        (id LIKE CONCAT('%',
+		        ]]>#{_parameter}<![CDATA[
+		        , '%')
+		        OR nick LIKE CONCAT('%',
+		        ]]>#{_parameter}<![CDATA[
+		        , '%')
+		        OR email LIKE CONCAT('%',
+		        ]]>#{_parameter}<![CDATA[
+		        , '%'))
+		        ]]>
+		    </if>
+		</where>
 	</select>
+	
+	<!-- 회원 삭제 -->
+	<delete id="deleteMember" parameterType="String">
+	    DELETE FROM member WHERE id = #{id}
+	</delete>
+
+	<!-- 회원 프로필 이미지 초기화 -->
+	<update id="resetProfileImg" parameterType="String">
+	    UPDATE member SET profileImg = 'basic_profile.jpg' WHERE id = #{id}
+	</update>
+
 
 </mapper>

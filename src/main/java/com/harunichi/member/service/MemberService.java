@@ -24,5 +24,8 @@ public interface MemberService {
 	public MemberVo selectMemberById(String id);
 	//회원 전체 정보 조회
     Map<String, Object> getMemberList(String searchKeyword, int page);
-	
+    //회원 삭제 메소드
+    void deleteMember(String id);
+	//어드민 - 프로필이미지초기화
+    void resetProfileImg(String id) throws Exception;
 }

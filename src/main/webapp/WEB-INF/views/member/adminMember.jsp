@@ -8,95 +8,185 @@
 <title>회원 관리</title>
 </head>
 <body>
+<h2>회원 관리</h2>
 
-    <h2>회원 관리</h2>
+<!-- 탭 -->
+<div class="tabs">
+    <a href="${contextPath}/admin/member" class="${activeTab eq 'member' ? 'active' : ''}">회원 목록</a>
+    <a href="${contextPath}/admin/member/follow" class="${activeTab eq 'follow' ? 'active' : ''}">팔로우</a>
+</div>
 
-    <!-- 검색 폼 -->
-    <form class="header-search-form" action="${currentUri}" method="get">
-        <input type="text" name="searchKeyword" value="${searchKeyword}" placeholder="검색어를 입력하세요" />
-        <button type="submit">
-            <img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
-        </button>
-    </form>
+<!-- 검색 폼 -->
+<form class="header-search-form" action="${currentUri}" method="get">
+    <input type="text" name="searchKeyword" value="${searchKeyword}" placeholder="검색어를 입력하세요" />
+    <button type="submit">
+        <img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
+    </button>
+</form>
 
-    <!-- 회원 목록 테이블 -->
-    <table border="1">
-        <thead>
+<!-- 회원 목록 테이블 -->
+<c:if test="${activeTab eq 'member'}">
+<form action="${contextPath}/admin/member/saveOrDelete.do" method="post">
+<table border="1">
+    <thead>
+        <tr>
+            <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"></th>
+            <th>아이디</th>
+            <th>비밀번호</th>
+            <th>이름</th>
+            <th>닉네임</th>
+            <th>국적</th>
+            <th>생년월일</th>
+            <th>성별</th>
+            <th>이메일</th>
+            <th>전화번호</th>
+            <th>주소</th>
+            <th>관심사</th>
+            <th>프로필 이미지</th>
+            <th>가입일</th>
+            <th>카카오ID</th>
+            <th>네이버ID</th>
+        </tr>
+    </thead>
+    <tbody>
+       <c:forEach var="member" items="${result.list}" varStatus="loop">
+    <tr>
+        <td><input type="checkbox" name="selectedIds" value="${member.id}" /></td>
+        <td>${member.id}<input type="hidden" name="members[${loop.index}].id" value="${member.id}" /></td>
+        <td><input type="text" name="members[${loop.index}].pass" value="${member.pass}" /></td>
+        <td><input type="text" name="members[${loop.index}].name" value="${member.name}" /></td>
+        <td><input type="text" name="members[${loop.index}].nick" value="${member.nick}" /></td>
+        <td>
+    <select name="members[${loop.index}].contry">
+        <option value="kr" ${member.contry == 'kr' ? 'selected' : ''}>한국</option>
+        <option value="jp" ${member.contry == 'jp' ? 'selected' : ''}>일본</option>
+    </select>
+</td>
+        <td>
+    <input type="date" name="members[${loop.index}].year" 
+           value="${member.year}" />
+</td>
+        <td>
+    <select name="members[${loop.index}].gender">
+        <option value="" ${empty member.gender ? 'selected' : ''}>선택안함</option>
+        <option value="M" ${member.gender == 'M' ? 'selected' : ''}>남성</option>
+        <option value="F" ${member.gender == 'F' ? 'selected' : ''}>여성</option>
+    </select>
+</td>
+        <td><input type="text" name="members[${loop.index}].email" value="${member.email}" /></td>
+        <td><input type="text" name="members[${loop.index}].tel" value="${member.tel}" /></td>
+        <td><input type="text" name="members[${loop.index}].address" value="${member.address}" /></td>
+        <td><input type="text" name="members[${loop.index}].myLike" value="${member.myLike}" /></td>
+        <td>
+  <c:choose>
+    <c:when test="${not empty member.profileImg}">
+      <img id="profileImg_${member.id}" src="${contextPath}/images/profile/${member.profileImg}" width="30" alt="프로필 이미지" />
+    </c:when>
+    <c:otherwise>
+      <img id="profileImg_${member.id}" src="${contextPath}/resources/icon/basic_profile.jpg" width="30" alt="기본 프로필" />
+    </c:otherwise>
+  </c:choose>
+
+  <input type="hidden" name="members[${loop.index}].profileImg" value="${member.profileImg}" id="profileImgInput_${member.id}" />
+  
+  <button type="button" onclick="resetProfileImg('${member.id}')">초기화</button>
+</td>
+
+        <td>${member.joindate}</td>
+        <td>${member.kakao_id}</td>
+        <td>${member.naver_id}</td>
+    </tr>
+    </c:forEach>
+    </tbody>
+</table>
+<div style="margin-top: 10px;">
+    <button type="submit" name="action" value="update">저장 (수정)</button>
+    <button type="submit" name="action" value="delete" onclick="return confirm('선택한 회원을 삭제하시겠습니까?');">삭제</button>
+</div>
+</form>
+</c:if>
+
+<!-- 팔로우 목록 테이블 -->
+<c:if test="${activeTab eq 'follow'}">
+<form action="${contextPath}/admin/member/deleteFollows.do" method="post">
+<table border="1">
+    <thead>
+        <tr>
+            <th><input type="checkbox" id="checkAllFollow" onclick="toggleAllFollow(this)"></th>
+            <th>팔로워 ID</th>
+            <th>팔로잉 ID</th>
+            <th>팔로우 날짜</th>
+        </tr>
+    </thead>
+    <tbody>
+        <c:forEach var="follow" items="${result.list}">
             <tr>
-                <th><input type="checkbox" id="checkAll"></th>
-                <th>아이디</th>
-                <th>비밀번호</th>
-                <th>이름</th>
-                <th>닉네임</th>
-                <th>국적</th>
-                <th>생년월일</th>
-                <th>성별</th>
-                <th>이메일</th>
-                <th>전화번호</th>
-                <th>주소</th>
-                <th>관심사</th>
-                <th>프로필 이미지</th>
-                <th>가입일</th>
-                <th>카카오ID</th>
-                <th>네이버ID</th>
+                <td>
+                    <input type="checkbox" name="selectedFollows" value="${follow.follower_id}::${follow.followee_id}" />
+                </td>
+                <td>${follow.follower_id}</td>
+                <td>${follow.followee_id}</td>
+                <td>${follow.follow_date}</td>
             </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="member" items="${result.list}">
-                <tr>
-                    <td><input type="checkbox" name="selectedIds" value="${member.id}" /></td>
-                    <td>${member.id}</td>
-                    <td>${member.pass}</td>
-                    <td>${member.name}</td>
-                    <td>${member.nick}</td>
-                    <td>${member.contry}</td>
-                    <td>${member.year}</td>
-                    <td>${member.gender}</td>
-                    <td>${member.email}</td>
-                    <td>${member.tel}</td>
-                    <td>${member.address}</td>
-                    <td>${member.myLike}</td>
-                    <td>
-                        <c:if test="${not empty member.profileImg}">
-                            <img src="${contextPath}/images/profile/${member.profileImg}" alt="프로필 이미지" width="30" />
-                        </c:if>
-                    </td>
-                    <td>${member.joindate}</td>
-                    <td>${member.kakao_id}</td>
-                    <td>${member.naver_id}</td>
-                </tr>
-            </c:forEach>
-            <c:if test="${empty result.list}">
-                <tr>
-                    <td colspan="16">등록된 회원이 없습니다.</td>
-                </tr>
-            </c:if>
-        </tbody>
-    </table>
-
-    <!-- 페이징 -->
-    <div class="pagination">
-        <c:set var="startPage" value="${result.currentPage - (result.currentPage - 1) % 5}" />
-        <c:set var="endPage" value="${startPage + 4}" />
-        <c:set var="totalPage" value="${(result.totalCount / result.pageSize) + (result.totalCount % result.pageSize > 0 ? 1 : 0)}" />
-
-        <c:if test="${startPage > 1}">
-            <a href="${currentUri}?page=${startPage - 1}&searchKeyword=${searchKeyword}">&laquo;</a>
-        </c:if>
-
-        <c:forEach var="p" begin="${startPage}" end="${endPage}">
-            <c:if test="${p <= totalPage}">
-                <a href="${currentUri}?page=${p}&searchKeyword=${searchKeyword}" 
-                   style="${p == result.currentPage ? 'font-weight:bold;' : ''}">
-                   ${p}
-                </a>
-            </c:if>
         </c:forEach>
-
-        <c:if test="${endPage < totalPage}">
-            <a href="${currentUri}?page=${endPage + 1}&searchKeyword=${searchKeyword}">&raquo;</a>
+        <c:if test="${empty result.list}">
+            <tr>
+                <td colspan="4">팔로우 정보가 없습니다.</td>
+            </tr>
         </c:if>
-    </div>
+    </tbody>
+</table>
+<button type="submit">팔로우관계삭제</button>
+</form>
+</c:if>
+
+<!-- 페이징 -->
+<div class="pagination">
+    <c:set var="startPage" value="${result.currentPage - (result.currentPage - 1) % 5}" />
+    <c:set var="endPage" value="${startPage + 4}" />
+    <c:set var="totalPage" value="${(result.totalCount / result.pageSize) + (result.totalCount % result.pageSize > 0 ? 1 : 0)}" />
+
+    <c:if test="${startPage > 1}">
+        <a href="${currentUri}?page=${startPage - 1}&searchKeyword=${searchKeyword}">&laquo;</a>
+    </c:if>
+
+    <c:forEach var="p" begin="${startPage}" end="${endPage}">
+        <c:if test="${p <= totalPage}">
+            <a href="${currentUri}?page=${p}&searchKeyword=${searchKeyword}" 
+               style="${p == result.currentPage ? 'font-weight:bold;' : ''}">
+               ${p}
+            </a>
+        </c:if>
+    </c:forEach>
+
+    <c:if test="${endPage < totalPage}">
+        <a href="${currentUri}?page=${endPage + 1}&searchKeyword=${searchKeyword}">&raquo;</a>
+    </c:if>
+</div>
+
+<script>
+const contextPath = "${contextPath}";
+function toggleAll(source) {
+    const checkboxes = document.querySelectorAll('input[name="selectedIds"]');
+    for (const checkbox of checkboxes) {
+        checkbox.checked = source.checked;
+    }
+}
+function toggleAllFollow(source) {
+    const checkboxes = document.querySelectorAll('input[name="selectedFollows"]');
+    for (const checkbox of checkboxes) {
+        checkbox.checked = source.checked;
+    }
+}
+function resetProfileImg(memberId) {
+	const imgTag = document.getElementById("profileImg_" + memberId);
+    const inputTag = document.getElementById("profileImgInput_" + memberId);
+
+    imgTag.src = "${contextPath}/resources/icon/basic_profile.jpg";
+
+    inputTag.value = "";
+}
+</script>
 
 </body>
 </html>

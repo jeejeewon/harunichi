@@ -32,4 +32,20 @@ public class FollowServiceImpl implements FollowService {
 
         return result;
     }
+    
+    //팔로우 삭제 기능 (어드민)
+	@Override
+	public void deleteFollowAdmin(String followerId, String followeeId) throws Exception {
+		followDao.deleteFollowAdmin(followerId, followeeId);
+		
+	}
+
+	@Override
+	public Map<String, Object> getMemberList(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    
+    
 }

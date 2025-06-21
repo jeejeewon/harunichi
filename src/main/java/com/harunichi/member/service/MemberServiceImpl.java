@@ -74,10 +74,17 @@ public class MemberServiceImpl implements MemberService{
 
 	    return result;
 	}
+
+	//회원 삭제 메소드
+	@Override
+	public void deleteMember(String id) {
+		memberDao.deleteMember(id);
+	}
 	
 	
-	
-	
-	
+	//어드민 - 프로필이미지초기화
+	public void resetProfileImg(String id) throws Exception {
+        memberDao.resetProfileImg(id);
+    }
 
 }

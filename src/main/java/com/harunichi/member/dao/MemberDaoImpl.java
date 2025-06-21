@@ -78,9 +78,18 @@ public class MemberDaoImpl implements MemberDao {
 	public int selectMemberCount(String searchKeyword) {
 	    return sqlSession.selectOne("mapper.member.selectMemberCount", searchKeyword);
 	}
+
+	//회원삭제
+	@Override
+	public void deleteMember(String id) {
+		sqlSession.delete("mapper.member.deleteMember", id);
+		
+	}
 	
-	
-	
-	
+	//어드민 - 이미지초기화
+	@Override
+	public void resetProfileImg(String id) {
+	    sqlSession.update("mapper.member.resetProfileImg", id);
+	}
 
 }
