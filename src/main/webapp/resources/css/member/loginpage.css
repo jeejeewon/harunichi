@@ -1,99 +1,10 @@
-@charset "UTF-8";@charset "UTF-8";
-/* 버튼색상 : #A3DAFF 하늘색 */
-/* 마우스호버 : #bfe6ff 연한하늘색 */
-/* 기본 글자색 : #222 */
-/* 연한 글자색 : #888 */
-*, *::before, *::after {
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: 'Spoqa Han Sans Neo', 'sans-serif';
-	color: #222;
-}
-
-ul, ol {
-	list-style: none;
-}
-
-a {
-	text-decoration: none;
-	color: inherit;
-}
-/*버튼 기본 디자인 제거*/
-button {
-  border: none;
-  background-color: transparent;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
 
 .loginpage-wrap{
 	width: calc(100% - 20px);
 	max-width: 768px;
 	margin: 0 auto;
 }
-.header-area{
-	padding: 20px 0;
-	display: flex;
-	justify-content: space-between;
-	font-size: 13px;
-}
-.header-area a img{
-	height: 20px;
-    vertical-align: middle;
-}
-.select2-container {/*셀렉트박스스타일*/
-    width: 130px !important;
-    vertical-align: middle;
-}
 
-.select2-container .select2-selection--single {
-    height: auto !important;
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    outline: none;
-    background-color: #fff;
-}
-
-.select2-container .select2-selection__rendered {
-    color: #333;
-    line-height: normal !important;
-    padding-left: 0;
-}
-
-.select2-container .select2-selection__arrow {
-    display: none !important;
-}
-
-.select2-dropdown {/*드롭다운박스스타일*/
-    max-height: 200px; 
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-}
-
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: #bfe6ff;
-    color: white;
-}
-
-.select2-results__option {
-    padding: 10px 15px;
-    cursor: pointer;
-}
-
-img.country-icon {
-    width: 20px;
-    height: auto;
-    margin-right: 8px;
-    vertical-align: middle;
-}
 
 
 .loginpage-middle{
