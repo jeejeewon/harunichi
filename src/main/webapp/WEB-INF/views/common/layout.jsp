@@ -65,7 +65,6 @@ request.setCharacterEncoding("utf-8");
 			$('#country-select').on('change', function() {
 				var selectedCountry = $(this).val(); // 선택된 국가 코드 (kr 또는 jp)
 
-
 				console.log("선택된 국가:", selectedCountry); // 콘솔에서 확인
 
 				// 서버로 선택된 국가 정보 보내기 (AJAX 사용)

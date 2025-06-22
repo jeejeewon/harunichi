@@ -269,7 +269,7 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.3</version>
 		</dependency>
-		
+
 		<!-- 웹소켓 -->
 		<dependency>
 			<groupId>javax.websocket</groupId>
@@ -284,11 +284,9 @@
 			<groupId>net.morimekta.providence</groupId>
 			<artifactId>providence-core-jackson</artifactId>
 			<version>2.7.0</version>
-		</dependency>
-
-
-</dependencies>
-
+		</dependency>		
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>

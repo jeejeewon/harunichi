@@ -45,4 +45,5 @@ public interface MemberDao {
     List<Map<String, Object>> selectGenderDistribution();
 
     List<Map<String, Object>> selectCountryDistribution();
+
 }

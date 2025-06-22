@@ -5,7 +5,7 @@
        
 <tiles-definitions>
 
-    <!-- common -->
+     <!-- common -->
     <definition name="baseLayout" template="/WEB-INF/views/common/layout.jsp">
         <put-attribute name="title" value="레이아웃 페이지" />
         <put-attribute name="header" value="/WEB-INF/views/common/header.jsp" />
@@ -23,6 +23,21 @@
 	<definition name="/board/list" extends="baseLayout">
 		<put-attribute name="title" value="전체 게시글" />
 		<put-attribute name="body" value="/WEB-INF/views/board/list.jsp" />
+	</definition>
+	
+	<definition name="/board/postForm" extends="baseLayout">
+		<put-attribute name="title" value="게시글 등록" />
+		<put-attribute name="body" value="/WEB-INF/views/board/postForm.jsp" />
+	</definition>
+	
+	<definition name="/board/editForm" extends="baseLayout">
+		<put-attribute name="title" value="게시글 수정" />
+		<put-attribute name="body" value="/WEB-INF/views/board/editForm.jsp" />
+	</definition>
+	
+	<definition name="/board/view" extends="baseLayout">
+		<put-attribute name="title" value="게시글 상세" />
+		<put-attribute name="body" value="/WEB-INF/views/board/view.jsp" />
 	</definition>
 	
 </tiles-definitions>

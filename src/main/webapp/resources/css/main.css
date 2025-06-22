@@ -286,6 +286,7 @@ header {
     display: block;
 }
 
+
 .header-inner .select2-container {/*셀렉트박스스타일*/
     width: 130px !important;
     vertical-align: middle;
