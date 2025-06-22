@@ -65,6 +65,14 @@ public interface ChatDao {
 
 	//채팅방 나가기
 	void leaveChatRoom(Map<String, String> map);
+	
+	//채팅내역 삭제
+	void deleteChat(String roomId);
+
+	//채팅방 삭제
+	void deleteChatRoom(String roomId);
+
+
 
 
 

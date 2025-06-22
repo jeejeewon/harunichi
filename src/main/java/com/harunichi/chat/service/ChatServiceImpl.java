@@ -268,6 +268,15 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.leaveChatRoom(map);
 	}
 
+	//채팅방 정보와 채팅 내역 삭제
+	@Override
+	public void deleteChat(String roomId) {			
+		//채팅 내역 삭제
+		chatDao.deleteChat(roomId);	
+		//채팅방 정보 삭제
+		chatDao.deleteChatRoom(roomId);	
+	}
+
 
 
 

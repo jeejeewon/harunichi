@@ -90,12 +90,10 @@
 				</div>	
 			</c:if>		
 			<!-- 대화창, 수신된 메세지와 전송한 메세지가 표시 되는 영역 -->	
-			<div id="messageContainer"></div>
-	
-			<div id="inputContainer">
+			<div id="messageContainer"></div>	
+			<div id="inputContainer">			
 				<!-- 메세지 입력창,  키보드 이벤트 발생시 enterKey() 함수 호출 -->
-				<input type="text" id="chatMessage" onkeyup="enterKey();">
-	
+				<input type="text" id="chatMessage" onkeyup="enterKey();">		
 				<!-- 메세지 전송 버튼 , 클릭시 sendMessage() 함수 호출 -->
 				<button id="sendBtn" onclick="sendMessage();">전송</button>
 			</div>
@@ -111,12 +109,15 @@
 	   - 연결 상태는 CONNECTING, OPEN, CLOSING, CLOSED의 네 가지 상태로 표현됩니다.
 	*/	
 								
-	var chatWindow, chatMessage, senderId;
+	var chatWindow, chatMessage;
 	var webSocket;
 	var receiverId;
-	var roomId = "${roomId}";	 //채팅방 ID 저장
+	var roomId = "${roomId}";	
 	var senderId = "${sessionScope.id}";
 	var lastDate;
+	var chatType = "${chatType}";
+	var count = "${count}";
+	var isLeader = "${isLeader}";
 	
 	//채팅방 로딩시 실행되는 함수 --------------------------------------------------------------------
 	window.onload = function() {
@@ -178,9 +179,20 @@
 
 		//서버에 웹소켓 통로 연결이 성공적으로 이루어진 이벤트가 발생했을때 호출되는 이벤트 핸들러 함수 설정
 		//대화창에 연결 성공 메세지를 보여주기 위해 출력
-		webSocket.onopen = function(event) {
-			chatWindow.innerHTML += "<p class='server-mag'>채팅방에 입장하였습니다.</p><br/>";
-			chatWindow.scrollTop = chatWindow.scrollHeight;
+		webSocket.onopen = function(event) {			
+			//개인채팅방인데 상대방이 채팅방을 나간 경우
+			if (chatType == 'personal' && count < 2) {
+				chatWindow.innerHTML += "<p class='server-mag'>대화 상대가 없습니다.</p><br/>";
+				chatWindow.scrollTop = chatWindow.scrollHeight;			
+				document.getElementById("chatMessage").disabled = true;
+				document.getElementById("sendBtn").disabled = true;
+				// 바로 연결 끊기
+				webSocket.close();
+				return;
+			}else {
+				chatWindow.innerHTML += "<p class='server-mag'>채팅방에 입장하였습니다.</p><br/>";
+				chatWindow.scrollTop = chatWindow.scrollHeight;					
+			}
 		};
 
 		//웹소켓 통로와 연결된 서버페이지와의 연결이 종료될때의 이벤트가 발생하면 호출되는 이벤트 핸들러 함수 설정
@@ -207,10 +219,22 @@
 			//대화명을 sender 변수에저장
 			var sender = message[0];
 			//메세지 내용을 content 변수에 저장
-			var content = message[1];
-			
+			var content = message[1];			
 			var time = formatTime();
 
+			//개인 채팅방에서 상대방이 나갔을 경우 알림 메세지 출력
+			if (sender === "SYSTEM") {
+				chatWindow.innerHTML += "<p class='server-mag'>" + content + "</p><br/>";
+
+				if (content === "상대방이 채팅방에서 나갔습니다.") {
+					document.getElementById("chatMessage").disabled = true;
+					document.getElementById("sendBtn").disabled = true;
+				}
+				chatWindow.scrollTop = chatWindow.scrollHeight;
+				return;
+			}
+			
+			
 			if (content != "") {			
 				//대화창에 '대화명 : 메세지' 형식으로 표시
 				chatWindow.innerHTML += "<div class='other-msg'>"
@@ -327,16 +351,35 @@
 	
 	//채팅방 나가기 ----------------------------------------------------------------------------
 	function leaveChatRoom() {
-		const isLeader = "${isLeader}";
+		
+		
+		
+		//방장은 채팅방 못 나가게 설정		
 		if(isLeader){
 			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
-		}else{
-			if (confirm("정말 채팅방을 나가시겠습니까?")) {
-				location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
-			}	
+			return;
+		}	
+
+		if (confirm("정말 채팅방을 나가시겠습니까?")) {			
+			if(chatType === 'personal'){			
+				//상대방에게 채팅 상대가 나갔다는 메세지 전송
+				if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+					webSocket.send(JSON.stringify({
+						senderId: senderId,
+						message: "SYSTEM|LEAVE"
+					}));
+				}				
+				//0.3초 기다렸다가 웹소켓 종료
+				setTimeout(() => {
+					if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+						webSocket.close();
+					}	
+					// 3. 서버로 DB 업데이트 요청
+					location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
+				}, 300);
+			}			
 		}
 	}
-	
 	
 	function showChatInfo() {
 	  // 여기에 채팅방 정보 열기 로직

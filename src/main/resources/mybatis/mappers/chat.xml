@@ -153,7 +153,7 @@
 		<![CDATA[
 			SELECT count(*)
 			FROM chatRoom
-			WHERE roomId = #{roomId}
+			WHERE roomId = #{roomId} AND isDeleted = 0
 		]]>
 	</select>
 	
@@ -233,6 +233,24 @@
 			WHERE roomId = #{roomId} AND userId = #{userId}
 		]]>
 	</update>
+	
+	<!-- 채팅 내역 삭제 -->
+	<delete id="deleteChat" parameterType="String">
+		<![CDATA[
+			DELETE
+			FROM chat
+			WHERE roomId = #{roomId}
+		]]>	
+	</delete>
+
+	<!-- 채팅방 삭제 -->
+	<delete id="deleteChatRoom" parameterType="String">
+		<![CDATA[
+			DELETE
+			FROM chatRoom
+			WHERE roomId = #{roomId}
+		]]>	
+	</delete>
 
 
 </mapper>

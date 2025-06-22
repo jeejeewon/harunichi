@@ -204,6 +204,18 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.update(NAMESPACE + "leaveChatRoom", map);
 	}
 
+	//채팅 내역 삭제
+	@Override
+	public void deleteChat(String roomId) {
+		sqlSession.delete(NAMESPACE + "deleteChat", roomId);
+	}
+
+	//채팅방 삭제
+	@Override
+	public void deleteChatRoom(String roomId) {
+		sqlSession.delete(NAMESPACE + "deleteChatRoom", roomId);
+	}
+
 
 
 

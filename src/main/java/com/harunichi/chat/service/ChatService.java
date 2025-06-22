@@ -64,6 +64,9 @@ public interface ChatService {
 	//채팅방 나가기
 	void leaveChatRoom(String userId, String roomId);
 
+	//채팅방 정보와 채팅 내역 삭제
+	void deleteChat(String roomId);
+
 	
 
 

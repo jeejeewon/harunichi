@@ -394,6 +394,12 @@ public class ChatControllerImpl implements ChatController {
 		
 		chatService.leaveChatRoom(userId, roomId);
 		
+		int count = chatService.selectUserCount(roomId);
+	
+		//채팅방에 참여 인원이 없다면 채팅방 정보와 채팅 내역 삭제
+		if(count == 0) {
+			chatService.deleteChat(roomId);
+		}
 		return "redirect:/chat/main";
 	}
 	
