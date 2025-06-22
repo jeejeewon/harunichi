@@ -116,8 +116,7 @@
 		<![CDATA[
 			SELECT *
 			FROM chatroom
-			WHERE roomId = #{roomId}
-			LIMIT 1
+			WHERE roomId = #{roomId} AND leader = 1
 		]]>
 	</select>
 	
@@ -251,6 +250,15 @@
 			WHERE roomId = #{roomId}
 		]]>	
 	</delete>
+	
+	<!-- 로그인한 유저가 오픈 채팅방의 리더인지 확인 -->
+	<select id="isLeader" parameterType="map" resultType="boolean">
+		<![CDATA[
+			SELECT leader
+			FROM chatRoom
+			WHERE roomId = #{roomId} and userId = #{userId}
+		]]>	
+	</select>
 
 
 </mapper>

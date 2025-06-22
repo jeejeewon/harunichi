@@ -271,6 +271,8 @@ public class ChatControllerImpl implements ChatController {
 			String profileImg = chatRoomVo.getProfileImg();
 			model.addAttribute("title", title);	
 			model.addAttribute("profileImg", profileImg);	
+			boolean isLeader = chatService.isLeader(roomId, userId);
+			model.addAttribute("isLeader", isLeader);
 		}
 		
 		model.addAttribute("roomId", roomId);
@@ -314,6 +316,9 @@ public class ChatControllerImpl implements ChatController {
 		model.addAttribute("title", chatRoomVo.getTitle());	
 		model.addAttribute("profileImg", chatRoomVo.getProfileImg());		
 		model.addAttribute("chatType", chatRoomVo.getChatType());
+		
+		boolean isLeader = chatService.isLeader(roomId, userId);
+		model.addAttribute("isLeader", isLeader);
 		
 		return "/chatWindow";	
 	}

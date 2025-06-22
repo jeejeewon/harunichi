@@ -101,7 +101,7 @@
 	border: 1px solid #ccc;
 	width: 130px;
 	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-	z-index: 999;
+	z-index: 998;
 }
 #chatSettingMenu span {
 	margin-right: 5px;	

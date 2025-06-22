@@ -44,7 +44,7 @@
 						<input type="text" placeholder="대화내용 입력" >
 						<button type="submit">검색</button>
 					</form>
-					<a href="#" class="chat-setting" onclick="chatSetting();"><i class="bi bi-list"></i></a>
+					<a href="#" id="chatSettingBtn" class="chat-setting" onclick="chatSetting();"><i class="bi bi-list"></i></a>
 				    <button class="disconnect-btn" onclick="disconnect();"><i class="bi bi-x-lg"></i></button>
 				</div>					
 				<!-- 채팅방 설정 드롭다운 -->
@@ -343,19 +343,25 @@
 	
 	//채팅방 설정 드롭다운 -----------------------------------------------------------------------
 	function chatSetting(){
-		console.log("클릭함");
 		const menu = document.getElementById("chatSettingMenu");
-		menu.classList.toggle("hidden");		
+		menu.classList.toggle("hidden");	
 	}
+	
+	//다른 곳 클릭하면 드롭다운 닫기
+	document.addEventListener("click", function(event) {
+		const menu = document.getElementById("chatSettingMenu");
+		const button = document.getElementById("chatSettingBtn"); 
+		if (!menu.contains(event.target) && !button.contains(event.target)) {
+			menu.classList.add("hidden");
+		}
+	});
 	
 	
 	//채팅방 나가기 ----------------------------------------------------------------------------
 	function leaveChatRoom() {
-		
-		
-		
+
 		//방장은 채팅방 못 나가게 설정		
-		if(isLeader){
+		if(isLeader === 'true'){
 			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
 			return;
 		}	
