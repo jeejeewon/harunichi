@@ -8,8 +8,8 @@
 	<!-- 채팅 메세지 저장 -->
 	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, receiverId, chatType, message)
-				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})
+			INSERT INTO chat(roomId, senderId, nickname, receiverId, chatType, message)
+				VALUES(#{roomId}, #{senderId}, #{nickname}, #{receiverId}, #{chatType}, #{message})
 		]]>	
 	</insert>
 	

@@ -164,6 +164,9 @@ public class ChatControllerImpl implements ChatController {
 		
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String senderId = member.getId();
+		String nickname = member.getNick();
+		model.addAttribute("nickname", nickname);
+		
 		int	persons = Integer.parseInt(request.getParameter("persons"));
 		
 		ChatRoomVo vo = new ChatRoomVo();
@@ -181,7 +184,6 @@ public class ChatControllerImpl implements ChatController {
 		//채팅방 참여 인원 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
-
 		model.addAttribute("title", vo.getTitle());
 				
 		return "/chatWindow";		
@@ -267,12 +269,18 @@ public class ChatControllerImpl implements ChatController {
 		}else {	//오픈채팅			
 			//채팅방 ID로 채팅방 정보 조회
 			ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);
+			
 			String title = chatRoomVo.getTitle();
 			String profileImg = chatRoomVo.getProfileImg();
 			model.addAttribute("title", title);	
 			model.addAttribute("profileImg", profileImg);	
+			
+			//로그인한 유저가 해당 오픈 채팅의 방장인지 확인
 			boolean isLeader = chatService.isLeader(roomId, userId);
 			model.addAttribute("isLeader", isLeader);
+			
+			String nickname = member.getNick();
+			model.addAttribute("nickname", nickname);
 		}
 		
 		model.addAttribute("roomId", roomId);
@@ -294,6 +302,9 @@ public class ChatControllerImpl implements ChatController {
 		
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String userId = member.getId();
+		
+		String nickname = member.getNick();
+		model.addAttribute("nickname", nickname);
 		
 		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
 //이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		

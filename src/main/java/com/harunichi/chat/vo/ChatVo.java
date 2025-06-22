@@ -4,8 +4,9 @@ import java.sql.Timestamp;
 
 import org.springframework.stereotype.Component;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.Data;
 
 @Component
 @Data
@@ -23,9 +24,6 @@ public class ChatVo {
 	private Timestamp sentTime;		//보낸 시간
 	private Timestamp receivedTime; //받은 시간 (안읽음 NULL, 읽는 순간 시간 들어가도록)
 
-	private String displayTime;		//채팅방 목록 표시화면에서 포맷팅한 날짜, 시간 보여주기 위한 변수
-//	private String title;			//채팅방 목록 표시화면에서 타이틀 보여주기 위한 변수
-//	private String persons;			//채팅방 목록 표시화면에서 타이틀 보여주기 위한 변수
-	
-	
+	private String displayTime;		//채팅방 목록 표시화면에서 포맷팅한 날짜, 시간 보여주기 위한 변수	
+	private String nickname;		//채팅방에 표시할 닉네임
 }

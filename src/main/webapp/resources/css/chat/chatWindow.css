@@ -292,6 +292,7 @@
 .other-msg {
 	background-color: #f1f0f0;
 	align-self: flex-start;
+	margin-bottom: 20px;
 }
 .my-msg .time,
 .other-msg .time {
@@ -308,6 +309,11 @@
     align-self: center;
     border-bottom: 2px solid #d4edf7;
     padding-bottom: 2px;
+}
+.nickname {
+	font-size: 14px;
+    font-weight: bold;
+    color: #757575;
 }
 
 

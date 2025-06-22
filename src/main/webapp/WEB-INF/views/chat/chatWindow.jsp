@@ -110,11 +110,9 @@
 	*/	
 								
 	var chatWindow, chatMessage;
-	var webSocket;
-	var receiverId;
+	var webSocket, receiverId, lastDate, userNick;
 	var roomId = "${roomId}";	
 	var senderId = "${sessionScope.id}";
-	var lastDate;
 	var chatType = "${chatType}";
 	var count = "${count}";
 	var isLeader = "${isLeader}";
@@ -146,10 +144,13 @@
 					}
 					
 					const sender = msg.senderId;
+					const nickname = msg.nickname;
 					const message = msg.message;
 					const time = formatTime(sentDate);
+					const isGroupChat = chatType === "group";
 					
-					chatWindow.innerHTML += "<div class='" + (sender === senderId ? "my-msg" : "other-msg") + "'>" 
+					chatWindow.innerHTML += (isGroupChat && sender !== senderId ? "<div class='nickname'>" + nickname + "</div>" : "") 
+										  + "<div class='" + (sender === senderId ? "my-msg" : "other-msg") + "'>" 
 										  + "<div class='message'>" 
 										  + message + "</div>"
 										  + "<span class='time'>" + time + "</span>" + "</div>";
@@ -218,8 +219,10 @@
 			var message = event.data.split("|");
 			//대화명을 sender 변수에저장
 			var sender = message[0];
+			//닉네임을 nickname 변수에 저장
+			var nickname = message[1];
 			//메세지 내용을 content 변수에 저장
-			var content = message[1];			
+			var content = message[2];			
 			var time = formatTime();
 
 			//개인 채팅방에서 상대방이 나갔을 경우 알림 메세지 출력
@@ -234,10 +237,13 @@
 				return;
 			}
 			
-			
-			if (content != "") {			
+			if (content != "") {
+				
+				const isGroupChat = chatType === "group";
+				
 				//대화창에 '대화명 : 메세지' 형식으로 표시
-				chatWindow.innerHTML += "<div class='other-msg'>"
+				chatWindow.innerHTML += (isGroupChat ? "<div class='nickname'>" + nickname + "</div>" : "") 	
+					  + "<div class='other-msg'>"
 					  + "<div class='message'>" + content +  "</div>"
 					  + "<span class='time'>" + time + "</span>"
 					  + "</div>";		
@@ -276,7 +282,8 @@
 		const chatData = {
 					roomId : "${roomId}",
 					chatType : "${chatType != null ? chatType : param.chatType}", //개인채팅인지, 단체채팅인지		
-					senderId : senderId, //보낸 사람
+					senderId : senderId, 			//보낸 사람
+					nickname : "${nickname}",		//보낸 사람 닉네임
 					receiverId : "${receiverId != null ? receiverId : param.receiverId}",
 					message : chatMessage.value //메세지	
 		};
