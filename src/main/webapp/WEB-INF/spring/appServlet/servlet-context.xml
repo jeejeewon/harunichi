@@ -66,6 +66,9 @@
 	
 	<!-- 프로필이미지 경로 읽어오기 -->
 	<mvc:resources mapping="/images/profile/**" location="file:/C:/harunichi/images/profile/" />
+	
+	<!-- 채팅방 프로필 이미지 경로 읽어오기 -->
+	<mvc:resources mapping="/images/chat/**" location="file:/C:/harunichi/images/chat/" />
 
 </beans:beans>
 

@@ -8,10 +8,19 @@
 	<!-- 채팅 메세지 저장 -->
 	<insert id="saveMessage" parameterType="ChatVo">
 		<![CDATA[
-			INSERT INTO chat(roomId, senderId, receiverId, chatType, message)
-				VALUES(#{roomId}, #{senderId}, #{receiverId}, #{chatType}, #{message})
+			INSERT INTO chat(roomId, senderId, nickname, receiverId, chatType, message)
+				VALUES(#{roomId}, #{senderId}, #{nickname}, #{receiverId}, #{chatType}, #{message})
 		]]>	
 	</insert>
+	
+	<!-- chatRoom 테이블에 최신 메세지 시간 업데이트 -->
+	<update id="updateChatRoomTime" parameterType="String">
+		<![CDATA[
+			UPDATE chatRoom
+			SET lastMessageTime = NOW()
+			WHERE roomId = #{roomId}
+		]]>
+	</update>
 	
 	<!-- 나의 관심사 조회 -->
 	<select id="selectMyLike" parameterType="String" resultType="String">
@@ -58,8 +67,17 @@
 		 	LIMIT #{shortage}
 	 	]]>	
 	</select>	
-			
-		
+	
+	<!-- 랜덤 추천 친구 조회 (비로그인) -->
+	<select id="selectRandomMembers" resultType="memberVo">
+		<![CDATA[
+			SELECT * 
+			FROM member
+			ORDER BY RAND()
+			LIMIT 10
+		]]>
+	</select>
+					
 	<!-- 채팅방 ID 조회 (개인) -->
 	<select id="selectRoomId" parameterType="map" resultType="String">
 		<![CDATA[
@@ -73,64 +91,177 @@
 			AND chatType = #{chatType})	
 		]]>		
 	</select>
-	
-	
+		
 	<!-- 채팅방 ID chatRoom 테이블에 저장 -->
 	<insert id="insertRoomId" parameterType="map">
 		<if test="'personal' == chatType">
 			<![CDATA[
-				INSERT INTO chatRoom(roomId, userId, admissionTime)
-				VALUES 
-			]]>	
-			<foreach collection="userList" item="userId" separator="," >
-				(#{roomId}, #{userId}, NOW())
-			</foreach>
+				INSERT INTO chatRoom(roomId, userId, admissionTime)	
+				VALUES			
+			]]>		
+			<foreach collection="userList" item="user" separator="," >
+				(#{roomId}, #{user}, NOW())
+			</foreach>						
 		</if>
 		<if test="'group' == chatType">
 			<![CDATA[
-				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime)
-				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW())
+				INSERT INTO chatRoom(roomId, userId, title, leader, persons, chatType, admissionTime, profileImg)
+				VALUES (#{roomId}, #{userId}, #{title}, 1, #{persons}, #{chatType}, NOW(), #{profileImg})
 			]]>	
 		</if>
 	</insert>
-	
-	<!-- 채팅방 타이틀 조회(단체 채팅) -->
-	<select id="selectTitle" parameterType="String" resultType="String">
+
+	<!-- 특정 오픈 채팅방 정보 조회 -->
+	<select id="selectOpenChatById" parameterType="String" resultType="ChatRoomVo">
 		<![CDATA[
-			SELECT title
+			SELECT *
 			FROM chatroom
-			WHERE roomId = #{roomId}
+			WHERE roomId = #{roomId} AND leader = 1
 		]]>
 	</select>
 	
-	
-	<!-- 채팅방 타이틀 조회(개인 채팅) -->
-	<select id="selectNick" parameterType="String" resultType="String">
+	<!-- 나와 채팅 중인 상대방 ID 조회 -->
+	<select id="selectChatMemberId" parameterType="map" resultType="String">
 		<![CDATA[
-			SELECT nick
+			SELECT userId
+			FROM chatRoom
+			WHERE roomId = #{roomId} AND userId != #{userId}
+		]]>
+	</select>
+		
+	<!-- 채팅 상대 프로필 정보 조회 -->
+	<select id="selectProfile" parameterType="String" resultType="memberVo">
+		<![CDATA[
+			SELECT *
 			FROM member
 			WHERE id = #{String}
 		]]>
 	</select>
 
-
 	<!-- 과거 채팅 내역 조회 -->
-	<select id="selectChatHistory" parameterType="String" resultType="chatVo">
+	<select id="selectChatHistory" parameterType="map" resultType="ChatVo">
 		<![CDATA[
 			SELECT * 
 			FROM chat
 			WHERE roomId = #{roomId}
+			AND sentTime >= (SELECT admissionTime 
+							 FROM chatRoom
+							 WHERE roomId = #{roomId} AND userId = #{userId})
+			ORDER BY sentTime ASC
 		]]>
 	</select>
-
-
+	
 	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
 	<select id="selectUserCount" parameterType="String" resultType="int">
 		<![CDATA[
 			SELECT count(*)
 			FROM chatRoom
+			WHERE roomId = #{roomId} AND isDeleted = 0
+		]]>
+	</select>
+	
+	<!-- 오픈 채팅방 조회 -->
+	<select id="selectOpenChat" resultType="ChatRoomVo">
+		<![CDATA[
+			SELECT *
+			FROM chatRoom
+			WHERE chatType = 'group'
+			GROUP BY roomId
+		]]>
+	</select>
+
+	<!-- 참여중인 채팅방 정보 조회 -->
+	<select id="selectMyChatList" parameterType="String" resultType="ChatRoomVo">
+		<![CDATA[			
+			SELECT *
+			FROM chatRoom
+			WHERE userId = #{id} AND isDeleted = 0
+			ORDER BY lastMessageTime DESC
+		]]>
+	</select>
+
+	<!-- 참여중인 채팅의 메세지 정보 조회 -->
+	<select id="selectMyChatMessage" parameterType="String" resultType="ChatVo">
+		<![CDATA[  
+			SELECT *
+			FROM chat
+			WHERE roomId = #{roomId}
+			ORDER BY sentTime DESC
+			LIMIT 1   
+		]]>
+	</select>
+		
+	<!-- 로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인 -->
+	<select id="isUserInRoom" parameterType="map" resultType="boolean">
+		<![CDATA[
+			SELECT EXISTS( 
+				SELECT 1
+				FROM chatRoom
+				WHERE roomId = #{roomId} AND userId = #{userId}
+			)
+		]]>
+	</select>
+	
+	<!-- 오픈 채팅 참여 -->
+	<insert id="doOpenChat" parameterType="ChatRoomVo">
+		<![CDATA[
+			INSERT INTO chatRoom(roomId, userId, title, chatType, persons, profileImg, admissionTime)
+				   VALUES (#{roomId}, #{userId}, #{title}, #{chatType}, #{persons}, #{profileImg}, NOW())			
+		]]>
+	</insert>
+	
+	<!-- 채팅방 정보에 상품ID 업데이트 -->
+	<update id="updateChatProduct" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET productId = #{productId}
 			WHERE roomId = #{roomId}
 		]]>
+	</update>
+	
+	<!-- 채팅방 정보에 상품ID 제거 -->
+	<update id="deleteProductId" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET productId = null
+			WHERE roomId = #{roomId}
+		]]>
+	</update>
+
+	<!-- 채팅방 나가기 -->
+	<update id="leaveChatRoom" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET isDeleted = 1
+			WHERE roomId = #{roomId} AND userId = #{userId}
+		]]>
+	</update>
+	
+	<!-- 채팅 내역 삭제 -->
+	<delete id="deleteChat" parameterType="String">
+		<![CDATA[
+			DELETE
+			FROM chat
+			WHERE roomId = #{roomId}
+		]]>	
+	</delete>
+
+	<!-- 채팅방 삭제 -->
+	<delete id="deleteChatRoom" parameterType="String">
+		<![CDATA[
+			DELETE
+			FROM chatRoom
+			WHERE roomId = #{roomId}
+		]]>	
+	</delete>
+	
+	<!-- 로그인한 유저가 오픈 채팅방의 리더인지 확인 -->
+	<select id="isLeader" parameterType="map" resultType="boolean">
+		<![CDATA[
+			SELECT leader
+			FROM chatRoom
+			WHERE roomId = #{roomId} and userId = #{userId}
+		]]>	
 	</select>
 
 

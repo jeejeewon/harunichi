@@ -78,7 +78,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="${contextPath}/chat" class="${chatClass}">
+				<a href="${contextPath}/chat/main" class="${chatClass}">
 					<span class="material-symbols-outlined">sms</span>
 					<span>채팅</span>
 				</a>

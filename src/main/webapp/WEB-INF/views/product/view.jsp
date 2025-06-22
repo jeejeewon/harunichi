@@ -225,6 +225,7 @@
 
   // 채팅 시작, 로그인 여부 및 본인과의 채팅 확인
   function startChat(writerId) {
+ /* 
     if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
       alert("채팅 기능은 로그인 후 이용 가능합니다.");
       location.href = ctx + '/member/loginpage';
@@ -234,7 +235,8 @@
       alert("자신과는 채팅할 수 없습니다.");
       return;
     }
-    location.href = ctx + '/chat/productChat?productId=' + productId;
+*/
+    location.href = ctx + '/chat/productChat?productId=' + currentProductId;
   }
   
   // 수정, 삭제 버튼 클릭시 로그인 여부

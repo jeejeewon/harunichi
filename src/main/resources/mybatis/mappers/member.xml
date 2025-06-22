@@ -172,8 +172,6 @@
 		COUNT(*) FROM member WHERE id = #{id}
 	</select>
 
-
-
 	<!-- 멤버어드민 -->
 	<!-- 회원 업데이트 -->
 	<update id="updateMember" parameterType="memberVo">

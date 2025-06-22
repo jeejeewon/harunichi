@@ -8,6 +8,7 @@
 <<<<<<< HEAD
     <typeAlias type="com.harunichi.product.vo.ProductVo" alias="ProductVo" />
     <typeAlias type="com.harunichi.chat.vo.ChatVo" alias="ChatVo" />
+    <typeAlias type="com.harunichi.chat.vo.ChatRoomVo" alias="ChatRoomVo" />
  	<typeAlias type="com.harunichi.payment.vo.OrderVo" alias="OrderVo" />
     <typeAlias type="com.harunichi.product.vo.ProductLikeVo" alias="ProductLikeVo" />
 =======

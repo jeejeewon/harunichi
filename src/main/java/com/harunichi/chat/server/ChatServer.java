@@ -61,25 +61,41 @@ public class ChatServer {
 	//클라이언트로부터 메세지를 받았을 때 실행되는 메소드
     //연결된 클라이언트 중 누군가가 서버로 메시지를 보내면, 서버는 자동으로 이 메소드를 불러 실행함
 	@OnMessage
-	public void onMessage(String message, Session session) throws IOException {
+	public void onMessage(String message, Session session) throws IOException {	
 		
         //JSON 파싱
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> msgMap = mapper.readValue(message, Map.class);
         String senderId = (String) msgMap.get("senderId");
         String chatMessage = (String) msgMap.get("message");
-         
-        ChatVo chatMsg = mapper.readValue(message, ChatVo.class);
-		
+        String roomId = (String)session.getUserProperties().get("roomId"); 
+        
+        Set<Session> sessionsInRoom = chatRooms.get(roomId);
+        
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록
-        System.out.println("✉️ [서버 로그] 메시지 도착! 보낸 사람 ID:" +  senderId + ", 내용: \"" + chatMessage + "\"");        
+        System.out.println("✉️ [서버 로그] 메시지 도착! 보낸 사람 ID:" +  senderId + ", 내용: \"" + chatMessage + "\""); 
         
-        String roomId = (String)session.getUserProperties().get("roomId");
-        Set<Session> sessionsInRoom = chatRooms.get(roomId);       
+        //시스템 메세지 로직 처리 -------------------------------------------------------------
+        if ("SYSTEM|LEAVE".equals(chatMessage)) {
+        	System.out.println("👋 [서버 로그] " + senderId + "가 채팅방을 나갔습니다.");
+       
+            // 남아있는 상대방에게 "상대방이 나갔습니다." 알림
+            if (sessionsInRoom != null) {
+                synchronized (sessionsInRoom) {
+                    for (Session client : sessionsInRoom) {
+                        if (!client.equals(session) && client.isOpen()) {
+                            client.getBasicRemote().sendText("SYSTEM|상대방이 채팅방에서 나갔습니다.");
+                        }
+                    }
+                }
+            }
+            return; 
+        } //바깥 if
         
+        //일반 메세지 처리 로직 -------------------------------------------------------------        
+        ChatVo chatMsg = mapper.readValue(message, ChatVo.class);     
         //DB에 저장        
         chatService.saveMessage(chatMsg);
-        
         
         //접속자 명단(clients)을 수정하거나 사용하는 동안 다른 작업이 끼어들지 못하게 잠금(Lock)을 검
         //여러 클라이언트가 동시에 메시지를 보내거나 접속/종료할 때 접속자 명단이 꼬이는 것을 방지하는 안전 장치
@@ -92,18 +108,22 @@ public class ChatServer {
                 	//자신이 보낸 메시지를 다시 받지 않기 위함 (메아리방지)    
                     if (!client.equals(session)) {
                     	
-                        //메시지를 보낸 사람 외의 다른 클라이언트에게 메시지 전송
-                        //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
-                        //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송                     
-                        client.getBasicRemote().sendText(chatMsg.getSenderId() + "|" + chatMsg.getMessage()); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!                                            
+                    	if(client.isOpen()) {
+	                        //메시지를 보낸 사람 외의 다른 클라이언트에게 메시지 전송
+	                        //client.getBasicRemote(): 해당 클라이언트(client)에게 메시지를 보낼 수 있는 '기본 원격 제어기'를 얻음
+	                        //sendText(message): 얻은 원격 제어기를 사용하여 실제 텍스트 메시지(message)를 클라이언트의 웹 브라우저로 전송                     
+	                        client.getBasicRemote().sendText(chatMsg.getSenderId() + "|" + chatMsg.getNickname() + "|" +  chatMsg.getMessage()); //message 변경해야함. 윈도우 JSP에서 모든 정보를 넘기기때문에!!                                            
+                    	}else {
+                            sessionsInRoom.remove(client);
+                            System.out.println("🧹 닫힌 세션 발견해서 제거함");	
+                    	}
                     }                 
-                }//for           
-    		}//synchronized     	
-        }
+                }           
+    		}  	
+        }//바깥 if 	
+	}// onMessage
         
-	}//onMessage
-	
-    
+
     //클라이언트와의 연결이 끊어졌을 때 실행되는 작업 (@OnClose)
     //클라이언트가 웹 브라우저를 닫거나, 인터넷 연결이 끊기거나, 어떤 이유로든 연결이 종료되면 서버는 자동으로 이 메소드를 불러 실행함
     //@param session 연결이 끊어진 클라이언트의 '1:1 통신 채널' 정보 객체.    

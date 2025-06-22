@@ -1,125 +1,78 @@
 package com.harunichi.chat.service;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.harunichi.chat.dao.ChatDao;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.harunichi.chat.vo.ChatRoomVo;
 import com.harunichi.chat.vo.ChatVo;
 import com.harunichi.member.vo.MemberVo;
 
-@Service
-public class ChatService {
+public interface ChatService {
 
-	@Autowired
-	private ChatDao chatDao;
-	
-	
 	//채팅 메세지 DB에 저장
-	public void saveMessage(ChatVo chatMsg) {		
-		System.out.println("---ChatService의 saveMessage메소드 호출");		
-		//DAO로 DB작업 요청시키기
-		chatDao.saveMessage(chatMsg);
-	}
+	void saveMessage(ChatVo chatMsg);
 
-	//DB에서 친구 추천 리스트 조회
-	public List<MemberVo> selectMembers(String id) {
-		System.out.println("---ChatService의 selectMembers메소드 호출");	
-		return chatDao.selectMembers(id);
-	}
-	
+	//친구 추천 리스트 조회
+	List<MemberVo> selectMembers(String id);
+
 	//채팅방 ID 조회
-	public String selectRoomId(String senderId, String receiverId,  String chatType) {
-		System.out.println("---ChatService의 selectRoomId메소드 호출");		
-		
-		String roomId = chatDao.selectRoomId(senderId, receiverId, chatType);
-		
-		ChatRoomVo vo = new ChatRoomVo();
-		vo.setUserId(senderId);
-		vo.setReceiverId(receiverId);
-		vo.setChatType(chatType);
-				
-		System.out.println("roomId : " + roomId);
-		
-		//DB에 조회된 채팅방ID가 없다면?
-		if(roomId == null) {		
-			roomId = insertRoomId(vo);
-		}	
-		
-		//DB에서 조회된 채팅방ID 반환
-		return roomId;
-	}
-	
-	public String insertRoomId(ChatRoomVo vo) {
-		
-		System.out.println("---ChatService의 insertRoomId메소드 호출");		
-		
-		Map<String, Object> roomMap = new HashMap<String, Object>();
-	
-		//현재 날짜
-		String now = new SimpleDateFormat("yyyyMMdd").format(new Date());		
-		//랜덤 숫자 (0 ~ 999999)
-		int randomInt = new Random().nextInt(1_000_000);			
-		//6자리로 포맷 (앞에 0 채움)
-		String random = String.format("%06d", randomInt);			
-		//새로운 채팅방 ID 생성 후 반환
-		String newRoomId = now + "_" + random;			
-		System.out.println("newRoomId : " + newRoomId);
-		
-		roomMap.put("roomId", newRoomId);
-		
-		if(vo.getChatType().equals("group")) {			
-			roomMap.put("userId", vo.getUserId());
-		}else {
-			List<String> userList = new ArrayList<String>();		
-			userList.add(vo.getReceiverId());
-			userList.add(vo.getUserId());
-			roomMap.put("userList", userList);
-		}
-		
-		roomMap.put("chatType", vo.getChatType());
-		roomMap.put("title", vo.getTitle());
-		roomMap.put("persons", vo.getPersons());
-						
-		//DB의 chatRoom테이블에 채팅방 정보 저장
-		chatDao.insertRoomId(roomMap);
-		
-		return newRoomId;		
-	}
+	String selectRoomId(String senderId, String receiverId, String chatType);
 
-	
+	//채팅방 ID DB에 저장
+	String insertRoomId(ChatRoomVo vo);
+
 	//과거 채팅 내역 불러오기
-	public List<ChatVo> selectChatHistory(String roomId) {
-		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
-		return chatDao.selectChatHistory(roomId);
-	}
+	List<ChatVo> selectChatHistory(String roomId, String userId);
+
+	//채팅방 참여 인원 확인
+	int selectUserCount(String roomId);
+
+	//특정 오픈 채팅방 정보 조회
+	ChatRoomVo selectOpenChatById(String roomId);
+	
+	//나와 채팅 중인 상대방 ID 조회
+	String selectChatMemberId(String userId, String roomId);
+
+	//채팅 상대 프로필 정보 조회
+	MemberVo selectProfile(String receiverId);
+
+	//오픈 채팅방 리스트 조회
+	List<ChatRoomVo> selectOpenChat();
+
+	//참여중인 채팅방 정보 조회
+	List<ChatRoomVo> selectMyChatList(String id);
+	
+	//참여중인 채팅의 메세지 정보 조회
+	ChatVo selectMyChatMessage(String roomId);
+	
+	//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
+	boolean isUserInRoom(String roomId, String userId);
+
+	//오픈 채팅 참여
+	void doOpenChat(ChatRoomVo chatRoomVo);
+
+	//채팅방 프로필 이미지 C드라이브에 저장
+	String chatProfileImgUpload(MultipartFile file);
+
+	//채팅방 정보에 상품ID 업데이트
+	void updateChatProduct(String roomId, int productId);
+
+	//채팅방 정보에 상품ID 제거
+	void deleteProductId(String roomId, int productId);
+
+	//채팅방 나가기
+	void leaveChatRoom(String userId, String roomId);
+
+	//채팅방 정보와 채팅 내역 삭제
+	void deleteChat(String roomId);
+
+	//로그인한 유저가 오픈 채팅방의 리더인지 확인
+	boolean isLeader(String roomId, String userId);
 
 	
-	//채팅방 참여 인원 확인
-	public int selectUserCount(String roomId) {		
-		System.out.println("---ChatService의 selectUserCount메소드 호출");		
-		return chatDao.selectUserCount(roomId);
-	}
 
-	//채팅방 타이틀 확인(단체채팅)
-	public String selectTitle(String roomId) {
-		System.out.println("---ChatService의 selectTitle메소드 호출");
-		System.out.println("roomId : " + roomId);
-		return chatDao.selectTitle(roomId);
-	}
-
-	//채팅방 타이틀 확인(개인채팅)
-	public String selectNick(String receiverId) {
-		System.out.println("---ChatService의 selectNick메소드 호출");
-		return chatDao.selectNick(receiverId);
-	}
+	
 
 
 
