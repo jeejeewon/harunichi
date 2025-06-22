@@ -111,9 +111,12 @@ public class ChatDaoImpl implements ChatDao {
 	
 	//DB에서 채팅 내역 조회	
 	@Override
-	public List<ChatVo> selectChatHistory(String roomId) {
+	public List<ChatVo> selectChatHistory(String roomId, String userId) {
 		System.out.println("===ChatDao의 selectChatHistory 메소드 실행");
-		return sqlSession.selectList(NAMESPACE + "selectChatHistory", roomId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);	
+		return sqlSession.selectList(NAMESPACE + "selectChatHistory", map);
 	}
 	
 	//채팅방에 참여하고 있는 유저 조회

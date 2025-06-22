@@ -395,9 +395,13 @@ public class ChatControllerImpl implements ChatController {
 	@Override
 	@RequestMapping("/history")
 	@ResponseBody
-	public List<ChatVo> selectChatHistory(@RequestParam String roomId){
+	public List<ChatVo> selectChatHistory(@RequestParam String roomId, HttpSession session){
 		log.info("chatController의 selectChatHistory 메소드 실행 -------------");
-		return chatService.selectChatHistory(roomId);
+		
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		String userId = member.getId();
+		
+		return chatService.selectChatHistory(roomId, userId);
 	}
 	
 	//채팅방 나가기

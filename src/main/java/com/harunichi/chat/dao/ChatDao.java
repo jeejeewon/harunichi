@@ -28,7 +28,7 @@ public interface ChatDao {
 	void insertRoomId(Map<String, Object> roomMap);
 
 	//DB에서 채팅 내역 조회	
-	List<ChatVo> selectChatHistory(String roomId);
+	List<ChatVo> selectChatHistory(String roomId, String userId);
 
 	//채팅방에 참여하고 있는 유저 조회
 	int selectUserCount(String roomId);
@@ -74,6 +74,8 @@ public interface ChatDao {
 
 	//로그인한 유저가 오픈 채팅방의 리더인지 확인
 	boolean isLeader(String roomId, String userId);
+
+	
 
 
 

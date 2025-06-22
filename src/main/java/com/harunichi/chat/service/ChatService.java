@@ -23,7 +23,7 @@ public interface ChatService {
 	String insertRoomId(ChatRoomVo vo);
 
 	//과거 채팅 내역 불러오기
-	List<ChatVo> selectChatHistory(String roomId);
+	List<ChatVo> selectChatHistory(String roomId, String userId);
 
 	//채팅방 참여 인원 확인
 	int selectUserCount(String roomId);
@@ -72,11 +72,7 @@ public interface ChatService {
 
 	
 
-
-
 	
-
-
 
 
 

@@ -130,9 +130,9 @@ public class ChatServiceImpl implements ChatService {
 	
 	//과거 채팅 내역 불러오기
 	@Override
-	public List<ChatVo> selectChatHistory(String roomId) {
+	public List<ChatVo> selectChatHistory(String roomId, String userId) {
 		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
-		return chatDao.selectChatHistory(roomId);
+		return chatDao.selectChatHistory(roomId, userId);
 	}
 	
 	//채팅방 참여 인원 확인

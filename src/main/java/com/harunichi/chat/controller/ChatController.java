@@ -17,7 +17,7 @@ public interface ChatController {
 	String loginChek(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session)
 			throws Exception;
 
-	List<ChatVo> selectChatHistory(String roomId);
+	List<ChatVo> selectChatHistory(String roomId, HttpSession session);
 
 	String createOpenChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session,
 			MultipartFile file) throws Exception;
@@ -30,5 +30,7 @@ public interface ChatController {
 
 	String doOpenChat(String roomId, HttpServletRequest request, HttpServletResponse response, Model model,
 			HttpSession session) throws Exception;
+
+	
 	
 }

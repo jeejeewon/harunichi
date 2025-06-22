@@ -139,11 +139,15 @@
 	</select>
 
 	<!-- 과거 채팅 내역 조회 -->
-	<select id="selectChatHistory" parameterType="String" resultType="ChatVo">
+	<select id="selectChatHistory" parameterType="map" resultType="ChatVo">
 		<![CDATA[
 			SELECT * 
 			FROM chat
 			WHERE roomId = #{roomId}
+			AND sentTime >= (SELECT admissionTime 
+							 FROM chatRoom
+							 WHERE roomId = #{roomId} AND userId = #{userId})
+			ORDER BY sentTime ASC
 		]]>
 	</select>
 	
