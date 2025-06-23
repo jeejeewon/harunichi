@@ -20,19 +20,17 @@
 			<!-- 채팅방 상단 영역 -->
 			<div id="chatTop">
 				<div class="chat-top-left">
-					<a href="#">
-						<c:choose>
-							<c:when test="${empty profileImg}">
-								<img class="profile-img" src="../resources/icon/basic_profile.jpg" alt="기본 프로필사진">												
-							</c:when>
-							<c:when test="${chatType eq 'personal'}">
-								<img class="profile-img" src="${profileImgPath}${profileImg}" alt="개인채팅방 프로필사진">
-							</c:when>
-							<c:otherwise>
-								<img class="profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
-							</c:otherwise>
-						</c:choose>						
-					</a>
+					<c:choose>
+						<c:when test="${empty profileImg}">
+							<img class="profile-img" src="../resources/icon/basic_profile.jpg" alt="기본 프로필사진">												
+						</c:when>
+						<c:when test="${chatType eq 'personal'}">
+							<img class="profile-img" src="${profileImgPath}${profileImg}" alt="개인채팅방 프로필사진">
+						</c:when>
+						<c:otherwise>
+							<img class="profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
+						</c:otherwise>
+					</c:choose>						
 					<div class="room-info">
 						<span class="room-title" id="receiverId">${title}<span class="user-count">(${count})</span></span>
 					</div>		
@@ -100,30 +98,58 @@
 		</div>
 	</div>
 	<!-- 모달창 영역 -->
-	<div id="myModal" class="modal">
+	<div id="chatInfoModal" class="chat-info-modal">
 	  <div class="modal-content">
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h2>채팅방 정보</h2>
-	    <form action="<%=request.getContextPath()%>/chat/createOpenChat" id="newChatForm" method="POST" enctype="multipart/form-data">
+	    <form action="#" id="updateChatForm" method="POST" enctype="multipart/form-data">
 	
-		    <div class="open-chat-img-wrap">
-		    	<img id="openChatImg"  class="open-chat-profile-img" src="${contextPath}/resources/icon/basic_profile.jpg" alt="오픈 채팅방 프로필 이미지">
-				<input type="hidden" id="openchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">
-				<label for="imgUpload" class="adit-profile-img">
-					<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
-				</label>
-				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
-		    </div>		   
-		    <label>채팅방 이름</label>	    
-		    <input id="openChatTitle" name="title" class="open-chat-form" type="text" maxlength="20" onkeyup="validateTitle()">
-		    <p class="modal-input-msg">최대 20자까지 입력 가능합니다.</p>	    
-		    <label>최대 인원</label>		    
-		    <input id="openChatPersons" name="persons" class="open-chat-form" type="number" min="2" max="8" onkeyup="validatePersons()">
-		    <p class="modal-input-msg">최대 8명까지 입장 가능합니다.</p>
-		    <div class="modal-btn-wrap">
-			    <button class="modal-btn" onclick="confirmAction(event)">만들기</button>
-			    <button class="modal-btn" type="button" onclick="closeModal()">취소</button>
+		    <div class="chat-img-wrap">	
+				<c:choose>
+					<c:when test="${empty profileImg}">
+						<img class="chat-profile-img" src="../resources/icon/basic_profile.jpg" alt="기본 프로필사진">												
+					</c:when>
+					<c:when test="${chatType eq 'personal'}">
+						<img class="chat-profile-img" src="${profileImgPath}${profileImg}" alt="개인채팅방 프로필사진">
+					</c:when>
+					<c:otherwise>
+						<img class="chat-profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
+					</c:otherwise>
+				</c:choose>	
+				<input type="hidden" id="openchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">			
+				
+				<c:if test="${isLeader eq 'true'}">
+					<label for="imgUpload" class="adit-profile-img">
+						<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
+					</label>
+					<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
+				</c:if>
 		    </div>
+		    <div class="chat-inpo-wrap">  
+			    <label class="chat-title">${title}</label>	    
+			    <input id="chatTitle" name="title" class="chat-form hidden" type="text" maxlength="20" onkeyup="validateTitle()" disabled>
+			    <p class="modal-input-msg hidden">최대 20자까지 입력 가능합니다.</p>	    
+			    <label class="chat-persons"><i class="bi bi-person-fill"></i> ${count} / ${persons}</label>		    
+			    <input id="chatPersons" name="persons" class="chat-form hidden" type="number" min="2" max="8" onkeyup="validatePersons()" disabled>
+			    <p class="modal-input-msg hidden">최대 8명까지 입장 가능합니다.</p>
+		    </div>	 
+		    <c:if test="${isLeader eq 'true'}">
+			    <div class="modal-btn-wrap">
+				    <button class="modal-btn" onclick="confirmAction(event)">수정</button>
+				    <button class="modal-btn" type="button" onclick="closeModal()">취소</button>
+			    </div>
+		    </c:if>
+		    <!-- 참여자 정보 -->
+			<ul class="user-list">
+				<c:forEach var="user" items="${userList}" >
+					<li>
+						<a href="${contextPath}/mypage?id=${user.id}">
+							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
+						</a>
+						<span>${user.nick}</span>
+					</li>
+				</c:forEach>
+			</ul>
 		    <input type="hidden" name="chatType" value="group">
 	    </form>
 	  </div>
@@ -434,14 +460,15 @@
 		if (!userId) {
 		  location.href = "<%= request.getContextPath() %>/chat/loginChek";
 		  return;
-		} 
-		document.getElementById("myModal").style.display = "block";
+		}
+		document.getElementById("chatInfoModal").style.display = "block";
 	}
 
 	//모달창 닫기
 	function closeModal() { 
+/*
 		//입력된 값 및 폼 초기화
-		document.getElementById("newChatForm").reset();
+		document.getElementById("updateChatForm").reset();
 
 		//유효성 검사 메시지 초기화
 		const msgAll = document.querySelectorAll(".modal-input-msg");
@@ -451,10 +478,10 @@
 			msg.classList.remove("err")});  
 
 		//프로필 이미지 초기화
-		document.getElementById("openChatImg").src = "${contextPath}/resources/icon/basic_profile.jpg";
+		document.querySeletor(".chat-profile-img").src = "${contextPath}/resources/icon/basic_profile.jpg";
 		document.getElementById("openchatProfileImg").value = "${contextPath}/resources/icon/basic_profile.jpg";
-
-		document.getElementById("myModal").style.display = "none"; 
+*/
+		document.getElementById("chatInfoModal").style.display = "none"; 
 	}
 
 	//모달창 컨펌
@@ -462,7 +489,7 @@
 		event.preventDefault();	
 		//유효성 검사
 		const isValid = validate();
-		if (isValid) { document.getElementById("newChatForm").submit(); }
+		if (isValid) { document.getElementById("updateChatForm").submit(); }
 	}	
 	
 	

@@ -283,6 +283,12 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.isLeader(roomId, userId);
 	}
 
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return chatDao.selectUserByRoomId(roomId);
+	}
+
 
 
 

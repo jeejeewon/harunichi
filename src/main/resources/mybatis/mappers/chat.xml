@@ -134,7 +134,7 @@
 		<![CDATA[
 			SELECT *
 			FROM member
-			WHERE id = #{String}
+			WHERE id = #{receiverId}
 		]]>
 	</select>
 
@@ -151,7 +151,7 @@
 		]]>
 	</select>
 	
-	<!-- 해당 채팅에 참여하고 있는 유저 확인 -->
+	<!-- 해당 채팅에 참여하고 있는 유저 수 확인 -->
 	<select id="selectUserCount" parameterType="String" resultType="int">
 		<![CDATA[
 			SELECT count(*)
@@ -262,6 +262,16 @@
 			WHERE roomId = #{roomId} and userId = #{userId}
 		]]>	
 	</select>
+	
+	<!-- 채팅방에 참여하고 있는 유저 ID 조회 -->
+	<select id="selectUserByRoomId" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT userId
+			FROM chatRoom
+			WHERE roomId = #{roomId} AND isDeleted = 0
+		]]>
+	</select>
+	
 
 
 </mapper>

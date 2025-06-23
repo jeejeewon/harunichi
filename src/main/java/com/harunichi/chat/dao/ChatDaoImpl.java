@@ -228,6 +228,12 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "isLeader", map);
 	}
 
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return sqlSession.selectList(NAMESPACE + "selectUserByRoomId", roomId);
+	}
+
 
 
 
