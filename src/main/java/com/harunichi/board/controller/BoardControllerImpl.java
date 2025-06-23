@@ -155,7 +155,7 @@ public class BoardControllerImpl implements BoardController {
 
 				boardVo.setBoardWriter(loginUser.getNick());
 				boardVo.setBoardWriterId(loginUser.getId());
-				
+
 			} else {
 				log.warn(">> 게시글 작성 실패: 로그인되지 않은 사용자 요청");
 				mav.addObject("msg", "게시글을 작성하려면 로그인이 필요합니다.");
@@ -218,16 +218,33 @@ public class BoardControllerImpl implements BoardController {
 
 				// 해당 게시글의 댓글 목록을 불러와서 mav에 추가
 				List<ReplyVo> replyList = boardService.getRepliesByBoardId(boardId);
+
+				// 댓글 작성자 프로필 이미지
+				Map<String, MemberVo> memberCache = new HashMap<>();
+				for (ReplyVo reply : replyList) {
+				    String replyWriterId = reply.getReplyWriterId(); // 아이디로 바꿈
+				    if (replyWriterId != null && !replyWriterId.isEmpty()) {
+				        if (!memberCache.containsKey(replyWriterId)) {
+				            MemberVo memberInfo = memberService.selectMemberById(replyWriterId);
+				            memberCache.put(replyWriterId, memberInfo);
+				        }
+				        MemberVo memberInfo = memberCache.get(replyWriterId);
+				        if (memberInfo != null) {
+				            reply.setReplyWriterImg(memberInfo.getProfileImg());
+				        }
+				    }
+				}
+
 				mav.addObject("replyList", replyList);
-				
-				// 작성자 프로필 이미지 셋팅
-	            String writerId = boardVo.getBoardWriterId();
-	            if (writerId != null && !writerId.isEmpty()) {
-	                MemberVo writerInfo = memberService.selectMemberById(writerId);
-	                if (writerInfo != null) {
-	                    boardVo.setBoardWriterImg(writerInfo.getProfileImg());
-	                }
-	            }
+
+				// 작성자 프로필 이미지
+				String writerId = boardVo.getBoardWriterId();
+				if (writerId != null && !writerId.isEmpty()) {
+					MemberVo writerInfo = memberService.selectMemberById(writerId);
+					if (writerInfo != null) {
+						boardVo.setBoardWriterImg(writerInfo.getProfileImg());
+					}
+				}
 
 				// 로그인한 사용자 정보 가져오기
 				HttpSession session = request.getSession();
@@ -664,7 +681,7 @@ public class BoardControllerImpl implements BoardController {
 
 		if (loginUser != null) {
 			reply.setReplyWriter(loginUser.getNick());
-			log.info(">> 댓글 등록: replyWriter 설정됨 - {}", loginUser.getNick());
+			reply.setReplyWriterId(loginUser.getId()); 
 		} else {
 			log.warn(">> 댓글 작성 실패: 로그인되지 않은 사용자 요청");
 			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired";
@@ -731,7 +748,6 @@ public class BoardControllerImpl implements BoardController {
 
 		if (loginUser != null) {
 			currentUserId = loginUser.getNick();
-			log.info(">> 댓글 수정 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId);
 		} else {
 			log.warn(">> 댓글 수정 실패: 로그인되지 않은 사용자 요청, replyId={}", replyId);
 			resultMap.put("status", "fail");

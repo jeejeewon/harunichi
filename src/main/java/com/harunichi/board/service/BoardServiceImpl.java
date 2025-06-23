@@ -103,17 +103,14 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int addReply(ReplyVo reply) throws Exception {
 		// ReplyDao의 insertReply 메소드를 호출하여 DB에 댓글 저장
-		int result = replyDao.insertReply(reply);
-		log.info(">>댓글 DB 저장 완료. 결과: {}", result);
+		int result = replyDao.insertReply(reply);		
 		return result; // 삽입된 행 수 반환
 	}
 
 	// 특정 게시물의 댓글 조회
 	@Override
 	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception {
-		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);
-		log.info(">>BoardServiceImpl-getRepliesByBoardId() 호출 종료. 조회된 댓글 수:{}",
-				replyList != null ? replyList.size() : 0);
+		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);		
 		return replyList; // 조회된 댓글 목록 반환
 	}
 

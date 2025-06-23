@@ -66,8 +66,20 @@
 		<div class="conmment-list">
 			<c:forEach var="reply" items="${replyList}">
 				<div class="comment" id="reply-${reply.replyId}">
-					<%-- 댓글 div에 ID 추가 --%>
-					<div class="comment-author">${reply.replyWriter}</div>
+					<%-- 프로필 이미지 출력 --%>
+					<div class="comment-author">
+						<c:if test="${empty reply.replyWriterImg}">
+							<img
+								src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
+								alt="기본 프로필 이미지" width="30" height="30" />
+						</c:if>
+						<c:if test="${not empty reply.replyWriterImg}">
+							<img src="${reply.replyWriterImg}" alt="프로필 이미지" width="30"
+								height="30" />
+						</c:if>
+						${reply.replyWriter}
+						<%-- 닉네임 --%>
+					</div>
 					<div class="comment-content">${reply.replyCont}</div>
 					<div class="comment-date">${reply.replyDate}</div>
 					<c:if
