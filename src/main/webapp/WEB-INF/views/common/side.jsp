@@ -49,7 +49,7 @@
 			  </a>
 			</li>
 			<li>
-				<a href="${contextPath}/board" class="${boardClass}">
+				<a href="${contextPath}/board/list" class="${boardClass}">
 					<span class="material-symbols-outlined">cloud</span>
 					<span>일상/교류</span>
 				</a>

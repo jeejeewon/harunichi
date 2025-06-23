@@ -166,7 +166,6 @@
 			SELECT *
 			FROM chatRoom
 			WHERE chatType = 'group'
-			GROUP BY roomId
 		]]>
 	</select>
 
