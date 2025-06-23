@@ -49,4 +49,7 @@ public interface BoardController {
 	// 게시글 총 좋아요 수 조회
 	String boardLikeCount(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
 
+	// 게시글 검색 (아이디, 닉네임, 글 내용)
+	ModelAndView searchBoard(String keyword, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
 }

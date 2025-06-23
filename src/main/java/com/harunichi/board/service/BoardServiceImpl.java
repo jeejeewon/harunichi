@@ -221,5 +221,10 @@ public class BoardServiceImpl implements BoardService {
 			throw e;
 		}
 	}
+	
+	@Override
+	public List<BoardVo> searchBoardsByKeyword(String keyword) throws Exception {
+	    return boardDao.searchBoardsByKeyword(keyword);
+	}
 
 }

@@ -919,5 +919,39 @@ public class BoardControllerImpl implements BoardController {
 			return "error"; // 서버 오류
 		}
 	}
+	
+	// 게시글 검색
+	@Override
+	@RequestMapping(value = "/board/search", method = RequestMethod.GET)
+	public ModelAndView searchBoard(
+	        @RequestParam("keyword") String keyword,
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	    ModelAndView mav = new ModelAndView("/board/list");
+
+	    List<BoardVo> boardList = boardService.searchBoardsByKeyword(keyword);
+
+	    // 작성자 프로필 이미지 세팅
+	    Map<String, MemberVo> memberMap = new HashMap<>();
+	    for (BoardVo board : boardList) {
+	        String writerId = board.getBoardWriterId();
+	        if (!memberMap.containsKey(writerId)) {
+	            MemberVo writerInfo = memberService.selectMemberById(writerId);
+	            if (writerInfo != null) {
+	                memberMap.put(writerId, writerInfo);
+	            }
+	        }
+	        MemberVo writerInfo = memberMap.get(writerId);
+	        if (writerInfo != null) {
+	            board.setBoardWriterImg(writerInfo.getProfileImg());
+	            board.setBoardWriter(writerInfo.getNick()); // 닉네임으로 갱신 (선택사항)
+	        }
+	    }
+
+	    mav.addObject("boardList", boardList);
+	    mav.addObject("keyword", keyword);
+
+	    return mav;
+	}
 
 }
