@@ -60,7 +60,15 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 					<!-- 타인 프로필이면 팔로우 버튼과 채팅아이콘 표시 -->
 					<c:if test="${not isMyPage}">
 					    <button id="followBtn" class="follow-btn follow" onclick="follow('${contextPath}', '${pageOwner.id}')">팔로우</button>
-					    <a href="#" class="chat-btn"><img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons"></a>
+					    <!-- 채팅 폼 -->
+						<form id="chatForm" action="${contextPath}/chat/createChat" method="POST" style="display:none;">
+						    <input type="hidden" name="receiverId" value="${pageOwner.id}">
+						    <input type="hidden" name="chatType" value="personal">
+						</form>
+						<!-- 채팅 버튼 -->
+						<a href="javascript:void(0);" class="chat-btn" onclick="chatOpen();">
+						    <img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons">
+						</a>
 					</c:if>
 				</div>
 			</div>
@@ -205,6 +213,11 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 	            document.getElementById("followingCountNum").textContent = count;
 	        });
 	    }
+	    
+	    //채팅 아이콘 클릭시
+	    function chatOpen(){
+		    document.getElementById("chatForm").submit();
+		}
 	</script>
 	
 
