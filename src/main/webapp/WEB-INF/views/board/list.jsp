@@ -16,19 +16,19 @@
 		<div class="list-wrap">
 			<c:forEach var="board" items="${boardList}">
 				<div class="list-item">
-					<div class="item">
+					<div class="item">		
 						<div class="item-cate">
 							<span>${board.boardCate}</span>
 						</div>
 						<div class="user-profile">
-							<div class="user-pic">
+							<div class="user-pic">							
 								<%-- member 프로필 사진 가져오기 --%>
-								<c:if test="${empty profileImgPath}">
+								<c:if test="${empty board.boardWriterImg}">
 									<img
 										src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
 								</c:if>
-								<c:if test="${not empty profileImgPath}">
-									<img id="profileImage" src="${profileImgPath}" alt="선택한 프로필 이미지" >
+								<c:if test="${not empty board.boardWriterImg}">
+									<img id="profileImage" src="${board.boardWriterImg}" alt="선택한 프로필 이미지" >
 								</c:if>
 							</div>
 							<div class="user-name">${board.boardWriter}</div>

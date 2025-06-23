@@ -14,8 +14,15 @@
 	<div class="post-info">
 		<div class="user-profile">
 			<div class="user-pic">
-				<img
-					src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+				<%-- member 프로필 사진 가져오기 --%>
+				<c:if test="${empty board.boardWriterImg}">
+					<img
+						src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+				</c:if>
+				<c:if test="${not empty board.boardWriterImg}">
+					<img id="profileImage" src="${board.boardWriterImg}"
+						alt="선택한 프로필 이미지">
+				</c:if>
 			</div>
 			<div class="user-name">${board.boardWriter}</div>
 		</div>
@@ -121,8 +128,6 @@
 		}
 	);
 </script>
-
-
 <script>
     // 임시 member_id 설정 (JSP 변수와 동일하게)
     var currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
