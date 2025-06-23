@@ -11,14 +11,14 @@
 
 <!-- 홈 메뉴 active 처리 -->
 <c:set var="homeClass" value="" />
-<c:if test="${fn:endsWith(uriWithoutCtx, '/') || fn:contains(uriWithoutCtx, '/main')}">
+<c:if test="${uriWithoutCtx == '/' || uriWithoutCtx == '/main'}">
   <c:set var="homeClass" value="active" />
 </c:if>
 
 <!-- 일상/교류 메뉴 active 처리 -->
 <c:set var="boardClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/board')}">
-  <c:set var="mypageClass" value="active" />
+  <c:set var="boardClass" value="active" />
 </c:if>
 
 <!-- 중고거래 메뉴 active 처리 -->

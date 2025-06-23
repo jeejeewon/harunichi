@@ -82,35 +82,35 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED) // DB 작업에 트랜잭션 적용
 	public int deleteBoardData(int boardId) throws Exception {
-		int result = 0;
-		try {
-			// 1. 해당 게시글에 속한 댓글 먼저 삭제
-			int deletedRepliesCount = 0;
-			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);
-			result = boardDao.deleteBoard(boardId);
-		} catch (Exception e) {
-			log.error(">>데이터베이스 삭제 중 예외 발생, boardId:{}", boardId, e);
-			throw e;
-		}
-		log.info(">>BoardServiceImpl-deleteBoardData() 호출 종료, 삭제된 행 수:{}", result);
-		return result;
+	    int result = 0;
+	    try {
+	        // 1. 해당 게시글의 좋아요 데이터 먼저 삭제
+	        int deletedLikesCount = boardDao.deleteLikesByBoardId(boardId);		        
+	        // 2. 해당 게시글에 속한 댓글 삭제
+	        int deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);	        
+	        // 3. 게시글 삭제
+	        result = boardDao.deleteBoard(boardId);
+	       
+	    } catch (Exception e) {
+	        log.error(">> 데이터베이스 삭제 중 예외 발생, boardId: {}", boardId, e);
+	        throw e; // 트랜잭션 롤백을 위해 예외 다시 던지기
+	    }
+	    log.info(">> BoardServiceImpl-deleteBoardData() 호출 종료, 삭제된 행 수: {}", result);
+	    return result;
 	}
 
 	// 댓글 추가
 	@Override
 	public int addReply(ReplyVo reply) throws Exception {
 		// ReplyDao의 insertReply 메소드를 호출하여 DB에 댓글 저장
-		int result = replyDao.insertReply(reply);
-		log.info(">>댓글 DB 저장 완료. 결과: {}", result);
+		int result = replyDao.insertReply(reply);		
 		return result; // 삽입된 행 수 반환
 	}
 
 	// 특정 게시물의 댓글 조회
 	@Override
 	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception {
-		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);
-		log.info(">>BoardServiceImpl-getRepliesByBoardId() 호출 종료. 조회된 댓글 수:{}",
-				replyList != null ? replyList.size() : 0);
+		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);		
 		return replyList; // 조회된 댓글 목록 반환
 	}
 
@@ -220,6 +220,11 @@ public class BoardServiceImpl implements BoardService {
 			log.error(">> 게시글 좋아요 수 업데이트 중 예외 발생", e);
 			throw e;
 		}
+	}
+	
+	@Override
+	public List<BoardVo> searchBoardsByKeyword(String keyword) throws Exception {
+	    return boardDao.searchBoardsByKeyword(keyword);
 	}
 
 }
