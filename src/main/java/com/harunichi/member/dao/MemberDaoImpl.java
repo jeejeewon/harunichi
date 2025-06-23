@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.member.vo.MemberVo;
 
 @Repository("memberDao")
@@ -106,5 +107,23 @@ public class MemberDaoImpl implements MemberDao {
 	public List<Map<String, Object>> selectCountryDistribution() {
 	    return sqlSession.selectList("mapper.member.selectCountryDistribution");
 	}
+	
+	//내가 좋아요한 게시글
+	@Override
+	public List<BoardVo> selectMyLikedBoards(String memberId) {
+	    return sqlSession.selectList("mapper.member.selectMyLikedBoards", memberId);
+	}
+	
+	//내가 쓴 게시글
+	@Override
+	public List<BoardVo> selectMyBoards(String memberId) {
+	    return sqlSession.selectList("mapper.member.selectMyBoards", memberId);
+	}
 
+	@Override
+    public List<Integer> selectLikedBoardIds(String memberId) {
+        return sqlSession.selectList("mapper.member.selectLikedBoardIds", memberId);
+    }
+
+	
 }

@@ -190,4 +190,11 @@ article{
 	background-color: #f4f4f4;
 }
 
+.board-list{
+	width: 100% !important;
+}
+.board-side{
+	display: none !important;	
+}
+
 

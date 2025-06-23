@@ -11,8 +11,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -46,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
@@ -1048,7 +1051,61 @@ public class MemberControllerImpl implements MemberController{
         
     }
 
+    //내가 좋아요한 게시글 
+    @RequestMapping(value = "/myLikeBoardList.do", method = RequestMethod.GET)
+    public String myLikeBoardList(HttpSession session, Model model) {
+        MemberVo member = (MemberVo) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/member/loginpage.do";
+        }
 
-    
+        List<BoardVo> likedBoards = memberService.getMyLikedBoards(member.getId());
+        model.addAttribute("boardList", likedBoards);
+
+        // 로그인 사용자가 좋아요한 게시글 ID 목록
+        List<Integer> likedBoardIds = likedBoards.stream()
+            .map(BoardVo::getBoardId)
+            .collect(Collectors.toList());
+        Map<Integer, Boolean> likedPosts = new HashMap<>();
+        for (Integer boardId : likedBoardIds) {
+            likedPosts.put(boardId, true);
+        }
+        model.addAttribute("likedPosts", likedPosts);
+
+        return "board/list";
+    }
+    //내가 쓴 게시글
+    @RequestMapping(value = "/myBoardList.do", method = RequestMethod.GET)
+    public String myBoardList(HttpSession session, Model model) {
+        MemberVo member = (MemberVo) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/member/loginpage.do";
+        }
+
+        // 1️⃣ 내가 쓴 게시글 목록 가져오기
+        List<BoardVo> myBoards = memberService.getMyBoards(member.getId());
+        model.addAttribute("boardList", myBoards);
+
+        // 2️⃣ 내가 좋아요한 게시글 ID 목록 가져오기
+        List<Integer> likedBoardIds = memberService.getLikedBoardIds(member.getId());
+
+        // 3️⃣ Map으로 변환 (하트를 칠하기 위함)
+        Map<Integer, Boolean> likedPosts = new HashMap<>();
+        for (Integer boardId : likedBoardIds) {
+            likedPosts.put(boardId, true);
+        }
+        model.addAttribute("likedPosts", likedPosts);
+
+        // 4️⃣ 디버그 출력 (필요 시 제거 가능)
+        System.out.println("내 게시글: " + myBoards);
+        System.out.println("내가 좋아요한 게시글 ID: " + likedBoardIds);
+        System.out.println("likedPosts map: " + likedPosts);
+
+        return "board/list";
+    }
+
+
+
+
 	
 }

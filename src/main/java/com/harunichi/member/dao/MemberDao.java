@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.member.vo.MemberVo;
 
 //memeber 작업 dao 인터페이스
@@ -45,5 +46,14 @@ public interface MemberDao {
     List<Map<String, Object>> selectGenderDistribution();
 
     List<Map<String, Object>> selectCountryDistribution();
+    
+    //내가 좋아요한 게시글
+    List<BoardVo> selectMyLikedBoards(String memberId);
+    
+    //내가 쓴 게시글
+    List<BoardVo> selectMyBoards(String memberId);
+    
+    //내가 좋아요한 게시글의 회원id
+    List<Integer> selectLikedBoardIds(String memberId);
 
 }

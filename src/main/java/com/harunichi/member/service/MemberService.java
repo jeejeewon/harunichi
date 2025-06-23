@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.member.vo.MemberVo;
 
 public interface MemberService {
@@ -33,4 +34,13 @@ public interface MemberService {
     List<Map<String, Object>> getGenderDistribution();
 
     List<Map<String, Object>> getCountryDistribution();
+    
+    //내가 좋아요한 게시글 (내가 좋아요한 게시글의 상세 정보(BoardVo 리스트))
+    List<BoardVo> getMyLikedBoards(String memberId);
+    
+    //내가 쓴 게시글
+    List<BoardVo> getMyBoards(String memberId);
+    
+    //가 좋아요한 게시글 ID만 뽑아오기 위한 메소드
+	public List<Integer> getLikedBoardIds(String id);
 }

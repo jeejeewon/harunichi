@@ -52,5 +52,8 @@ public interface BoardService {
     
     // 게시글 좋아요 수 업데이트
     void updateBoardLikeCount(int boardId, int likeCount) throws Exception;
+    
+    // 검색
+    List<BoardVo> searchBoardsByKeyword(String keyword) throws Exception;
 
 }

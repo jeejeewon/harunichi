@@ -84,6 +84,23 @@ request.setCharacterEncoding("utf-8");
 				});
 			});
 			
+			    $(".mypage-contents-tab-inner a").click(function(){
+			        var url = $(this).data("url");
+			
+			        $.get(url, function(data){
+			            $(".mypage-contents-con").html(data);
+			        }).fail(function(){
+			            alert("목록을 불러오는 데 실패했습니다.");
+			        });
+			
+			        // 선택된 탭 스타일 처리 (선택)
+			        $(".mypage-contents-tab-inner a").removeClass("active");
+			        $(this).addClass("active");
+			    });
+			
+			    // 페이지 로드시 기본 탭 자동 클릭 (예: 나의 게시글)
+			    $(".mypage-contents-tab-inner a").first().click();
+			
 		});
 		
 		

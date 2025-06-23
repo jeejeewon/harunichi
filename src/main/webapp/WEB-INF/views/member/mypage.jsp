@@ -8,15 +8,7 @@
 
 <!-- 스타일 css -->
 <link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
-<!--세션 값 확인 
-<pre>
-sessionScope.member: ${sessionScope.member} <br>
-sessionScope.member.id: ${sessionScope.member.id} <br>
-sessionScope.member.nick: ${sessionScope.member.nick} <br>
-sessionScope.member.email: ${sessionScope.member.email} <br>
-sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
-</pre> 
--->
+
 <body>
 	<section class="mypage-wrap">
 		<div class="mypage-inner-header">
@@ -60,26 +52,32 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 					<!-- 타인 프로필이면 팔로우 버튼과 채팅아이콘 표시 -->
 					<c:if test="${not isMyPage}">
 					    <button id="followBtn" class="follow-btn follow" onclick="follow('${contextPath}', '${pageOwner.id}')">팔로우</button>
-					    
-					    	<form id="chatForm" action="<%=request.getContextPath()%>/chat/createChat" method="POST">
-								<input type="hidden" id="receiverId" name="receiverId" value="${pageOwner.id}"> 		
-								<input type="hidden" id="chatType" name="chatType" value="personal">
-							</form>	
-					    <a href="#" class="chat-btn" onclick="chatOpen(this);"><img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons"></a>
+					    <!-- 채팅 폼 -->
+						<form id="chatForm" action="${contextPath}/chat/createChat" method="POST" style="display:none;">
+						    <input type="hidden" name="receiverId" value="${pageOwner.id}">
+						    <input type="hidden" name="chatType" value="personal">
+						</form>
+						<!-- 채팅 버튼 -->
+						<a href="javascript:void(0);" class="chat-btn" onclick="chatOpen();">
+						    <img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons">
+						</a>
 					</c:if>
 				</div>
 			</div>
 		</div>
 		<div class="mypage-contents-area">
 			<div class="mypage-contents-tab">
-				<div class="mypage-contents-tab-inner">
-					<a>나의 게시글</a>
-					<a>좋아요한 게시글</a>
-					<a>나의 거래글</a>
-					<a>좋아요한 거래글</a>
-				</div>
+			    <div class="mypage-contents-tab-inner">
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList.do">나의 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList.do">좋아요한 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/board/myTradeList.do">나의 거래글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeTradeList.do">좋아요한 거래글</a>
+			    </div>
 			</div>
-			<div class="mypage-contents-con"></div>
+			
+			<div class="mypage-contents-con">
+			    <!-- AJAX로 list.jsp 내용이 이 영역에 렌더링됨 -->
+			</div>
 		</div>
 	</section>
 	
@@ -211,11 +209,13 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 	        });
 	    }
 	    
-		function chatOpen(btn){
-			document.getElementById("chatForm").submit();		
-		}	
+	    //채팅 아이콘 클릭시
+	    function chatOpen(){
+		    document.getElementById("chatForm").submit();
+		}
 	    
-	    
+	    //하단 탭
+
 	    
 	</script>
 	

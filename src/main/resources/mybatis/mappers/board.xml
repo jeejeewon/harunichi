@@ -7,9 +7,8 @@
 		resultType="com.harunichi.board.vo.BoardVo">
 		SELECT boardId, boardWriter,boardCont, boardDate,
 		boardLike,
-		boardCount, boardRe, boardCate, boardImg1, boardImg2,
-		boardImg3,
-		boardImg4
+		boardCount, boardRe, boardCate, boardImg1,
+		boardImg2,boardImg3, boardImg4, boardWriterId
 		FROM
 		board
 		ORDER BY
@@ -21,12 +20,14 @@
 		INSERT INTO board (
 		boardWriter, boardCont, boardCate,
 		boardImg1,
-		boardImg2, boardImg3, boardImg4, boardDate
-		) VALUES (
+		boardImg2, boardImg3, boardImg4, boardDate, boardWriterId
+		)
+		VALUES (
 		#{boardWriter},
-		#{boardCont}, #{boardCate}, #{boardImg1}, #{boardImg2},
+		#{boardCont}, #{boardCate}, #{boardImg1},
+		#{boardImg2},
 		#{boardImg3}, #{boardImg4},
-		#{boardDate}
+		#{boardDate}, #{boardWriterId}
 		)
 	</insert>
 
@@ -53,16 +54,16 @@
 		WHERE boardId = #{boardId}
 	</update>
 
-
 	<select id="getBoardById" parameterType="int"
 		resultType="com.harunichi.board.vo.BoardVo">
 		SELECT
 		boardId, boardWriter, boardCont, boardDate,
 		boardLike, boardCount, boardRe,
 		boardCate, boardImg1, boardImg2,
-		boardImg3, boardImg4
+		boardImg3, boardImg4, boardWriterId
 		FROM board
-		WHERE boardId = #{boardId}
+		WHERE boardId =
+		#{boardId}
 	</select>
 
 	<!-- 카운트 증감 -->
@@ -93,9 +94,10 @@
 		SELECT boardId, boardCont, boardWriter, boardDate,
 		boardCate,
 		boardCount, boardImg1, boardImg2, boardImg3, boardImg4,
-		boardModDate, boardModDate
+		boardModDate, boardModDate, boardWriterId
 		FROM board
-		WHERE boardId = #{boardId}
+		WHERE boardId =
+		#{boardId}
 	</select>
 
 	<!-- 게시글 삭제 -->
@@ -110,7 +112,28 @@
 		parameterType="com.harunichi.board.vo.BoardVo">
 		UPDATE board
 		SET boardLike = #{boardLike}
-		WHERE boardId = #{boardId}
+		WHERE boardId =
+		#{boardId}
 	</update>
+
+	<!-- 게시글의 좋아요 데이터 삭제 -->
+	<delete id="deleteLikesByBoardId" parameterType="int">
+		DELETE FROM
+		boardLike WHERE boardLikePost = #{boardId}
+	</delete>
+	
+	<!-- 게시글 검색(회원용) -->
+	<select id="searchBoardsByKeyword" parameterType="string" resultType="com.harunichi.board.vo.BoardVo">
+    SELECT 
+        boardId, boardWriter, boardWriterId, boardCont, boardDate,
+        boardLike, boardCount, boardRe, boardCate,
+        boardImg1, boardImg2, boardImg3, boardImg4
+    FROM board
+    WHERE 
+        boardCont LIKE CONCAT('%', #{keyword}, '%')
+        OR boardWriter LIKE CONCAT('%', #{keyword}, '%')
+        OR boardWriterId LIKE CONCAT('%', #{keyword}, '%')
+    ORDER BY boardDate DESC
+</select>
 
 </mapper>

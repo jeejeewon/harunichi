@@ -33,6 +33,7 @@ import com.harunichi.board.service.BoardService;
 import com.harunichi.board.vo.BoardLikeVo;
 import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
+import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,9 @@ public class BoardControllerImpl implements BoardController {
 	private BoardService boardService;
 
 	@Autowired
+	private MemberService memberService;
+
+	@Autowired
 	private ServletContext servletContext; // 톰캣과 대화할 수 있는 메서드를 제공
 
 	// 게시글 목록
@@ -68,9 +72,7 @@ public class BoardControllerImpl implements BoardController {
 			MemberVo loginUser = (MemberVo) session.getAttribute("member");
 
 			List<BoardVo> boardList = boardService.selectBoardList();
-
-			// 닉네임 -> MemberVo 매핑 (작성자 정보 저장용)
-			Map<String, MemberVo> memberMap = new HashMap<>();
+			Map<String, MemberVo> memberMap = new HashMap<>(); // 닉네임 → MemberVo 캐싱
 
 			if (boardList != null && !boardList.isEmpty()) {
 				for (BoardVo board : boardList) {
@@ -96,13 +98,21 @@ public class BoardControllerImpl implements BoardController {
 						}
 						((Map<Integer, Boolean>) mav.getModel().get("likedPosts")).put(boardId, isLiked);
 					}
-					
-					 // 닉네임으로 작성자 프로필 이미지 조회
-//	                String writerNick = board.getBoardWriter();
-//	                if (!memberMap.containsKey(writerNick)) {
-//	                    MemberVo writerInfo = memberService.getMemberByNick(writerNick);
-//	                    memberMap.put(writerNick, writerInfo);
-//	                }
+
+					// 작성자 프로필 이미지 설정
+					String writerId = board.getBoardWriterId();
+					if (writerId != null && !writerId.isEmpty()) {
+						MemberVo writerInfo = memberMap.get(writerId);
+						if (writerInfo == null) {
+							writerInfo = memberService.selectMemberById(writerId);
+							if (writerInfo != null) {
+								memberMap.put(writerId, writerInfo);
+							}
+						}
+						if (writerInfo != null) {
+							board.setBoardWriterImg(writerInfo.getProfileImg());
+						}
+					}
 				}
 			}
 			mav.addObject("boardList", boardList);
@@ -144,11 +154,12 @@ public class BoardControllerImpl implements BoardController {
 			if (loginUser != null) {
 
 				boardVo.setBoardWriter(loginUser.getNick());
-				log.info(">> 게시글 등록: boardWriter 설정됨 - {}", loginUser.getNick());
+				boardVo.setBoardWriterId(loginUser.getId());
+
 			} else {
 				log.warn(">> 게시글 작성 실패: 로그인되지 않은 사용자 요청");
 				mav.addObject("msg", "게시글을 작성하려면 로그인이 필요합니다.");
-				mav.setViewName("redirect:/board/postForm");
+				mav.setViewName("redirect:/member/loginpage.do");
 				return mav;
 			}
 
@@ -207,7 +218,33 @@ public class BoardControllerImpl implements BoardController {
 
 				// 해당 게시글의 댓글 목록을 불러와서 mav에 추가
 				List<ReplyVo> replyList = boardService.getRepliesByBoardId(boardId);
+
+				// 댓글 작성자 프로필 이미지
+				Map<String, MemberVo> memberCache = new HashMap<>();
+				for (ReplyVo reply : replyList) {
+				    String replyWriterId = reply.getReplyWriterId(); // 아이디로 바꿈
+				    if (replyWriterId != null && !replyWriterId.isEmpty()) {
+				        if (!memberCache.containsKey(replyWriterId)) {
+				            MemberVo memberInfo = memberService.selectMemberById(replyWriterId);
+				            memberCache.put(replyWriterId, memberInfo);
+				        }
+				        MemberVo memberInfo = memberCache.get(replyWriterId);
+				        if (memberInfo != null) {
+				            reply.setReplyWriterImg(memberInfo.getProfileImg());
+				        }
+				    }
+				}
+
 				mav.addObject("replyList", replyList);
+
+				// 작성자 프로필 이미지
+				String writerId = boardVo.getBoardWriterId();
+				if (writerId != null && !writerId.isEmpty()) {
+					MemberVo writerInfo = memberService.selectMemberById(writerId);
+					if (writerInfo != null) {
+						boardVo.setBoardWriterImg(writerInfo.getProfileImg());
+					}
+				}
 
 				// 로그인한 사용자 정보 가져오기
 				HttpSession session = request.getSession();
@@ -592,7 +629,7 @@ public class BoardControllerImpl implements BoardController {
 				return mav;
 			}
 
-			// 2. Service를 통해 데이터베이스에서 게시글 및 댓글 데이터 삭제
+			// 2. Service를 통해 데이터베이스에서 게시글, 댓글, 좋아요 데이터 삭제
 			log.info(">>데이터베이스 삭제를 위해 Service 호출 (deleteBoardData), boardId:{}", boardId);
 			dbDeleteResult = boardService.deleteBoardData(boardId);
 
@@ -644,7 +681,7 @@ public class BoardControllerImpl implements BoardController {
 
 		if (loginUser != null) {
 			reply.setReplyWriter(loginUser.getNick());
-			log.info(">> 댓글 등록: replyWriter 설정됨 - {}", loginUser.getNick());
+			reply.setReplyWriterId(loginUser.getId()); 
 		} else {
 			log.warn(">> 댓글 작성 실패: 로그인되지 않은 사용자 요청");
 			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired";
@@ -711,7 +748,6 @@ public class BoardControllerImpl implements BoardController {
 
 		if (loginUser != null) {
 			currentUserId = loginUser.getNick();
-			log.info(">> 댓글 수정 요청: replyId={}, 요청 사용자 닉네임={}", replyId, currentUserId);
 		} else {
 			log.warn(">> 댓글 수정 실패: 로그인되지 않은 사용자 요청, replyId={}", replyId);
 			resultMap.put("status", "fail");
@@ -882,6 +918,40 @@ public class BoardControllerImpl implements BoardController {
 			log.error(">> 게시글 총 좋아요 수 조회 중 예외 발생", e);
 			return "error"; // 서버 오류
 		}
+	}
+	
+	// 게시글 검색
+	@Override
+	@RequestMapping(value = "/board/search", method = RequestMethod.GET)
+	public ModelAndView searchBoard(
+	        @RequestParam("keyword") String keyword,
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	    ModelAndView mav = new ModelAndView("/board/list");
+
+	    List<BoardVo> boardList = boardService.searchBoardsByKeyword(keyword);
+
+	    // 작성자 프로필 이미지 세팅
+	    Map<String, MemberVo> memberMap = new HashMap<>();
+	    for (BoardVo board : boardList) {
+	        String writerId = board.getBoardWriterId();
+	        if (!memberMap.containsKey(writerId)) {
+	            MemberVo writerInfo = memberService.selectMemberById(writerId);
+	            if (writerInfo != null) {
+	                memberMap.put(writerId, writerInfo);
+	            }
+	        }
+	        MemberVo writerInfo = memberMap.get(writerId);
+	        if (writerInfo != null) {
+	            board.setBoardWriterImg(writerInfo.getProfileImg());
+	            board.setBoardWriter(writerInfo.getNick()); // 닉네임으로 갱신 (선택사항)
+	        }
+	    }
+
+	    mav.addObject("boardList", boardList);
+	    mav.addObject("keyword", keyword);
+
+	    return mav;
 	}
 
 }
