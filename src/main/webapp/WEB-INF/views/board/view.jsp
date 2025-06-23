@@ -14,8 +14,15 @@
 	<div class="post-info">
 		<div class="user-profile">
 			<div class="user-pic">
-				<img
-					src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+				<%-- member 프로필 사진 가져오기 --%>
+				<c:if test="${empty board.boardWriterImg}">
+					<img
+						src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+				</c:if>
+				<c:if test="${not empty board.boardWriterImg}">
+					<img id="profileImage" src="${board.boardWriterImg}"
+						alt="선택한 프로필 이미지">
+				</c:if>
 			</div>
 			<div class="user-name">${board.boardWriter}</div>
 		</div>
@@ -59,8 +66,20 @@
 		<div class="conmment-list">
 			<c:forEach var="reply" items="${replyList}">
 				<div class="comment" id="reply-${reply.replyId}">
-					<%-- 댓글 div에 ID 추가 --%>
-					<div class="comment-author">${reply.replyWriter}</div>
+					<%-- 프로필 이미지 출력 --%>
+					<div class="comment-author">
+						<c:if test="${empty reply.replyWriterImg}">
+							<img
+								src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
+								alt="기본 프로필 이미지" width="30" height="30" />
+						</c:if>
+						<c:if test="${not empty reply.replyWriterImg}">
+							<img src="${reply.replyWriterImg}" alt="프로필 이미지" width="30"
+								height="30" />
+						</c:if>
+						${reply.replyWriter}
+						<%-- 닉네임 --%>
+					</div>
 					<div class="comment-content">${reply.replyCont}</div>
 					<div class="comment-date">${reply.replyDate}</div>
 					<c:if
@@ -121,8 +140,6 @@
 		}
 	);
 </script>
-
-
 <script>
     // 임시 member_id 설정 (JSP 변수와 동일하게)
     var currentUserId = "admin"; // <<<<<<< 임시 member_id 설정
@@ -255,7 +272,7 @@
             // 로그인하지 않은 경우 팝업 표시
             alert('좋아요 기능은 로그인 후 이용 가능합니다.');
             if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-                window.location.href = '${contextPath}/member/loginForm';
+                window.location.href = '${contextPath}/member/loginpage.do';
             }
             return; // AJAX 요청 중단
         }

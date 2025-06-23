@@ -82,7 +82,7 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 
 	// 게시글 검색
 	@Override
-	public List<BoardVo> searchBoardsByKeyword(String keyword) throws Exception {
-		return sqlSession.selectList(NAMESPACE + "searchBoardsByKeyword", keyword);
+	public List<BoardVo> searchBoards(String keyword) throws Exception {
+		return sqlSession.selectList(NAMESPACE + "searchBoards", keyword);
 	}
 }

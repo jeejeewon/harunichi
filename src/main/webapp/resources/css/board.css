@@ -8,6 +8,7 @@
 
 .board.main {
 	display: flex;
+	height: 100%;
 }
 
 .board .board-list {
