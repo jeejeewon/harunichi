@@ -120,4 +120,10 @@ public class MemberDaoImpl implements MemberDao {
 	    return sqlSession.selectList("mapper.member.selectMyBoards", memberId);
 	}
 
+	@Override
+    public List<Integer> selectLikedBoardIds(String memberId) {
+        return sqlSession.selectList("mapper.member.selectLikedBoardIds", memberId);
+    }
+
+	
 }

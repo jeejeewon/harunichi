@@ -327,4 +327,11 @@
 	    ORDER BY boardDate DESC
 	</select>
 	
+	<!-- 내가 좋아요한 게시글에서 회원id만 -->
+	<select id="selectLikedBoardIds" parameterType="String" resultType="int">
+	    SELECT boardLikePost 
+	    FROM boardlike 
+	    WHERE boardLikeUser = #{memberId}
+	</select>
+	
 </mapper>

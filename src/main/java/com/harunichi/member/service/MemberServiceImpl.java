@@ -109,4 +109,11 @@ public class MemberServiceImpl implements MemberService{
 	public List<BoardVo> getMyBoards(String memberId) {
 	    return memberDao.selectMyBoards(memberId);
 	}
+
+	@Override
+	public List<Integer> getLikedBoardIds(String memberId) {
+	    return memberDao.selectLikedBoardIds(memberId);
+	}
+	
+	
 }
