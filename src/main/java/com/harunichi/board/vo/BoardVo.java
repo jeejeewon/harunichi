@@ -21,6 +21,8 @@ public class BoardVo {
 	private String boardImg2;
 	private String boardImg3;
 	private String boardImg4;
+	private String boardWriterImg;
+	private String boardWriterId;
 
 	// 이미지를 List<String> 형태로 반환하는 메서드 추가
 	public List<String> getImageFiles() {

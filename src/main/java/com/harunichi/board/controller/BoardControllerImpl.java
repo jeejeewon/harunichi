@@ -148,7 +148,7 @@ public class BoardControllerImpl implements BoardController {
 			} else {
 				log.warn(">> 게시글 작성 실패: 로그인되지 않은 사용자 요청");
 				mav.addObject("msg", "게시글을 작성하려면 로그인이 필요합니다.");
-				mav.setViewName("redirect:/board/postForm");
+				mav.setViewName("redirect:/member/loginpage.do");
 				return mav;
 			}
 
@@ -592,7 +592,7 @@ public class BoardControllerImpl implements BoardController {
 				return mav;
 			}
 
-			// 2. Service를 통해 데이터베이스에서 게시글 및 댓글 데이터 삭제
+			// 2. Service를 통해 데이터베이스에서 게시글, 댓글, 좋아요 데이터 삭제
 			log.info(">>데이터베이스 삭제를 위해 Service 호출 (deleteBoardData), boardId:{}", boardId);
 			dbDeleteResult = boardService.deleteBoardData(boardId);
 

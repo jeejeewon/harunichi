@@ -73,4 +73,10 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 	public void updateBoardLikeCount(BoardVo boardVo) throws Exception {
 		sqlSession.update(NAMESPACE + "updateBoardLikeCount", boardVo);
 	}
+	
+	// 좋아요 삭제
+	@Override
+    public int deleteLikesByBoardId(int boardId) throws Exception {
+        return sqlSession.delete("mapper.board.deleteLikesByBoardId", boardId);
+    }
 }

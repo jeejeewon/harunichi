@@ -82,18 +82,21 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED) // DB 작업에 트랜잭션 적용
 	public int deleteBoardData(int boardId) throws Exception {
-		int result = 0;
-		try {
-			// 1. 해당 게시글에 속한 댓글 먼저 삭제
-			int deletedRepliesCount = 0;
-			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);
-			result = boardDao.deleteBoard(boardId);
-		} catch (Exception e) {
-			log.error(">>데이터베이스 삭제 중 예외 발생, boardId:{}", boardId, e);
-			throw e;
-		}
-		log.info(">>BoardServiceImpl-deleteBoardData() 호출 종료, 삭제된 행 수:{}", result);
-		return result;
+	    int result = 0;
+	    try {
+	        // 1. 해당 게시글의 좋아요 데이터 먼저 삭제
+	        int deletedLikesCount = boardDao.deleteLikesByBoardId(boardId);		        
+	        // 2. 해당 게시글에 속한 댓글 삭제
+	        int deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);	        
+	        // 3. 게시글 삭제
+	        result = boardDao.deleteBoard(boardId);
+	       
+	    } catch (Exception e) {
+	        log.error(">> 데이터베이스 삭제 중 예외 발생, boardId: {}", boardId, e);
+	        throw e; // 트랜잭션 롤백을 위해 예외 다시 던지기
+	    }
+	    log.info(">> BoardServiceImpl-deleteBoardData() 호출 종료, 삭제된 행 수: {}", result);
+	    return result;
 	}
 
 	// 댓글 추가

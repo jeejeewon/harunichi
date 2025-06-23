@@ -110,7 +110,13 @@
 		parameterType="com.harunichi.board.vo.BoardVo">
 		UPDATE board
 		SET boardLike = #{boardLike}
-		WHERE boardId = #{boardId}
+		WHERE boardId =
+		#{boardId}
 	</update>
+
+	<!-- 게시글의 좋아요 데이터 삭제 -->
+	<delete id="deleteLikesByBoardId" parameterType="int">
+		DELETE FROM boardLike WHERE boardLikePost = #{boardId}
+	</delete>
 
 </mapper>
