@@ -516,9 +516,8 @@ public class BoardControllerImpl implements BoardController {
 
 			log.info(">>파일 시스템 삭제 시도 완료.");
 
-			// 9. 결과 설정 및 뷰 반환
-			log.info(">>게시글 수정 성공, 상세 페이지로 리다이렉트:/board/view?boardId={}", boardId);
-			mav.setViewName("redirect:/board/view?boardId=" + boardId); // 수정 성공 시 해당 게시글 상세 페이지로 리다이렉트
+			// 9. 결과 설정 및 뷰 반환			
+			mav.setViewName("redirect:/board/view?boardId=" + boardId); 
 
 		} catch (NumberFormatException e) { // boardId 파라미터가 숫자가 아닐 경우 발생
 			log.error(">>게시글 ID 파싱 오류 발생:{}", request.getParameter("boardId"), e);
@@ -726,7 +725,7 @@ public class BoardControllerImpl implements BoardController {
 		} catch (Exception e) {
 			log.error("댓글 삭제 중 오류 발생, replyId:{}", replyId, e);
 			mav.addObject("msg", "댓글 삭제 중 오류가 발생했습니다.");
-			mav.setViewName("errorPage"); // 오류 페이지로 이동
+			//mav.setViewName("errorPage"); // 오류 페이지로 이동
 		}
 		log.info(">>BoardControllerImpl-deleteReply() 호출 종료");
 		return mav;
@@ -922,36 +921,39 @@ public class BoardControllerImpl implements BoardController {
 	
 	// 게시글 검색
 	@Override
-	@RequestMapping(value = "/board/search", method = RequestMethod.GET)
-	public ModelAndView searchBoard(
-	        @RequestParam("keyword") String keyword,
-	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ModelAndView searchBoard(@RequestParam("keyword") String keyword,
+	                                HttpServletRequest request,
+	                                HttpServletResponse response) throws Exception {
 
-	    ModelAndView mav = new ModelAndView("/board/list");
+	    ModelAndView mav = new ModelAndView("/board/search"); 
 
-	    List<BoardVo> boardList = boardService.searchBoardsByKeyword(keyword);
+	    try {
+	        List<BoardVo> resultList = boardService.searchBoards(keyword);
 
-	    // 작성자 프로필 이미지 세팅
-	    Map<String, MemberVo> memberMap = new HashMap<>();
-	    for (BoardVo board : boardList) {
-	        String writerId = board.getBoardWriterId();
-	        if (!memberMap.containsKey(writerId)) {
-	            MemberVo writerInfo = memberService.selectMemberById(writerId);
-	            if (writerInfo != null) {
-	                memberMap.put(writerId, writerInfo);
+	        // 작성자 이미지 매핑
+	        Map<String, MemberVo> memberCache = new HashMap<>();
+	        for (BoardVo board : resultList) {
+	            String writerId = board.getBoardWriterId();
+	            if (writerId != null && !writerId.isEmpty()) {
+	                MemberVo writerInfo = memberCache.containsKey(writerId)
+	                        ? memberCache.get(writerId)
+	                        : memberService.selectMemberById(writerId);
+	                if (writerInfo != null) {
+	                    board.setBoardWriterImg(writerInfo.getProfileImg());
+	                    memberCache.put(writerId, writerInfo);
+	                }
 	            }
 	        }
-	        MemberVo writerInfo = memberMap.get(writerId);
-	        if (writerInfo != null) {
-	            board.setBoardWriterImg(writerInfo.getProfileImg());
-	            board.setBoardWriter(writerInfo.getNick()); // 닉네임으로 갱신 (선택사항)
-	        }
-	    }
 
-	    mav.addObject("boardList", boardList);
-	    mav.addObject("keyword", keyword);
+	        mav.addObject("boardList", resultList);
+	        mav.addObject("keyword", keyword);
+	    } catch (Exception e) {
+	        log.error("검색 중 오류 발생", e);
+	        mav.setViewName("errorPage");
+	        mav.addObject("msg", "검색 중 오류가 발생했습니다.");
+	    }
 
 	    return mav;
 	}
-
 }

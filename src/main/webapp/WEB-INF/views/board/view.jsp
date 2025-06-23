@@ -272,7 +272,7 @@
             // 로그인하지 않은 경우 팝업 표시
             alert('좋아요 기능은 로그인 후 이용 가능합니다.');
             if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-                window.location.href = '${contextPath}/member/loginForm';
+                window.location.href = '${contextPath}/member/loginpage.do';
             }
             return; // AJAX 요청 중단
         }

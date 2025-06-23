@@ -6,7 +6,7 @@
 <link href="${contextPath}/resources/css/board.css" rel="stylesheet"
 	type="text/css">
 
-<div class="container board main">
+<div class="container board main search-result">
 	<c:if test="${not empty sessionScope.id}">
 		<div class="post-btn">
 			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
@@ -181,7 +181,7 @@ $('.like').on('click', function() {
         // 로그인하지 않은 경우 팝업 표시
         alert('좋아요 기능은 로그인 후 이용 가능합니다.');
         if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-            window.location.href = '${contextPath}/member/loginForm';
+            window.location.href = '${contextPath}/member/loginpage.do';
         }
         return; // AJAX 요청 중단
     }
@@ -198,7 +198,7 @@ $('.like').on('click', function() {
                 // 서버에서도 로그인 체크를 하므로 이 경우에도 처리
                 alert('좋아요 기능은 로그인 후 이용 가능합니다.');
                 if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-                    window.location.href = '${contextPath}/member/loginpage.do';
+                    window.location.href = '${contextPath}/member/loginForm';
                 }
             } else if (response === 'fail') {
                 // 이미 좋아요/취소 상태인 경우 등
