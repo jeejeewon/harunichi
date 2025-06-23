@@ -31,7 +31,7 @@
 					<c:forEach var="member" items="${memberList}">						
 						<li>
 							<div class="profile-con">
-								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
+								<a href="<%=request.getContextPath()%>/mypage?id=${member.id}"> <!-- 클릭시 상대방 프로필 정보 -->
 									<c:choose>
 								    	<c:when test="${not empty member.profileImg}">
 								        	<img class="profile-img" src="${profileImgPath}${member.profileImg}">
