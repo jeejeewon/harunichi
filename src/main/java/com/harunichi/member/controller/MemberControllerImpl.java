@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
@@ -1048,7 +1050,33 @@ public class MemberControllerImpl implements MemberController{
         
     }
 
+    //내가 좋아요한 게시글 
+    @RequestMapping(value = "/myLikeBoardList.do", method = RequestMethod.GET)
+    public String myLikeBoardList(HttpSession session, Model model) {
+        MemberVo member = (MemberVo) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/member/loginpage.do";
+        }
 
-    
+        List<BoardVo> likedBoards = memberService.getMyLikedBoards(member.getId());
+        model.addAttribute("boardList", likedBoards);
+
+        return "board/list"; // 기존 list.jsp 재활용
+    }
+    //내가 쓴 게시글
+    @RequestMapping(value = "/myBoardList.do", method = RequestMethod.GET)
+    public String myBoardList(HttpSession session, Model model) {
+        MemberVo member = (MemberVo) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/member/loginpage.do";
+        }
+
+        List<BoardVo> myBoards = memberService.getMyBoards(member.getId());
+        model.addAttribute("boardList", myBoards);
+
+        return "board/list";
+    }
+
+
 	
 }

@@ -8,15 +8,7 @@
 
 <!-- 스타일 css -->
 <link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
-<!--세션 값 확인 
-<pre>
-sessionScope.member: ${sessionScope.member} <br>
-sessionScope.member.id: ${sessionScope.member.id} <br>
-sessionScope.member.nick: ${sessionScope.member.nick} <br>
-sessionScope.member.email: ${sessionScope.member.email} <br>
-sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
-</pre> 
--->
+
 <body>
 	<section class="mypage-wrap">
 		<div class="mypage-inner-header">
@@ -75,14 +67,17 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 		</div>
 		<div class="mypage-contents-area">
 			<div class="mypage-contents-tab">
-				<div class="mypage-contents-tab-inner">
-					<a>나의 게시글</a>
-					<a>좋아요한 게시글</a>
-					<a>나의 거래글</a>
-					<a>좋아요한 거래글</a>
-				</div>
+			    <div class="mypage-contents-tab-inner">
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList.do">나의 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList.do">좋아요한 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/board/myTradeList.do">나의 거래글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeTradeList.do">좋아요한 거래글</a>
+			    </div>
 			</div>
-			<div class="mypage-contents-con"></div>
+			
+			<div class="mypage-contents-con">
+			    <!-- AJAX로 list.jsp 내용이 이 영역에 렌더링됨 -->
+			</div>
 		</div>
 	</section>
 	
@@ -218,6 +213,9 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 	    function chatOpen(){
 		    document.getElementById("chatForm").submit();
 		}
+	    
+	    //하단 탭
+	    
 	</script>
 	
 

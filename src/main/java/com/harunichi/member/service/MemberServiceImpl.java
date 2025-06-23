@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.member.dao.MemberDao;
 import com.harunichi.member.vo.MemberVo;
 
@@ -96,5 +97,16 @@ public class MemberServiceImpl implements MemberService{
 	public List<Map<String, Object>> getCountryDistribution() {
 	    return memberDao.selectCountryDistribution();
 	}
-
+	
+	//내가 좋아요한 게시글
+	@Override
+	public List<BoardVo> getMyLikedBoards(String memberId) {
+	    return memberDao.selectMyLikedBoards(memberId);
+	}
+	
+	//내가 쓴 게시글
+	@Override
+	public List<BoardVo> getMyBoards(String memberId) {
+	    return memberDao.selectMyBoards(memberId);
+	}
 }

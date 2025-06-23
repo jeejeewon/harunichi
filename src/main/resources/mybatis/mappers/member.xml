@@ -309,5 +309,22 @@
 		FROM member
 		GROUP BY contry
 	</select>
-
+	
+	<!-- 내가 좋아요한 게시글 -->
+	<select id="selectMyLikedBoards" parameterType="String" resultType="com.harunichi.board.vo.BoardVo">
+	    SELECT B.*
+	    FROM board B
+	    JOIN boardlike L ON B.boardId = L.boardLikePost
+	    WHERE L.boardLikeUser = #{memberId}
+	    ORDER BY B.boardDate DESC
+	</select>
+	
+	<!-- 내가 쓴 게시글 -->
+	<select id="selectMyBoards" parameterType="String" resultType="com.harunichi.board.vo.BoardVo">
+	    SELECT *
+	    FROM board
+	    WHERE boardWriterId = #{memberId}
+	    ORDER BY boardDate DESC
+	</select>
+	
 </mapper>
