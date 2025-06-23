@@ -147,6 +147,15 @@
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
 						</a>
 						<span>${user.nick}</span>
+						
+						
+						
+				        <c:if test="${chatType eq 'group' and isLeader eq 'true'}">
+				        	<i class="bi bi-star-fill" style="color: gold;" title="방장"></i>
+				        </c:if>
+				        
+				        
+				        
 					</li>
 				</c:forEach>
 			</ul>
