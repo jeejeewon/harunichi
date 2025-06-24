@@ -75,6 +75,16 @@ public class ProductDaoImpl implements ProductDao {
     public List<ProductVo> findOtherProducts(Map<String, Object> paramMap) throws Exception {
         return sqlSession.selectList(NAMESPACE + "findOtherByWriter", paramMap);
     }
+    
+    @Override
+    public List<ProductVo> selectProductsByWriterId(String writerId) throws Exception {
+        return sqlSession.selectList(NAMESPACE + "selectProductsByWriterId", writerId);
+    }
+    
+    @Override
+    public List<ProductVo> selectTopViewedProducts() throws Exception {
+        return sqlSession.selectList(NAMESPACE + "selectTopViewedProducts");
+    }
 
 
 }

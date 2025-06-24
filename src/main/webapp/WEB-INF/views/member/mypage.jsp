@@ -70,8 +70,9 @@
 			    <div class="mypage-contents-tab-inner">
 			        <a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList.do">나의 게시글</a>
 			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList.do">좋아요한 게시글</a>
-			        <a href="javascript:void(0);" data-url="${contextPath}/board/myTradeList.do">나의 거래글</a>
-			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeTradeList.do">좋아요한 거래글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/product/myList">나의 거래글</a>
+					<a href="javascript:void(0);" data-url="${contextPath}/like/myLike">좋아요한 거래글</a>
+					<a href="javascript:void(0);" data-url="${contextPath}/payment/orders">나의 주문 내역</a>
 			    </div>
 			</div>
 			
@@ -82,8 +83,17 @@
 	</section>
 	
 	<script type="text/javascript">
-	    // 페이지 로드 시 팔로우 상태를 확인하고 버튼을 초기화
+	
+	    //페이지 로드 시 
 	    document.addEventListener("DOMContentLoaded", function() {
+	    	
+	    	// board-side 강제 숨기기 추가
+	        const boardSideEls = document.querySelectorAll('.board-side');
+	        boardSideEls.forEach(function(el) {
+	            el.style.display = 'none';
+	        });
+	        
+	     	// 팔로우 상태를 확인하고 버튼을 초기화
 	        const contextPath = '${contextPath}';
 	        const followeeId = '${pageOwner.id}';
 	        const myId = '${sessionScope.member != null ? sessionScope.member.id : ""}';
@@ -99,8 +109,39 @@
 	                    }
 	                });
 	        }
+	        
+	        
+	        // 탭 이벤트 등록
+	        const tabs = document.querySelectorAll('.mypage-contents-tab-inner a');
+	        const contentCon = document.querySelector('.mypage-contents-con');
+
+	        tabs.forEach(tab => {
+	            tab.addEventListener('click', function() {
+	                const url = this.getAttribute('data-url');
+	                if (url) {
+	                    fetch(url)
+	                        .then(response => response.text())
+	                        .then(html => {
+	                            contentCon.innerHTML = html;
+	                        })
+	                        .catch(() => {
+	                            contentCon.innerHTML = '<p>불러오기 실패</p>';
+	                        });
+	                }
+	                
+	             	// 활성화 클래스 처리
+	                tabs.forEach(t => t.classList.remove('active-tab'));
+	                this.classList.add('active-tab');
+	            });
+	        });
+
+	        // 첫 탭 자동 클릭
+	        const firstTab = document.querySelector('.mypage-contents-tab-inner a[data-url]');
+	        if (firstTab) {
+	            firstTab.click();
+	        }
 	    });
-	
+		
 	    // 팔로잉 상태 버튼으로 설정하고 언팔로우 관련 이벤트를 등록
 	    function setFollowingButton(contextPath, followeeId, myId) {
 	        const btn = document.getElementById("followBtn");
@@ -213,9 +254,6 @@
 	    function chatOpen(){
 		    document.getElementById("chatForm").submit();
 		}
-	    
-	    //하단 탭
-
 	    
 	</script>
 	

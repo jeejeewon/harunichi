@@ -1,5 +1,6 @@
 package com.harunichi.main.controller;
 
+import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.harunichi.product.service.ProductService;
+import com.harunichi.product.vo.ProductVo;
 import com.harunichi.visit.service.VisitService;
 
 @Controller
@@ -22,13 +26,20 @@ public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
+	@Autowired
+    private ProductService productService;
+	
 	//메인 페이지를 보여주는 메서드
 	//http://localhost:8090/harunichi 요청시 메인페이지, 또는
 	//http://localhost:8090/harunichi/main 요청시 메인페이지
 	@RequestMapping(value = {"/", "/main"}, method = RequestMethod.GET)
-	public String showMainPage(Locale locale, Model model, HttpServletRequest request) {
+	public String showMainPage(Locale locale, Model model, HttpServletRequest request) throws Exception {
 		
 		logger.info("메인페이지입니다.", locale);
+		
+		// 인기 상품 조회
+	    List<ProductVo> topProducts = productService.getTopViewedProducts();
+	    model.addAttribute("topProducts", topProducts);
 		
 		String ip = request.getRemoteAddr();
         visitService.insertVisit(ip);

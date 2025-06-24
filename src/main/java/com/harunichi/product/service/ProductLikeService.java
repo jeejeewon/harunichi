@@ -1,5 +1,7 @@
 package com.harunichi.product.service;
 
+import java.util.List;
+
 import com.harunichi.product.vo.ProductLikeVo;
 
 public interface ProductLikeService {
@@ -12,4 +14,11 @@ public interface ProductLikeService {
 
     // 특정 상품의 좋아요 수 조회
     int getLikeCount(int productId);
+
+    // 내가 좋아요한 상품 목록
+	List<ProductLikeVo> getLikedProducts(String userId);
+
+	// 내 글에는 좋아요가 되면 안 됨
+	String getProductOwnerId(int productId);
+
 }

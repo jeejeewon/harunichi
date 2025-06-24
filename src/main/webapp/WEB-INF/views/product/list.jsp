@@ -35,7 +35,6 @@
     <button class="btn-sky" onclick="location.href='${pageContext.request.contextPath}/product/write'">글쓰기</button>
 </div>
 
-
 <!-- 상품 리스트 -->
 <div id="product-container" class="product-grid"></div>
 
@@ -85,10 +84,10 @@ function renderProducts(products) {
 		
 		// 프로필 이미지 처리
 		const profileImg = p.writerProfileImg
-		    ? ctx + '/resources/images/profile/' + p.writerProfileImg  // DB에 'admin.png'만 들어 있을 때(경로 없을때)
-		    : ctx + '/resources/images/profile/default_profile.png';
-		
-		// 작성자 닉네임
+		    ? ctx + '/images/profile/' + p.writerProfileImg  // /resources → /images
+		    : ctx + '/resources/images/profile/default_profile.png';  // 기본 이미지는 내부 경로 유지
+
+				// 작성자 닉네임
 		const writerNick = p.writerNick;
 
         // 상태 처리 (문자열 "1" 또는 숫자 1 모두 처리)
