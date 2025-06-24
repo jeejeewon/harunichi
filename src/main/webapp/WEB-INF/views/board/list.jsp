@@ -1,39 +1,57 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
+
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link href="${contextPath}/resources/css/board.css" rel="stylesheet"
 	type="text/css">
 
+<div id="postModal" style="display:none; position:fixed; top:0; left:0; 
+    width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:#fff; width:600px; margin:100px auto; padding:20px; position:relative;">
+        <button id="closePostModal" style="position:absolute; top:10px; right:10px;">X</button>
+        
+        <jsp:include page="postForm.jsp" />
+    </div>
+</div>
+
 <div class="container board main">
 	<c:if test="${not empty sessionScope.id}">
 		<div class="post-btn">
-			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
+		    <a href="javascript:void(0);" id="openPostModal">새 게시글 작성</a>
 		</div>
 	</c:if>
 	<div class="board-list">
 		<div class="list-wrap">
 			<c:forEach var="board" items="${boardList}">
 				<div class="list-item">
-					<div class="item">		
+					<div class="item">
 						<div class="item-cate">
 							<span>${board.boardCate}</span>
 						</div>
-						<div class="user-profile">
-							<div class="user-pic">							
-								<%-- member 프로필 사진 가져오기 --%>
-								<c:if test="${empty board.boardWriterImg}">
-									<img
-										src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
-								</c:if>
-								<c:if test="${not empty board.boardWriterImg}">
-									<img id="profileImage" src="${board.boardWriterImg}" alt="선택한 프로필 이미지" >
-								</c:if>
+						<div class="item-head">
+							<div class="user-profile">
+								<div class="user-pic">
+									<%-- member 프로필 사진 가져오기 --%>
+									<c:if test="${empty board.boardWriterImg}">
+										<img
+											src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+									</c:if>
+									<c:if test="${not empty board.boardWriterImg}">
+										<img id="profileImage" src="${board.boardWriterImg}"
+											alt="선택한 프로필 이미지">
+									</c:if>
+								</div>
+								<div class="user-name">${board.boardWriter}</div>
+								<div class="item-date" data-date="${board.boardDate}"></div>
 							</div>
-							<div class="user-name">${board.boardWriter}</div>
-							<div class="item-date" data-date="${board.boardDate}"></div>
 							<div class="item-more">
+								<div class="btn-more">
+									<img width="20" height="20"
+										src="https://img.icons8.com/ios-glyphs/20/more.png" alt="more" />
+								</div>
 								<ul class="popup">
 									<li><a>링크 복사</a></li>
 									<c:if
@@ -54,8 +72,7 @@
 						</div>
 						<a href="${contextPath}/board/view?boardId=${board.boardId}"
 							class="item-content">
-							<p>${board.boardCont}</p>
-
+							<p><c:out value="${board.boardCont}" escapeXml="false" /></p>
 							<div class="img-wrap">
 								<c:forEach var="imageFileName" items="${board.imageFiles}">
 									<c:if test="${not empty imageFileName}">
@@ -71,14 +88,19 @@
 						<div class="item-info">
 							<div class="like  ${likedPosts[board.boardId] ? 'liked' : ''}"
 								data-board-id="${board.boardId}">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+								<svg xmlns="http://www.w3.org/2000/svg"
 									class="${isLiked ? 'liked' : ''}">
 							    <path
 										d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z" />
 							  </svg>
+								<p>${board.boardLike}</p>
 							</div>
-							<p>좋아요 ${board.boardLike}</p>
-							<p>댓글수 ${board.boardRe}</p>
+							<div class="reply">
+								<img width="25" height="25"
+									src="https://img.icons8.com/material-outlined/25/speech-bubble-with-dots.png"
+									alt="speech-bubble-with-dots" />
+								<p>${board.boardRe}</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -181,7 +203,7 @@ $('.like').on('click', function() {
         // 로그인하지 않은 경우 팝업 표시
         alert('좋아요 기능은 로그인 후 이용 가능합니다.');
         if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-            window.location.href = '${contextPath}/member/loginForm';
+            window.location.href = '${contextPath}/member/loginpage.do';
         }
         return; // AJAX 요청 중단
     }
@@ -220,6 +242,41 @@ $('.like').on('click', function() {
         error: function(xhr, status, error) {
             console.error("AJAX Error: " + status + error);
             alert('처리 중 오류가 발생했습니다.');
+        }
+    });
+});
+
+
+$('.btn-more').on('click', function (e) {
+  e.stopPropagation(); // 이벤트 버블링 방지
+  var $popup = $(this).siblings('.popup');
+  $('.popup').not($popup).hide(); // 다른 popup은 닫기
+  $popup.toggle(); // 현재 popup toggle
+});
+
+$('.popup').on('click', function (e) {
+  e.stopPropagation();
+});
+
+$(document).on('click', function () {
+  $('.popup').hide();
+});
+
+$(function() {
+    // 모달 열기
+    $('#openPostModal').click(function() {
+        $('#postModal').fadeIn();
+    });
+
+    // 모달 닫기 버튼 클릭 시
+    $('#closePostModal').click(function() {
+        $('#postModal').fadeOut();
+    });
+
+    // 모달 바깥 영역 클릭 시 닫기
+    $('#postModal').click(function(e) {
+        if (e.target === this) {
+            $(this).fadeOut();
         }
     });
 });

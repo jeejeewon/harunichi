@@ -148,74 +148,76 @@
 </div>
 
 <script>
-	$(document).ready(function() {
-		// 파일 입력 필드의 change 이벤트에 validateFileType 함수 연결
-		$('input[name="imageFiles"]').change(function() {
-			validateFileType(this);
-		});
+$('article').has('.board').addClass('board-article');
 
-		// 삭제 체크박스의 change 이벤트에도 유효성 검사 함수 연결
-		$('input[name="deleteIndices"]').change(function() {
-			const fileInput = $('input[name="imageFiles"]')[0];
-			validateFileType(fileInput);
-		});
+$(document).ready(function() {
+	// 파일 입력 필드의 change 이벤트에 validateFileType 함수 연결
+	$('input[name="imageFiles"]').change(function() {
+		validateFileType(this);
 	});
 
-	function validateFileType(input) {
-		const files = input.files; // 새로 선택된 파일 목록 (FileList 객체)
-		const maxFiles = 4; // 허용되는 최대 파일 개수
+	// 삭제 체크박스의 change 이벤트에도 유효성 검사 함수 연결
+	$('input[name="deleteIndices"]').change(function() {
+		const fileInput = $('input[name="imageFiles"]')[0];
+		validateFileType(fileInput);
+	});
+});
 
-		// 1. 현재 표시된 기존 이미지 중 삭제되지 않고 남을 이미지 개수 계산
-		let remainingExistingImages = 0;
+function validateFileType(input) {
+	const files = input.files; // 새로 선택된 파일 목록 (FileList 객체)
+	const maxFiles = 4; // 허용되는 최대 파일 개수
 
-		const deleteCheckboxes = $('.form-value.image-upload-section input[name="deleteIndices"]');
+	// 1. 현재 표시된 기존 이미지 중 삭제되지 않고 남을 이미지 개수 계산
+	let remainingExistingImages = 0;
 
-		deleteCheckboxes.each(function() {
-			// 각 삭제 체크박스에 대해, 체크되어 있지 않다면 남을 이미지 개수에 포함
-			if (!$(this).is(':checked')) {
-				remainingExistingImages++;
-			}
-		});
+	const deleteCheckboxes = $('.form-value.image-upload-section input[name="deleteIndices"]');
 
-		console.log("삭제 후 남게 될 기존 이미지 개수:", remainingExistingImages);
-
-		// 2. 새로 선택된 파일 개수
-		const newFilesCount = files.length;
-		console.log("새로 선택된 파일 개수:", newFilesCount);
-
-		// 3. 수정 완료 후 총 이미지 개수 계산
-		const totalImagesAfterUpdate = remainingExistingImages + newFilesCount;
-		console.log("수정 후 총 이미지 개수 예상:", totalImagesAfterUpdate);
-
-		// 4. 총 이미지 개수 제한 확인
-		if (totalImagesAfterUpdate > maxFiles) {
-			alert('첨부 이미지는 기존 이미지와 새로 추가할 이미지를 합쳐 최대 ' + maxFiles
-					+ '개까지 가능합니다.\n현재 ' + remainingExistingImages
-					+ '개의 기존 이미지가 유지되고 있으며, ' + newFilesCount
-					+ '개의 새 파일을 추가하면 총 ' + totalImagesAfterUpdate + '개가 됩니다.');
-			input.value = ''; // 파일 선택 필드 초기화 (선택된 모든 파일 제거)
-			console.log("총 이미지 개수 초과. 파일 선택 초기화.");
-			return; // 유효하지 않은 파일 개수 발견 시 즉시 함수 종료
+	deleteCheckboxes.each(function() {
+		// 각 삭제 체크박스에 대해, 체크되어 있지 않다면 남을 이미지 개수에 포함
+		if (!$(this).is(':checked')) {
+			remainingExistingImages++;
 		}
+	});
 
-		// 5. 파일 타입 검사 (총 개수 검사 통과 후 실행)
-		console.log("총 이미지 개수 유효성 검사 통과.");
-		// 새로 선택된 파일이 있을 경우에만 타입 검사 실행
-		if (newFilesCount > 0) {
-			for (let i = 0; i < newFilesCount; i++) {
-				const file = files[i];
-				console.log("검사 중 파일:", file.name, "타입:", file.type);
+	console.log("삭제 후 남게 될 기존 이미지 개수:", remainingExistingImages);
 
-				// 파일 타입이 'image/'로 시작하는지 확인
-				if (!file.type.startsWith('image/')) {
-					alert('이미지 파일만 업로드할 수 있습니다.\n잘못된 파일: ' + file.name);
-					input.value = ''; // 파일 선택 필드 초기화 (선택된 모든 파일 제거)
-					console.log("유효하지 않은 파일 타입 감지. 파일 선택 초기화.");
-					return; // 유효하지 않은 파일 발견 시 즉시 함수 종료
-				}
-			}
-		}
+	// 2. 새로 선택된 파일 개수
+	const newFilesCount = files.length;
+	console.log("새로 선택된 파일 개수:", newFilesCount);
 
-		console.log("모든 파일 유효성 검사 통과.");
+	// 3. 수정 완료 후 총 이미지 개수 계산
+	const totalImagesAfterUpdate = remainingExistingImages + newFilesCount;
+	console.log("수정 후 총 이미지 개수 예상:", totalImagesAfterUpdate);
+
+	// 4. 총 이미지 개수 제한 확인
+	if (totalImagesAfterUpdate > maxFiles) {
+		alert('첨부 이미지는 기존 이미지와 새로 추가할 이미지를 합쳐 최대 ' + maxFiles
+				+ '개까지 가능합니다.\n현재 ' + remainingExistingImages
+				+ '개의 기존 이미지가 유지되고 있으며, ' + newFilesCount
+				+ '개의 새 파일을 추가하면 총 ' + totalImagesAfterUpdate + '개가 됩니다.');
+		input.value = ''; // 파일 선택 필드 초기화 (선택된 모든 파일 제거)
+		console.log("총 이미지 개수 초과. 파일 선택 초기화.");
+		return; // 유효하지 않은 파일 개수 발견 시 즉시 함수 종료
 	}
+
+	// 5. 파일 타입 검사 (총 개수 검사 통과 후 실행)
+	console.log("총 이미지 개수 유효성 검사 통과.");
+	// 새로 선택된 파일이 있을 경우에만 타입 검사 실행
+	if (newFilesCount > 0) {
+		for (let i = 0; i < newFilesCount; i++) {
+			const file = files[i];
+			console.log("검사 중 파일:", file.name, "타입:", file.type);
+
+			// 파일 타입이 'image/'로 시작하는지 확인
+			if (!file.type.startsWith('image/')) {
+				alert('이미지 파일만 업로드할 수 있습니다.\n잘못된 파일: ' + file.name);
+				input.value = ''; // 파일 선택 필드 초기화 (선택된 모든 파일 제거)
+				console.log("유효하지 않은 파일 타입 감지. 파일 선택 초기화.");
+				return; // 유효하지 않은 파일 발견 시 즉시 함수 종료
+			}
+		}
+	}
+
+	console.log("모든 파일 유효성 검사 통과.");
+}
 </script>

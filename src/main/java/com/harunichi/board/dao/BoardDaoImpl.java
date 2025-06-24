@@ -85,4 +85,10 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 	public List<BoardVo> searchBoards(String keyword) throws Exception {
 		return sqlSession.selectList(NAMESPACE + "searchBoards", keyword);
 	}
+	
+	// 인기글 5개 (사이드용)
+	@Override
+	public List<BoardVo> selectTop5ByViews() throws Exception {
+	    return sqlSession.selectList(NAMESPACE +"selectTop5ByViews");
+	}
 }

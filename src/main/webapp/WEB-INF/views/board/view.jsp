@@ -9,7 +9,7 @@
 
 <div class="container board">
 
-	<h1>${board.boardCont}</h1>
+<div class="post-wrap">
 
 	<div class="post-info">
 		<div class="user-profile">
@@ -118,27 +118,31 @@
 			<p>로그인 후 댓글 작성 가능합니다.</p>
 		</c:if>
 	</div>
+
+</div>
+<jsp:include page="side.jsp" />
 </div>
 
-<%-- 날짜 포맷팅 스크립트 등 필요한 스크립트 추가 --%>
 <script>
-	// item-date 클래스를 가진 요소들을 찾아서 날짜 포맷을 보기 좋게 바꿔주는 스크립트
-	// 예: 2023-08-22T10:30:00 -> 2023.08.22 10:30
-	document.querySelectorAll('.item-date').forEach(
-		function(element) {
-			var rawDate = element.getAttribute('data-date');
-			if (rawDate) {
-				var date = new Date(rawDate);
-				var year = date.getFullYear();
-				var month = ('0' + (date.getMonth() + 1)).slice(-2);
-				var day = ('0' + date.getDate()).slice(-2);
-				var hours = ('0' + date.getHours()).slice(-2);
-				var minutes = ('0' + date.getMinutes()).slice(-2);
-				element.textContent = year + '.' + month + '.' + day + '. '
-						+ hours + ':' + minutes;
-			}
+$('article').has('.board').addClass('board-article');
+
+// item-date 클래스를 가진 요소들을 찾아서 날짜 포맷을 보기 좋게 바꿔주는 스크립트
+// 예: 2023-08-22T10:30:00 -> 2023.08.22 10:30
+document.querySelectorAll('.item-date').forEach(
+	function(element) {
+		var rawDate = element.getAttribute('data-date');
+		if (rawDate) {
+			var date = new Date(rawDate);
+			var year = date.getFullYear();
+			var month = ('0' + (date.getMonth() + 1)).slice(-2);
+			var day = ('0' + date.getDate()).slice(-2);
+			var hours = ('0' + date.getHours()).slice(-2);
+			var minutes = ('0' + date.getMinutes()).slice(-2);
+			element.textContent = year + '.' + month + '.' + day + '. '
+					+ hours + ':' + minutes;
 		}
-	);
+	}
+);
 </script>
 <script>
     // 임시 member_id 설정 (JSP 변수와 동일하게)

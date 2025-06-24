@@ -32,8 +32,11 @@ public interface BoardDao {
 
 	// 게시글의 좋아요 데이터 삭제
 	int deleteLikesByBoardId(int boardId) throws Exception;
-	
+
 	// 게시글 검색 (아이디, 닉네임, 글 내용)
-	 List<BoardVo> searchBoards(String keyword) throws Exception;
+	List<BoardVo> searchBoards(String keyword) throws Exception;
+
+	// 인기글 5개 (사이드용)
+	List<BoardVo> selectTop5ByViews() throws Exception;
 
 }

@@ -135,5 +135,13 @@
 		OR boardWriterId LIKE CONCAT('%', #{keyword}, '%')
 		ORDER BY boardDate DESC
 	</select>
+	
+	<!-- 조회수 높은 상위 5개 게시글 -->
+	<select id="selectTop5ByViews" resultType="com.harunichi.board.vo.BoardVo">
+	    SELECT boardId, boardWriter, boardCont, boardDate, boardCount, boardCate
+	    FROM board
+	    ORDER BY boardCount DESC
+	    LIMIT 5
+	</select>
 
 </mapper>
