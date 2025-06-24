@@ -65,10 +65,19 @@ public class ProductServiceImpl implements ProductService {
         return productDao.findOtherProducts(paramMap);
     }
 
-
 	@Override
 	public List<ProductVo> searchFiltered(String keyword, String category, Integer status, int offset, int pageSize) throws Exception {
 		 return productDao.searchFiltered(keyword, category, status, offset, pageSize);
+	}
+	
+	@Override
+	public List<ProductVo> findProductsByWriterId(String writerId) throws Exception {
+	    return productDao.selectProductsByWriterId(writerId);
+	}
+
+	@Override
+	public List<ProductVo> getTopViewedProducts() throws Exception {
+	    return productDao.selectTopViewedProducts();
 	}
 
     

@@ -23,22 +23,21 @@ import java.util.Map;
 @RequestMapping("/payment")
 public class PaymentController {
 
-	@Autowired
-	private ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-	@Autowired
-	private IamportService iamportService;
+    @Autowired
+    private IamportService iamportService;
 
-	@Autowired
-	private OrderService orderService;
-	
-    // 공통 로그인 확인 메서드
+    @Autowired
+    private OrderService orderService;
+
+    // 로그인 체크 공통 메서드
     private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        return !LoginCheck.loginCheck(request.getSession(), request, response);
-        return false;
+        return !LoginCheck.loginCheck(request.getSession(), request, response);
     }
 
-    // 결제 화면 진입 시 로그인 확인
+    // 결제 폼 진입 (로그인 필요)
     @RequestMapping(value = "/form", method = RequestMethod.GET)
     public ModelAndView paymentForm(@RequestParam("productId") int productId,
                                     HttpServletRequest request,
@@ -51,7 +50,7 @@ public class PaymentController {
         return mav;
     }
 
-    // 결제 완료 후 포트원 검증 및 주문 저장
+    // 결제 검증 및 주문 저장 (포트원 연동)
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> verifyAndSave(@RequestBody Map<String, String> payload,
@@ -65,14 +64,16 @@ public class PaymentController {
         String merchantUid = payload.get("merchant_uid");
         String productName = payload.get("product_name");
         int amount = Integer.parseInt(payload.get("amount"));
-        String buyerId = (String) request.getSession().getAttribute("loginId");
-        String buyerName = (String) request.getSession().getAttribute("loginName");
+        int productId = Integer.parseInt(payload.get("product_id"));
+
+        String buyerId = (String) request.getSession().getAttribute("id");
+        String buyerName = (String) request.getSession().getAttribute("name");
+        if (buyerName == null) buyerName = "비회원";
 
         try {
             boolean isFree = amount == 0 || impUid.startsWith("FREE_");
 
             if (!isFree) {
-                // 포트원 액세스 토큰 발급 및 결제 상태 확인
                 String accessToken = iamportService.getAccessToken();
                 Map<String, Object> paymentData = iamportService.getPaymentData(impUid, accessToken);
                 String status = (String) paymentData.get("status");
@@ -84,12 +85,9 @@ public class PaymentController {
                 }
             }
 
-            // 주문 정보 저장
             OrderVo order = new OrderVo();
             order.setImpUid(impUid);
             order.setMerchantUid(merchantUid);
-            
-            int productId = Integer.parseInt(payload.get("product_id"));
             order.setProductId(productId);
             order.setProductName(productName);
             order.setAmount(amount);
@@ -98,8 +96,8 @@ public class PaymentController {
             order.setStatus("결제완료");
 
             orderService.insertOrder(order);
-            productService.markAsSoldOut(productId); // 판매완료 상태 저장
-            
+            productService.markAsSoldOut(productId);
+
             result.put("success", true);
             result.put("message", "주문이 성공적으로 저장되었습니다.");
 
@@ -111,35 +109,34 @@ public class PaymentController {
         return result;
     }
 
-	// 결제 성공 시 이동할 페이지
-	@RequestMapping(value = "/success", method = RequestMethod.GET)
-	public ModelAndView success() {
-		return new ModelAndView("/payment/success");
-	}
+    // 결제 성공 페이지
+    @RequestMapping(value = "/success", method = RequestMethod.GET)
+    public ModelAndView success() {
+        return new ModelAndView("/payment/success");
+    }
 
-	// 결제 실패 시 이동할 페이지
-	@RequestMapping(value = "/fail", method = RequestMethod.GET)
-	public ModelAndView fail(
-	        @RequestParam(value = "productId", required = false) Integer productId,
-	        @RequestParam(value = "errorMessage", required = false) String errorMessage) {
+    // 결제 실패 페이지
+    @RequestMapping(value = "/fail", method = RequestMethod.GET)
+    public ModelAndView fail(@RequestParam(value = "productId", required = false) Integer productId,
+                             @RequestParam(value = "errorMessage", required = false) String errorMessage) {
 
-	    ModelAndView mav = new ModelAndView("/payment/fail");
-	    mav.addObject("productId", productId != null ? productId : null);
-	    mav.addObject("errorMessage", errorMessage != null ? errorMessage : "결제에 실패했습니다.");
-	    return mav;
-	}
+        ModelAndView mav = new ModelAndView("/payment/fail");
+        mav.addObject("productId", productId != null ? productId : 0);
+        mav.addObject("errorMessage", errorMessage != null ? errorMessage : "결제에 실패했습니다.");
+        return mav;
+    }
 
-    // 주문 내역 확인 (로그인 필요)
+    // 주문 내역 보기 (로그인 필요)
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     public ModelAndView orderList(HttpServletRequest request,
                                   HttpServletResponse response) throws Exception {
         if (isNotLoggedIn(request, response)) return null;
 
-        String loginId = (String) request.getSession().getAttribute("loginId");
+        String loginId = (String) request.getSession().getAttribute("id");
         List<OrderVo> orderList = orderService.findByBuyerId(loginId);
 
-        ModelAndView mav = new ModelAndView("/payment/orderList");
+        ModelAndView mav = new ModelAndView("/payment/orders");
         mav.addObject("orderList", orderList);
         return mav;
     }
-}
+} 

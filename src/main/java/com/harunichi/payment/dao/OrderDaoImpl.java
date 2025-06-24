@@ -23,7 +23,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<OrderVo> findByBuyerId(String buyerId) throws Exception {
-        return sqlSession.selectList(NAMESPACE + "findByBuyerId", buyerId);
+        return sqlSession.selectList(NAMESPACE + "selectOrdersByBuyerId", buyerId);
     }
 
     @Override

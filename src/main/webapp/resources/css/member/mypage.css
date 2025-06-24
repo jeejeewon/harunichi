@@ -173,6 +173,12 @@ article{
 	border-bottom: 1px solid #eee;
 	
 }
+
+.mypage-contents-tab-inner a.active-tab {
+  background-color: #f0f0f0;
+  color: #222;
+}
+
 .mypage-contents-tab-inner{
 	display: flex;
 	justify-content: center;
