@@ -436,6 +436,12 @@
 .modal-btn:hover {
 	background-color: #53a5dc; 
 }
+#editCancelBtn {
+	background-color: #FFBFA3;
+}
+#editCancelBtn:hover {
+	background-color: #FFA07A;		
+}
 .close {
 	float: right;
 	font-size: 20px;
