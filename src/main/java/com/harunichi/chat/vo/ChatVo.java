@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
-
-@Component
 @Data
+@Component
 public class ChatVo {
 
 	int messageId;			//메시지 고유 ID
@@ -23,8 +22,5 @@ public class ChatVo {
 	boolean isReported;		//신고 여부 (0/false: 정상, 1/true: 신고됨)
 	Timestamp sentTime;		//보낸 시간
 	Timestamp receivedTime; //받은 시간 (안읽음 NULL, 읽는 순간 시간 들어가도록)
-	
-	
-	
-	
+
 }

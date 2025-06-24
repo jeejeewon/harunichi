@@ -226,6 +226,31 @@
 /* --------------------------
     상세페이지 전용 버튼
 --------------------------- */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-pay {
+    background-color: #87CEFA;
+}
+
+.btn-pay:hover {
+    background-color: #addfff;
+}
+
+.soldout-message {
+    flex: 1 1 100%;
+    color: #888;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
 .btn-chat {
     background-color: #FFA07A;
 }
@@ -258,13 +283,16 @@
     좋아요 버튼
 --------------------------- */
 .btn-like {
-    background-color: #fff;
+    background-color: #FFD700;
     border: 1px solid #ccc;
     color: #ff5c5c;
     padding: 8px 12px;
     border-radius: 20px;
     font-size: 14px;
-    margin-left: 10px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-like.liked {

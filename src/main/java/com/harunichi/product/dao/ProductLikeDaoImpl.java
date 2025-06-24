@@ -1,5 +1,7 @@
 package com.harunichi.product.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -34,4 +36,16 @@ public class ProductLikeDaoImpl implements ProductLikeDao {
     public int getLikeCount(int productId) {
         return sqlSession.selectOne(NAMESPACE + "getLikeCount", productId);
     }
+    
+    @Override
+    public List<ProductLikeVo> selectLikedProductsByUser(String userId) {
+        return sqlSession.selectList(NAMESPACE + "selectLikedProductsByUser", userId);
+    }
+
+    @Override
+    public String selectProductOwnerId(int productId) {
+        return sqlSession.selectOne(NAMESPACE + "selectProductOwnerId", productId);
+    }
+
+
 }

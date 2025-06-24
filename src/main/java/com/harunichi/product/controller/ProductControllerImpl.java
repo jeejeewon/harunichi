@@ -11,16 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.common.util.LoginCheck;
+import com.harunichi.product.service.ProductLikeService;
 import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
 
@@ -31,20 +29,19 @@ public class ProductControllerImpl implements ProductController {
     @Autowired
     private ProductService productService;
     
-    // 로그인 공통화
+    // 계정 로그인 체크
     private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
- //       return !LoginCheck.loginCheck(request.getSession(), request, response);
-    	  return false;
+        return !LoginCheck.loginCheck(request.getSession(), request, response);
     }
-    
-    // 상품 목록
+
+    // 상품 목록 페이지 진입
     @Override
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView list(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView("/product/list");
     }
 
-    // 상품 목록 페이징
+    // 상품 목록 Ajax 페이징 처리
     @RequestMapping(value = "/moreList", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> moreList(@RequestParam("page") int page) throws Exception {
@@ -69,7 +66,7 @@ public class ProductControllerImpl implements ProductController {
         return result;
     }
 
-    // 상품 상세
+    // 상품 상세보기
     @Override
     @RequestMapping(value = "/view", method = RequestMethod.GET)
     public ModelAndView view(@RequestParam("productId") int productId,
@@ -85,12 +82,10 @@ public class ProductControllerImpl implements ProductController {
 
         ModelAndView mav = new ModelAndView("/product/view");
         mav.addObject("product", product);
-        // 작성자의 다른 상품은 Ajax로 /product/other 에서 불러옴
         return mav;
     }
 
-
-    // 상품 등록 폼
+    // 상품 등록 포맷 진입
     @Override
     @RequestMapping(value = "/write", method = RequestMethod.GET)
     public ModelAndView writeForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -106,7 +101,7 @@ public class ProductControllerImpl implements ProductController {
                               HttpServletRequest request,
                               HttpServletResponse response) throws Exception {
         if (isNotLoggedIn(request, response)) return null;
-        String loginId = (String) request.getSession().getAttribute("loginId");
+        String loginId = (String) request.getSession().getAttribute("id");
         product.setProductWriterId(loginId);
 
         if (!uploadFile.isEmpty()) {
@@ -126,13 +121,17 @@ public class ProductControllerImpl implements ProductController {
                                HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
         if (isNotLoggedIn(request, response)) return null;
-        String loginId = (String) request.getSession().getAttribute("loginId");
+        String loginId = (String) request.getSession().getAttribute("id");
         ProductVo product = productService.findById(productId);
 
         boolean isWriter = product != null && product.getProductWriterId().equals(loginId);
         boolean isAdmin = "admin".equalsIgnoreCase(loginId);
 
-        if ((isWriter || isAdmin) && product != null) {
+        if (!(isWriter || isAdmin)) {
+            return new ModelAndView("redirect:/product/view?productId=" + productId);
+        }
+
+        if (product != null) {
             String productImgPath = product.getProductImg();
             if (productImgPath != null && !productImgPath.trim().isEmpty()) {
                 String uploadDir = request.getSession().getServletContext().getRealPath("/resources/images/product");
@@ -144,7 +143,7 @@ public class ProductControllerImpl implements ProductController {
         return new ModelAndView("redirect:/product/list");
     }
 
-    // 상품 수정 폼
+    // 상품 수정 포맷 진입
     @Override
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public ModelAndView editForm(@RequestParam("productId") int productId,
@@ -157,7 +156,7 @@ public class ProductControllerImpl implements ProductController {
         return mav;
     }
 
-    // 상품 수정
+    // 상품 수정 처리
     @Override
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public ModelAndView edit(ProductVo product,
@@ -166,7 +165,7 @@ public class ProductControllerImpl implements ProductController {
                              HttpServletResponse response,
                              RedirectAttributes rttr) throws Exception {
         if (isNotLoggedIn(request, response)) return null;
-        String loginId = (String) request.getSession().getAttribute("loginId");
+        String loginId = (String) request.getSession().getAttribute("id");
 
         ProductVo original = productService.findById(product.getProductId());
 
@@ -175,7 +174,7 @@ public class ProductControllerImpl implements ProductController {
             return new ModelAndView("redirect:/product/list");
         }
 
-        boolean isWriter = original.getProductWriterId().equals(loginId);
+        boolean isWriter = original != null && original.getProductWriterId().equals(loginId);
         boolean isAdmin = "admin".equalsIgnoreCase(loginId);
 
         if (!(isWriter || isAdmin)) {
@@ -207,11 +206,24 @@ public class ProductControllerImpl implements ProductController {
         product.setProductWriterId(original.getProductWriterId());
         productService.update(product);
 
-        rttr.addFlashAttribute("msg", "상품이 성공적으로 수정되었습니다.");
+        rttr.addFlashAttribute("msg", "상품이 수정되었습니다.");
         return new ModelAndView("redirect:/product/view?productId=" + product.getProductId());
     }
 
-    // 검색 + 필터 + Ajax 기반 목록
+    // 내가 작성한 거래 목록 조회
+    @RequestMapping(value = "/myList", method = RequestMethod.GET)
+    public ModelAndView myProductList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
+
+        String loginId = (String) request.getSession().getAttribute("id");
+        List<ProductVo> myProducts = productService.findProductsByWriterId(loginId);
+
+        ModelAndView mav = new ModelAndView("/product/myList");
+        mav.addObject("myProducts", myProducts);
+        return mav;
+    }
+
+    // 검색/필터링 Ajax 상품 목록 조회
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> searchList(
@@ -223,19 +235,16 @@ public class ProductControllerImpl implements ProductController {
         int pageSize = 8;
         int offset = (page - 1) * pageSize;
 
-        // 문자열 상태를 Integer로 변환
         Integer statusVal = null;
         if (status != null && !status.isEmpty()) {
             try {
-                statusVal = Integer.valueOf(status); // "0" 또는 "1"
+                statusVal = Integer.valueOf(status);
             } catch (NumberFormatException e) {
                 statusVal = null;
             }
         }
 
-        List<ProductVo> products = productService.searchFiltered(
-                keyword, category, statusVal, offset, pageSize
-        );
+        List<ProductVo> products = productService.searchFiltered(keyword, category, statusVal, offset, pageSize);
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (ProductVo product : products) {
@@ -253,20 +262,18 @@ public class ProductControllerImpl implements ProductController {
         return result;
     }
 
-    // 작성자의 다른 상품 (현재 상품 제외)
-    @RequestMapping("/other")
+    // 작상자의 기타 거래 조회
+    @RequestMapping(value = "/other", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> findOtherProducts( 
+    public List<Map<String, Object>> findOtherProducts(
             @RequestParam String writerId,
             @RequestParam int productId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "4") int size) throws Exception {
 
         int offset = (page - 1) * size;
-        
         List<ProductVo> products = productService.findOtherProducts(writerId, productId, offset, size);
 
-        // ProductVo 리스트를 Map<String, Object> 리스트로 변환하여 반환
         List<Map<String, Object>> result = new ArrayList<>();
         for (ProductVo product : products) {
             Map<String, Object> map = new HashMap<>();
@@ -276,9 +283,9 @@ public class ProductControllerImpl implements ProductController {
             map.put("productImg", product.getProductImg());
             map.put("writerNick", product.getWriterNick());
             map.put("writerProfileImg", product.getWriterProfileImg());
-
             result.add(map);
         }
         return result;
     }
+    
 }

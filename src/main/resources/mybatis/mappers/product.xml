@@ -90,7 +90,19 @@
     SET productStatus = -1
     WHERE productId = #{productId}
 	</update>
-
+	
+	<!-- 내가 작성한 글 조회 -->
+	<select id="selectProductsByWriterId" parameterType="string" resultType="com.harunichi.product.vo.ProductVo">
+	    SELECT 
+	        p.*, 
+	        m.nick AS writerNick, 
+	        m.profileImg AS writerProfileImg 
+	    FROM product p
+	    JOIN member m ON p.productWriterId = m.id
+	    WHERE p.productWriterId = #{writerId}
+	    ORDER BY p.productId DESC
+	</select>
+	
     <!-- 조회수 증가 -->
     <update id="incrementViewCount" parameterType="int">
         UPDATE product 
@@ -120,6 +132,5 @@
 	    ORDER BY p.productDate DESC
 	    LIMIT #{offset}, #{limit}
 	</select>
-
 
 </mapper>

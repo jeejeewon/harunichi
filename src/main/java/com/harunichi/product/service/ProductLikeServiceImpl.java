@@ -1,5 +1,7 @@
 package com.harunichi.product.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +38,15 @@ public class ProductLikeServiceImpl implements ProductLikeService {
     public int getLikeCount(int productId) {
         return productLikeDao.getLikeCount(productId);
     }
+
+    @Override
+    public List<ProductLikeVo> getLikedProducts(String userId) {
+        return productLikeDao.selectLikedProductsByUser(userId);
+    }
+
+    @Override
+    public String getProductOwnerId(int productId) {
+        return productLikeDao.selectProductOwnerId(productId);
+    }
+
 }
