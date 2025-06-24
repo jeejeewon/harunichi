@@ -226,4 +226,9 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVo> searchBoards(String keyword) throws Exception {
 	    return boardDao.searchBoards(keyword);
 	}
+	
+	@Override
+	public List<BoardVo> getTop5BoardsByViews() throws Exception {
+	    return boardDao.selectTop5ByViews();
+	}
 }

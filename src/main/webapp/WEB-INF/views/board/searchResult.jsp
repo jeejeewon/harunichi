@@ -85,7 +85,7 @@
 			</c:forEach>
 			<c:if test="${empty boardList}">
 				<div class="empty">
-					<p>게시글이 없습니다.</p>
+					<p>검색 결과가 없습니다.</p>
 				</div>
 			</c:if>
 		</div>

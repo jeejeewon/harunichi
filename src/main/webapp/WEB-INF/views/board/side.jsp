@@ -4,14 +4,26 @@
 
 <div class="board-side">
 	<div class="search-box">
-		<form action="${contextPath}/board/search" method="get">
-			<input type="text" name="keyword" placeholder="작성자, 닉네임 또는 내용 검색"
+		<form action="${contextPath}/board/search" method="get" class="search-form">
+			<input type="text" name="keyword" placeholder="원하는 글을 찾아보세요"
 				value="${keyword}">
-			<button type="submit">검색</button>
+			<button type="submit">
+				<img src="/harunichi/resources/icon/search_icon.svg" alt="검색">
+			</button>
 		</form>
 	</div>
 
 	<div class="hots-list">
-	
+		<h3>실시간 HOT</h3>
+		<ul>
+		<c:forEach var="top" items="${top5List}">
+			<li>
+				<a href="${contextPath}/board/view?boardId=${top.boardId}">
+				<p class="item-cate">${top.boardCate}</p>
+				<div class="item-content">${top.boardCont}</div>
+				</a>			
+			</li>
+		</c:forEach>
+		</ul>	
 	</div>
 </div>

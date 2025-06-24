@@ -6,14 +6,17 @@
 	width: 100%;
 }
 
-.board.main {
+.board {
 	display: flex;
 	height: 100%;
 }
 
-.board .board-list {
+.board .board-list,
+ .board .post-wrap{
 	width: 70%;
+	overflow: hidden;
 }
+.board .empty {padding: 2rem;}
 
 .board .post-btn {
 	position: fixed;
@@ -25,6 +28,9 @@
 	width: 30%;
 	position: relative;
 	padding: 1rem;
+	display: flex;
+    flex-direction: column;
+    gap: 1rem;s
 }
 
 .board-side:after {
@@ -37,6 +43,66 @@
 	background-color: #eee;
 }
 
+.board-side .search-form {
+	display: flex;
+	align-items: center;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	overflow: hidden;
+	background-color: #fff;
+	flex-grow: 1;
+	width: 100%;
+}
+
+.board-side .search-form input[type="text"] {
+	border: none;
+	padding: 10px 15px;
+	outline: none;
+	font-size: 14px;
+	flex-grow: 1;
+}
+
+.board-side .search-form button[type="submit"] {
+	background-color: white;
+	color: #fff;
+	border: none;
+	padding: 8px 10px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.board-side .search-form button[type="submit"] img {
+	height: 20px;
+	width: auto;
+	vertical-align: middle;
+	filter: invert(81%) sepia(12%) saturate(2347%) hue-rotate(173deg)
+		brightness(105%) contrast(101%);
+}
+.board-side .hots-list {
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	padding: 1rem;
+} 
+.board-side .hots-list h3 {
+	font-weight: 600;
+	font-size: 20px;
+	padding-bottom: 1rem;
+}
+.board-side .hots-list li {padding: .5rem 0;}
+.board-side .hots-list li a  .item-cate {font-size: 14px; opacity: .75}
+.board-side .hots-list li .item-content {
+    max-height: 65px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+
+
 .board .board-list .list-wrap {
 	display: flex;
 	flex-direction: column;
@@ -45,7 +111,7 @@
 .board .board-list .list-item {
 	display: flex;
 	flex-direction: column;
-	padding: 2rem;
+	padding: 1rem 1.625rem 1.25rem;
 	position: relative;
 	transition: .3s;
 }
@@ -67,6 +133,11 @@
 .board .board-list .list-item .item-cate {
 	font-size: 13px;
 	padding: 10px 0;
+}
+.board .board-list .list-item .item-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .board .board-list .list-item .user-profile {
@@ -97,6 +168,7 @@
 	font-size: 13px;
 	color: #676767;
 }
+.board .board-list .list-item .item-content {padding: 1rem 0;     display: block;}
 
 .board .board-list .list-item .img-wrap {
 	display: flex;
@@ -104,34 +176,86 @@
 
 .board .board-list .list-item .item-info {
 	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
+.board .board-list .item-more{position: relative;}
+.board .board-list .item-more .btn-more {
+	opacity: .5;
+    cursor: pointer;
+}
+.board .board-list .item-more .popup {
+	display: none;
+	position: absolute;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .15);
+	border: 1px solid rgba(0, 0, 0, .15);
+	border-radius: 15px;
+	overflow: hidden;
+	z-index: 1;
+	background-color: #fff;
+	padding: 1rem;
+	min-width: 150px;
+	right: 0;
+	top: 0;
+}
+
+.board .board-list .item-more .popup li {
+	line-height: 1;
+	padding: 5px 0;
+}
+
+.board .board-list .item-more .popup li * {
+	font-size: 1rem;
+}
+
+.board .board-list .item-more .popup li form button {
+	line-height: 0;
+	color:red;
+}
+
+.board .reply {
+	display: flex;
+	align-items: center;
+	line-height: 0;
+	gap: 5px;
+}
+.board .reply img {opacity: .25}
 
 .board .conmment-list .comment {
 	display: flex;
 }
 
 .board .like {
-  --fuschia: #EF2B7C;
-  --size: 30px;
-  width: var(--size);
-  height: var(--size);
-  cursor: pointer;
-  color: transparent;
-   fill: #fff;
-  
+	--fuschia: #EF2B7C;	
+	width: 38px;
+	height: 24px;
+	cursor: pointer;
+	color: transparent;
+	fill: #fff;
+	display: flex;
+	line-height: 0;
+	align-items: center;
+	gap: 5px;
+ 
   
   svg {
     height: 100%;
     width: 100%;
-    stroke: var(--fuschia);
+    stroke: rgba(0,0,0,0.25);
+    stroke-width: 2px;
   }
-  
-  &.liked {
+    
+}
+
+.board .like.liked svg {
     color: var(--fuschia);
     fill: var(--fuschia);
+    stroke: var(--fuschia);
     animation: beat_on 400ms forwards;
   }
-}
+ .board .like.liked p {
+   color: var(--fuschia);
+   }
 
 @keyframes beat_on {
   0% {
@@ -165,3 +289,4 @@
     transform: scale(1);
   }
 }
+
