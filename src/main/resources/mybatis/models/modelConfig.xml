@@ -5,6 +5,9 @@
 <configuration>
   <typeAliases>
     <typeAlias type="com.harunichi.member.vo.MemberVo" alias="memberVo" />
+    <typeAlias type="com.harunichi.follow.vo.FollowVo" alias="followVo" />
+    <typeAlias type="com.harunichi.visit.vo.VisitVo" alias="visitVo" />
+    
     <typeAlias type="com.harunichi.product.vo.ProductVo" alias="ProductVo" />
     <typeAlias type="com.harunichi.chat.vo.ChatVo" alias="ChatVo" />
     <typeAlias type="com.harunichi.chat.vo.ChatRoomVo" alias="ChatRoomVo" />

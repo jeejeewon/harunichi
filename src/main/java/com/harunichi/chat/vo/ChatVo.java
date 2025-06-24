@@ -1,15 +1,11 @@
 package com.harunichi.chat.vo;
 
 import java.sql.Timestamp;
-
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.Data;
 
-@Component
 @Data
+@Component
 public class ChatVo {
 
 	private int messageId;			//메시지 고유 ID

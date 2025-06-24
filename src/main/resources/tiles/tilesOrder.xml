@@ -39,10 +39,10 @@
 	</definition>
 	
 	<!-- 주문 내역 -->
-	<definition name="/payment/orders" extends="baseLayout">
-	    <put-attribute name="title" value="주문 내역" />
-	    <put-attribute name="body" value="/WEB-INF/views/payment/orderList.jsp" />
-	</definition>	      
+    <definition name="/payment/orders" extends="baseLayout">
+        <put-attribute name="title" value="주문 내역" />
+        <put-attribute name="body" value="/WEB-INF/views/payment/orderList.jsp" />
+    </definition>	      
 
 
 </tiles-definitions>

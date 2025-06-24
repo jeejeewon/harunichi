@@ -2,4 +2,5 @@
 
 
 <h2>하루니치 프로젝트 메인 페이지입니다! 😎</h2>
+
 <jsp:include page="/WEB-INF/views/product/best5.jsp"/>

@@ -54,6 +54,7 @@ import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
 import com.harunichi.test.controller.TestController;
 
+
 @Controller("memberController")
 @RequestMapping(value="/member")
 public class MemberControllerImpl implements MemberController{

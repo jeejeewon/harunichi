@@ -18,6 +18,7 @@ import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
 import com.harunichi.visit.service.VisitService;
 
+
 @Controller
 public class MainController {
 	
@@ -25,8 +26,8 @@ public class MainController {
     private VisitService visitService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-	
-	@Autowired
+		
+    @Autowired
     private ProductService productService;
 	
 	//메인 페이지를 보여주는 메서드
@@ -37,12 +38,9 @@ public class MainController {
 		
 		logger.info("메인페이지입니다.", locale);
 		
-		// 인기 상품 조회
+	    // 인기 상품 조회
 	    List<ProductVo> topProducts = productService.getTopViewedProducts();
 	    model.addAttribute("topProducts", topProducts);
-		
-		String ip = request.getRemoteAddr();
-        visitService.insertVisit(ip);
 		
 		// 인터셉터가 넣어둔 viewName 가져오기
 		String viewName = (String) request.getAttribute("viewName");
@@ -84,5 +82,5 @@ public class MainController {
 
 		return "success"; // 클라이언트(JavaScript)로 성공 응답 보내기
 	}
-	
+
 }

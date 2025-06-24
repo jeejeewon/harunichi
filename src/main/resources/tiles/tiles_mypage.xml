@@ -11,7 +11,25 @@
 	<definition name="/mypage/follow" extends="baseLayout">
 		<put-attribute name="title" value="팔로우리스트" />
 		<put-attribute name="body" value="/WEB-INF/views/member/followList.jsp" />
-	</definition>
+	</definition>	
+
+    <!-- 내가 작성한 거래글 -->
+    <definition name="/product/myList" extends="baseLayout">
+        <put-attribute name="title" value="내 거래글" />
+        <put-attribute name="body" value="/WEB-INF/views/product/myList.jsp" />
+    </definition>
+
+    <!-- 좋아요한 거래글 -->
+    <definition name="/product/myLike" extends="baseLayout">
+        <put-attribute name="title" value="좋아요한 거래글" />
+        <put-attribute name="body" value="/WEB-INF/views/product/myLike.jsp" />
+    </definition>
+    
+    <!-- 주문 내역 -->
+    <definition name="/payment/orders" extends="baseLayout">
+        <put-attribute name="title" value="주문 내역" />
+        <put-attribute name="body" value="/WEB-INF/views/payment/orderList.jsp" />
+    </definition>
 	
 </tiles-definitions>
 
