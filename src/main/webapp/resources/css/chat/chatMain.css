@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 /* 친구추천 */
 #chatMainCon{
 	display: flex;
@@ -214,6 +213,9 @@
 	border-radius: 100%;
 	object-fit: cover;
 }
+.adit-profile-img.hidden {
+	display: none;
+}
 .adit-profile-img {
 	position: absolute;
 	bottom: 0;
@@ -227,9 +229,7 @@
 	cursor: pointer;
 	right: calc(50% - 60px + 5px);
 }
-#imgUpload{
-	display: none;
-}
+
 .modal-content {
 	background-color: #fff;
 	margin: 10% auto auto;

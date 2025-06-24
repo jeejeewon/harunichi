@@ -67,11 +67,16 @@ public interface ChatService {
 	//채팅방 정보와 채팅 내역 삭제
 	void deleteChat(String roomId);
 
-	//로그인한 유저가 오픈 채팅방의 리더인지 확인
-	boolean isLeader(String roomId, String userId);
+	//특정 오픈 채팅방의 방장 ID 조회
+	String selectLeaderId(String roomId);
 
 	//채팅방에 참여하고 있는 유저 ID 조회
 	List<String> selectUserByRoomId(String roomId);
+
+	//오픈 채팅방 정보 업데이트
+	void updateChatRoom(ChatRoomVo vo);
+
+	
 
 	
 

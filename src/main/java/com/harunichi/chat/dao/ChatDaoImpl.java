@@ -219,13 +219,10 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.delete(NAMESPACE + "deleteChatRoom", roomId);
 	}
 
-	//로그인한 유저가 오픈 채팅방의 리더인지 확인
+	//특정 오픈 채팅방의 방장 ID 조회
 	@Override
-	public boolean isLeader(String roomId, String userId) {	
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("roomId", roomId);
-		map.put("userId", userId);		
-		return sqlSession.selectOne(NAMESPACE + "isLeader", map);
+	public String selectLeaderId(String roomId) {		
+		return sqlSession.selectOne(NAMESPACE + "selectLeaderId", roomId);
 	}
 
 	//채팅방에 참여하고 있는 유저 ID 조회
@@ -234,8 +231,11 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectList(NAMESPACE + "selectUserByRoomId", roomId);
 	}
 
-
-
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		sqlSession.update(NAMESPACE + "updateChatRoom", vo);
+	}
 
 
 	
