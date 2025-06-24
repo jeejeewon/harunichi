@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.harunichi.common.util.FileUploadUtil;
 import com.harunichi.common.util.LoginCheck;
-import com.harunichi.product.service.ProductLikeService;
 import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
 
@@ -287,5 +287,14 @@ public class ProductControllerImpl implements ProductController {
         }
         return result;
     }
+    
+    // best5 보여주기
+    @RequestMapping(value = "/topViewed", method = RequestMethod.GET)
+    public String topViewedProducts(Model model) throws Exception {
+        List<ProductVo> topProducts = productService.getTopViewedProducts();
+        model.addAttribute("topProducts", topProducts);
+        return "product/best5";  // best5.jsp forward
+    }
+
     
 }

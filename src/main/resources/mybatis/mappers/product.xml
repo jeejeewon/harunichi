@@ -132,5 +132,21 @@
 	    ORDER BY p.productDate DESC
 	    LIMIT #{offset}, #{limit}
 	</select>
+	
+	<!-- 조회수 높은 5개 상품  -->
+	<select id="selectTopViewedProducts" resultType="com.harunichi.product.vo.ProductVo">
+	    SELECT 
+	        p.productId, 
+	        p.productTitle, 
+	        p.productPrice, 
+	        p.productImg,
+	        m.nick AS writerNick,
+	        m.profileImg AS writerProfileImg
+	    FROM product p
+	    LEFT JOIN member m ON p.productWriterId = m.id
+	    ORDER BY p.productCount DESC
+	    LIMIT 5
+	</select>
+
 
 </mapper>

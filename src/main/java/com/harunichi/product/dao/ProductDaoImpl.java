@@ -77,8 +77,14 @@ public class ProductDaoImpl implements ProductDao {
     }
     
     @Override
-    public List<ProductVo> selectProductsByWriterId(String writerId) {
+    public List<ProductVo> selectProductsByWriterId(String writerId) throws Exception {
         return sqlSession.selectList(NAMESPACE + "selectProductsByWriterId", writerId);
     }
+    
+    @Override
+    public List<ProductVo> selectTopViewedProducts() throws Exception {
+        return sqlSession.selectList(NAMESPACE + "selectTopViewedProducts");
+    }
+
 
 }

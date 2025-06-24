@@ -39,6 +39,6 @@
     </c:choose>
 
     <div style="text-align: center; margin-top: 30px;">
-        <a href="${ctx}/product/list" class="btn btn-list">전체 상품 보기</a>
+        <a href="${ctx}/mypage" class="btn btn-list">마이페이지로</a>
     </div>
 </div>

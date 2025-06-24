@@ -39,6 +39,10 @@
                 <div class="order-none">주문 내역이 없습니다.</div>
             </c:otherwise>
         </c:choose>
+        
+            <div style="text-align: center; margin-top: 30px;">
+		        <a href="${ctx}/mypage" class="btn btn-back">마이페이지로</a>
+		    </div>        
     </div>
 </section>
 

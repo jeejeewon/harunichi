@@ -29,7 +29,9 @@ public interface ProductDao {
 
     List<ProductVo> findOtherProducts(Map<String, Object> paramMap) throws Exception;
 
-	List<ProductVo> selectProductsByWriterId(String writerId);
+	List<ProductVo> selectProductsByWriterId(String writerId)throws Exception;
+
+	List<ProductVo> selectTopViewedProducts() throws Exception;
 
 
 }

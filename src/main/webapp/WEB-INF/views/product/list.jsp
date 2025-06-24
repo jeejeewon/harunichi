@@ -35,7 +35,6 @@
     <button class="btn-sky" onclick="location.href='${pageContext.request.contextPath}/product/write'">글쓰기</button>
 </div>
 
-
 <!-- 상품 리스트 -->
 <div id="product-container" class="product-grid"></div>
 

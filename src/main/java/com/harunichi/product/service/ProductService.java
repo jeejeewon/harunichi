@@ -26,6 +26,8 @@ public interface ProductService {
 
     List<ProductVo> findOtherProducts(String writerId, int productId, int offset, int size) throws Exception;
 
-	List<ProductVo> findProductsByWriterId(String loginId);
+	List<ProductVo> findProductsByWriterId(String loginId) throws Exception;
+
+	List<ProductVo> getTopViewedProducts() throws Exception;
 
 }

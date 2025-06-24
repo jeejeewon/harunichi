@@ -71,10 +71,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	@Override
-	public List<ProductVo> findProductsByWriterId(String writerId) {
+	public List<ProductVo> findProductsByWriterId(String writerId) throws Exception {
 	    return productDao.selectProductsByWriterId(writerId);
 	}
 
+	@Override
+	public List<ProductVo> getTopViewedProducts() throws Exception {
+	    return productDao.selectTopViewedProducts();
+	}
 
     
 }
