@@ -118,7 +118,7 @@
 				</c:choose>	
 				<input type="hidden" id="openchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">			
 				
-				<c:if test="${isLeader eq 'true'}">
+				<c:if test="${sessionScope.id eq leader}">
 					<label for="imgUpload" class="adit-profile-img">
 						<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
 					</label>
@@ -133,12 +133,6 @@
 			    <input id="chatPersons" name="persons" class="chat-form hidden" type="number" min="2" max="8" onkeyup="validatePersons()" disabled>
 			    <p class="modal-input-msg hidden">최대 8명까지 입장 가능합니다.</p>
 		    </div>	 
-		    <c:if test="${isLeader eq 'true'}">
-			    <div class="modal-btn-wrap">
-				    <button class="modal-btn" onclick="confirmAction(event)">수정</button>
-				    <button class="modal-btn" type="button" onclick="closeModal()">취소</button>
-			    </div>
-		    </c:if>
 		    <!-- 참여자 정보 -->
 			<ul class="user-list">
 				<c:forEach var="user" items="${userList}" >
@@ -147,18 +141,20 @@
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
 						</a>
 						<span>${user.nick}</span>
-						
-						
-						
-				        <c:if test="${chatType eq 'group' and isLeader eq 'true'}">
-				        	<i class="bi bi-star-fill" style="color: gold;" title="방장"></i>
-				        </c:if>
-				        
-				        
-				        
+				        <c:if test="${user.id eq leader}">
+				        	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+							  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+							</svg>
+				        </c:if>	        
 					</li>
 				</c:forEach>
 			</ul>
+			<c:if test="${sessionScope.id eq leader}">
+			    <div class="modal-btn-wrap">
+				    <button class="modal-btn" onclick="confirmAction(event)">채팅방 수정</button>
+				    <button class="modal-btn" type="button" onclick="closeModal()">참여자 관리</button>
+			    </div>
+		    </c:if>
 		    <input type="hidden" name="chatType" value="group">
 	    </form>
 	  </div>
@@ -178,7 +174,7 @@
 	var senderId = "${sessionScope.id}";
 	var chatType = "${chatType}";
 	var count = "${count}";
-	var isLeader = "${isLeader}";
+	var leader = "${leader}";
 	
 	//채팅방 로딩시 실행되는 함수 --------------------------------------------------------------------
 	window.onload = function() {
@@ -431,7 +427,7 @@
 	function leaveChatRoom() {
 
 		//방장은 채팅방 못 나가게 설정		
-		if(isLeader === 'true'){
+		if(senderId === leader){
 			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
 			return;
 		}	

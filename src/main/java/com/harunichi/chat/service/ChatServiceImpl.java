@@ -277,10 +277,10 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.deleteChatRoom(roomId);	
 	}
 
-	//로그인한 유저가 오픈 채팅방의 리더인지 확인
+	//특정 오픈 채팅방의 방장 ID 조회
 	@Override
-	public boolean isLeader(String roomId, String userId) {
-		return chatDao.isLeader(roomId, userId);
+	public String selectLeaderId(String roomId) {
+		return chatDao.selectLeaderId(roomId);
 	}
 
 	//채팅방에 참여하고 있는 유저 ID 조회

@@ -307,7 +307,7 @@ public class ChatControllerImpl implements ChatController {
 			
 			model.addAttribute("title", chatRoomVo.getTitle());	
 			model.addAttribute("profileImg", chatRoomVo.getProfileImg());	
-			model.addAttribute("isLeader", chatService.isLeader(roomId, userId));	
+			model.addAttribute("leader", chatService.selectLeaderId(roomId));	
 			model.addAttribute("nickname", member.getNick());
 			model.addAttribute("persons", chatRoomVo.getPersons());		
 			
@@ -354,7 +354,7 @@ public class ChatControllerImpl implements ChatController {
 		model.addAttribute("title", chatRoomVo.getTitle());	
 		model.addAttribute("profileImg", chatRoomVo.getProfileImg());		
 		model.addAttribute("chatType", chatRoomVo.getChatType());		
-		model.addAttribute("isLeader", chatService.isLeader(roomId, userId));
+		model.addAttribute("leader", chatService.selectLeaderId(roomId));	
 		
 		//채팅방에 참여하고 있는 유저 ID 조회
 		List<String> userIdList = chatService.selectUserByRoomId(roomId);
