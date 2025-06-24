@@ -514,6 +514,25 @@
 		
 	}	
 	
+	//오픈 채팅방 정보 수정 취소
+	function cancelEdit(){
+		//수정 폼 초기화 및 숨김 설정
+		document.getElementById("updateChatForm").reset();
+		document.getElementById('chatTitle').classList.add('hidden');
+		document.getElementById('chatPersons').classList.add('hidden');	
+		document.querySelector('.chat-title').classList.remove('hidden');
+		document.querySelector('.chat-persons').classList.remove('hidden');	
+		document.querySelector('.modal-input-msg').classList.add('hidden');	
+		document.querySelectorAll('.modal-input-msg').forEach(el => {
+			el.classList.add('hidden');
+		});
+		document.getElementById("editBtn").style.display = "";
+		document.getElementById("chatMemberBtn").style.display = "";
+		
+		showChatInfo();
+	}
+	
+	//오픈 채팅방 정보 수정 처리 ---------------------------------------------------------------
 	function submitEdit(event){
 		event.preventDefault();	
 		//유효성 검사
