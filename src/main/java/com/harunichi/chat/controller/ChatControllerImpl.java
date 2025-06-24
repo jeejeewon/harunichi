@@ -468,10 +468,41 @@ public class ChatControllerImpl implements ChatController {
 		return "redirect:/chat/main";
 	}
 	
-	
-	
-	
-	
+	//오픈 채팅방 정보 수정
+	@Override
+	@RequestMapping(value = "updateOpenChat", method = RequestMethod.POST)
+	public String updateOpenChat(HttpServletRequest request, HttpServletResponse response, 
+			 					 Model model, HttpSession session,
+			   				   	 @RequestParam("imgUpload") MultipartFile file) throws Exception{	
+		log.info("chatController의 updateOpenChat 메소드 실행 -------------");
+			
+		//로그인 유무 확인
+		if (!LoginCheck.loginCheck(session, request, response)) { return null; }
+		
+		String fileName = "";
+		ChatRoomVo vo = new ChatRoomVo();	
+		
+		//이미지 파일이 있다면?
+		if(file != null && !file.isEmpty()) {
+			//이미지 파일을 C드라이브에 저장
+			fileName = chatService.chatProfileImgUpload(file);
+			vo.setProfileImg(fileName);
+		}else {
+			vo.setProfileImg(request.getParameter("chatProfileImg"));
+		}
+		
+		int	persons = Integer.parseInt(request.getParameter("persons"));
+			
+		vo.setPersons(persons);		
+		vo.setRoomId(request.getParameter("roomId"));
+		vo.setTitle(request.getParameter("title"));
+		vo.setChatType(request.getParameter("chatType"));
+		
+		//채팅방 정보 업데이트
+		chatService.updateChatRoom(vo);
+						
+		return "redirect:/chat/doChat?roomId=" + vo.getRoomId() + "&chatType=" + vo.getChatType();	
+	}
 	
 	
 	

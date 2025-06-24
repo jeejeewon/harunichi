@@ -289,6 +289,12 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.selectUserByRoomId(roomId);
 	}
 
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		chatDao.updateChatRoom(vo);
+	}
+
 
 
 

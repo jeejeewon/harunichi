@@ -102,8 +102,7 @@
 	  <div class="modal-content">
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h2>채팅방 정보</h2>
-	    <form action="#" id="updateChatForm" method="POST" enctype="multipart/form-data">
-	
+	    <form action="${contextPath}/chat/updateOpenChat" id="updateChatForm" method="POST" enctype="multipart/form-data">
 		    <div class="chat-img-wrap">	
 				<c:choose>
 					<c:when test="${empty profileImg}">
@@ -113,25 +112,25 @@
 						<img class="chat-profile-img" src="${profileImgPath}${profileImg}" alt="개인채팅방 프로필사진">
 					</c:when>
 					<c:otherwise>
-						<img class="chat-profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
+						<img id="openChatImg" class="chat-profile-img" src="${contextPath}/images/chat/${profileImg}" alt="오픈채팅방 프로필사진">												
 					</c:otherwise>
 				</c:choose>	
-				<input type="hidden" id="openchatProfileImg" name="chatProfileImg" value="${contextPath}/resources/icon/basic_profile.jpg">			
-				
-				<c:if test="${sessionScope.id eq leader}">
-					<label for="imgUpload" class="adit-profile-img">
+				<input type="hidden" id="openchatProfileImg" value="${contextPath}/images/chat/${profileImg}">							
+				<input type="hidden" name="chatProfileImg" value="${profileImg}"><!-- 사진 변경 안 할 경우 -->
+				<c:if test="${sessionScope.member.id eq leader}">
+					<label for="imgUpload" class="adit-profile-img hidden" id="aditProfileImg">
 						<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
 					</label>
-					<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
+					<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)" style="display: none;">
 				</c:if>
 		    </div>
-		    <div class="chat-inpo-wrap">  
-			    <label class="chat-title">${title}</label>	    
-			    <input id="chatTitle" name="title" class="chat-form hidden" type="text" maxlength="20" onkeyup="validateTitle()" disabled>
-			    <p class="modal-input-msg hidden">최대 20자까지 입력 가능합니다.</p>	    
+		    <div id="chatInfoWrap" class="chat-info-wrap">  
+			    <label class="chat-title">${title}</label>
+			    <input id="chatTitle" name="title" class="chat-form hidden" type="text" maxlength="20" onkeyup="validateTitle()">
+			    <p class="modal-input-msg hidden"></p>	    
 			    <label class="chat-persons"><i class="bi bi-person-fill"></i> ${count} / ${persons}</label>		    
-			    <input id="chatPersons" name="persons" class="chat-form hidden" type="number" min="2" max="8" onkeyup="validatePersons()" disabled>
-			    <p class="modal-input-msg hidden">최대 8명까지 입장 가능합니다.</p>
+			    <input id="chatPersons" name="persons" class="chat-form hidden" type="number" min="${count}" max="8" onkeyup="validatePersons()">
+			    <p class="modal-input-msg hidden"></p>
 		    </div>	 
 		    <!-- 참여자 정보 -->
 			<ul class="user-list">
@@ -151,16 +150,18 @@
 			</ul>
 			<c:if test="${sessionScope.id eq leader}">
 			    <div class="modal-btn-wrap">
-				    <button class="modal-btn" onclick="confirmAction(event)">채팅방 수정</button>
-				    <button class="modal-btn" type="button" onclick="closeModal()">참여자 관리</button>
+				    <button class="modal-btn" id="editBtn" onclick="chatRoomUpdate(event)">채팅방 수정</button>
+				    <button class="modal-btn" id="chatMemberBtn" type="button" onclick="closeModal()">참여자 관리</button>
+		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>
+		            <button class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
 			    </div>
 		    </c:if>
 		    <input type="hidden" name="chatType" value="group">
+		    <input type="hidden" name="roomId" value="${roomId}">
 	    </form>
 	  </div>
 	</div>	
 </body>
-
 <script type="text/javascript">
 	/*
 		상태 유지
@@ -452,12 +453,10 @@
 			}			
 		}
 	}
-	
 
-
-	
 	//모달창 -------------------------------------------------------------------------------	
 	//모달창 열기
+	const isLeader = "${sessionScope.member.id eq leader}";
 	function showChatInfo() {
 		event.preventDefault();		
 		//로그인 체크
@@ -467,36 +466,121 @@
 		  return;
 		}
 		document.getElementById("chatInfoModal").style.display = "block";
+		if(isLeader === 'true'){	
+			document.getElementById("editSubmitBtn").style.display = "none";
+			document.getElementById("editCancelBtn").style.display = "none";
+		}
 	}
 
 	//모달창 닫기
-	function closeModal() { 
-/*
-		//입력된 값 및 폼 초기화
-		document.getElementById("updateChatForm").reset();
-
-		//유효성 검사 메시지 초기화
-		const msgAll = document.querySelectorAll(".modal-input-msg");
-		msgAll.forEach((msg, index) => {
-			if (index === 0) msg.textContent = "최대 20자까지 입력 가능합니다.";  
-			if (index === 1) msg.textContent = "최대 8명까지 입장 가능합니다.";  
-			msg.classList.remove("err")});  
-
-		//프로필 이미지 초기화
-		document.querySeletor(".chat-profile-img").src = "${contextPath}/resources/icon/basic_profile.jpg";
-		document.getElementById("openchatProfileImg").value = "${contextPath}/resources/icon/basic_profile.jpg";
-*/
+	function closeModal() { 		
+		if(isLeader === 'true'){	
+			//수정 폼 초기화 및 숨김 설정
+			document.getElementById("updateChatForm").reset();
+			document.getElementById('chatTitle').classList.add('hidden');
+			document.getElementById('chatPersons').classList.add('hidden');	
+			document.querySelector('.chat-title').classList.remove('hidden');
+			document.querySelector('.chat-persons').classList.remove('hidden');	
+			document.querySelector('.modal-input-msg').classList.add('hidden');	
+			document.querySelectorAll('.modal-input-msg').forEach(el => {
+				el.classList.add('hidden');
+			});
+			document.getElementById("editBtn").style.display = "";
+			document.getElementById("chatMemberBtn").style.display = "";
+		}	
 		document.getElementById("chatInfoModal").style.display = "none"; 
 	}
 
-	//모달창 컨펌
-	function confirmAction(event) {	
+	//채팅방 수정 버튼 클릭시 호출
+	function chatRoomUpdate(event) {	
+		event.preventDefault();	
+		
+		//label태그 숨기고 수정 폼 보이게 설정
+		document.getElementById('chatTitle').classList.remove('hidden');
+		document.getElementById('chatPersons').classList.remove('hidden');		
+		document.getElementById('chatTitle').value = "${title}";
+		document.getElementById('chatPersons').value = "${persons}";		
+		document.querySelector('.chat-title').classList.add('hidden');
+		document.querySelector('.chat-persons').classList.add('hidden');	
+		document.querySelectorAll('.modal-input-msg').forEach(el => {
+			el.classList.remove('hidden');
+		});
+		document.getElementById('aditProfileImg').classList.remove('hidden');			
+		document.getElementById("editSubmitBtn").style.display = "";
+		document.getElementById("editCancelBtn").style.display = "";
+		document.getElementById("editBtn").style.display = "none";
+		document.getElementById("chatMemberBtn").style.display = "none";
+		
+		
+	}	
+	
+	function submitEdit(event){
 		event.preventDefault();	
 		//유효성 검사
 		const isValid = validate();
-		if (isValid) { document.getElementById("updateChatForm").submit(); }
-	}	
+		if (isValid) { document.getElementById("updateChatForm").submit(); }		
+	}
 	
+	//유효성 검사 결과 리턴
+	function validate() {
+		const isTitleValid = validateTitle();
+		const isPersonsValid = validatePersons();
+		return isTitleValid && isPersonsValid;
+	}
+	
+	//채팅방 이름 유효성 검사
+	function validateTitle() {
+		const titleInput = document.getElementById("chatTitle");
+		const msgTag = titleInput.nextElementSibling;
+		const title = titleInput.value.trim();
+
+		if (title.length === 0) {
+			msgTag.textContent = "채팅방 이름을 입력해주세요. 최대 20자까지 입력 가능합니다.";
+			msgTag.classList.add("err");
+			return false;
+		} else {
+			msgTag.textContent = "";
+			return true;
+		}
+	}
+
+	//채팅방 인원 유효성 검사
+	function validatePersons() {
+		const personInput = document.getElementById("chatPersons");
+		const msgTag = personInput.nextElementSibling;
+		const value = Number(personInput.value);
+		const count = "${count}";
+
+		if (isNaN(value) || value < count || value > 8) {
+			msgTag.textContent = "현재 채팅방에 참여한 인원 이상 8명 이하로 입력해주세요.";
+			msgTag.classList.add("err");
+			return false;
+		} else {
+			msgTag.textContent = "";
+			return true;
+		}
+	}
+	
+	//채팅방 프로필 이미지 업로드 
+	function uploadImg(input) {
+	    const file = input.files[0];
+	    if (!file) return;
+
+	    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+	    if (!allowedTypes.includes(file.type)) {
+	        alert("이미지 파일만 업로드 가능합니다 (JPG, PNG, GIF)");
+	        input.value = "";
+	        return;
+	    }
+	    	    
+	    const reader = new FileReader();
+	    reader.onload = function (e) {
+	        //document.getElementById('openChatImg').src = e.target.result;
+	        document.querySelector('.chat-profile-img').src = e.target.result;
+	        document.getElementById('openchatProfileImg').value = file.name;
+	    }
+	    reader.readAsDataURL(file);
+	}
 	
 
 </script>

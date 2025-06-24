@@ -31,6 +31,9 @@ public interface ChatController {
 	String doOpenChat(String roomId, HttpServletRequest request, HttpServletResponse response, Model model,
 			HttpSession session) throws Exception;
 
+	String updateOpenChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session,
+			MultipartFile file) throws Exception;
+
 	
 	
 }

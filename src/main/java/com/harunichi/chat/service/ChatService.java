@@ -73,6 +73,9 @@ public interface ChatService {
 	//채팅방에 참여하고 있는 유저 ID 조회
 	List<String> selectUserByRoomId(String roomId);
 
+	//오픈 채팅방 정보 업데이트
+	void updateChatRoom(ChatRoomVo vo);
+
 	
 
 	

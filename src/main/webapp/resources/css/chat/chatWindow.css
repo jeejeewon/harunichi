@@ -344,10 +344,12 @@
 	border-radius: 100%;
 	object-fit: cover;
 }
+.adit-profile-img.hidden{
+	display: none;
+}
 .adit-profile-img {
 	position: absolute;
 	bottom: 0;
-	right: 115px;
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -356,9 +358,6 @@
 	justify-content: center;
 	cursor: pointer;
 	right: calc(50% - 60px + 5px);
-}
-#imgUpload{
-	display: none;
 }
 .modal-content {
 	background-color: #fff;
@@ -373,8 +372,11 @@
 	align-content: center;
 	margin: 0 10px 30px 10px;
 }
-#updateChatForm label {
+#chatInfoWrap label {
 	display: flex;
+}
+#chatInfoWrap label.hidden {
+	display: none;
 }
 .modal-input-msg {
 	font-size: 13px;
@@ -387,7 +389,7 @@
 .err {
 	color: red;	
 }
-.chat-inpo-wrap {
+.chat-info-wrap {
 	display: block;
     justify-self: center;
     margin-bottom: 40px;
@@ -396,17 +398,24 @@
 	font-size: 23px;
 	font-weight: bold;
 }
+.chat-title.hidden {
+	display: none;
+}
 .chat-persons {
     align-items: center;
     justify-content: center;
     font-size: 14px;
+    position: relative;
 }
 .chat-form {
 	display: block;
 	width: 100%;
-	height: 30px;
+	height: 35px;
 	border: 1px solid #ccc; 
-	margin-bottom: 10px;
+	position: relative;
+	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
 }	
 .chat-form.hidden {
 	display: none;
