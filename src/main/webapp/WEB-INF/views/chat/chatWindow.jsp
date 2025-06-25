@@ -124,7 +124,7 @@
 					</c:otherwise>
 				</c:choose>	
 				<input type="hidden" id="openchatProfileImg" value="${contextPath}/images/chat/${profileImg}">							
-				<input type="hidden" name="chatProfileImg" value="${profileImg}"><!-- 사진 변경 안 할 경우 -->
+				<input type="hidden" id="originalImg" name="chatProfileImg" value="${profileImg}"><!-- 사진 변경 안 할 경우 -->
 				<c:if test="${sessionScope.member.id eq leader}">
 					<label for="imgUpload" class="adit-profile-img hidden" id="aditProfileImg">
 						<img src="${contextPath}/resources/icon/camera_icon.svg" alt="사진 업로드 아이콘">
@@ -614,7 +614,11 @@
 		document.getElementById("editBtn").style.display = "";
 		document.getElementById("chatMemberBtn").style.display = "";
 		
-		showChatInfo();
+        document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
+       
+        document.getElementById('aditProfileImg').classList.add('hidden');
+        
+		showChatInfo(); 
 	}
 	
 	//오픈 채팅방 정보 수정 처리 ---------------------------------------------------------------
@@ -679,7 +683,6 @@
 	    	    
 	    const reader = new FileReader();
 	    reader.onload = function (e) {
-	        //document.getElementById('openChatImg').src = e.target.result;
 	        document.querySelector('.chat-profile-img').src = e.target.result;
 	        document.getElementById('openchatProfileImg').value = file.name;
 	    }
