@@ -153,7 +153,7 @@
         listEl.empty();
 
         if (!data || data.length === 0) {
-        	  $('.other-products-row').html('<p style="margin: 20px auto;">작성자의 다른 상품이 없습니다.</p>');
+        	  $('#other-product-list').html('<p style="margin: 20px auto;">작성자의 다른 상품이 없습니다.</p>');
         	  return;
         }
 
@@ -202,7 +202,7 @@
 	    alert('자신과는 채팅할 수 없습니다.');
 	    return;
 	  }
-	  location.href = ctx + '/chat/productChat?productId=' + productId;
+	  location.href = ctx + '/chat/productChat?productId=' + currentProductId;
 	}
 
 	function payment(productId) {

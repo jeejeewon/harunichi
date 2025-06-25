@@ -286,6 +286,7 @@ header {
     display: block;
 }
 
+
 .header-inner .select2-container {/*셀렉트박스스타일*/
     width: 130px !important;
     vertical-align: middle;
@@ -320,7 +321,7 @@ header {
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
     background-color: #bfe6ff;
-	color: #222;
+    color: white;
 }
 
 .select2-dropdown {
@@ -455,3 +456,4 @@ footer {
 	display: flex;
 	gap: 10px;
 }
+
