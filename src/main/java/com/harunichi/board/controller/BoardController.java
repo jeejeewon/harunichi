@@ -52,4 +52,5 @@ public interface BoardController {
 	// 게시글 검색 (아이디, 닉네임, 글 내용)
 	ModelAndView searchBoard(String keyword, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+	String listByCategory(String category, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

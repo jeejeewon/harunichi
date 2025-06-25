@@ -143,5 +143,11 @@
 	    ORDER BY boardCount DESC
 	    LIMIT 5
 	</select>
+	
+	 <select id="selectBoardsByCategory" parameterType="string" resultType="com.harunichi.board.vo.BoardVo">
+        SELECT * FROM board
+        WHERE boardCate = #{category}
+        ORDER BY boardDate DESC
+    </select>
 
 </mapper>

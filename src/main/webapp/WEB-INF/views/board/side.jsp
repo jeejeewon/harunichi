@@ -13,8 +13,8 @@
 		</form>
 	</div>
 
-	<div class="hots-list">
-		<h3>실시간 HOT</h3>
+	<div class="side-list hots-list">
+		<h3>추천 게시글</h3>
 		<ul>
 		<c:forEach var="top" items="${top5List}">
 			<li>
@@ -26,4 +26,46 @@
 		</c:forEach>
 		</ul>	
 	</div>
+	<div class="side-list cate-list">
+	<h3>추천 태그</h3>		
+		<div class="category-tabs">
+		    <!-- <button class="category-btn active" data-cate="">전체</button> -->
+		    <button class="category-btn" data-cate="생활정보">#생활정보</button>
+		    <button class="category-btn" data-cate="일상">#일상</button>
+   		</div>
+	</div>
 </div>
+
+<script>
+$(document).ready(function() {
+    // cate-list를 기본적으로 숨김
+    $('.cate-list').hide();
+
+    // .cate-list의 상위 요소 중 .main이 있으면 다시 보이게
+    if ($('.cate-list').closest('.main').length > 0) {
+        $('.cate-list').show();
+    }
+});
+
+$(function(){
+    $('.category-btn').click(function(){
+        $('.category-btn').removeClass('active');
+        $(this).addClass('active');
+
+        var cate = $(this).data('cate'); // 카테고리명
+
+        $.ajax({
+            url: '${contextPath}/board/listByCategory',
+            method: 'GET',
+            data: { category: cate },
+            dataType: 'html',
+            success: function(html) {
+                $('#ListContainer').html(html);
+            },
+            error: function() {
+                alert('게시글 목록을 불러오는 데 실패했습니다.');
+            }
+        });
+    });
+});
+</script>

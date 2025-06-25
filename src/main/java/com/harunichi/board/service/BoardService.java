@@ -58,5 +58,7 @@ public interface BoardService {
     
    // 인기글 5개 (사이드용)
     List<BoardVo> getTop5BoardsByViews() throws Exception;
+    
+    List<BoardVo> getBoardsByCategory(String category) throws Exception;
 
 }

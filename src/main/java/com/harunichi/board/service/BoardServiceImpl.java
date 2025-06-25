@@ -231,4 +231,9 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVo> getTop5BoardsByViews() throws Exception {
 	    return boardDao.selectTop5ByViews();
 	}
+	
+	@Override
+    public List<BoardVo> getBoardsByCategory(String category) throws Exception {
+        return boardDao.selectBoardsByCategory(category);
+    }
 }

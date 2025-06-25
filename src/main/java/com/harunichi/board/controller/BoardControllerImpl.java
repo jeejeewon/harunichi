@@ -976,4 +976,22 @@ public class BoardControllerImpl implements BoardController {
 		}
 		return mav;
 	}
+	
+    // 카테고리별 게시글 목록 - AJAX 요청 처리
+	@Override
+	@RequestMapping(value = "/listByCategory", method = RequestMethod.GET)
+	public String listByCategory(@RequestParam(value = "category", required = false) String category,
+	                              HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    List<BoardVo> boardList;
+	    if (category == null || category.isEmpty()) {
+	        boardList = boardService.selectBoardList(); // 모든 게시글 목록
+	    } else {
+	        boardList = boardService.getBoardsByCategory(category); // 특정 카테고리 게시글 목록
+	    }
+
+	    // boardList 객체를 JSP에 전달하여 게시글 목록을 렌더링
+	    request.setAttribute("boardList", boardList);
+	    
+	    return "board/items"; // board/items.jsp에서 게시글 목록만 리턴
+	}
 }
