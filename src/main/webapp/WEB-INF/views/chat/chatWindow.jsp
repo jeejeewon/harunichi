@@ -144,6 +144,7 @@
 			<ul class="user-list">
 				<c:forEach var="user" items="${userList}" >
 					<li>
+						<input type="radio" name="selectedUserId" class="hidden" value="${user.id}">
 						<a href="${contextPath}/mypage?id=${user.id}">
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
 						</a>
@@ -159,9 +160,13 @@
 			<c:if test="${sessionScope.id eq leader}">
 			    <div class="modal-btn-wrap">
 				    <button class="modal-btn" id="editBtn" onclick="chatRoomUpdate(event)">채팅방 수정</button>
-				    <button class="modal-btn" id="chatMemberBtn" type="button" onclick="closeModal()">참여자 관리</button>
+				    <button class="modal-btn" id="chatMemberBtn" type="button" onclick="memberManagement()">참여자 관리</button>
+		           
 		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>
-		            <button class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
+		            
+		            <button class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader(event)">방장위임</button>
+		            <button class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember(event)">강퇴</button>
+           			<button class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
 			    </div>
 		    </c:if>
 		    <input type="hidden" name="chatType" value="group">
@@ -592,11 +597,9 @@
 		});
 		document.getElementById('aditProfileImg').classList.remove('hidden');			
 		document.getElementById("editSubmitBtn").style.display = "";
-		document.getElementById("editCancelBtn").style.display = "";
-		document.getElementById("editBtn").style.display = "none";
-		document.getElementById("chatMemberBtn").style.display = "none";
-		
-		
+		document.getElementById("editCancelBtn").style.display = "";		
+		document.getElementById("editBtn").classList.add('hidden');
+		document.getElementById("chatMemberBtn").classList.add('hidden');	
 	}	
 	
 	//오픈 채팅방 정보 수정 취소
@@ -610,14 +613,15 @@
 		document.querySelector('.modal-input-msg').classList.add('hidden');	
 		document.querySelectorAll('.modal-input-msg').forEach(el => {
 			el.classList.add('hidden');
-		});
-		document.getElementById("editBtn").style.display = "";
-		document.getElementById("chatMemberBtn").style.display = "";
-		
+		});		
         document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
-       
-        document.getElementById('aditProfileImg').classList.add('hidden');
-        
+        document.getElementById('aditProfileImg').classList.add('hidden');           
+		document.getElementById("editCancelBtn").style.display = "none";		
+		document.getElementById('changeRoomLeader').classList.add('hidden');	
+		document.getElementById('kickMemberFromRoom').classList.add('hidden');			
+		document.getElementById("editBtn").classList.remove('hidden');
+		document.getElementById("chatMemberBtn").classList.remove('hidden');
+             
 		showChatInfo(); 
 	}
 	
@@ -688,6 +692,27 @@
 	    }
 	    reader.readAsDataURL(file);
 	}
+	
+	
+	//채팅방 참여자 관리 --------------------------------------------------------------------------
+	function memberManagement(){
+		document.getElementById('editBtn').classList.add('hidden');
+		document.getElementById('chatMemberBtn').classList.add('hidden');	
+		document.getElementById("editCancelBtn").style.display = "";
+		
+		document.getElementById('changeRoomLeader').classList.remove('hidden');	
+		document.getElementById('kickMemberFromRoom').classList.remove('hidden');	
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	
 	
 
 </script>
