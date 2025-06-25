@@ -144,7 +144,7 @@
 			<ul class="user-list">
 				<c:forEach var="user" items="${userList}" >
 					<li>
-						<input type="radio" name="selectedUserId" class="hidden" value="${user.id}">
+						<input type="radio" class="selected-user-id hidden" name="selectedUserId" value="${user.id}">
 						<a href="${contextPath}/mypage?id=${user.id}">
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
 						</a>
@@ -166,7 +166,7 @@
 		            
 		            <button class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader(event)">방장위임</button>
 		            <button class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember(event)">강퇴</button>
-           			<button class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
+           			<button type="button" class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
 			    </div>
 		    </c:if>
 		    <input type="hidden" name="chatType" value="group">
@@ -452,7 +452,7 @@
 		});
 
 		// 채팅 메시지 목록에서 검색
-		const messages = document.querySelectorAll(".message"); // ← 클래스는 상황에 맞게 수정
+		const messages = document.querySelectorAll(".message");
 		messages.forEach((msg, index) => {
 			if (msg.textContent.includes(keyword)) {
 				matchedMessages.push(msg);
@@ -555,73 +555,57 @@
 		  location.href = "<%= request.getContextPath() %>/chat/loginChek";
 		  return;
 		}
-		document.getElementById("chatInfoModal").style.display = "block";
-		if(isLeader === 'true'){	
-			document.getElementById("editSubmitBtn").style.display = "none";
-			document.getElementById("editCancelBtn").style.display = "none";
+		
+		if(isLeader === 'true'){
+			toggleDisplay(["editSubmitBtn", "editCancelBtn"], "none");
+			toggleElements(["#editBtn", "#chatMemberBtn"], ["#aditProfileImg"]);
 		}
+		
+		toggleDisplay(["chatInfoModal"], "block");
 	}
 
 	//모달창 닫기
 	function closeModal() { 		
-		if(isLeader === 'true'){	
+		if(isLeader === 'true'){
 			//수정 폼 초기화 및 숨김 설정
 			document.getElementById("updateChatForm").reset();
-			document.getElementById('chatTitle').classList.add('hidden');
-			document.getElementById('chatPersons').classList.add('hidden');	
-			document.querySelector('.chat-title').classList.remove('hidden');
-			document.querySelector('.chat-persons').classList.remove('hidden');	
-			document.querySelector('.modal-input-msg').classList.add('hidden');	
-			document.querySelectorAll('.modal-input-msg').forEach(el => {
-				el.classList.add('hidden');
-			});
-			document.getElementById("editBtn").style.display = "";
-			document.getElementById("chatMemberBtn").style.display = "";
+			
+			toggleElements([".chat-title", ".chat-persons"],
+						   ["#chatTitle", "#chatPersons", ".modal-input-msg", 
+							".selected-user-id", "#changeRoomLeader", "#kickMemberFromRoom"]);
+			
+			toggleDisplay(["editBtn", "chatMemberBtn"], "");	
 		}	
-		document.getElementById("chatInfoModal").style.display = "none"; 
+		toggleDisplay(["chatInfoModal"], "none");
 	}
 
 	//채팅방 수정 버튼 클릭시 호출
 	function chatRoomUpdate(event) {	
 		event.preventDefault();	
 		
-		//label태그 숨기고 수정 폼 보이게 설정
-		document.getElementById('chatTitle').classList.remove('hidden');
-		document.getElementById('chatPersons').classList.remove('hidden');		
 		document.getElementById('chatTitle').value = "${title}";
-		document.getElementById('chatPersons').value = "${persons}";		
-		document.querySelector('.chat-title').classList.add('hidden');
-		document.querySelector('.chat-persons').classList.add('hidden');	
-		document.querySelectorAll('.modal-input-msg').forEach(el => {
-			el.classList.remove('hidden');
-		});
-		document.getElementById('aditProfileImg').classList.remove('hidden');			
-		document.getElementById("editSubmitBtn").style.display = "";
-		document.getElementById("editCancelBtn").style.display = "";		
-		document.getElementById("editBtn").classList.add('hidden');
-		document.getElementById("chatMemberBtn").classList.add('hidden');	
+		document.getElementById('chatPersons').value = "${persons}";
+		
+		toggleElements(["#chatTitle", "#chatPersons", ".modal-input-msg", "#aditProfileImg"],
+				  	   [".chat-title", ".chat-persons", "#editBtn", "#chatMemberBtn"]);
+		
+		toggleDisplay(["editSubmitBtn", "editCancelBtn"], "");
+		
 	}	
 	
 	//오픈 채팅방 정보 수정 취소
 	function cancelEdit(){
-		//수정 폼 초기화 및 숨김 설정
+		
 		document.getElementById("updateChatForm").reset();
-		document.getElementById('chatTitle').classList.add('hidden');
-		document.getElementById('chatPersons').classList.add('hidden');	
-		document.querySelector('.chat-title').classList.remove('hidden');
-		document.querySelector('.chat-persons').classList.remove('hidden');	
-		document.querySelector('.modal-input-msg').classList.add('hidden');	
-		document.querySelectorAll('.modal-input-msg').forEach(el => {
-			el.classList.add('hidden');
-		});		
-        document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
-        document.getElementById('aditProfileImg').classList.add('hidden');           
-		document.getElementById("editCancelBtn").style.display = "none";		
-		document.getElementById('changeRoomLeader').classList.add('hidden');	
-		document.getElementById('kickMemberFromRoom').classList.add('hidden');			
-		document.getElementById("editBtn").classList.remove('hidden');
-		document.getElementById("chatMemberBtn").classList.remove('hidden');
-             
+		
+		document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
+		
+		toggleElements([".chat-title", ".chat-persons", "#editBtn", "#chatMemberBtn"],
+			  	       ["#chatTitle", "#chatPersons", ".modal-input-msg", "#aditProfileImg", "#changeRoomLeader",
+			  	    	"#kickMemberFromRoom", ".selected-user-id"]);
+		
+		toggleDisplay(["editCancelBtn", "editSubmitBtn"], "none");
+		
 		showChatInfo(); 
 	}
 	
@@ -696,20 +680,32 @@
 	
 	//채팅방 참여자 관리 --------------------------------------------------------------------------
 	function memberManagement(){
-		document.getElementById('editBtn').classList.add('hidden');
-		document.getElementById('chatMemberBtn').classList.add('hidden');	
-		document.getElementById("editCancelBtn").style.display = "";
 		
-		document.getElementById('changeRoomLeader').classList.remove('hidden');	
-		document.getElementById('kickMemberFromRoom').classList.remove('hidden');	
-		
-		
-		
-		
-		
-		
-		
+		toggleElements(["#changeRoomLeader", "#kickMemberFromRoom", ".selected-user-id"],
+		  	           ["#editBtn", "#chatMemberBtn"]);
+	
+		toggleDisplay(["editCancelBtn"], "");
+				
 	}
+	
+	
+	//hidden 클래스 토글 -------------------------------------------------------------------------
+	function toggleElements(showSelectors = [], hideSelectors = []) {	
+		showSelectors.forEach(sel => {
+			document.querySelectorAll(sel).forEach(el => el.classList.remove('hidden'));
+		});
+		hideSelectors.forEach(sel => {
+			document.querySelectorAll(sel).forEach(el => el.classList.add('hidden'));
+		});
+	}
+	
+	function toggleDisplay(ids = [], displayValue = "") {
+		ids.forEach(id => {
+			const el = document.getElementById(id);
+			if (el) el.style.display = displayValue;
+		});
+	}
+
 	
 	
 	
