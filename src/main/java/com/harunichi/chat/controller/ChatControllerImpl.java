@@ -1,13 +1,17 @@
 package com.harunichi.chat.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +24,6 @@ import com.harunichi.common.util.LoginCheck;
 import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
 import com.harunichi.product.service.ProductService;
-import com.harunichi.product.service.ProductServiceImpl;
 import com.harunichi.product.vo.ProductVo;
 import lombok.extern.slf4j.Slf4j;
 
@@ -507,6 +510,26 @@ public class ChatControllerImpl implements ChatController {
 		return "redirect:/chat/doChat?roomId=" + vo.getRoomId() + "&chatType=" + vo.getChatType();	
 	}
 	
+	
+	//오픈 채팅방 방장 위임
+	@Override
+	@RequestMapping(value = "/changeLeader", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> changeLeader(@RequestBody Map<String, String> param) {
+		String userId = param.get("userId");
+		String roomId = param.get("roomId");
+
+		Map<String, Object> result = new HashMap<>();
+		
+		try {
+			chatService.changeRoomLeader(roomId, userId);
+			result.put("success", true);
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("message", e.getMessage());
+		}
+		return result;
+	}
 	
 	
 

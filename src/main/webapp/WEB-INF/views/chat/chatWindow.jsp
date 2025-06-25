@@ -144,7 +144,9 @@
 			<ul class="user-list">
 				<c:forEach var="user" items="${userList}" >
 					<li>
-						<input type="radio" class="selected-user-id hidden" name="selectedUserId" value="${user.id}">
+						<c:if test="${user.id ne leader}">
+							<input type="radio" class="selected-user-id hidden" name="selectedUserId" value="${user.id}">
+						</c:if>
 						<a href="${contextPath}/mypage?id=${user.id}">
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
 						</a>
@@ -164,7 +166,7 @@
 		           
 		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>
 		            
-		            <button class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader(event)">방장위임</button>
+		            <button type="button" class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader()">방장위임</button>
 		            <button class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember(event)">강퇴</button>
            			<button type="button" class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
 			    </div>
@@ -686,6 +688,50 @@
 	
 		toggleDisplay(["editCancelBtn"], "");
 				
+	}
+	
+	
+	//방장 위임 ---------------------------------------------------------------------------------
+	function changeLeader(){
+		
+		const selected = document.querySelector('input[name="selectedUserId"]:checked');
+		const selectedUserId = selected.value;
+		
+		if (!selected) {
+			alert("방장 권한을 위임할 멤버를 선택해주세요.");
+			return;
+		}
+		
+		fetch("${contextPath}/chat/changeLeader", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				userId: selectedUserId,
+				roomId: roomId
+			})
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("서버 오류 발생");
+			}
+			return response.json();
+		})
+		.then(data => {
+			if (data.success) {
+				alert("방장 권한이 성공적으로 위임되었습니다!");
+				location.reload(); 
+			} else {
+				alert("방장 위임 실패: " + data.message);
+			}
+		})
+		.catch(error => {
+			console.error("에러:", error);
+			alert("방장 위임 중 오류가 발생했습니다.");
+		});
+
+		
 	}
 	
 	

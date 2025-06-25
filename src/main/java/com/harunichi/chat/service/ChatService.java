@@ -79,6 +79,9 @@ public interface ChatService {
 	//채팅방에서 나갔다가 다시 참여할 경우
 	void changeIsDeleted(String senderId, String roomId);
 
+	//오픈 채팅방 방장 위임
+	void changeRoomLeader(String roomId, String userId);
+
 	
 
 	

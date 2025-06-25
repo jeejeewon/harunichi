@@ -1,6 +1,8 @@
 package com.harunichi.chat.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -33,6 +35,8 @@ public interface ChatController {
 
 	String updateOpenChat(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session,
 			MultipartFile file) throws Exception;
+
+	Map<String, Object> changeLeader(Map<String, String> param);
 
 	
 	

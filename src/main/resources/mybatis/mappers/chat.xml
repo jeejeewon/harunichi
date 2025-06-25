@@ -291,6 +291,19 @@
 		]]>
 	</update>
 	
+	<!-- 오픈 채팅방 방장 위임 -->
+	<update id="changeRoomLeader" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET leader = 
+				CASE 
+					WHEN userId = #{userId} THEN 1
+					ELSE 0
+				END
+			WHERE roomId = #{roomId}
+		]]>		
+	</update>
+	
 
 
 </mapper>

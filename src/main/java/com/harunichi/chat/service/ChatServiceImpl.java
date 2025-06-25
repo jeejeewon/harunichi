@@ -304,6 +304,12 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.updateChatRoom(vo);
 	}
 
+	//오픈 채팅방 방장 위임
+	@Override
+	public void changeRoomLeader(String roomId, String userId) {
+		chatDao.changeRoomLeader(roomId, userId);
+	}
+
 
 
 
