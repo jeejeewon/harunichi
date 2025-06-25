@@ -264,7 +264,7 @@ public class BoardControllerImpl implements BoardController {
 					String convertedContent = boardVo.getBoardCont().replaceAll("(\r\n|\r|\n)", "<br />");
 					boardVo.setBoardCont(convertedContent);
 				}
-				
+
 				// 좋아요 상태 확인
 				boolean isLiked = false;
 				if (loginUser != null) {
@@ -282,11 +282,11 @@ public class BoardControllerImpl implements BoardController {
 				// 좋아요 수 조회
 				int likeCount = boardService.getBoardLikeCount(boardId);
 				mav.addObject("likeCount", likeCount);
-				
+
 				// 인기 게시글 TOP 5 추가
 				List<BoardVo> top5List = boardService.getTop5BoardsByViews();
 				mav.addObject("top5List", top5List);
-				
+
 			} else {
 				log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
 				mav.setViewName("redirect:/board/list");
@@ -976,22 +976,50 @@ public class BoardControllerImpl implements BoardController {
 		}
 		return mav;
 	}
-	
-    // 카테고리별 게시글 목록 - AJAX 요청 처리
+
+	// 카테고리별 게시글 목록 - AJAX 요청 처리
 	@Override
 	@RequestMapping(value = "/listByCategory", method = RequestMethod.GET)
 	public String listByCategory(@RequestParam(value = "category", required = false) String category,
-	                              HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    List<BoardVo> boardList;
-	    if (category == null || category.isEmpty()) {
-	        boardList = boardService.selectBoardList(); // 모든 게시글 목록
-	    } else {
-	        boardList = boardService.getBoardsByCategory(category); // 특정 카테고리 게시글 목록
-	    }
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List<BoardVo> boardList;
+		if (category == null || category.isEmpty()) {
+			boardList = boardService.selectBoardList(); // 모든 게시글 목록
+		} else {
+			boardList = boardService.getBoardsByCategory(category); // 특정 카테고리 게시글 목록
+		}
 
-	    // boardList 객체를 JSP에 전달하여 게시글 목록을 렌더링
-	    request.setAttribute("boardList", boardList);
-	    
-	    return "board/items"; // board/items.jsp에서 게시글 목록만 리턴
+		// boardList 객체를 JSP에 전달하여 게시글 목록을 렌더링
+		request.setAttribute("boardList", boardList);
+
+		return "board/items"; // board/items.jsp에서 게시글 목록만 리턴
 	}
+
+	// 관리자용
+	@Override
+	@RequestMapping("/admin")
+	public ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView mav = new ModelAndView("/board/admMain");
+		mav.addObject("boardList", boardService.getAllBoardsForAdmin());
+		return mav;
+	}
+
+	@RequestMapping(value = "/admin/saveOrDelete", method = RequestMethod.POST)
+	public String saveOrDeleteBoard(@RequestParam("action") String action,
+			@RequestParam(value = "selectedIds", required = false) List<Integer> selectedIds,
+			HttpServletRequest request) throws Exception {
+
+		if ("update".equals(action)) {
+			// 폼에서 boards 배열을 직접 받지 말고, 필요한 값을 request에서 꺼내 처리하거나
+			// 아니면 개별 update용 API를 따로 만드는 게 편합니다.
+		} else if ("delete".equals(action)) {
+			if (selectedIds != null) {
+				for (int boardId : selectedIds) {
+					boardService.deleteBoardFromAdmin(boardId);
+				}
+			}
+		}
+		return "redirect:/board/admin";
+	}
+
 }

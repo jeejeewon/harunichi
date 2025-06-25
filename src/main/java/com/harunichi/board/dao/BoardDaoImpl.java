@@ -92,8 +92,26 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 		return sqlSession.selectList(NAMESPACE + "selectTop5ByViews");
 	}
 
+	// 카테고리별 게시글 목록
 	@Override
 	public List<BoardVo> selectBoardsByCategory(String category) throws Exception {
 		return sqlSession.selectList(NAMESPACE + "selectBoardsByCategory", category);
 	}
+
+	// 관리자용
+	@Override
+	public List<BoardVo> selectAllBoardsForAdmin() throws Exception {
+		return sqlSession.selectList(NAMESPACE + "selectAllBoardsForAdmin");
+	}
+
+	@Override
+	public void updateBoardFromAdmin(BoardVo board) throws Exception {
+		sqlSession.update(NAMESPACE + "updateBoardFromAdmin", board);
+	}
+
+	@Override
+	public void deleteBoardFromAdmin(int boardId) throws Exception {
+		sqlSession.delete(NAMESPACE + "deleteBoard", boardId);
+	}
+
 }

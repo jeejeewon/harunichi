@@ -6,9 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
 
 public interface BoardController {
@@ -52,5 +55,12 @@ public interface BoardController {
 	// 게시글 검색 (아이디, 닉네임, 글 내용)
 	ModelAndView searchBoard(String keyword, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+	// 카테고리별 게시글 목록
 	String listByCategory(String category, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+	// 관리자용
+	ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+	String saveOrDeleteBoard(String action, List<Integer> selectedIds, HttpServletRequest request) throws Exception;
+
 }
