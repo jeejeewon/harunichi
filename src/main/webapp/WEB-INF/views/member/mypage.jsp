@@ -68,12 +68,14 @@
 		<div class="mypage-contents-area">
 			<div class="mypage-contents-tab">
 			    <div class="mypage-contents-tab-inner">
-			        <a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList.do">나의 게시글</a>
-			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList.do">좋아요한 게시글</a>
-			        <a href="javascript:void(0);" data-url="${contextPath}/product/myList">나의 거래글</a>
-					<a href="javascript:void(0);" data-url="${contextPath}/like/myLike">좋아요한 거래글</a>
-					<a href="javascript:void(0);" data-url="${contextPath}/payment/orders">나의 주문 내역</a>
-			    </div>
+			    	<a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList?id=${pageOwner.id}">나의 게시글</a>
+				    <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList?id=${pageOwner.id}">좋아요한 게시글</a>
+				    <a href="javascript:void(0);" data-url="${contextPath}/product/myList?id=${pageOwner.id}">나의 거래글</a>
+				    <a href="javascript:void(0);" data-url="${contextPath}/like/myLike?id=${pageOwner.id}">좋아요한 거래글</a>
+				    <c:if test="${isMyPage}">
+					    <a href="javascript:void(0);" data-url="${contextPath}/payment/orders?id=${pageOwner.id}">나의 주문 내역</a>
+					</c:if>
+				</div>
 			</div>
 			
 			<div class="mypage-contents-con">
@@ -86,7 +88,8 @@
 	
 	    //페이지 로드 시 
 	    document.addEventListener("DOMContentLoaded", function() {
-	    	
+	    	console.log("pageOwner.id: ${pageOwner.id}");
+	    	console.log("session member id: ${sessionScope.member.id}");
 	    	// board-side 강제 숨기기 추가
 	        const boardSideEls = document.querySelectorAll('.board-side');
 	        boardSideEls.forEach(function(el) {

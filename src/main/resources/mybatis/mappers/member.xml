@@ -323,7 +323,7 @@
 	<select id="selectMyBoards" parameterType="String" resultType="com.harunichi.board.vo.BoardVo">
 	    SELECT *
 	    FROM board
-	    WHERE boardWriterId = #{memberId}
+	    WHERE boardWriterId = #{_parameter}
 	    ORDER BY boardDate DESC
 	</select>
 	
