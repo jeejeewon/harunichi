@@ -8,15 +8,7 @@
 
 <!-- 스타일 css -->
 <link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
-<!--세션 값 확인 
-<pre>
-sessionScope.member: ${sessionScope.member} <br>
-sessionScope.member.id: ${sessionScope.member.id} <br>
-sessionScope.member.nick: ${sessionScope.member.nick} <br>
-sessionScope.member.email: ${sessionScope.member.email} <br>
-sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
-</pre> 
--->
+
 <body>
 	<section class="mypage-wrap">
 		<div class="mypage-inner-header">
@@ -60,28 +52,48 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 					<!-- 타인 프로필이면 팔로우 버튼과 채팅아이콘 표시 -->
 					<c:if test="${not isMyPage}">
 					    <button id="followBtn" class="follow-btn follow" onclick="follow('${contextPath}', '${pageOwner.id}')">팔로우</button>
-					    <a href="#" class="chat-btn"><img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons"></a>
+					    <!-- 채팅 폼 -->
+						<form id="chatForm" action="${contextPath}/chat/createChat" method="POST" style="display:none;">
+						    <input type="hidden" name="receiverId" value="${pageOwner.id}">
+						    <input type="hidden" name="chatType" value="personal">
+						</form>
+						<!-- 채팅 버튼 -->
+						<a href="javascript:void(0);" class="chat-btn" onclick="chatOpen();">
+						    <img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons">
+						</a>
 					</c:if>
 				</div>
 			</div>
 		</div>
 		<div class="mypage-contents-area">
 			<div class="mypage-contents-tab">
-				<div class="mypage-contents-tab-inner">
-					<a>나의 게시글</a>
-					<a>좋아요한 게시글</a>
-					<a href="${contextPath}/product/myList">나의 거래글</a>
-					<a href="${contextPath}/like/myLike">좋아요한 거래글</a>					
-					<a href="${contextPath}/payment/orders">나의 주문 내역</a>
-				</div>
+			    <div class="mypage-contents-tab-inner">
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList.do">나의 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList.do">좋아요한 게시글</a>
+			        <a href="javascript:void(0);" data-url="${contextPath}/product/myList">나의 거래글</a>
+					<a href="javascript:void(0);" data-url="${contextPath}/like/myLike">좋아요한 거래글</a>
+					<a href="javascript:void(0);" data-url="${contextPath}/payment/orderList">나의 주문 내역</a>
+			    </div>
 			</div>
-			<div class="mypage-contents-con"></div>
+			
+			<div class="mypage-contents-con">
+			    <!-- AJAX로 list.jsp 내용이 이 영역에 렌더링됨 -->
+			</div>
 		</div>
 	</section>
 	
 	<script type="text/javascript">
-	    // 페이지 로드 시 팔로우 상태를 확인하고 버튼을 초기화
+	
+	    //페이지 로드 시 
 	    document.addEventListener("DOMContentLoaded", function() {
+	    	
+	    	// board-side 강제 숨기기 추가
+	        const boardSideEls = document.querySelectorAll('.board-side');
+	        boardSideEls.forEach(function(el) {
+	            el.style.display = 'none';
+	        });
+	        
+	     	// 팔로우 상태를 확인하고 버튼을 초기화
 	        const contextPath = '${contextPath}';
 	        const followeeId = '${pageOwner.id}';
 	        const myId = '${sessionScope.member != null ? sessionScope.member.id : ""}';
@@ -97,8 +109,39 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 	                    }
 	                });
 	        }
+	        
+	        
+	        // 탭 이벤트 등록
+	        const tabs = document.querySelectorAll('.mypage-contents-tab-inner a');
+	        const contentCon = document.querySelector('.mypage-contents-con');
+
+	        tabs.forEach(tab => {
+	            tab.addEventListener('click', function() {
+	                const url = this.getAttribute('data-url');
+	                if (url) {
+	                    fetch(url)
+	                        .then(response => response.text())
+	                        .then(html => {
+	                            contentCon.innerHTML = html;
+	                        })
+	                        .catch(() => {
+	                            contentCon.innerHTML = '<p>불러오기 실패</p>';
+	                        });
+	                }
+	                
+	             	// 활성화 클래스 처리
+	                tabs.forEach(t => t.classList.remove('active-tab'));
+	                this.classList.add('active-tab');
+	            });
+	        });
+
+	        // 첫 탭 자동 클릭
+	        const firstTab = document.querySelector('.mypage-contents-tab-inner a[data-url]');
+	        if (firstTab) {
+	            firstTab.click();
+	        }
 	    });
-	
+		
 	    // 팔로잉 상태 버튼으로 설정하고 언팔로우 관련 이벤트를 등록
 	    function setFollowingButton(contextPath, followeeId, myId) {
 	        const btn = document.getElementById("followBtn");
@@ -206,6 +249,12 @@ sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
 	            document.getElementById("followingCountNum").textContent = count;
 	        });
 	    }
+	    
+	    //채팅 아이콘 클릭시
+	    function chatOpen(){
+		    document.getElementById("chatForm").submit();
+		}
+	    
 	</script>
 	
 
