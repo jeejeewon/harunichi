@@ -207,6 +207,9 @@
 	justify-content: center;
 	margin: 20px 0;
 }
+#imgUpload {
+	display: none;
+}
 .open-chat-profile-img{
   	width: 120px;
 	height: 120px;
