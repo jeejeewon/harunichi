@@ -39,8 +39,8 @@
 				<div class="chat-top-right">
 					<a href="#" id="searchIcon" class="chat-setting" onclick="chatSearch();"><i class="bi bi-search"></i></a>
 					<form action="#" id="searchBar" class="hidden">
-						<input type="text" placeholder="대화내용 입력" >
-						<button type="submit">검색</button>
+						<input type="text" name="chatKeyword" placeholder="대화내용 입력" >
+						<button id="searchBtn" onclick="searchSubmit(event);">검색</button>
 					</form>
 					<a href="#" id="chatSettingBtn" class="chat-setting" onclick="chatSetting();"><i class="bi bi-list"></i></a>
 				    <button class="disconnect-btn" onclick="disconnect();"><i class="bi bi-x-lg"></i></button>
@@ -53,6 +53,14 @@
 				  </ul>
 				</div>				
 			</div>
+			<!-- 검색 결과 -->
+			<div id="searchNavigation" class="hidden">
+				<button onclick="goToPrev()"><i class="bi bi-arrow-up-short"></i></button>
+				<span id="searchIndex">0 / 0</span>
+				<button onclick="goToNext()"><i class="bi bi-arrow-down-short"></i></button>
+			</div>
+			<p id="noResultMsg" class="hidden">검색된 결과가 없습니다.</p>
+			
 			<!-- 중고거래에서 요청온 채팅일 경우 상품 정보 보여주는 영역 -->
 			<c:if test="${!empty productVo}">
 				<div id="productWrap">
@@ -399,14 +407,94 @@
 	}
 	
 	
-	//채팅방 검색 -----------------------------------------------------------------------------
+	//채팅방 검색 바 노출 ------------------------------------------------------------------------
 	function chatSearch(){
 		const search = document.getElementById("searchBar");
 		search.classList.toggle("hidden");		
 		const searchIcon = document.getElementById("searchIcon");
 		searchIcon.classList.toggle("search-icon");		
+		
+		if(search.classList.contains("hidden")){
+			document.getElementById("noResultMsg").classList.add("hidden");
+			document.getElementById("searchNavigation").classList.add("hidden");
+			document.getElementById("searchNavigation").style.display = "";		
+			document.querySelector("input[name='chatKeyword']").value = "";
+			document.querySelectorAll(".highlight").forEach(el => {
+				el.classList.remove("highlight");
+			});
+		}
 	}
 	
+	
+	//채팅 검색 ------------------------------------------------------------------------------
+	let matchedMessages = [];
+	let currentIndex = -1;
+	
+	
+	function searchSubmit(event){
+		event.preventDefault();		
+		const keyword = document.querySelector("input[name='chatKeyword']").value.trim();
+		matchedMessages = [];
+		currentIndex = -1;
+		
+		//도큐먼트 초기화
+		document.getElementById("noResultMsg").classList.add("hidden");
+		document.getElementById("searchNavigation").classList.add("hidden");
+		document.getElementById("searchNavigation").style.display = "";
+		
+		if (!keyword) return;
+		
+		// 이전 하이라이팅 제거
+		document.querySelectorAll(".highlight").forEach(el => {
+			el.classList.remove("highlight");
+		});
+
+		// 채팅 메시지 목록에서 검색
+		const messages = document.querySelectorAll(".message"); // ← 클래스는 상황에 맞게 수정
+		messages.forEach((msg, index) => {
+			if (msg.textContent.includes(keyword)) {
+				matchedMessages.push(msg);
+			}
+		});	
+		
+		// 결과 표시
+		if (matchedMessages.length > 0) {
+			document.getElementById("noResultMsg").classList.add("hidden");
+			document.getElementById("searchNavigation").classList.remove("hidden");
+			document.getElementById("searchNavigation").style.display = "flex";
+			currentIndex = 0;
+			scrollToMessage(currentIndex);
+			updateSearchIndex();
+		} else {
+		    document.getElementById("noResultMsg").classList.remove("hidden");
+		    document.getElementById("searchNavigation").classList.add("hidden");
+		  }
+	}
+	
+	function scrollToMessage(index) {
+		  matchedMessages.forEach(msg => msg.classList.remove("highlight"));
+		  const target = matchedMessages[index];
+		  target.scrollIntoView({ behavior: "smooth", block: "center" });
+		  target.classList.add("highlight");
+		}
+
+		function updateSearchIndex() {
+		  document.getElementById("searchIndex").textContent = currentIndex + 1 + "/" + matchedMessages.length;
+		}
+
+		function goToPrev() {
+		  if (matchedMessages.length === 0) return;
+		  currentIndex = (currentIndex - 1 + matchedMessages.length) % matchedMessages.length;
+		  scrollToMessage(currentIndex);
+		  updateSearchIndex();
+		}
+
+		function goToNext() {
+		  if (matchedMessages.length === 0) return;
+		  currentIndex = (currentIndex + 1) % matchedMessages.length;
+		  scrollToMessage(currentIndex);
+		  updateSearchIndex();
+		}
 	
 	//채팅방 설정 드롭다운 -----------------------------------------------------------------------
 	function chatSetting(){

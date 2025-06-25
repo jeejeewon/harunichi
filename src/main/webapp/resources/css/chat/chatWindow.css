@@ -90,8 +90,17 @@
 	position: relative;
 	right: 154px;
 }
-
-
+/* 대화 검색 */
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+.hidden {
+  display: none;
+}
+#searchNavigation i {
+	font-size: 22px;
+}
 /* 채팅방 설정 드롭다운 */
 #chatSettingMenu {
 	position: absolute;
