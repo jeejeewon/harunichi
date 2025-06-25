@@ -13,10 +13,12 @@
 </head>
 <body>
 
-<!-- 프로필 이미지 경로 -->
+<!-- 멤버 프로필 이미지 경로 -->
 <c:set var="profileImgPath" value="/harunichi/resources/images/profile/" />
+<!-- 채팅방 프로필 이미지 경로 -->
+<c:set var="chatImgPath" value="/harunichi/resources/images/chat/" />
 
-	<form id="chatForm" action="<%=request.getContextPath()%>/chat/createChat" method="POST">
+	<form id="chatForm" action="${contextPath}/chat/createChat" method="POST">
 		<input type="hidden" id="receiverId" name="receiverId"> 		
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
@@ -29,7 +31,7 @@
 					<c:forEach var="member" items="${memberList}">						
 						<li>
 							<div class="profile-con">
-								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
+								<a href="${contextPath}/mypage?id=${member.id}"> <!-- 클릭시 상대방 프로필 정보 -->
 									<c:choose>
 								    	<c:when test="${not empty member.profileImg}">
 								        	<img class="profile-img" src="${profileImgPath}${member.profileImg}">
@@ -69,16 +71,42 @@
 								<div class="open-chat-item" data-room-id="${myChat.roomId}" data-room-type="${myChat.chatType}" onclick="doChat(this)">																	
 									<a href="#">
 										<c:choose>
-											<c:when test="${myChat.chatType eq 'personal'}">
-												<img class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="개인채팅방 프로필사진">
-												<!-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> -->
+											<%-- 거래 채팅방 --%>
+											<c:when test="${myChat.productId != 0}">
+												<c:choose>
+													<c:when test="${not empty myChat.profileImg}">
+														<img data-product-id="${myChat.productId}" class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="거래채팅방 프로필사진">
+														<%-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> --%>
+													</c:when>
+													<c:otherwise>
+														<img data-product-id="${myChat.productId}" class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="거래채팅방 기본 프로필사진">	
+													</c:otherwise>
+												</c:choose>																		
 											</c:when>
-											<c:when test="${empty myChat.profileImg}">
-												<img class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="오픈채팅방 프로필사진">												
+											
+											<%-- 개인 채팅방 --%>
+											<c:when test="${myChat.chatType eq 'personal' and myChat.productId == 0}">
+												<c:choose>
+													<c:when test="${not empty profile.profileImg}">
+														<img class="open-chat-img" src="${contextPath}/images/profile/${profile.profileImg}" alt="개인채팅방 프로필사진">
+													</c:when>
+													<c:otherwise>
+														<img class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="개인채팅방 기본 프로필사진">	
+													</c:otherwise>
+												</c:choose>
 											</c:when>
-											<c:otherwise>
-												<img class="open-chat-img" src="${contextPath}/images/chat/${myChat.profileImg}" alt="오픈채팅방 프로필사진">									
-											</c:otherwise>
+											
+											<%-- 오픈 채팅방 --%>
+											<c:when test="${myChat.chatType eq 'group'}">							
+												<c:choose>
+													<c:when test="${not empty myChat.profileImg}">
+														<img class="open-chat-img" src="${contextPath}/images/chat/${myChat.profileImg}" alt="오픈채팅방 프로필사진">
+													</c:when>
+													<c:otherwise>
+														<img class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="오픈채팅방 기본 프로필사진">
+													</c:otherwise>
+												</c:choose>														
+											</c:when>
 										</c:choose>								
 									</a>	
 									<div class="open-chat-info">					
@@ -212,18 +240,19 @@
 		
 	//모달창 -------------------------------------------------------------------------------	
 	//모달창 열기
-	function openModal(event) {		
-		event.preventDefault();
-		  const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
-		  if (!userId) {
-		    location.href = "<%= request.getContextPath() %>/chat/window";
-		    return;
-		  } 
-	  document.getElementById("myModal").style.display = "block";
+	function openModal(event) {	
+		event.preventDefault();		
+		//로그인 체크
+		const userId = '<%= session.getAttribute("id") == null ? "" : session.getAttribute("id") %>';
+		if (!userId) {
+		  location.href = "<%= request.getContextPath() %>/chat/loginChek";
+		  return;
+		} 
+		document.getElementById("myModal").style.display = "block";
 	}
 
 	//모달창 닫기
-	function closeModal() { 	
+	function closeModal() { 
 		//입력된 값 및 폼 초기화
 		document.getElementById("newChatForm").reset();
 
@@ -292,7 +321,13 @@
 	function doChat(event){		
 		const roomId = event.getAttribute("data-room-id");
 		const chatType = event.getAttribute("data-room-type");	
-		location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;		
+		const productId = event.querySelector("img").getAttribute("data-product-id");
+		
+		if(productId == null){
+			location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType;
+		}else{
+			location.href = "<%= request.getContextPath() %>/chat/doChat?roomId=" + roomId + "&chatType=" + chatType + "&productId=" + productId;
+		}			
 	}
 	
 	//생성된 오픈 채팅에 참여하는 함수 --------------------------------------------------------------

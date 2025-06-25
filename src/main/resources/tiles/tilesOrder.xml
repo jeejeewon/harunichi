@@ -23,7 +23,7 @@
 	<!-- 상품 결제 화면 -->
 	<definition name="/payment/form" extends="baseLayout">
 	    <put-attribute name="title" value="상품 결제" />
-	    <put-attribute name="body" value="/WEB-INF/views/payment/payment.jsp" />
+	    <put-attribute name="body" value="/WEB-INF/views/payment/form.jsp" />
 	</definition>
 	
 	<!-- 결제 성공 화면 -->

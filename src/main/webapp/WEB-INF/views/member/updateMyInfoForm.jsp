@@ -22,7 +22,10 @@
         	<div class="profile-image-area">
 			    <c:choose>
 			        <c:when test="${not empty member.profileImg}">
-			            <img id="profileImage" src="${sessionScope.member.profileImg}" alt="프로필 이미지">
+			            <img id="profileImage" src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}" alt="프로필 이미지">
+			            <!-- [기본이미지] 버튼 : 현재 이미지가 기본 이미지 아닐 때만 표시 -->
+            			<button type="button" id="resetProfileBtn">기본 이미지 적용</button>
+            			<input type="hidden" name="resetProfile" id="resetProfile" value="false"><!-- 이미지를 기본이미지로 설정했을때 데이터보낼 히든인풋 -->
 			        </c:when>
 			        <c:otherwise>
 			            <img id="profileImage" src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 프로필 이미지">
@@ -120,7 +123,6 @@
 			    </div>
 			</div>			
 			<div class="member-form-inner">
-				<p>*필수입력</p>
 				<div id="required-form">
 					<div class="form-group id-area">
 						<p>아이디</p>
@@ -161,7 +163,6 @@
 			</div>
 			<hr>
 			<div class="member-form-inner">
-				<p>선택입력</p>
 				<div id="other-form">
 					<div class="form-group gender-group">
 					    <input type="radio" id="male" name="gender" value="male" <c:if test="${member.gender == 'M'}">checked</c:if>>
@@ -192,7 +193,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<button type="submit" id="nextBtn" disabled>수정완료</button>
+				<button type="submit" id="nextBtn">수정완료</button>
 			</div>
     </form>
 </section>
@@ -325,178 +326,55 @@ $(document).ready(function() {
 	        $(this).val(raw);
 	    }
 	});
-
-
-	// 아이디 입력 시 안내문 표시
-	$('#id').on('input', function () {
-	    checkIdConfirmed = false;
-	    $('#id-check-result').text('');
-	    const id = $(this).val().trim();
-	    $('#id-check-required').toggle(id !== "");
-	    toggleNextButton();
-	});
-
-	// 아이디 중복 확인 문구
-	$('#id-check-required').hide();
-	$('#id').on('input', function () {
-	    checkIdConfirmed = false;
-	    $('#id-check-result').text('');
-	    const id = $(this).val().trim();
-
-	    // 조건: 입력은 했는데 중복확인 안 누른 경우에만 보이게
-	    if (id !== "") {
-	        $('#id-check-required').show();
-	    } else {
-	        $('#id-check-required').hide();
-	    }
-
-	    toggleNextButton();
-	});
-	// 아이디 중복 확인
-	let checkIdConfirmed = false;
-	$('#checkIdBtn').on('click', function() {
-	    $('#id-check-required').hide();
-	    const id = $('#id').val().trim();
-	    const $resultSpan = $('#id-check-result');
-	    const $errorSpan = $('#error-id');
-	    $('.error').text('');
-	    $resultSpan.text('');
-
-	    if (id === "") {
-	        $resultSpan.css('color', 'red').text('아이디를 입력해주세요.');
-	        checkIdConfirmed = false;
-	        toggleNextButton();
-	        return;
-	    }
-
-	    $.ajax({
-	        url: '${contextPath}/member/checkId.do',
-	        type: 'GET',
-	        data: { id: id },
-	        dataType: 'json',
-	        success: function(data) {
-	            if (data.exists) {
-	                $resultSpan.css('color', 'red').text('이미 사용 중인 아이디입니다.');
-	                checkIdConfirmed = false;
-	            } else {
-	                $resultSpan.css('color', '#A3DAFF').text('사용 가능한 아이디입니다!');
-	                checkIdConfirmed = true;
-	            }
-	            toggleNextButton();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("오류:", error);
-	            $resultSpan.css('color', 'red').text('아이디 중복 확인 중 오류 발생.');
-	            checkIdConfirmed = false;
-	            toggleNextButton();
-	        }
-	    });
-	});
-
-		// 비밀번호 입력 후 포커스 벗어났을 때 6자 이상인지 체크
-	$('#pass').on('blur', function() {
-	    const pass = $(this).val();
-	    const $errorSpan = $('#error-pass');
-
-	    if (pass.length < 6) {
-	        $errorSpan.text('비밀번호는 6자 이상 입력해주세요.');
-	    } else {
-	        $errorSpan.text('');
-	    }
-	});
-
-	// 비밀번호 일치 확인
+	
+	
+	
+	//비밀번호 처리
 	const $passInput = $('#pass');
-	const $passConfirmInput = $('#passConfirm');
-	const $passwordMatchIcon = $('#password-match-icon');
+    const $passConfirmInput = $('#passConfirm');
+    const $passwordMatchIcon = $('#password-match-icon');
+    const $errorPass = $('#error-pass');
+    const $errorPassConfirm = $('#error-passConfirm');
+    const $nextBtn = $('#nextBtn');
+    function checkPasswordState() {
+        const pass = $passInput.val();
+        const passConfirm = $passConfirmInput.val();
 
-	function updatePasswordMatchIcon() {
-	    const pass = $passInput.val();
-	    const passConfirm = $passConfirmInput.val();
-	    const $errorSpan = $('#error-passConfirm');
+        // 초기화
+        $passwordMatchIcon.text('').removeClass('match mismatch');
+        $errorPass.text('');
+        $errorPassConfirm.text('');
 
-	    $errorSpan.text('');
-	    $passwordMatchIcon.text('').removeClass('match mismatch');
+        if (pass.trim() === "") {
+            // 공백이면 버튼 활성화
+            $nextBtn.prop('disabled', false);
+            return;
+        }
 
-	    if (passConfirm.trim() === "") return false;
-	    if (pass === passConfirm) {
-	        $passwordMatchIcon.text('✅').addClass('match');
-	        return true;
-	    } else {
-	        $passwordMatchIcon.text('❌').addClass('mismatch');
-	        return false;
-	    }
-	}
+        if (pass.length < 6) {
+            $errorPass.text('비밀번호는 6자 이상 입력해주세요.');
+            $nextBtn.prop('disabled', true);
+            return;
+        }
 
-	$('#passConfirm').on('blur', function() {
-	    const pass = $passInput.val();
-	    const passConfirm = $passConfirmInput.val();
-	    const $errorSpan = $('#error-passConfirm');
+        if (passConfirm.trim() === "") {
+            // 비밀번호 확인 공백
+            $errorPassConfirm.text('비밀번호 확인을 입력해주세요.');
+            $nextBtn.prop('disabled', true);
+            return;
+        }
 
-	    if (passConfirm.trim() === "") {
-	        $errorSpan.text('비밀번호 확인을 입력해주세요.');
-	    } else if (pass !== passConfirm) {
-	        $errorSpan.text('비밀번호가 일치하지 않습니다.');
-	    } else {
-	        $errorSpan.text('');
-	    }
-	});
-
-	// 필수 필드 체크 함수 + 다음 버튼 활성화
-	const $requiredFields = $('#id, #pass, #passConfirm, #name, #nick, #year');
-	const $nextBtn = $('#nextBtn');
-
-	function areRequiredFieldsFilled() {
-	    let allFilled = true;
-	    $requiredFields.each(function() {
-	        if ($(this).val().trim() === "") {
-	            allFilled = false;
-	            return false;
-	        }
-	    });
-	    return allFilled;
-	}
-
-	function toggleNextButton() {
-	    if (areRequiredFieldsFilled() && checkIdConfirmed && updatePasswordMatchIcon()) {
-	        $nextBtn.prop('disabled', false);
-	    } else {
-	        $nextBtn.prop('disabled', true);
-	    }
-	}
-
-	$requiredFields.on('input change', function() {
-	    if ($(this).attr('id') === 'pass' || $(this).attr('id') === 'passConfirm') {
-	        updatePasswordMatchIcon();
-	    }
-	    toggleNextButton();
-	});
-
-	toggleNextButton(); // 초기 상태
-
-		// 폼 전송 Ajax로 처리
-	$('#memberForm').on('submit', function(e) {
-	    e.preventDefault(); // 기본 제출 막기
-
-	    const formData = $(this).serialize(); // 폼 데이터 직렬화
-
-	    $.ajax({
-	        url: '${contextPath}/member/addMemberProcess.do',
-	        type: 'POST',
-	        data: formData,
-	        success: function(response) {
-	            if (response === 'success') {
-	                window.location.href = '${contextPath}/member/profileImgAndMyLikeSetting.do';
-	            } else {
-	                alert("회원가입 처리 중 오류가 발생했습니다.");
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("서버 통신 오류:", error);
-	            alert("서버와 통신 중 문제가 발생했습니다.");
-	        }
-	    });
-	});
+        if (pass === passConfirm) {
+            $passwordMatchIcon.text('✅').addClass('match');
+            $nextBtn.prop('disabled', false);
+        } else {
+            $passwordMatchIcon.text('❌').addClass('mismatch');
+            $errorPassConfirm.text('비밀번호가 일치하지 않습니다.');
+            $nextBtn.prop('disabled', true);
+        }
+    }
+    $passInput.on('input', checkPasswordState);
+    $passConfirmInput.on('input', checkPasswordState);
 	
 	
 });
@@ -520,6 +398,35 @@ function previewImage(input) {
     }
     reader.readAsDataURL(file);
 }
+//비밀번호 입력 후 포커스 벗어났을 때 6자 이상인지 체크
+$('#pass').on('blur', function() {
+    const pass = $(this).val();
+    const $errorSpan = $('#error-pass');
+
+    if (pass.length < 6) {
+        $errorSpan.text('비밀번호는 6자 이상 입력해주세요.');
+    } else {
+        $errorSpan.text('');
+    }
+});
+
+	//기본이미지 버튼 클릭시 프로필이미지 기본이미지로 변경
+    $('#resetProfileBtn').on('click', function() {
+        // 기본 이미지로 src 변경
+        $('#profileImage').attr('src', '${contextPath}/resources/icon/basic_profile.jpg');
+        // 파일 업로드 input 비움
+        $('#profileImg').val('');
+     // 버튼 숨김
+        $(this).hide();
+     // resetProfile hidden input 값을 true로 설정
+        $('#resetProfile').val('true');
+    });
+    //다시 프로필이미지를 업로드했을때 기본이미지버튼 나타남
+    $('#profileImg').on('change', function() {
+    	$('#resetProfile').val('false'); // 파일 업로드 시 기본이미지 초기화 플래그 해제
+        $('#resetProfileBtn').show();
+    });
+
 
 
 </script>

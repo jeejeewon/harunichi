@@ -1,0 +1,224 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}" />
+
+<!-- <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
+</c:if> -->
+
+<!-- 스타일 css -->
+<link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
+<!--세션 값 확인 
+<pre>
+sessionScope.member: ${sessionScope.member} <br>
+sessionScope.member.id: ${sessionScope.member.id} <br>
+sessionScope.member.nick: ${sessionScope.member.nick} <br>
+sessionScope.member.email: ${sessionScope.member.email} <br>
+sessionScope.member.profileImg: ${sessionScope.member.profileImg} <br>
+</pre> 
+-->
+<body>
+	<section class="mypage-wrap">
+		<div class="mypage-inner-header">
+			<a href="javascript:void(0);" onclick="history.back();">
+	    		<img src="${contextPath}/resources/icon/back_icon.svg" alt="뒤로가기버튼">
+			</a>
+		</div>
+		<div class="mypage-profile-area">
+			<div class="profile-area-left">
+				<c:choose>
+				    <c:when test="${not empty pageOwner.profileImg}">
+				        <img src="${contextPath}/images/profile/${pageOwner.profileImg}" alt="프로필 이미지">
+				    </c:when>
+				    <c:otherwise>
+				        <img src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 이미지">
+				    </c:otherwise>
+				</c:choose>
+			</div>
+			<div class="profile-area-middle">
+				<div class="nick-and-email">
+					<span>${pageOwner.nick}</span>
+					<span>${pageOwner.email}</span>
+				</div>
+				<div class="join-date">
+					<img src="${contextPath}/resources/icon/calendar_icon.svg"><p>가입일: <fmt:formatDate value="${pageOwner.joindate}" pattern="yyyy년 M월 d일" /></p>
+				</div>
+				<div class="follow-area">
+					<a href="${contextPath}/follow/mypageFollow?id=${pageOwner.id}&type=following">
+					  <span id="followingCountNum">${followingCount}</span> 팔로우중
+					</a>
+					
+					<a href="${contextPath}/follow/mypageFollow?id=${pageOwner.id}&type=follower">
+					  <span id="followerCountNum">${followerCount}</span> 팔로워
+					</a>
+				</div>
+				<div class="chat-edit-follow">
+					<!-- 나의 마이페이지면 수정 버튼 표시 -->
+					<c:if test="${isMyPage}">
+					    <a href="${contextPath}/member/updateMyInfoForm.do" class="edit-btn">프로필 수정</a>
+					</c:if>
+					<!-- 타인 프로필이면 팔로우 버튼과 채팅아이콘 표시 -->
+					<c:if test="${not isMyPage}">
+					    <button id="followBtn" class="follow-btn follow" onclick="follow('${contextPath}', '${pageOwner.id}')">팔로우</button>
+					    
+					    	<form id="chatForm" action="<%=request.getContextPath()%>/chat/createChat" method="POST">
+								<input type="hidden" id="receiverId" name="receiverId" value="${pageOwner.id}"> 		
+								<input type="hidden" id="chatType" name="chatType" value="personal">
+							</form>	
+					    <a href="#" class="chat-btn" onclick="chatOpen(this);"><img src="${contextPath}/resources/icon/chat_line_icon.svg" class="on-icons"></a>
+					</c:if>
+				</div>
+			</div>
+		</div>
+		<div class="mypage-contents-area">
+			<div class="mypage-contents-tab">
+				<div class="mypage-contents-tab-inner">
+					<a>나의 게시글</a>
+					<a>좋아요한 게시글</a>
+					<a>나의 거래글</a>
+					<a>좋아요한 거래글</a>
+				</div>
+			</div>
+			<div class="mypage-contents-con"></div>
+		</div>
+	</section>
+	
+	<script type="text/javascript">
+	    // 페이지 로드 시 팔로우 상태를 확인하고 버튼을 초기화
+	    document.addEventListener("DOMContentLoaded", function() {
+	        const contextPath = '${contextPath}';
+	        const followeeId = '${pageOwner.id}';
+	        const myId = '${sessionScope.member != null ? sessionScope.member.id : ""}';
+	
+	        const btn = document.getElementById("followBtn");
+	        if (btn) {
+	            // 서버에 팔로우 여부를 요청하여 버튼 상태 설정
+	            fetch(contextPath + "/follow/isFollowing?followeeId=" + encodeURIComponent(followeeId))
+	                .then(response => response.json())
+	                .then(isFollowing => {
+	                    if (isFollowing) {
+	                        setFollowingButton(contextPath, followeeId, myId);
+	                    }
+	                });
+	        }
+	    });
+	
+	    // 팔로잉 상태 버튼으로 설정하고 언팔로우 관련 이벤트를 등록
+	    function setFollowingButton(contextPath, followeeId, myId) {
+	        const btn = document.getElementById("followBtn");
+	        btn.textContent = "팔로잉";
+	        btn.classList.remove("follow", "unfollow");
+	        btn.classList.add("following");
+	
+	        // 마우스 올리면 '언팔로우' 표시
+	        btn.onmouseenter = function() {
+	            btn.textContent = "언팔로우";
+	            btn.classList.remove("following");
+	            btn.classList.add("unfollow");
+	        };
+	
+	        // 마우스 내리면 다시 '팔로잉' 표시
+	        btn.onmouseleave = function() {
+	            btn.textContent = "팔로잉";
+	            btn.classList.remove("unfollow");
+	            btn.classList.add("following");
+	        };
+	
+	        // 클릭 시 언팔로우 동작 실행
+	        btn.onclick = function() {
+	            unfollow(contextPath, followeeId, myId);
+	        };
+	    }
+	
+	    // 팔로우 상태 버튼으로 설정하고 팔로우 관련 이벤트를 등록
+	    function setFollowButton(contextPath, followeeId, myId) {
+	        const btn = document.getElementById("followBtn");
+	        btn.textContent = "팔로우";
+	        btn.classList.remove("following", "unfollow");
+	        btn.classList.add("follow");
+	
+	        // 이벤트 초기화
+	        btn.onmouseenter = null;
+	        btn.onmouseleave = null;
+	
+	        // 클릭 시 팔로우 동작 실행
+	        btn.onclick = function() {
+	            follow(contextPath, followeeId, myId);
+	        };
+	    }
+	
+	    // 팔로우 요청을 서버로 보내고 성공 시 버튼 및 팔로워/팔로잉 수 갱신
+	    function follow(contextPath, followeeId, myId) {
+	        fetch(contextPath + "/follow/add", {
+	            method: "POST",
+	            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+	            body: "followeeId=" + encodeURIComponent(followeeId)
+	        })
+	        .then(response => response.text())
+	        .then(data => {
+	            if (data === "success") {
+	                setFollowingButton(contextPath, followeeId, myId);
+	                updateFollowerCount(contextPath, followeeId); // 상대 팔로워 수 갱신
+	                if (followeeId === myId) {
+	                    updateFollowingCount(contextPath, myId); // 내 팔로잉 수 갱신 (내 프로필일 때만)
+	                }
+	            } else {
+	                alert("팔로우 실패");
+	            }
+	        })
+	        .catch(() => alert("서버 오류"));
+	    }
+	
+	    // 언팔로우 요청을 서버로 보내고 성공 시 버튼 및 팔로워/팔로잉 수 갱신
+	    function unfollow(contextPath, followeeId, myId) {
+	        if (confirm("언팔로우하시겠습니까?")) {
+	            fetch(contextPath + "/follow/remove", {
+	                method: "POST",
+	                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+	                body: "followeeId=" + encodeURIComponent(followeeId)
+	            })
+	            .then(response => response.text())
+	            .then(data => {
+	                if (data === "success") {
+	                    setFollowButton(contextPath, followeeId, myId);
+	                    updateFollowerCount(contextPath, followeeId); // 상대 팔로워 수 갱신
+	                    if (followeeId === myId) {
+	                        updateFollowingCount(contextPath, myId); // 내 팔로잉 수 갱신 (내 프로필일 때만)
+	                    }
+	                } else {
+	                    alert("언팔로우 실패");
+	                }
+	            })
+	            .catch(() => alert("서버 오류"));
+	        }
+	    }
+	
+	    // 상대방 팔로워 수를 서버에서 가져와 화면에 갱신
+	    function updateFollowerCount(contextPath, followeeId) {
+	        fetch(contextPath + "/follow/followerCount?followeeId=" + encodeURIComponent(followeeId))
+	        .then(response => response.text())
+	        .then(count => {
+	            document.getElementById("followerCountNum").textContent = count;
+	        });
+	    }
+	
+	    // 내 팔로잉 수를 서버에서 가져와 화면에 갱신
+	    function updateFollowingCount(contextPath, followerId) {
+	        fetch(contextPath + "/follow/followingCount?followerId=" + encodeURIComponent(followerId))
+	        .then(response => response.text())
+	        .then(count => {
+	            document.getElementById("followingCountNum").textContent = count;
+	        });
+	    }
+	    
+		function chatOpen(btn){
+			document.getElementById("chatForm").submit();		
+		}	
+	    
+	    
+	    
+	</script>
+	
+
+
+</body>

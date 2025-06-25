@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,5 +36,17 @@ public interface BoardController {
 	ModelAndView viewBoard(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
 
 	public String addReply(ReplyVo reply, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+	// 게시글 좋아요
+	String boardLike(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+
+	// 게시글 좋아요 취소
+	String boardLikeCancel(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+
+	// 게시글 좋아요 상태
+	String boardLikeStatus(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+
+	// 게시글 총 좋아요 수 조회
+	String boardLikeCount(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
 
 }

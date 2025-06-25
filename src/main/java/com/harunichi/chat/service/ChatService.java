@@ -23,7 +23,7 @@ public interface ChatService {
 	String insertRoomId(ChatRoomVo vo);
 
 	//과거 채팅 내역 불러오기
-	List<ChatVo> selectChatHistory(String roomId);
+	List<ChatVo> selectChatHistory(String roomId, String userId);
 
 	//채팅방 참여 인원 확인
 	int selectUserCount(String roomId);
@@ -59,15 +59,28 @@ public interface ChatService {
 	void updateChatProduct(String roomId, int productId);
 
 	//채팅방 정보에 상품ID 제거
-	void deleteProductId(String roomId);
+	void deleteProductId(String roomId, int productId);
+
+	//채팅방 나가기
+	void leaveChatRoom(String userId, String roomId);
+
+	//채팅방 정보와 채팅 내역 삭제
+	void deleteChat(String roomId);
+
+	//특정 오픈 채팅방의 방장 ID 조회
+	String selectLeaderId(String roomId);
+
+	//채팅방에 참여하고 있는 유저 ID 조회
+	List<String> selectUserByRoomId(String roomId);
+
+	//오픈 채팅방 정보 업데이트
+	void updateChatRoom(ChatRoomVo vo);
 
 	
 
-
-
 	
 
-
+	
 
 
 

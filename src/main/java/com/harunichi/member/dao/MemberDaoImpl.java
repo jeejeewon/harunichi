@@ -1,5 +1,7 @@
 package com.harunichi.member.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -63,6 +65,46 @@ public class MemberDaoImpl implements MemberDao {
 		return sqlSession.selectOne("mapper.member.countById", id);
 	}
 	
+	//아이디 중복 체크
+	@Override
+	public List<MemberVo> selectMemberList(String searchKeyword, String searchType, int offset, int pageSize) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
+	    params.put("offset", offset);
+	    params.put("pageSize", pageSize);
+	    return sqlSession.selectList("mapper.member.selectMemberList", params);
+	}
+
+	@Override
+	public int selectMemberCount(String searchKeyword, String searchType) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
+	    return sqlSession.selectOne("mapper.member.selectMemberCount", params);
+	}
+
+	//회원삭제
+	@Override
+	public void deleteMember(String id) {
+		sqlSession.delete("mapper.member.deleteMember", id);
+		
+	}
 	
+	//어드민 - 이미지초기화
+	@Override
+	public void resetProfileImg(String id) {
+	    sqlSession.update("mapper.member.resetProfileImg", id);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectGenderDistribution() {
+	    return sqlSession.selectList("mapper.member.selectGenderDistribution");
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCountryDistribution() {
+	    return sqlSession.selectList("mapper.member.selectCountryDistribution");
+	}
 
 }

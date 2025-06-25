@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.harunichi.board.controller.BoardControllerImpl;
 import com.harunichi.board.dao.BoardDao;
+import com.harunichi.board.dao.BoardLikeDao;
 import com.harunichi.board.dao.ReplyDao;
+import com.harunichi.board.vo.BoardLikeVo;
 import com.harunichi.board.vo.BoardVo;
 import com.harunichi.board.vo.ReplyVo;
 
@@ -21,12 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service("BoardService")
 public class BoardServiceImpl implements BoardService {
-	
+
 	@Autowired
 	private BoardDao boardDao;
 
 	@Autowired
 	private ReplyDao replyDao;
+
+	@Autowired
+	private BoardLikeDao boardLikeDao;
 
 	@Override
 	public List<BoardVo> selectBoardList() throws Exception {
@@ -76,13 +81,13 @@ public class BoardServiceImpl implements BoardService {
 	// 게시글 삭제
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED) // DB 작업에 트랜잭션 적용
-	public int deleteBoardData(int boardId) throws Exception {		
+	public int deleteBoardData(int boardId) throws Exception {
 		int result = 0;
 		try {
-			// 1. 해당 게시글에 속한 댓글 먼저 삭제		
-			int deletedRepliesCount = 0;		
-			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);				
-			result = boardDao.deleteBoard(boardId);	
+			// 1. 해당 게시글에 속한 댓글 먼저 삭제
+			int deletedRepliesCount = 0;
+			deletedRepliesCount = replyDao.deleteRepliesByBoardId(boardId);
+			result = boardDao.deleteBoard(boardId);
 		} catch (Exception e) {
 			log.error(">>데이터베이스 삭제 중 예외 발생, boardId:{}", boardId, e);
 			throw e;
@@ -93,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
 
 	// 댓글 추가
 	@Override
-	public int addReply(ReplyVo reply) throws Exception {		
+	public int addReply(ReplyVo reply) throws Exception {
 		// ReplyDao의 insertReply 메소드를 호출하여 DB에 댓글 저장
 		int result = replyDao.insertReply(reply);
 		log.info(">>댓글 DB 저장 완료. 결과: {}", result);
@@ -102,14 +107,14 @@ public class BoardServiceImpl implements BoardService {
 
 	// 특정 게시물의 댓글 조회
 	@Override
-	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception {	
+	public List<ReplyVo> getRepliesByBoardId(int boardId) throws Exception {
 		List<ReplyVo> replyList = replyDao.selectRepliesByBoardId(boardId);
 		log.info(">>BoardServiceImpl-getRepliesByBoardId() 호출 종료. 조회된 댓글 수:{}",
 				replyList != null ? replyList.size() : 0);
 		return replyList; // 조회된 댓글 목록 반환
 	}
-	
-	@Override	
+
+	@Override
 	@Transactional(readOnly = true) // 읽기 전용 트랜잭션
 	public int getReplyCountByBoardId(int boardId) throws Exception {
 		log.info(">>BoardServiceImpl-getReplyCountByBoardId() 호출 시작, boardId:{}", boardId);
@@ -118,22 +123,103 @@ public class BoardServiceImpl implements BoardService {
 		log.info(">>BoardServiceImpl-getReplyCountByBoardId() 호출 종료. 댓글 개수:{}", replyCount);
 		return replyCount; // 댓글 개수 반환
 	}
-	
-	@Override
-    public int deleteReply(int replyId, String replyWriter) throws Exception {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("replyId", replyId);
-        paramMap.put("currentUserId", replyWriter);
-        return replyDao.deleteReply(paramMap);
-    }
 
-    @Override
-    public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("replyId", replyId);
-        paramMap.put("replyCont", replyCont);
-        paramMap.put("replyWriter", replyWriter); 
-        return replyDao.updateReply(paramMap);
-    }
+	@Override
+	public int deleteReply(int replyId, String replyWriter) throws Exception {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("replyId", replyId);
+		paramMap.put("currentUserId", replyWriter);
+		return replyDao.deleteReply(paramMap);
+	}
+
+	@Override
+	public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("replyId", replyId);
+		paramMap.put("replyCont", replyCont);
+		paramMap.put("replyWriter", replyWriter);
+		return replyDao.updateReply(paramMap);
+	}
+
+	@Override
+	public boolean addBoardLike(BoardLikeVo likeVo) throws Exception {
+
+		try {
+			// 이미 좋아요를 눌렀는지 확인
+			int count = boardLikeDao.selectMyLikeCount(likeVo);
+
+			if (count > 0) {
+				// 이미 좋아요를 누른 경우
+				log.info(">> 이미 좋아요를 누른 게시글입니다.");
+				return false;
+			} else {
+				// 좋아요 추가
+				boardLikeDao.insertBoardLike(likeVo);
+				log.info(">> 게시글 좋아요 추가 완료");
+				return true;
+			}
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 추가 중 예외 발생", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean cancelBoardLike(BoardLikeVo likeVo) throws Exception {
+		try {
+			// 좋아요를 눌렀는지 확인
+			int count = boardLikeDao.selectMyLikeCount(likeVo);
+
+			if (count > 0) {
+				// 좋아요를 누른 경우, 취소 처리
+				boardLikeDao.deleteBoardLike(likeVo);
+				log.info(">> 게시글 좋아요 취소 완료");
+				return true;
+			} else {
+				// 좋아요를 누르지 않은 경우
+				log.info(">> 좋아요를 누르지 않은 게시글입니다.");
+				return false;
+			}
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 취소 중 예외 발생", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean checkBoardLikeStatus(BoardLikeVo likeVo) throws Exception {
+		try {
+			int count = boardLikeDao.selectMyLikeCount(likeVo);
+			return count > 0;
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 상태 확인 중 예외 발생", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public int getBoardLikeCount(int boardId) throws Exception {
+		try {
+			return boardLikeDao.selectTotalLikeCount(boardId);
+		} catch (Exception e) {
+			log.error(">> 게시글 총 좋아요 수 조회 중 예외 발생", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void updateBoardLikeCount(int boardId, int likeCount) throws Exception {
+		try {
+			BoardVo boardVo = new BoardVo();
+			boardVo.setBoardId(boardId);
+			boardVo.setBoardLike(likeCount);
+
+			boardDao.updateBoardLikeCount(boardVo);
+			log.info(">> 게시글 좋아요 수 업데이트 완료");
+		} catch (Exception e) {
+			log.error(">> 게시글 좋아요 수 업데이트 중 예외 발생", e);
+			throw e;
+		}
+	}
 
 }

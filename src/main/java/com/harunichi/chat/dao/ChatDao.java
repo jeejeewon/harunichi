@@ -11,6 +11,9 @@ public interface ChatDao {
 
 	//채팅 메세지 DB에 저장
 	void saveMessage(ChatVo chatMsg);
+	
+	//chatRoom 테이블에 최신 메세지 시간 업데이트
+	void updateChatRoomTime(String roomId);
 
 	//친구 추천 리스트 조회	
 	List<MemberVo> selectMembers(String id);
@@ -25,7 +28,7 @@ public interface ChatDao {
 	void insertRoomId(Map<String, Object> roomMap);
 
 	//DB에서 채팅 내역 조회	
-	List<ChatVo> selectChatHistory(String roomId);
+	List<ChatVo> selectChatHistory(String roomId, String userId);
 
 	//채팅방에 참여하고 있는 유저 조회
 	int selectUserCount(String roomId);
@@ -58,7 +61,33 @@ public interface ChatDao {
 	void updateChatProduct(String roomId, int productId);
 
 	//채팅방 정보에 상품ID 제거
-	void deleteProductId(String roomId);
+	void deleteProductId(String roomId, int productId);
+
+	//채팅방 나가기
+	void leaveChatRoom(Map<String, String> map);
+	
+	//채팅내역 삭제
+	void deleteChat(String roomId);
+
+	//채팅방 삭제
+	void deleteChatRoom(String roomId);
+
+	//특정 오픈 채팅방의 방장 ID 조회
+	String selectLeaderId(String roomId);
+
+	//채팅방에 참여하고 있는 유저 ID 조회
+	List<String> selectUserByRoomId(String roomId);
+
+	//오픈 채팅방 정보 업데이트
+	void updateChatRoom(ChatRoomVo vo);
+
+	
+
+	
+
+
+
+
 
 
 

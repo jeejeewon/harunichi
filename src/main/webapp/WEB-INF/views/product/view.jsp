@@ -10,14 +10,27 @@
 <div class="product-detail-container">
     <h2 class="product-title">${product.productTitle}</h2>
 
-    <div class="writer-info">
-        <img src="${ctx}${product.writerProfileImg}" alt="프로필 이미지" class="writer-img">
-        <span class="writer-nick">${product.writerNick}</span>
-    </div>
-
-    <div class="product-detail">
-        <img src="${ctx}${product.productImg != null ? product.productImg : '/resources/images/no-image.png'}"
-             alt="상품 이미지" class="product-image">
+		<div class="writer-info">
+		    <c:choose>
+			  <c:when test="${not empty product.writerProfileImg}">
+			    <img src="${ctx}/resources/images/profile/${product.writerProfileImg}" class="writer-img" alt="프로필">
+			  </c:when>
+			  <c:otherwise>
+			    <img src="${ctx}/resources/images/profile/default_profile.png" class="writer-img" alt="기본 프로필">
+			  </c:otherwise>
+			</c:choose>
+		    <span class="writer-nick">${product.writerNick}</span>
+		</div>
+	
+	    <div class="product-detail">
+			<c:choose>
+			  <c:when test="${not empty product.productImg}">
+			    <img src="${ctx}/resources/images/product/${product.productImg}" class="product-image" alt="상품 이미지" />
+			  </c:when>
+			  <c:otherwise>
+			    <img src="${ctx}/resources/images/product/no-image.png" class="product-image" alt="기본 이미지" />
+			  </c:otherwise>
+			</c:choose>
 
         <div class="product-info-box">
             <ul class="product-meta">
@@ -27,6 +40,7 @@
 				<li><strong>거래방식:</strong>
 				    <span>
 				        <c:choose>
+				            <c:when test="${product.productStatus == -1}">판매완료</c:when>
 				            <c:when test="${product.productStatus == 1}">나눔</c:when>
 				            <c:otherwise>판매</c:otherwise>
 				        </c:choose>
@@ -52,13 +66,22 @@
                 </li>
             </ul>
 
-            <div class="action-buttons">
-                <button onclick="startChat('${product.productWriterId}')" class="btn btn-chat">채팅하기</button>
-                <button onclick="payment('${product.productId}')" class="btn btn-pay">결제하기</button>
-                <button id="likeButton" class="btn-like">
-                    <i class="fa-regular fa-heart">❤️</i> <span id="likeCount">0</span>
-                </button>
-            </div>
+			<div class="action-buttons">
+			    <c:choose>
+			        <c:when test="${product.productStatus == -1}">
+			            <p style="color: gray; font-weight: bold;">⚠️ 판매가 완료된 상품입니다.</p>
+			        </c:when>
+			        <c:otherwise>
+			            <button onclick="startChat('${product.productWriterId}')" class="btn btn-chat">채팅하기</button>
+			            <button onclick="payment('${product.productId}')" class="btn btn-pay">결제하기</button>
+			        </c:otherwise>
+			    </c:choose>
+			
+			    <button id="likeButton" class="btn-like">
+			        <i class="fa-regular fa-heart">❤️</i> <span id="likeCount">0</span>
+			    </button>
+			</div>
+
         </div>
     </div>
 
@@ -110,39 +133,34 @@
           listEl.html('<p>작성자의 다른 상품이 없습니다.</p>');
           return;
         }
-
-        console.log("불러온 데이터 배열:", data);
         
         data.forEach(p => {
-        	  console.log("상품 :", p);
+            const title = p.productTitle || '제목 없음';
+            const price = (p.productPrice != null) ? Number(p.productPrice).toLocaleString() + '원' : '가격 미정';
+            const imgSrc = p.productImg ? ctx + '/resources/images/product/' + p.productImg : ctx + '/resources/images/product/no-image.png';
 
-        	  const title = p.productTitle || '제목 없음';
-        	  const price = (p.productPrice != null) ? Number(p.productPrice).toLocaleString() + '원' : '가격 미정';
-        	  const imgSrc = p.productImg ? (ctx + p.productImg) : (ctx + '/resources/images/no-image.png');
+            const html =
+              '<div class="other-product-card" onclick="location.href=\'' + ctx + '/product/view?productId=' + p.productId + '\'">' +
+                '<img src="' + imgSrc + '" alt="상품 이미지">' +
+                '<p class="other-product-title">' + title + '</p>' +
+                '<p class="other-product-price">' + price + '</p>' +
+              '</div>';
 
-        	  const html =
-        		  '<div class="other-product-card" onclick="location.href=\'' + ctx + '/product/view?productId=' + p.productId + '\'">' +
-        		    '<img src="' + imgSrc + '" alt="상품 이미지">' +
-        		    '<p class="other-product-title">' + title + '</p>' +
-        		    '<p class="other-product-price">' + price + '</p>' +
-        		  '</div>';
-
-        	  console.log("렌더링 HTML:", html);
-        	  $('#other-product-list').append(html);
-        	});
-      	},
-      error: function () {
-        $('#other-product-list').html("<p>작성자의 다른 상품을 불러오지 못했습니다.</p>");
-      }
-    });
-  }
+            $('#other-product-list').append(html);
+          });
+        },
+        error: function () {
+          $('#other-product-list').html("<p>작성자의 다른 상품을 불러오지 못했습니다.</p>");
+        }
+      });
+    }
   
   function payment(productId) {
-// 	    if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
-// 	        alert("결제는 로그인 후 이용 가능합니다.");
-// 	        location.href = ctx + '/member/loginpage.do';
-// 	        return;
-// 	    }
+//  	    if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
+//  	        alert("결제는 로그인 후 이용 가능합니다.");
+//  	        location.href = ctx + '/member/loginpage';
+//  	        return;
+//  	    }
 	    location.href = ctx + '/payment/form?productId=' + productId;
 	}
 
@@ -165,7 +183,7 @@
     $('#likeButton').on('click', function () {
       if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
         alert('로그인이 필요합니다.');
-        location.href = ctx + '/member/loginpage.do';
+        location.href = ctx + '/member/loginpage';
         return;
       }
 
@@ -210,7 +228,7 @@
  /* 
     if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
       alert("채팅 기능은 로그인 후 이용 가능합니다.");
-      location.href = ctx + '/member/loginpage.do';
+      location.href = ctx + '/member/loginpage';
       return;
     }
     if (writerId === currentUserId) {
@@ -224,11 +242,11 @@
   // 수정, 삭제 버튼 클릭시 로그인 여부
 //   function checkLogin() {
 // 	  const currentUserId = '${sessionScope.loginId}';
-// 	  if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
-// 	    alert('로그인 후 이용 가능합니다.');
-// 	    location.href = ctx + '/member/loginpage.do';
-// 	    return false;
-// 	  }
-// 	  return true;
-// 	}
+//  	  if (!currentUserId || currentUserId === 'null' || currentUserId === '') {
+//  	    alert('로그인 후 이용 가능합니다.');
+//  	    location.href = ctx + '/member/loginpage';
+//  	    return false;
+//  	  }
+//  	  return true;
+//  	}
 </script>

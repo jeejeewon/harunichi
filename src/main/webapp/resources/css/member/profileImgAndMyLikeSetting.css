@@ -20,13 +20,15 @@ form > div{
 
 /*프로필 이미지 설정*/
 #profileImage{
-	min-width: 70px;
-	max-width: 200px;
+	width:200px;
+	height:200px;
 	border-radius: 50%;
 	overflow: hidden;
 	border: 1px solid #eee;
-	width: 100%;
-	height: auto;
+	object-fit: cover;
+    display: block;
+    margin: 0 auto;
+
 	
 }
 .custom-file-label {

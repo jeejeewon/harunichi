@@ -31,6 +31,13 @@ public class ChatDaoImpl implements ChatDao {
 		System.out.println("===ChatDao의 saveMessage 메소드 실행");	
 		sqlSession.insert(NAMESPACE + "saveMessage", chatMsg);			
 	}
+	
+	//chatRoom 테이블에 최신 메세지 시간 업데이트
+	@Override
+	public void updateChatRoomTime(String roomId) {
+		log.info("===ChatDao의 updateChatRoomTime 메소드 실행");
+		sqlSession.update(NAMESPACE + "updateChatRoomTime", roomId);
+	}
 
 	//친구 추천 리스트 조회	
 	@Override
@@ -104,9 +111,12 @@ public class ChatDaoImpl implements ChatDao {
 	
 	//DB에서 채팅 내역 조회	
 	@Override
-	public List<ChatVo> selectChatHistory(String roomId) {
+	public List<ChatVo> selectChatHistory(String roomId, String userId) {
 		System.out.println("===ChatDao의 selectChatHistory 메소드 실행");
-		return sqlSession.selectList(NAMESPACE + "selectChatHistory", roomId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);	
+		return sqlSession.selectList(NAMESPACE + "selectChatHistory", map);
 	}
 	
 	//채팅방에 참여하고 있는 유저 조회
@@ -184,12 +194,48 @@ public class ChatDaoImpl implements ChatDao {
 
 	//채팅방 정보에 상품ID 제거
 	@Override
-	public void deleteProductId(String roomId) {		
-		sqlSession.update(NAMESPACE + "deleteProductId", roomId);	
+	public void deleteProductId(String roomId, int productId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("roomId", roomId);
+		map.put("productId", productId);	
+		sqlSession.update(NAMESPACE + "deleteProductId", map);		
 	}
 
+	//채팅방 나가기
+	@Override
+	public void leaveChatRoom(Map<String, String> map) {
+		sqlSession.update(NAMESPACE + "leaveChatRoom", map);
+	}
 
+	//채팅 내역 삭제
+	@Override
+	public void deleteChat(String roomId) {
+		sqlSession.delete(NAMESPACE + "deleteChat", roomId);
+	}
 
+	//채팅방 삭제
+	@Override
+	public void deleteChatRoom(String roomId) {
+		sqlSession.delete(NAMESPACE + "deleteChatRoom", roomId);
+	}
+
+	//특정 오픈 채팅방의 방장 ID 조회
+	@Override
+	public String selectLeaderId(String roomId) {		
+		return sqlSession.selectOne(NAMESPACE + "selectLeaderId", roomId);
+	}
+
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return sqlSession.selectList(NAMESPACE + "selectUserByRoomId", roomId);
+	}
+
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		sqlSession.update(NAMESPACE + "updateChatRoom", vo);
+	}
 
 
 	

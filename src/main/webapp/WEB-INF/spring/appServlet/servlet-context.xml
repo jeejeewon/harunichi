@@ -28,7 +28,7 @@
 	
 	<context:component-scan base-package="com.harunichi" />
 	
-	<!-- 인터셉터 설정 -->	
+	<!-- 인터셉터 설정 -->
 	<mvc:interceptors> 	
 		<mvc:interceptor>
 			<!-- *.do로 끝나는 2단계와 3단계 요청 주소에 대해 인터셉터를 설정-->	
@@ -68,7 +68,7 @@
 	<mvc:resources mapping="/images/profile/**" location="file:/C:/harunichi/images/profile/" />
 	
 	<!-- 채팅방 프로필 이미지 경로 읽어오기 -->
-	<mvc:resources mapping="/images/chat/**" location="file:///C:/harunichi/images/chat/" />
-	
+	<mvc:resources mapping="/images/chat/**" location="file:/C:/harunichi/images/chat/" />
+
 </beans:beans>
 

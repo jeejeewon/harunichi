@@ -11,17 +11,17 @@
 			<div class="profile-img-thumb">
 				<c:choose>
 					<c:when test="${not empty sessionScope.member.profileImg}">
-						<img src="${sessionScope.member.profileImg}" alt="프로필 이미지" />
+						<img src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}" alt="프로필 이미지" />
 					</c:when>
 					<c:otherwise>
 						<img src="${contextPath}/resources/icon/basic_profile.jpg" alt="기본 이미지" />
 					</c:otherwise>
 				</c:choose>
-				<!-- 프로필 수정 버튼 -->
-				<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-img">
-				<img src="${contextPath}/resources/icon/camera_icon.svg">
-				</a>
 			</div>
+			<!-- 프로필 수정 버튼 -->
+			<a href="${contextPath}/member/updateMyInfoForm.do" class="adit-profile-img">
+				<img src="${contextPath}/resources/icon/camera_icon.svg">
+			</a>
 		</div>
 
 		<div class="profile-window-right">

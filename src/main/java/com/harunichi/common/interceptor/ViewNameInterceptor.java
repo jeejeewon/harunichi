@@ -12,6 +12,7 @@ public class ViewNameInterceptor extends  HandlerInterceptorAdapter{
 
 	// 컨트롤러 클래스 실행전 요청한 주소에 관하여 뷰주소를 얻어 request메모리에 뷰주소를 저장하는 메소드
 	@Override
+
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {	
 
 		//뷰 경로 얻기

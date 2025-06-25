@@ -11,7 +11,6 @@ request.setCharacterEncoding("utf-8");
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title><tiles:insertAttribute name="title" /></title>
-
 	<!-- 스타일 및 폰트 -->
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /><!-- 셀렉트 라이브러리 -->
 	<link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'><!-- 폰트 -->
@@ -29,6 +28,9 @@ request.setCharacterEncoding("utf-8");
 				<tiles:insertAttribute name="side" />
 			</aside>
 			<article>
+				<button id="scrollTopBtn">
+			    	<span class="material-symbols-outlined">arrow_upward</span>
+			  	</button>
 				<tiles:insertAttribute name="body" />
 			</article>
 		</div>
@@ -101,6 +103,14 @@ request.setCharacterEncoding("utf-8");
 		    if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
 		        menu.style.display = "none";
 		    }
+		});
+		
+		//최상단 가기 버튼
+		document.getElementById("scrollTopBtn").addEventListener("click", function() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 부드럽게 스크롤
+			});
 		});
 		
 	</script>

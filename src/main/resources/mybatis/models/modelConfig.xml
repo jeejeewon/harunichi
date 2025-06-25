@@ -10,6 +10,8 @@
     <typeAlias type="com.harunichi.chat.vo.ChatRoomVo" alias="ChatRoomVo" />
  	<typeAlias type="com.harunichi.payment.vo.OrderVo" alias="OrderVo" />
     <typeAlias type="com.harunichi.product.vo.ProductLikeVo" alias="ProductLikeVo" />
+    <typeAlias type="com.harunichi.follow.vo.FollowVo" alias="followVo" />
+    <typeAlias type="com.harunichi.visit.vo.VisitVo" alias="visitVo" />
   </typeAliases>
 </configuration>
 

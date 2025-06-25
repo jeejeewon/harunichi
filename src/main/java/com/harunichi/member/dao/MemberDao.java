@@ -1,5 +1,6 @@
 package com.harunichi.member.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -29,6 +30,20 @@ public interface MemberDao {
 	
 	//아이디 중복 체크
 	public int checkId(String id);
-
 	
+	//전체 회원 조회
+	public List<MemberVo> selectMemberList(String searchKeyword, String searchType, int offset, int pageSize);
+	
+	public int selectMemberCount(String searchKeyword, String searchType);
+
+    //회원 삭제
+    void deleteMember(String id);
+	
+    //어드민 - 이미지초기화
+    void resetProfileImg(String id);
+    
+    List<Map<String, Object>> selectGenderDistribution();
+
+    List<Map<String, Object>> selectCountryDistribution();
+
 }

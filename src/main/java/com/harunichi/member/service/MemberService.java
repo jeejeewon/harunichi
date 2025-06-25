@@ -1,5 +1,8 @@
 package com.harunichi.member.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.dao.DataAccessException;
 
 import com.harunichi.member.vo.MemberVo;
@@ -20,5 +23,14 @@ public interface MemberService {
 	public boolean checkId(String id);
 	//아이디로 회원 정보 조회
 	public MemberVo selectMemberById(String id);
-	
+	//회원 전체 정보 조회
+	public Map<String, Object> getMemberList(String searchKeyword, String searchType, int page);
+    //회원 삭제 메소드
+    void deleteMember(String id);
+	//어드민 - 프로필이미지초기화
+    void resetProfileImg(String id) throws Exception;
+    
+    List<Map<String, Object>> getGenderDistribution();
+
+    List<Map<String, Object>> getCountryDistribution();
 }

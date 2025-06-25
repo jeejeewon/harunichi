@@ -82,8 +82,8 @@
 .board .board-list .list-item .user-profile .user-pic {
 	overflow: hidden;
 	position: relative;
-	width: 24px;
-	height: 24px;
+	width: 40px;
+	height: 40px;
 	vertical-align: middle;
 }
 
@@ -107,4 +107,60 @@
 
 .board .conmment-list .comment {
 	display: flex;
+}
+
+.board .like {
+  --fuschia: #EF2B7C;
+  --size: 30px;
+  width: var(--size);
+  height: var(--size);
+  cursor: pointer;
+  color: transparent;
+   fill: #fff;
+  
+  
+  svg {
+    height: 100%;
+    width: 100%;
+    stroke: var(--fuschia);
+  }
+  
+  &.liked {
+    color: var(--fuschia);
+    fill: var(--fuschia);
+    animation: beat_on 400ms forwards;
+  }
+}
+
+@keyframes beat_on {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+  80% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes beat_off {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  80% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

@@ -33,8 +33,9 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void saveMessage(ChatVo chatMsg) {		
 		System.out.println("---ChatService의 saveMessage메소드 호출");		
-		//DAO로 DB작업 요청시키기
 		chatDao.saveMessage(chatMsg);
+		//chatRoom 테이블에 최신 메세지 시간 업데이트
+		chatDao.updateChatRoomTime(chatMsg.getRoomId());		
 	}
 
 	//친구 추천 리스트 조회
@@ -129,9 +130,9 @@ public class ChatServiceImpl implements ChatService {
 	
 	//과거 채팅 내역 불러오기
 	@Override
-	public List<ChatVo> selectChatHistory(String roomId) {
+	public List<ChatVo> selectChatHistory(String roomId, String userId) {
 		System.out.println("---ChatService의 selectChatHistory메소드 호출");	
-		return chatDao.selectChatHistory(roomId);
+		return chatDao.selectChatHistory(roomId, userId);
 	}
 	
 	//채팅방 참여 인원 확인
@@ -253,8 +254,45 @@ public class ChatServiceImpl implements ChatService {
 
 	//채팅방 정보에 상품ID 제거
 	@Override
-	public void deleteProductId(String roomId) {
-		chatDao.deleteProductId(roomId);	
+	public void deleteProductId(String roomId, int productId) {
+		chatDao.deleteProductId(roomId, productId);
+		
+	}
+
+	//채팅방 나가기
+	@Override
+	public void leaveChatRoom(String userId, String roomId) {
+		Map<String, String> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("roomId", roomId);
+		chatDao.leaveChatRoom(map);
+	}
+
+	//채팅방 정보와 채팅 내역 삭제
+	@Override
+	public void deleteChat(String roomId) {			
+		//채팅 내역 삭제
+		chatDao.deleteChat(roomId);	
+		//채팅방 정보 삭제
+		chatDao.deleteChatRoom(roomId);	
+	}
+
+	//특정 오픈 채팅방의 방장 ID 조회
+	@Override
+	public String selectLeaderId(String roomId) {
+		return chatDao.selectLeaderId(roomId);
+	}
+
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return chatDao.selectUserByRoomId(roomId);
+	}
+
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		chatDao.updateChatRoom(vo);
 	}
 
 

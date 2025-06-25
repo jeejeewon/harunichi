@@ -50,6 +50,37 @@
         const selectedPg = document.getElementById("pgSelect").value;
         const cleanName = productName.replace(/[^\w\sㄱ-ㅎ가-힣]/g, '') || "상품명";
 
+        // 가격이 0원인 경우 포트원 생략하고 바로 주문 처리
+        if (Number(amount) === 0) {
+            if (!confirm("이 상품은 무료 나눔입니다. 결제 없이 바로 구입 요청하시겠습니까?")) return;
+
+            $.ajax({
+                url: "${ctx}/payment/verify",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    imp_uid: "FREE_" + new Date().getTime(),
+                    merchant_uid: "FREE_" + new Date().getTime(),
+                    product_id: productId,
+                    product_name: cleanName,
+                    amount: 0
+                }),
+                success: function (res) {
+                    if (res.success) {
+                        location.href = "${ctx}/payment/success";
+                    } else {
+                        location.href = "${ctx}/payment/fail?productId=" + productId + "&errorMessage=" + encodeURIComponent(res.message || '무료 주문 처리 실패');
+                    }
+                },
+                error: function () {
+                    location.href = "${ctx}/payment/fail?productId=" + productId + "&errorMessage=" + encodeURIComponent('무료 주문 처리 중 서버 오류');
+                }
+            });
+
+            return;
+        }
+
+        // 유료 상품 결제
         IMP.request_pay({
             pg: selectedPg,
             pay_method: "card",
@@ -76,19 +107,18 @@
                     }),
                     success: function (res) {
                         if (res.success) {
-							location.href = "${ctx}/payment/success";
+                            location.href = "${ctx}/payment/success";
                         } else {
-                        	location.href = "${ctx}/payment/fail";
+                            location.href = "${ctx}/payment/fail?productId=" + productId + "&errorMessage=" + encodeURIComponent(res.message || '결제 검증 실패');
                         }
                     },
                     error: function () {
-                    	location.href = "${ctx}/payment/fail";
+                        location.href = "${ctx}/payment/fail?productId=" + productId + "&errorMessage=" + encodeURIComponent('서버 오류로 인해 결제 검증 실패');
                     }
                 });
             } else {
-            	location.href = "${ctx}/payment/fail";
+                location.href = "${ctx}/payment/fail?productId=" + productId + "&errorMessage=" + encodeURIComponent('사용자 결제 취소 또는 실패');
             }
-
         });
     }
 </script>

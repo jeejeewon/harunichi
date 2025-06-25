@@ -44,15 +44,14 @@ public class ProductServiceImpl implements ProductService {
     public void delete(int productId) throws Exception {
         productDao.delete(productId);
     }
+    @Override
+    public void markAsSoldOut(int productId) throws Exception {
+        productDao.markAsSoldOut(productId);
+    }
 
     @Override
     public void incrementViewCount(int productId) throws Exception {
         productDao.incrementViewCount(productId);
-    }
-    
-    @Override
-    public List<ProductVo> searchFiltered(String keyword, String category, Integer minPrice, Integer maxPrice, int offset, int limit) throws Exception {
-        return productDao.searchFiltered(keyword, category, minPrice, maxPrice, offset, limit);
     }
 
     @Override
@@ -62,8 +61,15 @@ public class ProductServiceImpl implements ProductService {
         paramMap.put("productId", productId);
         paramMap.put("offset", offset);
         paramMap.put("size", size);
+
         return productDao.findOtherProducts(paramMap);
     }
+
+
+	@Override
+	public List<ProductVo> searchFiltered(String keyword, String category, Integer status, int offset, int pageSize) throws Exception {
+		 return productDao.searchFiltered(keyword, category, status, offset, pageSize);
+	}
 
     
 }
