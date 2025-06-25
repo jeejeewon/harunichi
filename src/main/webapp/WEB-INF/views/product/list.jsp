@@ -87,7 +87,7 @@ function renderProducts(products) {
 		    ? ctx + '/images/profile/' + p.writerProfileImg  // /resources → /images
 		    : ctx + '/resources/images/profile/default_profile.png';  // 기본 이미지는 내부 경로 유지
 
-				// 작성자 닉네임
+		// 작성자 닉네임
 		const writerNick = p.writerNick;
 
         // 상태 처리 (문자열 "1" 또는 숫자 1 모두 처리)
@@ -163,10 +163,16 @@ $('.btn-status').on('click', function () {
     $('.btn-status').removeClass('selected'); // 다른 버튼 선택 해제
     $(this).addClass('selected'); // 현재 클릭한 버튼 선택
 
-    const statusValue = $(this).data('status');
+    let statusValue = $(this).data('status');
+
+    // '전체' 버튼인 경우 null 처리
+    if (statusValue === '') {
+        statusValue = null;
+    }
+
     $('#status').val(statusValue); // 숨겨진 input에 저장
     
-    // 버튼 클릭 시 즉시 검색 수행
+ 	// 버튼 클릭 시 즉시 검색 수행
     searchProducts();
 });
 
