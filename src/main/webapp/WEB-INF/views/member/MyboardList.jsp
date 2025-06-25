@@ -14,7 +14,7 @@
 		<div class="list-wrap">
 			<c:forEach var="board" items="${list}">
 				<div class="list-item">
-					<div class="item">
+					<div class="item"style="width:100%; max-width: 900px; margin: 0 auto;">
 						<div class="item-cate">
 							<span>${board.boardCate}</span>
 						</div>
