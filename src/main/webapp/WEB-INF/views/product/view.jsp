@@ -202,7 +202,7 @@
 	    alert('자신과는 채팅할 수 없습니다.');
 	    return;
 	  }
-	  location.href = ctx + '/chat/productChat?productId=' + currentProductId;
+	  location.href = ctx + '/chat/productChat?productId=' + productId;
 	}
 
 	function payment(productId) {

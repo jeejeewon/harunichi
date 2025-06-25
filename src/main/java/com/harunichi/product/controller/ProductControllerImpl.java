@@ -211,12 +211,24 @@ public class ProductControllerImpl implements ProductController {
     }
 
     // 내가 작성한 거래 목록 조회
+//    @RequestMapping(value = "/myList", method = RequestMethod.GET)
+//    public ModelAndView myProductList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//        if (isNotLoggedIn(request, response)) return null;
+//
+//        String loginId = (String) request.getSession().getAttribute("id");
+//        List<ProductVo> myProducts = productService.findProductsByWriterId(loginId);
+//
+//        ModelAndView mav = new ModelAndView("/product/myList");
+//        mav.addObject("myProducts", myProducts);
+//        return mav;
+//    }
+    
+    // 마이페이지가 상대방페이지일 경우
     @RequestMapping(value = "/myList", method = RequestMethod.GET)
-    public ModelAndView myProductList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (isNotLoggedIn(request, response)) return null;
-
-        String loginId = (String) request.getSession().getAttribute("id");
-        List<ProductVo> myProducts = productService.findProductsByWriterId(loginId);
+    public ModelAndView myProductList(@RequestParam("id") String userId,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response) throws Exception {
+        List<ProductVo> myProducts = productService.findProductsByWriterId(userId);
 
         ModelAndView mav = new ModelAndView("/product/myList");
         mav.addObject("myProducts", myProducts);
