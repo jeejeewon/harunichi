@@ -11,9 +11,24 @@
 <body>
 	<section class="mypage-wrap">
 		<div class="mypage-inner-header">
+			<!-- 왼쪽: 뒤로가기 -->
 			<a href="javascript:void(0);" onclick="history.back();">
-	    		<img src="${contextPath}/resources/icon/back_icon.svg" alt="뒤로가기버튼">
+				<img src="${contextPath}/resources/icon/back_icon.svg" alt="뒤로가기버튼">
 			</a>
+		
+			<!-- 오른쪽: 검색 -->
+			<div class="search-area-wrapper">
+				<button type="button" id="searchToggleBtn" class="search-icon-btn">
+					<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
+				</button>
+		
+				<form id="headerSearchForm" class="header-search-form" method="get">
+					<input type="text" name="query" placeholder="회원 검색">
+					<button type="submit">
+						<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
+					</button>
+				</form>
+			</div>
 		</div>
 		<div class="mypage-profile-area">
 			<div class="profile-area-left">
@@ -97,7 +112,7 @@
 	
 	    //페이지 로드 시 
 	    document.addEventListener("DOMContentLoaded", function() {
-
+	    	
 	    	console.log("pageOwner.id: ${pageOwner.id}");
 	    	console.log("session member id: ${sessionScope.member.id}");
 
@@ -154,6 +169,26 @@
 	        if (firstTab) {
 	            firstTab.click();
 	        }
+	        
+	        //검색창 활성화
+	        const toggleBtn = document.getElementById("searchToggleBtn");
+	        const searchForm = document.getElementById("headerSearchForm");
+	     	// 검색창 열기
+	    	toggleBtn.addEventListener("click", function () {
+	    		toggleBtn.style.display = "none";
+	    		searchForm.classList.add("active");
+	    		searchForm.querySelector("input").focus();
+	    	});
+
+	    	// 검색창 이외 클릭 시 닫기
+	    	document.addEventListener("click", function (e) {
+	    		// 검색 폼이나 버튼 내부를 클릭한 게 아니면 닫기
+	    		if (!searchForm.contains(e.target) && !toggleBtn.contains(e.target)) {
+	    			searchForm.classList.remove("active");
+	    			toggleBtn.style.display = "inline-block"; // 다시 돋보기 보이게
+	    		}
+	    	});
+	        
 	    });
 		
 	    // 팔로잉 상태 버튼으로 설정하고 언팔로우 관련 이벤트를 등록
@@ -268,6 +303,7 @@
 	    function chatOpen(){
 		    document.getElementById("chatForm").submit();
 		}
+	    
 	    
 	</script>
 	

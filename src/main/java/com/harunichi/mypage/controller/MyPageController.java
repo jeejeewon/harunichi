@@ -1,6 +1,10 @@
 package com.harunichi.mypage.controller;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.main.controller.MainController;
 import com.harunichi.member.service.MemberService;
 import com.harunichi.member.vo.MemberVo;
@@ -38,7 +43,10 @@ public class MyPageController {
                              HttpServletRequest request,
                              HttpServletResponse response,
                              HttpSession session) throws Exception {
-
+    	
+    	// 🔍 로그 찍어보기
+        System.out.println("요청받은 id: " + id);
+        
         MemberVo pageOwner = null;
 
         if (id != null) {
@@ -69,30 +77,69 @@ public class MyPageController {
 
         return "/mypage";
     }
+    // 내가쓴 게시글
+    @RequestMapping("/member/myBoardList")
+    public String myBoardList(@RequestParam("id") String memberId, Model model) {
+        System.out.println("🔥🔥 요청으로 넘어온 memberId = " + memberId);
+
+        // 내가 쓴 게시글 조회
+        List<BoardVo> boardList = sqlSession.selectList("mapper.member.selectMyBoards", memberId);
+        model.addAttribute("boardList", boardList);
+
+        // 좋아요한 게시글 ID 조회
+        List<Integer> likedIds = sqlSession.selectList("mapper.member.selectLikedBoardIds", memberId);
+        java.util.Map<Integer, Boolean> likedPosts = new java.util.HashMap<>();
+        for (Integer id : likedIds) {
+            likedPosts.put(id, true);
+        }
+        model.addAttribute("likedPosts", likedPosts);
+
+        return "member/MyboardList";
+    }
+    // 내가 좋아요한 게시글
+    @RequestMapping("/member/myLikeBoardList")
+    public String myLikeBoardList(@RequestParam("id") String memberId, Model model, HttpSession session) {
+        System.out.println("💗 좋아요한 게시글 요청 memberId = " + memberId);
+
+        // 좋아요한 게시글 목록
+        List<BoardVo> boardList = sqlSession.selectList("mapper.member.selectMyLikedBoards", memberId);
+        model.addAttribute("boardList", boardList);
+
+        // 로그인한 사용자 기준 좋아요한 글 표시용 map
+        MemberVo loginMember = (MemberVo) session.getAttribute("member");
+        if (loginMember != null) {
+            List<Integer> likedIds = sqlSession.selectList("mapper.member.selectLikedBoardIds", loginMember.getId());
+            Map<Integer, Boolean> likedPosts = new HashMap<>();
+            for (Integer id : likedIds) {
+                likedPosts.put(id, true);
+            }
+            model.addAttribute("likedPosts", likedPosts);
+        }
+
+        return "member/MyboardList";
+    }
 
     // 나의 거래글 (partial view)
     @RequestMapping("/product/myList")
-    public String myProductList(HttpSession session, Model model) {
-        String memberId = ((MemberVo) session.getAttribute("member")).getId();
-        model.addAttribute("productList", sqlSession.selectList("mapper.product.selectMyProducts", memberId));
+    public String myProductList(@RequestParam("id") String userId, Model model) {
+        model.addAttribute("productList", sqlSession.selectList("mapper.member.selectMyProducts", userId));
         return "mypage/partial/myProductList";
     }
 
     // 좋아요한 거래글 (partial view)
     @RequestMapping("/like/myLike")
-    public String myLikeProductList(HttpSession session, Model model) {
-        String memberId = ((MemberVo) session.getAttribute("member")).getId();
-        model.addAttribute("likeProductList", sqlSession.selectList("mapper.product.selectMyLikedProducts", memberId));
+    public String myLikeProductList(@RequestParam("id") String userId, Model model) {
+        model.addAttribute("likeProductList", sqlSession.selectList("mapper.member.selectMyLikedProducts", userId));
         return "mypage/partial/myLikeProductList";
     }
 
     // 나의 주문 내역 (partial view)
     @RequestMapping("/payment/orders")
-    public String myOrders(HttpSession session, Model model) {
-        String memberId = ((MemberVo) session.getAttribute("member")).getId();
-        model.addAttribute("orderList", sqlSession.selectList("mapper.payment.selectMyOrders", memberId));
+    public String myOrders(@RequestParam("id") String userId, Model model) {
+        model.addAttribute("orderList", sqlSession.selectList("mapper.member.selectMyOrders", userId));
         return "mypage/partial/myOrders";
     }
+
 
     // 공용 alert + history.back
     private void sendAlertAndBack(HttpServletResponse response, String msg) throws Exception {
