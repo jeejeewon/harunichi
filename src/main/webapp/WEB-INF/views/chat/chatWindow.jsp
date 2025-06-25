@@ -295,12 +295,9 @@
 
 			//개인 채팅방에서 상대방이 나갔을 경우 알림 메세지 출력
 			if (sender === "SYSTEM") {
-				chatWindow.innerHTML += "<p class='server-mag'>" + content + "</p><br/>";
-
-				if (content === "상대방이 채팅방에서 나갔습니다.") {
-					document.getElementById("chatMessage").disabled = true;
-					document.getElementById("sendBtn").disabled = true;
-				}
+				chatWindow.innerHTML += "<p class='server-mag'>" + message[1] + "</p><br/>";
+				document.getElementById("chatMessage").disabled = true;
+				document.getElementById("sendBtn").disabled = true;			
 				chatWindow.scrollTop = chatWindow.scrollHeight;
 				return;
 			}
@@ -521,24 +518,24 @@
 			return;
 		}	
 
-		if (confirm("정말 채팅방을 나가시겠습니까?")) {			
-			if(chatType === 'personal'){			
-				//상대방에게 채팅 상대가 나갔다는 메세지 전송
+		if (confirm("정말 채팅방을 나가시겠습니까?")) {					
+			//상대방에게 채팅 상대가 나갔다는 메세지 전송
+			if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+				webSocket.send(JSON.stringify({
+					senderId : senderId,
+					nickname : (chatType === 'group') ? "${nickname}" : "",
+					message : "SYSTEM|LEAVE",
+					chatType : chatType
+				}));
+			}				
+			//0.3초 기다렸다가 웹소켓 종료
+			setTimeout(() => {
 				if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-					webSocket.send(JSON.stringify({
-						senderId: senderId,
-						message: "SYSTEM|LEAVE"
-					}));
-				}				
-				//0.3초 기다렸다가 웹소켓 종료
-				setTimeout(() => {
-					if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-						webSocket.close();
-					}	
-					// 3. 서버로 DB 업데이트 요청
-					location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
-				}, 300);
-			}			
+					webSocket.close();
+				}	
+				// 3. 서버로 DB 업데이트 요청
+				location.href = "${contextPath}/chat/leaveChatRoom?roomId=${roomId}";
+			}, 300);	
 		}
 	}
 

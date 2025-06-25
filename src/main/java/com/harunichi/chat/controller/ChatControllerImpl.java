@@ -220,8 +220,8 @@ public class ChatControllerImpl implements ChatController {
 		String receiverId = request.getParameter("receiverId");
 	
 		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);
-		model.addAttribute("roomId", roomId);		
-				
+		model.addAttribute("roomId", roomId);
+		
 		//채팅방 참여 인원 수 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
@@ -336,6 +336,9 @@ public class ChatControllerImpl implements ChatController {
 		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
 //이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		
 		boolean isUserInRoom = chatService.isUserInRoom(roomId, userId);
+		
+		//채팅방에서 나갔다가 다시 참여할 경우
+		chatService.changeIsDeleted(userId, roomId);
 		
 		//오픈 채팅방 정보 조회
 		ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);

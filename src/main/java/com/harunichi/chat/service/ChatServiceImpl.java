@@ -61,11 +61,20 @@ public class ChatServiceImpl implements ChatService {
 		vo.setReceiverId(receiverId);
 		vo.setChatType(chatType);	
 		
+		//채팅방에서 나갔다가 다시 참여할 경우
+		changeIsDeleted(senderId, roomId);
+		
 		//DB에 조회된 채팅방ID가 없다면?
 		if(roomId == null) { roomId = insertRoomId(vo); }	
 		
 		//DB에서 조회된 채팅방ID 반환
 		return roomId;
+	}
+	
+	//채팅방에서 나갔다가 다시 참여할 경우
+	@Override
+	public void changeIsDeleted(String senderId, String roomId) {
+		chatDao.changeIsDeleted(senderId, roomId);
 	}
 	
 	//채팅방 ID DB에 저장

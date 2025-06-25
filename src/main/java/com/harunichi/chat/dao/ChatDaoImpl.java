@@ -237,6 +237,15 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.update(NAMESPACE + "updateChatRoom", vo);
 	}
 
+	//채팅방에서 나갔다가 다시 참여할 경우
+	@Override
+	public void changeIsDeleted(String senderId, String roomId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", senderId);
+		map.put("roomId", roomId);		
+		sqlSession.update(NAMESPACE + "changeIsDeleted", map);
+	}
+
 
 	
 	

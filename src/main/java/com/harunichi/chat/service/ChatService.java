@@ -76,6 +76,9 @@ public interface ChatService {
 	//오픈 채팅방 정보 업데이트
 	void updateChatRoom(ChatRoomVo vo);
 
+	//채팅방에서 나갔다가 다시 참여할 경우
+	void changeIsDeleted(String senderId, String roomId);
+
 	
 
 	

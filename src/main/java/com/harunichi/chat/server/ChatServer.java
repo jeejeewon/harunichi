@@ -69,7 +69,7 @@ public class ChatServer {
         String senderId = (String) msgMap.get("senderId");
         String chatMessage = (String) msgMap.get("message");
         String roomId = (String)session.getUserProperties().get("roomId"); 
-        
+               
         Set<Session> sessionsInRoom = chatRooms.get(roomId);
         
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록
@@ -84,7 +84,12 @@ public class ChatServer {
                 synchronized (sessionsInRoom) {
                     for (Session client : sessionsInRoom) {
                         if (!client.equals(session) && client.isOpen()) {
-                            client.getBasicRemote().sendText("SYSTEM|상대방이 채팅방에서 나갔습니다.");
+                        	if("group".equals(msgMap.get("chatType"))) {
+                        		String nickname = (String)msgMap.get("nickname");
+                        		client.getBasicRemote().sendText("SYSTEM|" + nickname + "이 채팅방에서 나갔습니다.");
+                        	}else {
+                        		client.getBasicRemote().sendText("SYSTEM|상대방이 채팅방에서 나갔습니다.");
+                        	}                
                         }
                     }
                 }
