@@ -1,5 +1,6 @@
 package com.harunichi.main.controller;
 
+import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.harunichi.chat.service.ChatService;
+import com.harunichi.member.vo.MemberVo;
 import com.harunichi.visit.service.VisitService;
 
 @Controller
@@ -19,6 +23,8 @@ public class MainController {
 	
 	@Autowired
     private VisitService visitService;
+	@Autowired
+	private ChatService chatService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
@@ -52,6 +58,22 @@ public class MainController {
 	    // 세션에 저장된 국가 정보를 Model에 담아서 JSP로 전달
 	    model.addAttribute("selectedCountry", selectedCountry);
 		
+	    
+//친구 추천 슬라이드 시작-----------------------------------------
+	    
+	    MemberVo member = (MemberVo) session.getAttribute("member");
+	    
+	    String id = null;
+	    
+	    if(member != null && member.getId() != null && !member.getId().isEmpty()) {
+	    	id = member.getId();
+	    }
+	    
+		//DB에서 채팅친구추천 리스트 조회
+		List<MemberVo> memberList = chatService.selectMembers(id);		
+		model.addAttribute("memberList", memberList);
+//친구 추천 슬라이드 끝-----------------------------------------	    
+	    
 		logger.info("MainController - showMainPage() 메소드 종료. Returning view name: /main");
 		return "/main"; 
 	}
