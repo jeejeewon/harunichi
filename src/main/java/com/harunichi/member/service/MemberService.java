@@ -43,4 +43,5 @@ public interface MemberService {
     
     //가 좋아요한 게시글 ID만 뽑아오기 위한 메소드
 	public List<Integer> getLikedBoardIds(String id);
+	
 }

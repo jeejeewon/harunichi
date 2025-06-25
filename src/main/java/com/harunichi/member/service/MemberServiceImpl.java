@@ -114,6 +114,7 @@ public class MemberServiceImpl implements MemberService{
 	public List<Integer> getLikedBoardIds(String memberId) {
 	    return memberDao.selectLikedBoardIds(memberId);
 	}
+
 	
 	
 }
