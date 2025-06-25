@@ -56,5 +56,4 @@ public interface MemberDao {
     //내가 좋아요한 게시글의 회원id
     List<Integer> selectLikedBoardIds(String memberId);
 
-
 }
