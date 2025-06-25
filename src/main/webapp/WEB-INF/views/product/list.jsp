@@ -77,17 +77,18 @@ function renderProducts(products) {
         const rawCategory = (p.productCategory || '').toLowerCase();
         const displayCategory = categoryMap[rawCategory] || '카테고리 없음';
 
-		// 상품 이미지 처리
-		const productImg = (p.productImg && p.productImg.trim() !== '')
-	    	? ctx + '/resources/images/product/' + p.productImg  // DB에 'file.jpg, png'만 들어 있을 때(경로 없을때)
-	    	: ctx + '/resources/images/product/no_image.png';
+   	    // 상품 이미지 처리 (정적 리소스 매핑된 경로로 수정)
+        const productImg = (p.productImg && p.productImg.trim() !== '')
+            ? ctx + '/images/product/' + p.productImg  // 저장된 경로
+            : ctx + '/images/product/no_image.png';    // 기본 이미지도 같은 경로로
+
 		
 		// 프로필 이미지 처리
 		const profileImg = p.writerProfileImg
-		    ? ctx + '/images/profile/' + p.writerProfileImg  // /resources → /images
-		    : ctx + '/resources/images/profile/default_profile.png';  // 기본 이미지는 내부 경로 유지
+		    ? ctx + '/images/profile/' + p.writerProfileImg
+		    : ctx + '/images/profile/default_profile.png';  // 외부 리소스 경로로 통일
 
-				// 작성자 닉네임
+		// 작성자 닉네임
 		const writerNick = p.writerNick;
 
         // 상태 처리 (문자열 "1" 또는 숫자 1 모두 처리)
@@ -163,10 +164,16 @@ $('.btn-status').on('click', function () {
     $('.btn-status').removeClass('selected'); // 다른 버튼 선택 해제
     $(this).addClass('selected'); // 현재 클릭한 버튼 선택
 
-    const statusValue = $(this).data('status');
+    let statusValue = $(this).data('status');
+
+    // '전체' 버튼인 경우 null 처리
+    if (statusValue === '') {
+        statusValue = null;
+    }
+
     $('#status').val(statusValue); // 숨겨진 input에 저장
     
-    // 버튼 클릭 시 즉시 검색 수행
+ 	// 버튼 클릭 시 즉시 검색 수행
     searchProducts();
 });
 
