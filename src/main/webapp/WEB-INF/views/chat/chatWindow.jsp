@@ -145,7 +145,7 @@
 				<c:forEach var="user" items="${userList}" >
 					<li>
 						<c:if test="${user.id ne leader}">
-							<input type="radio" class="selected-user-id hidden" name="selectedUserId" value="${user.id}">
+							<input type="radio" class="selected-user-id hidden" name="selectedUserId" data-user-nick = "${user.nick}" value="${user.id}">
 						</c:if>
 						<a href="${contextPath}/mypage?id=${user.id}">
 							<img class="user-profile-img" src="${profileImgPath}${user.profileImg}" alt="채팅 참여자 프로필 사진">
@@ -167,7 +167,7 @@
 		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>
 		            
 		            <button type="button" class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader()">방장위임</button>
-		            <button class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember(event)">강퇴</button>
+		            <button type="button" class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember()">강퇴</button>
            			<button type="button" class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
 			    </div>
 		    </c:if>
@@ -695,13 +695,17 @@
 	function changeLeader(){
 		
 		const selected = document.querySelector('input[name="selectedUserId"]:checked');
-		const selectedUserId = selected.value;
 		
 		if (!selected) {
 			alert("방장 권한을 위임할 멤버를 선택해주세요.");
 			return;
 		}
 		
+		const selectedUserId = selected.value;
+		const userNick = selected.dataset.userNick;
+		
+		if (!confirm( userNick + "에게 방장 권한을 위임하시겠습니까?")) return;
+	
 		fetch("${contextPath}/chat/changeLeader", {
 			method: "POST",
 			headers: {
@@ -730,8 +734,52 @@
 			console.error("에러:", error);
 			alert("방장 위임 중 오류가 발생했습니다.");
 		});
-
+	}
+	
+	
+	//멤버 강퇴
+	function kickMember(){
+		const selected = document.querySelector('input[name="selectedUserId"]:checked');
 		
+		if (!selected) {
+			alert("강퇴할 멤버를 선택해주세요.");
+			return;
+		}
+		
+		const selectedUserId = selected.value;
+		const userNick = selected.dataset.userNick;
+		
+		if (!confirm("정말 " + userNick + "님을 강퇴하시겠습니까?")) return;
+		
+		fetch("${contextPath}/chat/kickMember", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				userId: selectedUserId,
+				roomId: roomId
+			})
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("서버 오류 발생");
+			}
+			return response.json();
+		})
+		.then(data => {
+			if (data.success) {
+				alert(userNick + "님을 강퇴하였습니다.");
+				location.reload(); 
+			} else {
+				alert("멤버 강퇴 실패: " + data.message);
+			}
+		})
+		.catch(error => {
+			console.error("에러:", error);
+			alert("멤버 강퇴 중 오류가 발생했습니다.");
+		});
+			
 	}
 	
 	
@@ -752,10 +800,6 @@
 		});
 	}
 
-	
-	
-	
-	
 
 </script>
 </html>

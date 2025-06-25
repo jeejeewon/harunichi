@@ -38,6 +38,8 @@ public interface ChatController {
 
 	Map<String, Object> changeLeader(Map<String, String> param);
 
+	Map<String, Object> kickMember(Map<String, String> param);
+
 	
 	
 }

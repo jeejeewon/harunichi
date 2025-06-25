@@ -82,6 +82,9 @@ public interface ChatService {
 	//오픈 채팅방 방장 위임
 	void changeRoomLeader(String roomId, String userId);
 
+	//오픈 채팅방 멤버 강퇴
+	void kickMember(String roomId, String userId);
+
 	
 
 	

@@ -532,6 +532,27 @@ public class ChatControllerImpl implements ChatController {
 	}
 	
 	
+	//오픈 채팅방 멤버 강퇴
+	@Override
+	@RequestMapping(value = "/kickMember", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> kickMember(@RequestBody Map<String, String> param) {
+		String userId = param.get("userId");
+		String roomId = param.get("roomId");
+
+		Map<String, Object> result = new HashMap<>();
+		
+		try {
+			chatService.kickMember(roomId, userId);
+			result.put("success", true);
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("message", e.getMessage());
+		}
+		return result;
+	}	
+	
+	
 
 	
 }

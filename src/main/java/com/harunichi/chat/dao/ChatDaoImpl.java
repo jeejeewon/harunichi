@@ -255,6 +255,15 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.update(NAMESPACE + "changeRoomLeader", map);		
 	}
 
+	//오픈 채팅방 멤버 강퇴
+	@Override
+	public void kickMember(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);				
+		sqlSession.update(NAMESPACE + "kickMember", map);			
+	}
+
 
 	
 	

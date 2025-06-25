@@ -304,6 +304,15 @@
 		]]>		
 	</update>
 	
+	<!-- 오픈 채팅방 멤버 강퇴 -->
+	<update id="kickMember" parameterType="map">
+		<![CDATA[
+			UPDATE chatRoom
+			SET isKicked = 1 
+			WHERE roomId = #{roomId} AND userId = #{userId}
+		]]>
+	</update>
+	
 
 
 </mapper>

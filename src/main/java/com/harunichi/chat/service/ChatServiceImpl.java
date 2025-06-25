@@ -310,6 +310,12 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.changeRoomLeader(roomId, userId);
 	}
 
+	//오픈 채팅방 멤버 강퇴
+	@Override
+	public void kickMember(String roomId, String userId) {
+		chatDao.kickMember(roomId, userId);
+	}
+
 
 
 
