@@ -1,6 +1,6 @@
 package com.harunichi.payment.vo;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -15,6 +15,6 @@ public class OrderVo {
 	private String buyerId;
 	private String buyerName;
 	private String status;
-	private Date orderDate;
+	private Timestamp orderDate;
 
 }

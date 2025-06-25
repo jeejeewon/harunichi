@@ -68,12 +68,22 @@
 		<div class="mypage-contents-area">
 			<div class="mypage-contents-tab">
 			    <div class="mypage-contents-tab-inner">
-			    	<a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList?id=${pageOwner.id}">나의 게시글</a>
+			    	<a href="javascript:void(0);" data-url="${contextPath}/member/myBoardList?id=${pageOwner.id}">
+				        <c:choose>
+				            <c:when test="${isMyPage}">나의 게시글</c:when>
+				            <c:otherwise>${pageOwner.nick}님의 게시글</c:otherwise>
+				        </c:choose>
+				    </a>
 				    <a href="javascript:void(0);" data-url="${contextPath}/member/myLikeBoardList?id=${pageOwner.id}">좋아요한 게시글</a>
-				    <a href="javascript:void(0);" data-url="${contextPath}/product/myList?id=${pageOwner.id}">나의 거래글</a>
+				        <a href="javascript:void(0);" data-url="${contextPath}/product/myList?id=${pageOwner.id}">
+					        <c:choose>
+					            <c:when test="${isMyPage}">나의 거래글</c:when>
+					            <c:otherwise>${pageOwner.nick}님의 거래글</c:otherwise>
+					        </c:choose>
+					    </a>
 				    <a href="javascript:void(0);" data-url="${contextPath}/like/myLike?id=${pageOwner.id}">좋아요한 거래글</a>
 				    <c:if test="${isMyPage}">
-					    <a href="javascript:void(0);" data-url="${contextPath}/payment/orders?id=${pageOwner.id}">나의 주문 내역</a>
+					    <a href="javascript:void(0);" data-url="${contextPath}/payment/orderList">나의 주문 내역</a>
 					</c:if>
 				</div>
 			</div>

@@ -9,6 +9,7 @@ import com.harunichi.product.vo.ProductVo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -125,8 +126,8 @@ public class PaymentController {
         mav.addObject("errorMessage", errorMessage != null ? errorMessage : "결제에 실패했습니다.");
         return mav;
     }
-
-    // 주문 내역 보기 (로그인 필요)
+    
+    // 주문 내역 보기 (로그인 필요) tiles.xml 보내기
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     public ModelAndView orderList(HttpServletRequest request,
                                   HttpServletResponse response) throws Exception {
@@ -138,5 +139,21 @@ public class PaymentController {
         ModelAndView mav = new ModelAndView("/payment/orders");
         mav.addObject("orderList", orderList);
         return mav;
+    }  
+
+    // 주문 내역 보기 (로그인 필요) jsp로 보내기
+    @RequestMapping(value = "/orderList", method = RequestMethod.GET)
+    public String orderListJsp(HttpServletRequest request,
+                               HttpServletResponse response,
+                               Model model) throws Exception {
+        if (isNotLoggedIn(request, response)) return null;
+
+        String loginId = (String) request.getSession().getAttribute("id");
+        List<OrderVo> orderList = orderService.findByBuyerId(loginId);
+        model.addAttribute("orderList", orderList);
+
+        return "/payment/orderList"; 
     }
+
+
 } 

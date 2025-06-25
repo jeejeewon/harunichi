@@ -99,13 +99,11 @@ public class ProductLikeController {
     }
 
     @RequestMapping(value = "/myLike", method = RequestMethod.GET)
-    public ModelAndView likedProductList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String loginId = (String) request.getSession().getAttribute("id");
-        if (loginId == null || loginId.trim().isEmpty()) {
-            return new ModelAndView("redirect:/member/loginpage.do");
-        }
+    public ModelAndView likedProductList(@RequestParam("id") String userId,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response) throws Exception {
+        List<ProductLikeVo> likedProducts = productLikeService.getLikedProducts(userId);
 
-        List<ProductLikeVo> likedProducts = productLikeService.getLikedProducts(loginId);
         ModelAndView mav = new ModelAndView("/product/myLike");
         mav.addObject("likedProducts", likedProducts);
         return mav;
