@@ -303,8 +303,12 @@
 			//개인 채팅방에서 상대방이 나갔을 경우 알림 메세지 출력
 			if (sender === "SYSTEM") {
 				chatWindow.innerHTML += "<p class='server-mag'>" + message[1] + "</p><br/>";
-				document.getElementById("chatMessage").disabled = true;
-				document.getElementById("sendBtn").disabled = true;			
+				
+				if(chatType === "personal"){
+					document.getElementById("chatMessage").disabled = true;
+					document.getElementById("sendBtn").disabled = true;	
+				}
+	
 				chatWindow.scrollTop = chatWindow.scrollHeight;
 				return;
 			}
@@ -520,7 +524,7 @@
 	function leaveChatRoom() {
 
 		//방장은 채팅방 못 나가게 설정		
-		if(senderId === leader){
+		if(senderId === leader && count > 1){
 			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
 			return;
 		}	

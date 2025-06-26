@@ -335,14 +335,14 @@ public class ChatControllerImpl implements ChatController {
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String userId = member.getId();
 		model.addAttribute("nickname", member.getNick());
-		
-		//강퇴 당한 채팅방인지 확인
-		if(chatService.isKicked(roomId, userId)) { return "/chat/kicked"; }
-		
-		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
-//이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		
+			
+		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인	
 		boolean isUserInRoom = chatService.isUserInRoom(roomId, userId);
-		
+	
+		if(isUserInRoom) {
+			if(chatService.isKicked(roomId, userId)) { return "/chat/kicked"; }
+		}
+			
 		//채팅방에서 나갔다가 다시 참여할 경우
 		chatService.changeIsDeleted(userId, roomId);
 		
