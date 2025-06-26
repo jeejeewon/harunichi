@@ -4,7 +4,6 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<h1>게시글 등록</h1>
 <form action="${contextPath}/board/post" method="post"
 	enctype="multipart/form-data" id="postForm">
 

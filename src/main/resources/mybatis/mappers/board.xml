@@ -94,7 +94,7 @@
 		SELECT boardId, boardCont, boardWriter, boardDate,
 		boardCate,
 		boardCount, boardImg1, boardImg2, boardImg3, boardImg4,
-		boardModDate, boardModDate, boardWriterId
+		boardModDate, boardWriterId
 		FROM board
 		WHERE boardId =
 		#{boardId}
@@ -163,5 +163,38 @@
 		SELECT * FROM board ORDER BY boardDate DESC
 	</select>
 
+	<!-- 게시글 수정 (관리자용) -->
+	<update id="updateBoardForAdmin"
+		parameterType="com.harunichi.board.vo.BoardVo">
+		UPDATE board
+		SET boardWriter = #{boardWriter},
+		boardCont = #{boardCont},
+		boardCate = #{boardCate}
+		WHERE boardId = #{boardId}
+	</update>
+
+	<select id="searchBoardsForAdmin"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT * FROM board
+		<where>
+			<choose>
+				<when test="searchType == 'all'">
+					(boardWriter LIKE CONCAT('%', #{keyword}, '%')
+					OR boardCont LIKE CONCAT('%', #{keyword}, '%')
+					OR boardCate LIKE CONCAT('%', #{keyword}, '%'))
+				</when>
+				<when test="searchType == 'writer'">
+					boardWriter LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="searchType == 'content'">
+					boardCont LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="searchType == 'category'">
+					boardCate LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+			</choose>
+		</where>
+		ORDER BY boardId DESC
+	</select>
 
 </mapper>

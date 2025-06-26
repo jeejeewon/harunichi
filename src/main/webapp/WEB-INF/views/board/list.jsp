@@ -11,7 +11,7 @@
 <!-- 글 작성 모달 -->
 <div id="postModal" style="display:none; position:fixed; top:0; left:0; 
     width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-    <div style="background:#fff; width:600px; margin:100px auto; padding:20px; position:relative;">
+    <div style="background:#fff; width:600px; margin:100px auto; padding:20px; position:relative;" class="post-form-wrap">
         <button id="closePostModal" style="position:absolute; top:10px; right:10px;">X</button>        
         <jsp:include page="postForm.jsp" />
     </div>
