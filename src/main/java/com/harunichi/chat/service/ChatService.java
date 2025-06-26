@@ -1,6 +1,7 @@
 package com.harunichi.chat.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,6 +88,9 @@ public interface ChatService {
 
 	//강퇴 당한 채팅방인지 확인
 	boolean isKicked(String roomId, String userId);
+
+	//관리자 페이지 채팅방 검색
+	Map<String, Object> searchChatRoomList(String searchKeyword, String searchType, int page);
 
 
 
