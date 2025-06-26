@@ -53,6 +53,7 @@
 				  </ul>
 				</div>				
 			</div>
+
 			<!-- 검색 결과 -->
 			<div id="searchNavigation" class="hidden">
 				<button onclick="goToPrev()"><i class="bi bi-arrow-up-short"></i></button>
@@ -162,10 +163,8 @@
 			<c:if test="${sessionScope.id eq leader}">
 			    <div class="modal-btn-wrap">
 				    <button class="modal-btn" id="editBtn" onclick="chatRoomUpdate(event)">채팅방 수정</button>
-				    <button class="modal-btn" id="chatMemberBtn" type="button" onclick="memberManagement()">참여자 관리</button>
-		           
-		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>
-		            
+				    <button class="modal-btn" id="chatMemberBtn" type="button" onclick="memberManagement()">참여자 관리</button>		           
+		            <button class="modal-btn" id="editSubmitBtn" onclick="submitEdit(event)">수정</button>		            
 		            <button type="button" class="modal-btn hidden" id="changeRoomLeader" onclick="changeLeader()">방장위임</button>
 		            <button type="button" class="modal-btn hidden" id="kickMemberFromRoom" onclick="kickMember()">강퇴</button>
            			<button type="button" class="modal-btn" id="editCancelBtn" onclick="cancelEdit()">취소</button>
@@ -411,6 +410,7 @@
 	}
 	
 	
+
 	//채팅방 검색 바 노출 ------------------------------------------------------------------------
 	function chatSearch(){
 		const search = document.getElementById("searchBar");
@@ -428,8 +428,7 @@
 			});
 		}
 	}
-	
-	
+		
 	//채팅 검색 ------------------------------------------------------------------------------
 	let matchedMessages = [];
 	let currentIndex = -1;
@@ -591,13 +590,12 @@
 		toggleElements(["#chatTitle", "#chatPersons", ".modal-input-msg", "#aditProfileImg"],
 				  	   [".chat-title", ".chat-persons", "#editBtn", "#chatMemberBtn"]);
 		
-		toggleDisplay(["editSubmitBtn", "editCancelBtn"], "");
-		
+		toggleDisplay(["editSubmitBtn", "editCancelBtn"], "");	
 	}	
 	
 	//오픈 채팅방 정보 수정 취소
 	function cancelEdit(){
-		
+
 		document.getElementById("updateChatForm").reset();
 		
 		document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
@@ -799,7 +797,6 @@
 			if (el) el.style.display = displayValue;
 		});
 	}
-
 
 </script>
 </html>

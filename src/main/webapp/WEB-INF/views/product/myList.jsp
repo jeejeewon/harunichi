@@ -18,10 +18,10 @@
                     <div class="product-card" onclick="location.href='${ctx}/product/view?productId=${product.productId}'">
                         <c:choose>
                             <c:when test="${not empty product.productImg}">
-                                <img src="${ctx}/resources/images/product/${product.productImg}" alt="상품 이미지" class="product-thumb" />
+                                <img src="${ctx}/images/product/${product.productImg}" alt="상품 이미지" class="product-thumb" />                                
                             </c:when>
                             <c:otherwise>
-                                <img src="${ctx}/resources/images/product/no-image.png" alt="기본 이미지" class="product-thumb" />
+                                <img src="${ctx}/images/product/no_image.png" alt="기본 이미지" class="product-thumb" />
                             </c:otherwise>
                         </c:choose>
                         <div class="product-info">

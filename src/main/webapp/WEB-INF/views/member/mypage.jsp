@@ -6,6 +6,8 @@
 <!-- <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
 </c:if> -->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- 스타일 css -->
 <link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
 <body>
@@ -306,7 +308,5 @@
 	    
 	    
 	</script>
-	
-
 
 </body>

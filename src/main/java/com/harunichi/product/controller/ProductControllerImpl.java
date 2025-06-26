@@ -1,13 +1,18 @@
 package com.harunichi.product.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +33,47 @@ public class ProductControllerImpl implements ProductController {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private ServletContext servletContext;
+
+    @PostConstruct
+    public void init() {
+        copyDummyProductImagesOnStartup(servletContext);
+    }
+
+    // 상품 이미지 복사 메서드 추가
+    public void copyDummyProductImagesOnStartup(ServletContext context) {
+        String sourceDirPath = context.getRealPath("/resources/images/product");
+        String targetDirPath = "C:/harunichi/images/product";
+
+        File sourceDir = new File(sourceDirPath);
+        File targetDir = new File(targetDirPath);
+
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
+        File[] files = sourceDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                System.out.println("상품 더미 이미지 복사 시도 파일: " + file.getName());
+                if (file.isFile()) {
+                    File targetFile = new File(targetDir, file.getName());
+                    try {
+                        Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("복사됨: " + file.getName());
+                    } catch (IOException e) {
+                        System.err.println("상품 복사 실패: " + file.getName());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        System.out.println("상품 복사 소스 경로: " + sourceDirPath);
+        System.out.println("상품 복사 대상 경로: " + targetDirPath);
+    }
+
     
     // 계정 로그인 체크
     private boolean isNotLoggedIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -105,9 +151,11 @@ public class ProductControllerImpl implements ProductController {
         product.setProductWriterId(loginId);
 
         if (!uploadFile.isEmpty()) {
-            String uploadDir = request.getSession().getServletContext().getRealPath("/resources/images/product");
+        	// 외부 경로에 저장
+        	String uploadDir = "C:/harunichi/images/product"; // 팀원과 동일한 방식
             String savedFile = FileUploadUtil.uploadFile(uploadFile, uploadDir);
-            product.setProductImg("/resources/images/product/" + savedFile);
+            product.setProductImg(savedFile);  // 경로 제외, 파일명만 저장
+
         }
 
         productService.insert(product);

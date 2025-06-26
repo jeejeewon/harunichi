@@ -90,6 +90,7 @@
 	position: relative;
 	right: 154px;
 }
+
 /* 대화 검색 */
 .highlight {
   background-color: yellow;
@@ -101,6 +102,7 @@
 #searchNavigation i {
 	font-size: 22px;
 }
+
 /* 채팅방 설정 드롭다운 */
 #chatSettingMenu {
 	position: absolute;
@@ -225,8 +227,6 @@
 .sold-out{
 	filter: grayscale(100%);	
 }
-
-
 
 /* 대화창 */
 #messageContainer {

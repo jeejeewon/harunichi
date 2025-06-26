@@ -4,8 +4,8 @@ import java.sql.Timestamp;
 import org.springframework.stereotype.Component;
 import lombok.Data;
 
-@Data
 @Component
+@Data
 public class ChatVo {
 
 	private int messageId;			//메시지 고유 ID

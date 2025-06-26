@@ -17,8 +17,7 @@
 					class="writer-img" alt="프로필" />
 			</c:when>
 			<c:otherwise>
-				<img src="${ctx}/resources/images/profile/default_profile.png"
-					class="writer-img" alt="기본 프로필" />
+				<img src="${ctx}/images/profile/default_profile.png" class="writer-img" alt="기본 프로필" />
 			</c:otherwise>
 		</c:choose>
 		<span class="writer-nick">${product.writerNick}</span>
@@ -27,12 +26,10 @@
 	<div class="product-detail">
 		<c:choose>
 			<c:when test="${not empty product.productImg}">
-				<img src="${ctx}/resources/images/product/${product.productImg}"
-					class="product-image" alt="상품 이미지" />
+				<img src="${ctx}/images/product/${product.productImg}" class="product-image" alt="상품 이미지" />
 			</c:when>
 			<c:otherwise>
-				<img src="${ctx}/resources/images/product/no-image.png"
-					class="product-image" alt="기본 이미지" />
+				<img src="${ctx}/images/product/no_image.png" class="product-image" alt="기본 이미지" />
 			</c:otherwise>
 		</c:choose>
 
@@ -153,14 +150,16 @@
         listEl.empty();
 
         if (!data || data.length === 0) {
-        	  $('.other-products-row').html('<p style="margin: 20px auto;">작성자의 다른 상품이 없습니다.</p>');
+        	  $('#other-product-list').html('<p style="margin: 20px auto;">작성자의 다른 상품이 없습니다.</p>');
         	  return;
         }
 
         data.forEach(p => {
           const title = p.productTitle || '제목 없음';
           const price = p.productPrice != null ? Number(p.productPrice).toLocaleString() + '원' : '가격 미정';
-          const imgSrc = p.productImg ? ctx + '/resources/images/product/' + p.productImg : ctx + '/resources/images/product/no-image.png';
+          const imgSrc = p.productImg
+	          ? ctx + '/images/product/' + p.productImg
+	          : ctx + '/images/product/no_image.png';
 
           const html =
             '<div class="other-product-card" onclick="location.href=\'' + ctx + '/product/view?productId=' + p.productId + '\'">' +

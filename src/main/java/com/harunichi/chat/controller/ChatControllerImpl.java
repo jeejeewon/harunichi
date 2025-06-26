@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -223,8 +222,9 @@ public class ChatControllerImpl implements ChatController {
 		String receiverId = request.getParameter("receiverId");
 	
 		String roomId = chatService.selectRoomId(senderId, receiverId, chatType);
+
 		model.addAttribute("roomId", roomId);
-		
+
 		//채팅방 참여 인원 수 조회
 		int count = chatService.selectUserCount(roomId);		
 		model.addAttribute("count", count);
@@ -510,7 +510,7 @@ public class ChatControllerImpl implements ChatController {
 		return "redirect:/chat/doChat?roomId=" + vo.getRoomId() + "&chatType=" + vo.getChatType();	
 	}
 	
-	
+
 	//오픈 채팅방 방장 위임
 	@Override
 	@RequestMapping(value = "/changeLeader", method = RequestMethod.POST)
@@ -551,8 +551,6 @@ public class ChatControllerImpl implements ChatController {
 		}
 		return result;
 	}	
-	
-	
 
-	
+
 }

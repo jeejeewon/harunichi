@@ -69,7 +69,7 @@ public class ChatServer {
         String senderId = (String) msgMap.get("senderId");
         String chatMessage = (String) msgMap.get("message");
         String roomId = (String)session.getUserProperties().get("roomId"); 
-               
+
         Set<Session> sessionsInRoom = chatRooms.get(roomId);
         
 		//어떤 클라이언트가 어떤 메시지를 보냈는지 서버 콘솔에 기록

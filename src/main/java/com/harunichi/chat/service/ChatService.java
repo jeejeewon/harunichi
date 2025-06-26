@@ -85,12 +85,6 @@ public interface ChatService {
 	//오픈 채팅방 멤버 강퇴
 	void kickMember(String roomId, String userId);
 
-	
-
-	
-
-	
-
 
 
 }

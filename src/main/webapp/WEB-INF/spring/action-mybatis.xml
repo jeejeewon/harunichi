@@ -21,8 +21,9 @@
 	
 	<bean id ="sqlSessionFactory" class= "org.mybatis.spring.SqlSessionFactoryBean" >
 	    <property name="dataSource" ref="dataSource" />
-	  <property name="configLocation" value="classpath:mybatis/models/modelConfig.xml"  />
-	  <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml" />
+	 	<property name="configLocation" value="classpath:mybatis/models/modelConfig.xml"  />
+	  	<property name="mapperLocations" value="classpath:mybatis/mappers/*.xml" />
+	  	<property name="typeAliasesPackage" value="com.harunichi.chat.vo, com.harunichi.member.vo" />
 	</bean >
 	
 	<bean id ="transactionManager"

@@ -180,3 +180,26 @@ select#pgSelect {
     font-size: 16px;
 }
 
+/* 공통 버튼 스타일 */
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+/* 환불 버튼 */
+.btn-cancel {
+    background-color: #ff5c5c;
+    color: #fff;
+}
+
+.btn-cancel:hover {
+    background-color: #e64545;
+}
