@@ -20,9 +20,29 @@
 
 .board .post-btn {
 	position: fixed;
-	bottom: 1rem;
-	right: 2rem;
+	bottom: 5%;
+	right: calc((100% - (1440px))/2);
+    z-index: 999;
+    width: 150px;
+    height: 56px;
+    border-radius: 40px;
+    background-color:#A3DAFF;
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, .2);
+    padding-right: 5px;
 }
+.board .post-btn a {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	    gap: 5px;
+}
+.board .post-btn a p {    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;}
+.board .post-btn a img {    filter: invert(1);}
 
 .board-side {
 	width: 30%;
@@ -314,4 +334,56 @@
     transform: scale(1);
   }
 }
-.post-form-wrap {border-radius: 15px;}
+
+#closePostModal {
+	position: fixed;
+	top: 10px;	
+	fitter:invert(1);
+}
+#closePostModal img {filter: invert(1);}
+
+.post-form-wrap {
+	width: 600px;
+	margin: 100px auto;
+	position: relative;
+}
+
+.post-form-wrap .form-head {
+	border-top-right-radius: 15px;
+	border-top-left-radius: 15px;
+	padding: 20px 20px 10px 20px;
+	width: 100%;
+	background: #fff;
+	border-bottom: 1px solid #eee;
+	text-align: center;
+	font-weight: 500;
+}
+
+.post-form-wrap form {
+	padding: 20px 0 ;
+	background: #fff;
+	border-bottom-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+}
+.post-form-wrap  .form-group, .post-form-wrap  .submit-btn {
+	padding: 0 20px;
+	width: 100%;
+}
+
+.post-form-wrap  .form-group select {
+	width: 100%
+}
+
+.post-form-wrap  .form-group textarea {
+	width: 100%;
+}
+
+.post-form-wrap  .submit-btn button {
+	width: 100%;
+	text-align: center;
+	width: 100%;
+	background-color: #A3DAFF;
+	color: #fff;
+	    padding: 10px;
+    border-radius: 10px;
+}
