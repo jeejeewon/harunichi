@@ -13,7 +13,7 @@
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
     <link href="${contextPath}/resources/css/member/updateMyInfoForm.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body>
+<body class="auto-translate">
 <jsp:include page="../common/lightHeader.jsp" />
 <section class="member-info-modification-wrap">
     <h2>회원정보 수정</h2>
@@ -206,9 +206,9 @@ $(document).ready(function() {
 	// Select2 국가 셀렉트 초기화
     function formatState(state) {
         if (!state.id) return state.text;
-        return $(
-            '<span><img src="' + state.element.dataset.image + '" class="country-icon" style="width: 18px; height: auto; margin-right: 5px; vertical-align: middle;" /> ' + state.text + '</span>'
-        );
+        return $('<span style="display:flex; align-items:center; height:33px; line-height:33px;">' +
+                '<img src="' + state.element.dataset.image + '" class="country-icon" style="width: 18px; height: auto; margin-right: 5px;" /> ' +
+                state.text + '</span>');
     }
     $('#country-select').select2({
         minimumResultsForSearch: -1,
@@ -224,7 +224,7 @@ $(document).ready(function() {
             data: { nationality: selectedCountry },
             success: function() {
                 console.log("국가 정보 세션 저장 성공!");
-                toggleSocialLogin(selectedCountry);
+                window.location.reload();
             },
             error: function(xhr, status, error) {
                 console.error("국가 정보 세션 저장 실패:", status, error);
@@ -430,5 +430,62 @@ $('#pass').on('blur', function() {
 
 
 </script>
+	<!-- 구글 번역api 활용 -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const selectedCountry = "${selectedCountry}"; // EL은 이 자리에서만 안전하게 사용 가능
+			const translationCache = {};
+			const targetLang = selectedCountry === 'jp' ? 'ja' : 'ko';
+	
+			if (selectedCountry === 'kr' || selectedCountry === 'jp') {
+				const nodes = [];
+	
+				// body 전체 순회
+				function traverse(node) {
+					if (node.nodeType === 3 && node.nodeValue.trim()) {
+						nodes.push(node);
+					} else if (node.nodeType === 1 && node.tagName !== 'SCRIPT') {
+						for (let i = 0; i < node.childNodes.length; i++) {
+							traverse(node.childNodes[i]);
+						}
+					}
+				}
+	
+				traverse(document.body);
+	
+				nodes.forEach(function (node) {
+					const original = node.nodeValue.trim();
+					if (translationCache[original]) {
+						node.nodeValue = translationCache[original];
+						return;
+					}
+	
+					const params = new URLSearchParams({
+						text: original,
+						lang: selectedCountry
+					});
+	
+					fetch("${contextPath}/translate", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: params
+					})
+					.then(res => res.json())
+					.then(data => {
+						if (data.translatedText) {
+							translationCache[original] = data.translatedText;
+							node.nodeValue = data.translatedText;
+						}
+					})
+					.catch(err => console.error("번역 실패", err));
+				});
+			}
+		});
+	</script>
+
+
+
 </body>
 </html>

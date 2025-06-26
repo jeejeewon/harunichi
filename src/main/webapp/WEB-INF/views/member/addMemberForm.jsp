@@ -12,7 +12,7 @@
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
     <link href="${contextPath}/resources/css/member/addMemberForm.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body>
+<body class="auto-translate">
 	<jsp:include page="../common/lightHeader.jsp" />
 	<section class="addmemberform-wrap">
 		<div class="addmemberform-middle">
@@ -41,6 +41,60 @@
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <!-- 구글 번역api 활용 -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const selectedCountry = "${selectedCountry}"; // EL은 이 자리에서만 안전하게 사용 가능
+			const translationCache = {};
+			const targetLang = selectedCountry === 'jp' ? 'ja' : 'ko';
+	
+			if (selectedCountry === 'kr' || selectedCountry === 'jp') {
+				const nodes = [];
+	
+				// body 전체 순회
+				function traverse(node) {
+					if (node.nodeType === 3 && node.nodeValue.trim()) {
+						nodes.push(node);
+					} else if (node.nodeType === 1 && node.tagName !== 'SCRIPT') {
+						for (let i = 0; i < node.childNodes.length; i++) {
+							traverse(node.childNodes[i]);
+						}
+					}
+				}
+	
+				traverse(document.body);
+	
+				nodes.forEach(function (node) {
+					const original = node.nodeValue.trim();
+					if (translationCache[original]) {
+						node.nodeValue = translationCache[original];
+						return;
+					}
+	
+					const params = new URLSearchParams({
+						text: original,
+						lang: selectedCountry
+					});
+	
+					fetch("${contextPath}/translate", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: params
+					})
+					.then(res => res.json())
+					.then(data => {
+						if (data.translatedText) {
+							translationCache[original] = data.translatedText;
+							node.nodeValue = data.translatedText;
+						}
+					})
+					.catch(err => console.error("번역 실패", err));
+				});
+			}
+		});
+	</script>
     <script>
         $(document).ready(function() {
             // Kakao SDK 초기화
@@ -52,7 +106,9 @@
             // Select2 공통 formatState 함수
             function formatState(state) {
                 if (!state.id) return state.text;
-                return $('<span><img src="' + state.element.dataset.image + '" class="country-icon" style="width: 18px; height: auto; margin-right: 5px; vertical-align: middle;" /> ' + state.text + '</span>');
+                return $('<span style="display:flex; align-items:center; height:33px; line-height:33px;">' +
+                        '<img src="' + state.element.dataset.image + '" class="country-icon" style="width: 18px; height: auto; margin-right: 5px;" /> ' +
+                        state.text + '</span>');
             }
 
             // 상단(헤더) 국가 선택 Select2 초기화 및 이벤트 핸들러
@@ -72,6 +128,7 @@
                     success: function(response) {
                         console.log("국가 정보 세션 저장 성공!");
                         toggleSocialLogin(selectedCountry); // 세션 저장 성공 후, 소셜 로그인 버튼 표시
+                        window.location.reload();
                     },
                     error: function(xhr, status, error) {
                         console.error("국가 정보 세션 저장 실패:", status, error);
@@ -121,7 +178,11 @@
             }
         }
     </script>
+    
 
+
+	
+	
     
 </body>
 </html>

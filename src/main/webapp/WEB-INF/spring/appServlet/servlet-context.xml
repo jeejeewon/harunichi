@@ -36,6 +36,12 @@
 			<mvc:mapping path="/*/*/*.do"/>  
 			<beans:bean class="com.harunichi.common.interceptor.ViewNameInterceptor" />
   		</mvc:interceptor>
+  		
+  		<!-- ✅ 새 인터셉터 추가: 모든 요청에 selectedCountry 주입 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<beans:bean class="com.harunichi.translate.TranslationInterceptor"/>
+		</mvc:interceptor>
 	
 	</mvc:interceptors>
 	

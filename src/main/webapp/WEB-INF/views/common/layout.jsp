@@ -18,7 +18,7 @@ request.setCharacterEncoding("utf-8");
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet" type="text/css" media="screen"><!-- 공통스타일 -->
     <link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 </head>
-<body>
+<body class="auto-translate">
 	<div id="wrap">
 		<header>
 			<tiles:insertAttribute name="header" />
@@ -75,7 +75,7 @@ request.setCharacterEncoding("utf-8");
 					success: function(response) {
 						console.log("국가 정보 세션 저장 성공!");
 						// 필요하다면 세션 저장 성공 후 추가 작업 수행 (예: 페이지 새로고침, 메시지 표시 등)
-						// window.location.reload(); // 예: 페이지 새로고침
+						window.location.reload(); // 예: 페이지 새로고침
 					},
 					error: function(xhr, status, error) {
 						console.error("국가 정보 세션 저장 실패:", status, error);
@@ -131,4 +131,62 @@ request.setCharacterEncoding("utf-8");
 		});
 		
 	</script>
+	
+	<!-- 구글 번역api 활용 -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const selectedCountry = "${selectedCountry}"; // EL은 이 자리에서만 안전하게 사용 가능
+			const translationCache = {};
+			const targetLang = selectedCountry === 'jp' ? 'ja' : 'ko';
+	
+			if (selectedCountry === 'kr' || selectedCountry === 'jp') {
+				const nodes = [];
+	
+				// body 전체 순회
+				function traverse(node) {
+					if (node.nodeType === 3 && node.nodeValue.trim()) {
+						nodes.push(node);
+					} else if (node.nodeType === 1 && node.tagName !== 'SCRIPT') {
+						for (let i = 0; i < node.childNodes.length; i++) {
+							traverse(node.childNodes[i]);
+						}
+					}
+				}
+	
+				traverse(document.body);
+	
+				nodes.forEach(function (node) {
+					const original = node.nodeValue.trim();
+					if (translationCache[original]) {
+						node.nodeValue = translationCache[original];
+						return;
+					}
+	
+					const params = new URLSearchParams({
+						text: original,
+						lang: selectedCountry
+					});
+	
+					fetch("${contextPath}/translate", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: params
+					})
+					.then(res => res.json())
+					.then(data => {
+						if (data.translatedText) {
+							translationCache[original] = data.translatedText;
+							node.nodeValue = data.translatedText;
+						}
+					})
+					.catch(err => console.error("번역 실패", err));
+				});
+			}
+		});
+	</script>
+
+
+
 </body>
