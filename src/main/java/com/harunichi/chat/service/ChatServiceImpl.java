@@ -316,6 +316,12 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.kickMember(roomId, userId);
 	}
 
+	//강퇴 당한 채팅방인지 확인
+	@Override
+	public boolean isKicked(String roomId, String userId) {
+		return chatDao.isKicked(roomId, userId);
+	}
+
 
 
 

@@ -304,16 +304,16 @@ public class ChatControllerImpl implements ChatController {
 			model.addAttribute("profileImg", memberVo.getProfileImg());				
 			model.addAttribute("receiverId", memberId);	
 		
-		}else {	//오픈채팅			
+		}else {	//오픈채팅	
+
 			//채팅방 ID로 채팅방 정보 조회
 			ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);
-			
+
 			model.addAttribute("title", chatRoomVo.getTitle());	
 			model.addAttribute("profileImg", chatRoomVo.getProfileImg());	
 			model.addAttribute("leader", chatService.selectLeaderId(roomId));	
 			model.addAttribute("nickname", member.getNick());
-			model.addAttribute("persons", chatRoomVo.getPersons());		
-			
+			model.addAttribute("persons", chatRoomVo.getPersons());					
 		}		
 		model.addAttribute("roomId", roomId);
 
@@ -335,6 +335,9 @@ public class ChatControllerImpl implements ChatController {
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		String userId = member.getId();
 		model.addAttribute("nickname", member.getNick());
+		
+		//강퇴 당한 채팅방인지 확인
+		if(chatService.isKicked(roomId, userId)) { return "/chat/kicked"; }
 		
 		//로그인 사용자가 참여하려는 채팅방에 이미 참여하고 있는지 확인
 //이 부분은 나중에 오픈채팅목록에서 사용자가 참여중인 채팅방은 안 뜨게 하면 필요없을듯?		

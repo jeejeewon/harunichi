@@ -576,9 +576,10 @@
 						   ["#chatTitle", "#chatPersons", ".modal-input-msg", 
 							".selected-user-id", "#changeRoomLeader", "#kickMemberFromRoom"]);
 			
-			toggleDisplay(["editBtn", "chatMemberBtn"], "");	
+			toggleDisplay(["editBtn", "chatMemberBtn"], "");
+			document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
 		}	
-		toggleDisplay(["chatInfoModal"], "none");
+		toggleDisplay(["chatInfoModal"], "none");	
 	}
 
 	//채팅방 수정 버튼 클릭시 호출
