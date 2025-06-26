@@ -58,9 +58,16 @@ public interface BoardController {
 	// 카테고리별 게시글 목록
 	String listByCategory(String category, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-	// 관리자용
+	// 관리자 게시글 목록
 	ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-	String saveOrDeleteBoard(String action, List<Integer> selectedIds, HttpServletRequest request) throws Exception;
-
+	 // 관리자 게시글 삭제
+    String deleteInAdmin (String action, List<Integer> selectedIds, List<BoardVo> boards, HttpServletRequest request) throws Exception;
+    
+    // 관리자 게시글 수정 폼
+    public ModelAndView editFormInAdmin(HttpServletRequest request, HttpServletResponse response, int boardId) throws Exception;
+    
+    // 관리자 게시글 수정 처리
+    public String updateInAdminBoard(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    
 }

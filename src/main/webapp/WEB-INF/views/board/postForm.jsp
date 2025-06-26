@@ -4,50 +4,49 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<h1>게시글 등록</h1>
-<form action="${contextPath}/board/post" method="post"
-	enctype="multipart/form-data" id="postForm">
-
-	<table>
-		<tr>
-			<td>작성자:</td>
-			<td>${sessionScope.member.nick}</td>
-		</tr>
-		<tr>
-			<td>내용:</td>
-			<td><textarea name="boardCont"></textarea></td>
-		</tr>
-		<tr>
-			<td>카테고리:</td>
-			<td><select name="boardCate">
-					<option value="" disabled selected>카테고리를 선택해주세요</option>
-					<option value="생활정보">생활정보</option>
-					<option value="맛집, 카페">맛집, 카페</option>
-					<option value="일상">일상</option>
-					<option value="찾습니다">찾습니다</option>
-					<option value="건강, 운동">건강, 운동</option>
-					<option value="육아, 교육">육아, 교육</option>
-			</select>
-
-			<!--
-			디비에서 가져올 때
-				<select name="boardCate">
-					<c:forEach var="category" items="${categoryList}">
-						<option value="${category.categoryId}">${category.categoryName}</option>
-					</c:forEach>
-				</select>
-			 -->
-		</tr>
-		<tr>
-			<td>첨부 이미지:</td>			
-			<td>
-			<input type="file" name="imageFiles" accept="image/*" multiple id="imageInput">
-      		<div id="previewArea" style="margin-top:10px;"></div>  <!-- 썸네일 표시 영역 -->
-		
-		</tr>
-	</table>
-	<input type="submit" value="등록">
+<div class="form-head">게시물 작성</div>
+<form action="${contextPath}/board/post" method="post" enctype="multipart/form-data" id="postForm" class="post-form">
+  <div class="form-container"> 
+     <div class="form-group">     
+      <div class="form-input">
+        <select name="boardCate" class="category-select">
+          <option value="" disabled selected>주제를 선택해주세요</option>
+          <option value="생활정보">생활정보</option>
+          <option value="맛집, 카페">맛집, 카페</option>
+          <option value="일상">일상</option>
+          <option value="찾습니다">찾습니다</option>
+          <option value="건강, 운동">건강, 운동</option>
+          <option value="육아, 교육">육아, 교육</option>
+        </select>        
+        <!--
+        디비에서 가져올 때
+        <select name="boardCate" class="category-select">
+          <c:forEach var="category" items="${categoryList}">
+            <option value="${category.categoryId}">${category.categoryName}</option>
+          </c:forEach>
+        </select>
+        -->
+      </div>
+    </div>
+    <div class="form-group">    
+      <div class="form-input">
+        <textarea name="boardCont" class="content-textarea"></textarea>
+      </div>
+    </div> 
+    <div class="form-group">
+      <div class="form-label">첨부 이미지:</div>
+      <div class="form-input">
+        <input type="file" name="imageFiles" accept="image/*" multiple id="imageInput" class="file-input">
+        <div id="previewArea" class="image-preview-area"></div>
+      </div>
+    </div>
+    
+    <div class="submit-btn">
+      <button type="submit" class="submit-button">등록</button>
+    </div>
+  </div>
 </form>
+
 
 <script>
 $(document).ready(function() {

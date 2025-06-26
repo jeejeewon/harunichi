@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -999,27 +1000,103 @@ public class BoardControllerImpl implements BoardController {
 	@Override
 	@RequestMapping("/admin")
 	public ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
 		ModelAndView mav = new ModelAndView("/board/admMain");
-		mav.addObject("boardList", boardService.getAllBoardsForAdmin());
+		
+		// 검색 파라미터 가져오기
+	    String searchType = request.getParameter("searchType");
+	    String keyword = request.getParameter("keyword");
+	    
+	    List<BoardVo> boardList;
+	    
+	    // 검색 조건이 있는 경우
+	    if(searchType != null && keyword != null && !keyword.trim().isEmpty()) {
+	        log.info("검색 요청: searchType={}, keyword={}", searchType, keyword);
+	        boardList = boardService.searchBoardsForAdmin(searchType, keyword);
+	    } else {
+	        // 검색 조건이 없는 경우 전체 목록 조회
+	        boardList = boardService.getAllBoardsForAdmin();
+	    }
+	    
+	    mav.addObject("boardList", boardList);
+	    mav.addObject("searchType", searchType); // 검색 폼에 선택된 값 유지
+	    mav.addObject("keyword", keyword);       // 검색 폼에 입력된 값 유지
+		
 		return mav;
 	}
 
 	@RequestMapping(value = "/admin/saveOrDelete", method = RequestMethod.POST)
-	public String saveOrDeleteBoard(@RequestParam("action") String action,
+	public String deleteInAdmin(@RequestParam("action") String action,
 			@RequestParam(value = "selectedIds", required = false) List<Integer> selectedIds,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "boards", required = false) List<BoardVo> boards, HttpServletRequest request)
+			throws Exception {
 
-		if ("update".equals(action)) {
-			// 폼에서 boards 배열을 직접 받지 말고, 필요한 값을 request에서 꺼내 처리하거나
-			// 아니면 개별 update용 API를 따로 만드는 게 편합니다.
-		} else if ("delete".equals(action)) {
-			if (selectedIds != null) {
+		if ("delete".equals(action)) {
+			if (selectedIds != null && !selectedIds.isEmpty()) {
 				for (int boardId : selectedIds) {
 					boardService.deleteBoardFromAdmin(boardId);
 				}
 			}
 		}
+
+		// 작업이 완료된 후 관리자 게시판 목록 페이지로 리다이렉트
 		return "redirect:/board/admin";
 	}
 
+	// 관리자 게시글 수정 폼
+	@Override
+	@RequestMapping(value = "/admin/editAdmin/{boardId}", method = RequestMethod.GET)
+	public ModelAndView editFormInAdmin(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("boardId") int boardId) throws Exception {
+		log.info("관리자 게시글 수정 페이지 요청: boardId={}", boardId);
+
+		ModelAndView mav = new ModelAndView("/board/admEdit");
+
+		try {
+			BoardVo board = boardService.getBoardById(boardId);
+
+			if (board == null) {
+				log.warn("게시글을 찾을 수 없음: boardId={}", boardId);
+				mav.setViewName("redirect:/board/admin");
+				return mav;
+			}
+
+			mav.addObject("board", board);
+			log.info("게시글 정보 로드 완료: boardId={}", boardId);
+
+		} catch (Exception e) {
+			log.error("게시글 정보 조회 중 예외 발생: boardId={}", boardId, e);
+			mav.addObject("errorMessage", "게시글 정보를 불러오는 중 오류가 발생했습니다.");
+		}
+
+		return mav;
+	}
+
+	// 관리자 게시글 수정 처리
+	@Override
+	@RequestMapping(value = "/admin/updateAdmin", method = RequestMethod.POST)
+	public String updateInAdminBoard(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			int boardId = Integer.parseInt(request.getParameter("boardId"));
+			String boardWriter = request.getParameter("boardWriter");
+			String boardCont = request.getParameter("boardCont");
+			String boardCate = request.getParameter("boardCate");
+
+			log.info("관리자 게시글 수정 처리 요청: boardId={}", boardId);
+
+			BoardVo board = new BoardVo();
+			board.setBoardId(boardId);
+			board.setBoardWriter(boardWriter);
+			board.setBoardCont(boardCont);
+			board.setBoardCate(boardCate);
+
+			boardService.updateBoardFromAdmin(board);
+			log.info("게시글 수정 완료: boardId={}", boardId);
+
+		} catch (Exception e) {
+			log.error("게시글 수정 중 예외 발생", e);
+		}
+
+		return "redirect:/board/admin";
+	}
 }

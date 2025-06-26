@@ -48,5 +48,9 @@ public interface BoardDao {
 	void updateBoardFromAdmin(BoardVo board) throws Exception;
 
 	void deleteBoardFromAdmin(int boardId) throws Exception;
+	
+	// 게시글 검색
+    public List<BoardVo> searchBoardsFromAdmin(String searchType, String keyword) throws Exception;
+	
 
 }

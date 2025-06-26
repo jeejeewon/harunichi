@@ -68,5 +68,8 @@ public interface BoardService {
 	void updateBoardFromAdmin(BoardVo board) throws Exception;
 
 	void deleteBoardFromAdmin(int boardId) throws Exception;
+	
+	// 관리자용 게시글 검색
+    public List<BoardVo> searchBoardsForAdmin(String searchType, String keyword) throws Exception;
 
 }
