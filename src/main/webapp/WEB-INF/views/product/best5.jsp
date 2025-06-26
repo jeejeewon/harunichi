@@ -69,12 +69,12 @@
 		<c:forEach var="item" items="${topProducts}">
 		  <div class="popular-card" onclick="location.href='${ctx}/product/view?productId=${item.productId}'">
 		    <c:choose>
-		      <c:when test="${not empty item.productImg}">
-		        <img src="${ctx}/resources/images/product/${item.productImg}" alt="상품 이미지" />
-		      </c:when>
-		      <c:otherwise>
-		        <img src="${ctx}/resources/images/product/no-image.png" alt="기본 이미지" />
-		      </c:otherwise>
+				<c:when test="${not empty item.productImg}">
+				  <img src="${ctx}/images/product/${item.productImg}" alt="상품 이미지" />
+				</c:when>
+				<c:otherwise>
+				  <img src="${ctx}/images/product/no_image.png" alt="기본 이미지" />
+				</c:otherwise>
 		    </c:choose>
 		    <div class="popular-title">${item.productTitle}</div>
 		    <div class="popular-price">
