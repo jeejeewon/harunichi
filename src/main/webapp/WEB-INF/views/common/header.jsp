@@ -6,6 +6,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}" />
 
+
+
 <section class="header-inner">
 
     <a href="${contextPath}" class="header-logo"><img src="${contextPath}/resources/icon/logo2.svg"></a>
@@ -63,7 +65,3 @@
     </div>
     
 </section>
-
-
-
-

@@ -50,6 +50,7 @@
 			</li>
 			<li>
 				<a href="${contextPath}/board/list" class="${boardClass}">
+					<i class="fa-solid fa-cloud"></i>
 					<span class="material-symbols-outlined">cloud</span>
 					<span>일상/교류</span>
 				</a>

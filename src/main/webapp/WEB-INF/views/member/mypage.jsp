@@ -3,9 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- 스타일 css -->
 <link href="${contextPath}/resources/css/member/mypage.css" rel="stylesheet" type="text/css" media="screen">
-
 <body>
 	<section class="mypage-wrap">
 		<div class="mypage-inner-header">
@@ -96,8 +97,10 @@
 	
 	    //페이지 로드 시 
 	    document.addEventListener("DOMContentLoaded", function() {
+	    	
 	    	console.log("pageOwner.id: ${pageOwner.id}");
 	    	console.log("session member id: ${sessionScope.member.id}");
+
 	    	// board-side 강제 숨기기 추가
 	        const boardSideEls = document.querySelectorAll('.board-side');
 	        boardSideEls.forEach(function(el) {
@@ -343,7 +346,5 @@
 	        observer.observe(contentArea, { childList: true, subtree: true });
 	    }
 	</script>
-	
-
 
 </body>

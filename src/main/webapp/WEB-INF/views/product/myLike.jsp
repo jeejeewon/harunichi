@@ -17,23 +17,23 @@
         <c:otherwise>
             <div class="product-grid">
                 <c:forEach var="item" items="${likedProducts}">
-                    <div class="product-card" onclick="location.href='${ctx}/product/view?productId=${item.productId}'">
-                        <c:choose>
-                            <c:when test="${not empty item.productImg}">
-                                <img src="${ctx}/resources/images/product/${item.productImg}" alt="${item.productTitle}" class="product-thumb" />
-                            </c:when>
-                            <c:otherwise>
-                                <img src="${ctx}/resources/images/product/no-image.png" alt="기본 이미지" class="product-thumb" />
-                            </c:otherwise>
-                        </c:choose>
-                        <div class="product-info">
-                            <div class="product-title">${item.productTitle}</div>
-                            <div class="product-price">
-                                <fmt:formatNumber value="${item.productPrice}" type="number" groupingUsed="true" />원
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
+				    <div class="product-card" onclick="location.href='${ctx}/product/view?productId=${item.productId}'">
+				        <c:choose>
+				            <c:when test="${not empty item.productImg}">
+				                <img src="${ctx}/images/product/${item.productImg}" alt="${item.productTitle}" class="product-thumb" />
+				            </c:when>
+				            <c:otherwise>
+				                <img src="${ctx}/images/product/no_image.png" alt="기본 이미지" class="product-thumb" />
+				            </c:otherwise>
+				        </c:choose>
+				        <div class="product-info">
+				            <div class="product-title">${item.productTitle}</div>
+				            <div class="product-price">
+				                <fmt:formatNumber value="${item.productPrice}" type="number" groupingUsed="true" />원
+				            </div>
+				        </div>
+				    </div>
+				</c:forEach>
             </div>
         </c:otherwise>
     </c:choose>

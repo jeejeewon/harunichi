@@ -74,6 +74,7 @@ public class MyPageController {
 
         int followerCount = sqlSession.selectOne("mapper.follow.getFollowerCount", pageOwner.getId());
         int followingCount = sqlSession.selectOne("mapper.follow.getFollowingCount", pageOwner.getId());
+        
         model.addAttribute("followerCount", followerCount);
         model.addAttribute("followingCount", followingCount);
 
@@ -149,4 +150,5 @@ public class MyPageController {
         response.getWriter().write("<script>alert('" + msg + "'); history.back();</script>");
         response.getWriter().flush();
     }
+
 }

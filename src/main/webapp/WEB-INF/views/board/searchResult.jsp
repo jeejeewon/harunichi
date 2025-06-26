@@ -1,33 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link href="${contextPath}/resources/css/board.css" rel="stylesheet"
 	type="text/css">
 
-<!-- 글 작성 모달 -->
-<div id="postModal" style="display:none; position:fixed; top:0; left:0; 
-    width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-    <div style="background:#fff; width:600px; margin:100px auto; padding:20px; position:relative;">
-        <button id="closePostModal" style="position:absolute; top:10px; right:10px;">X</button>        
-        <jsp:include page="postForm.jsp" />
-    </div>
-</div>
-
-<div class="container board main">
+<div class="container board main search-result">
 	<c:if test="${not empty sessionScope.id}">
 		<div class="post-btn">
-		    <a href="javascript:void(0);" id="openPostModal">새 게시글 작성</a>
+			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
 		</div>
 	</c:if>
 	<div class="board-list">		
 		<!-- 게시글 목록 영역 -->
 		<div id="ListContainer" class="list-wrap">
 		    <jsp:include page="items.jsp" />
-		</div>
+		</div>	
 	</div>
 	<jsp:include page="side.jsp" />
 </div>
@@ -84,21 +73,6 @@ setInterval(() => {
     });
 }, 60000);
 
-$('.item-content .img-wrap').each(function () {
-	var count = $(this).find('.img-thumb').length;
-
-	// 최대 4개까지만 처리 (그 이상도 필요시 else if 추가 가능)
-	if (count === 1) {
-		$(this).addClass('img-count-1');
-	} else if (count === 2) {
-		$(this).addClass('img-count-2');
-	} else if (count === 3) {
-		$(this).addClass('img-count-3');
-	} else {
-		$(this).addClass('img-count-4');
-	}
-});
-
 // 게시글 삭제 관련 메세지
 $(document).ready(function() {    
     const urlParams = new URLSearchParams(window.location.search);
@@ -152,7 +126,7 @@ $('.like').on('click', function() {
                 // 서버에서도 로그인 체크를 하므로 이 경우에도 처리
                 alert('좋아요 기능은 로그인 후 이용 가능합니다.');
                 if (confirm('로그인 페이지로 이동하시겠습니까?')) {
-                    window.location.href = '${contextPath}/member/loginpage.do';
+                    window.location.href = '${contextPath}/member/loginForm';
                 }
             } else if (response === 'fail') {
                 // 이미 좋아요/취소 상태인 경우 등
@@ -177,26 +151,4 @@ $('.like').on('click', function() {
         }
     });
 });
-
-
-$(function() {
-    // 모달 열기
-    $('#openPostModal').click(function() {
-        $('#postModal').fadeIn();
-    });
-
-    // 모달 닫기 버튼 클릭 시
-    $('#closePostModal').click(function() {
-        $('#postModal').fadeOut();
-    });
-
-    // 모달 바깥 영역 클릭 시 닫기
-    $('#postModal').click(function(e) {
-        if (e.target === this) {
-            $(this).fadeOut();
-        }
-    });
-});
-
-
 </script>

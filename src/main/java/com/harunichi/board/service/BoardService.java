@@ -37,23 +37,36 @@ public interface BoardService {
 
 	// 댓글 수정
 	public int updateReply(int replyId, String replyCont, String replyWriter) throws Exception;
-	
+
 	// 게시글 좋아요
-    boolean addBoardLike(BoardLikeVo likeVo) throws Exception;
-    
-    // 게시글 좋아요 취소
-    boolean cancelBoardLike(BoardLikeVo likeVo) throws Exception;
-    
-    // 게시글 좋아요 상태
-    boolean checkBoardLikeStatus(BoardLikeVo likeVo) throws Exception;
-    
-    // 게시글 총 좋아요 수 조회
-    int getBoardLikeCount(int boardId) throws Exception;
-    
-    // 게시글 좋아요 수 업데이트
-    void updateBoardLikeCount(int boardId, int likeCount) throws Exception;
-    
-    // 검색
-    List<BoardVo> searchBoardsByKeyword(String keyword) throws Exception;
+	boolean addBoardLike(BoardLikeVo likeVo) throws Exception;
+
+	// 게시글 좋아요 취소
+	boolean cancelBoardLike(BoardLikeVo likeVo) throws Exception;
+
+	// 게시글 좋아요 상태
+	boolean checkBoardLikeStatus(BoardLikeVo likeVo) throws Exception;
+
+	// 게시글 총 좋아요 수 조회
+	int getBoardLikeCount(int boardId) throws Exception;
+
+	// 게시글 좋아요 수 업데이트
+	void updateBoardLikeCount(int boardId, int likeCount) throws Exception;
+
+	// 검색
+	List<BoardVo> searchBoards(String keyword) throws Exception;
+
+	// 인기글 5개 (사이드용)
+	List<BoardVo> getTop5BoardsByViews() throws Exception;
+
+	// 카테고리별 게시글
+	List<BoardVo> getBoardsByCategory(String category) throws Exception;
+
+	// 관리자용
+	List<BoardVo> getAllBoardsForAdmin() throws Exception;
+
+	void updateBoardFromAdmin(BoardVo board) throws Exception;
+
+	void deleteBoardFromAdmin(int boardId) throws Exception;
 
 }

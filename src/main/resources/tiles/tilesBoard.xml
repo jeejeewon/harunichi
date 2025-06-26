@@ -40,6 +40,11 @@
 		<put-attribute name="body" value="/WEB-INF/views/board/view.jsp" />
 	</definition>
 	
+	<definition name="/board/search" extends="baseLayout">
+		<put-attribute name="title" value="검색결과" />
+		<put-attribute name="body" value="/WEB-INF/views/board/searchResult.jsp" />
+	</definition>
+	
 </tiles-definitions>
 
 

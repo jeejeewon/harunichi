@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.harunichi.chat.service.ChatService;
-import com.harunichi.member.vo.MemberVo;
 import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
+import com.harunichi.chat.service.ChatService;
+import com.harunichi.member.vo.MemberVo;
 import com.harunichi.visit.service.VisitService;
+
 
 @Controller
 public class MainController {
@@ -29,8 +29,8 @@ public class MainController {
 	private ChatService chatService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-	
-	@Autowired
+		
+    @Autowired
     private ProductService productService;
 	
 	//메인 페이지를 보여주는 메서드
@@ -41,12 +41,9 @@ public class MainController {
 		
 		logger.info("메인페이지입니다.", locale);
 		
-		// 인기 상품 조회
+	    // 인기 상품 조회
 	    List<ProductVo> topProducts = productService.getTopViewedProducts();
 	    model.addAttribute("topProducts", topProducts);
-		
-		String ip = request.getRemoteAddr();
-        visitService.insertVisit(ip);
 		
 		// 인터셉터가 넣어둔 viewName 가져오기
 		String viewName = (String) request.getAttribute("viewName");
@@ -80,8 +77,9 @@ public class MainController {
 		//DB에서 채팅친구추천 리스트 조회
 		List<MemberVo> memberList = chatService.selectMembers(id);		
 		model.addAttribute("memberList", memberList);
-//친구 추천 슬라이드 끝-----------------------------------------	  
 		
+//친구 추천 슬라이드 끝-----------------------------------------	  
+	    
 		logger.info("MainController - showMainPage() 메소드 종료. Returning view name: /main");
 		return "/main"; 
 	}
@@ -103,5 +101,5 @@ public class MainController {
 
 		return "success"; // 클라이언트(JavaScript)로 성공 응답 보내기
 	}
-	
+
 }

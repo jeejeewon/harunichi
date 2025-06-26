@@ -1,11 +1,7 @@
 package com.harunichi.chat.vo;
 
 import java.sql.Timestamp;
-
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.Data;
 
 @Component

@@ -219,19 +219,51 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.delete(NAMESPACE + "deleteChatRoom", roomId);
 	}
 
-	//로그인한 유저가 오픈 채팅방의 리더인지 확인
+	//특정 오픈 채팅방의 방장 ID 조회
 	@Override
-	public boolean isLeader(String roomId, String userId) {	
-		Map<String, Object> map = new HashMap<String, Object>();
+	public String selectLeaderId(String roomId) {		
+		return sqlSession.selectOne(NAMESPACE + "selectLeaderId", roomId);
+	}
+
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return sqlSession.selectList(NAMESPACE + "selectUserByRoomId", roomId);
+	}
+
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		sqlSession.update(NAMESPACE + "updateChatRoom", vo);
+	}
+
+	//채팅방에서 나갔다가 다시 참여할 경우
+	@Override
+	public void changeIsDeleted(String senderId, String roomId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userId", senderId);
+		map.put("roomId", roomId);		
+		sqlSession.update(NAMESPACE + "changeIsDeleted", map);
+	}
+
+	//오픈 채팅방 방장 위임
+	@Override
+	public void changeRoomLeader(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
 		map.put("roomId", roomId);
-		map.put("userId", userId);		
-		return sqlSession.selectOne(NAMESPACE + "isLeader", map);
+		map.put("userId", userId);				
+		sqlSession.update(NAMESPACE + "changeRoomLeader", map);		
+	}
+
+	//오픈 채팅방 멤버 강퇴
+	@Override
+	public void kickMember(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);				
+		sqlSession.update(NAMESPACE + "kickMember", map);			
 	}
 
 
-
-
-
-	
 	
 }

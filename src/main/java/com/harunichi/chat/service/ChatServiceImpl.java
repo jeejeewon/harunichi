@@ -61,11 +61,20 @@ public class ChatServiceImpl implements ChatService {
 		vo.setReceiverId(receiverId);
 		vo.setChatType(chatType);	
 		
+		//채팅방에서 나갔다가 다시 참여할 경우
+		changeIsDeleted(senderId, roomId);
+		
 		//DB에 조회된 채팅방ID가 없다면?
 		if(roomId == null) { roomId = insertRoomId(vo); }	
 		
 		//DB에서 조회된 채팅방ID 반환
 		return roomId;
+	}
+	
+	//채팅방에서 나갔다가 다시 참여할 경우
+	@Override
+	public void changeIsDeleted(String senderId, String roomId) {
+		chatDao.changeIsDeleted(senderId, roomId);
 	}
 	
 	//채팅방 ID DB에 저장
@@ -277,13 +286,35 @@ public class ChatServiceImpl implements ChatService {
 		chatDao.deleteChatRoom(roomId);	
 	}
 
-	//로그인한 유저가 오픈 채팅방의 리더인지 확인
+	//특정 오픈 채팅방의 방장 ID 조회
 	@Override
-	public boolean isLeader(String roomId, String userId) {
-		return chatDao.isLeader(roomId, userId);
+	public String selectLeaderId(String roomId) {
+		return chatDao.selectLeaderId(roomId);
 	}
 
+	//채팅방에 참여하고 있는 유저 ID 조회
+	@Override
+	public List<String> selectUserByRoomId(String roomId) {
+		return chatDao.selectUserByRoomId(roomId);
+	}
 
+	//오픈 채팅방 정보 업데이트
+	@Override
+	public void updateChatRoom(ChatRoomVo vo) {
+		chatDao.updateChatRoom(vo);
+	}
+
+	//오픈 채팅방 방장 위임
+	@Override
+	public void changeRoomLeader(String roomId, String userId) {
+		chatDao.changeRoomLeader(roomId, userId);
+	}
+
+	//오픈 채팅방 멤버 강퇴
+	@Override
+	public void kickMember(String roomId, String userId) {
+		chatDao.kickMember(roomId, userId);
+	}
 
 
 	

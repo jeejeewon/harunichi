@@ -113,8 +113,18 @@ public class BoardControllerImpl implements BoardController {
 							board.setBoardWriterImg(writerInfo.getProfileImg());
 						}
 					}
+					// 줄바꿈 문자 -> <br />로 변환
+					if (board.getBoardCont() != null) {
+						String convertedContent = board.getBoardCont().replaceAll("(\r\n|\r|\n)", "<br />");
+						board.setBoardCont(convertedContent);
+					}
 				}
 			}
+
+			// 인기 게시글 TOP 5 추가
+			List<BoardVo> top5List = boardService.getTop5BoardsByViews();
+			mav.addObject("top5List", top5List);
+
 			mav.addObject("boardList", boardList);
 
 		} catch (Exception e) {
@@ -222,17 +232,17 @@ public class BoardControllerImpl implements BoardController {
 				// 댓글 작성자 프로필 이미지
 				Map<String, MemberVo> memberCache = new HashMap<>();
 				for (ReplyVo reply : replyList) {
-				    String replyWriterId = reply.getReplyWriterId(); // 아이디로 바꿈
-				    if (replyWriterId != null && !replyWriterId.isEmpty()) {
-				        if (!memberCache.containsKey(replyWriterId)) {
-				            MemberVo memberInfo = memberService.selectMemberById(replyWriterId);
-				            memberCache.put(replyWriterId, memberInfo);
-				        }
-				        MemberVo memberInfo = memberCache.get(replyWriterId);
-				        if (memberInfo != null) {
-				            reply.setReplyWriterImg(memberInfo.getProfileImg());
-				        }
-				    }
+					String replyWriterId = reply.getReplyWriterId(); // 아이디로 바꿈
+					if (replyWriterId != null && !replyWriterId.isEmpty()) {
+						if (!memberCache.containsKey(replyWriterId)) {
+							MemberVo memberInfo = memberService.selectMemberById(replyWriterId);
+							memberCache.put(replyWriterId, memberInfo);
+						}
+						MemberVo memberInfo = memberCache.get(replyWriterId);
+						if (memberInfo != null) {
+							reply.setReplyWriterImg(memberInfo.getProfileImg());
+						}
+					}
 				}
 
 				mav.addObject("replyList", replyList);
@@ -249,6 +259,11 @@ public class BoardControllerImpl implements BoardController {
 				// 로그인한 사용자 정보 가져오기
 				HttpSession session = request.getSession();
 				MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+				if (boardVo.getBoardCont() != null) {
+					String convertedContent = boardVo.getBoardCont().replaceAll("(\r\n|\r|\n)", "<br />");
+					boardVo.setBoardCont(convertedContent);
+				}
 
 				// 좋아요 상태 확인
 				boolean isLiked = false;
@@ -267,6 +282,10 @@ public class BoardControllerImpl implements BoardController {
 				// 좋아요 수 조회
 				int likeCount = boardService.getBoardLikeCount(boardId);
 				mav.addObject("likeCount", likeCount);
+
+				// 인기 게시글 TOP 5 추가
+				List<BoardVo> top5List = boardService.getTop5BoardsByViews();
+				mav.addObject("top5List", top5List);
 
 			} else {
 				log.warn(">>조회할 게시글(ID:{})을 찾을 수 없습니다.", boardId);
@@ -517,8 +536,7 @@ public class BoardControllerImpl implements BoardController {
 			log.info(">>파일 시스템 삭제 시도 완료.");
 
 			// 9. 결과 설정 및 뷰 반환
-			log.info(">>게시글 수정 성공, 상세 페이지로 리다이렉트:/board/view?boardId={}", boardId);
-			mav.setViewName("redirect:/board/view?boardId=" + boardId); // 수정 성공 시 해당 게시글 상세 페이지로 리다이렉트
+			mav.setViewName("redirect:/board/view?boardId=" + boardId);
 
 		} catch (NumberFormatException e) { // boardId 파라미터가 숫자가 아닐 경우 발생
 			log.error(">>게시글 ID 파싱 오류 발생:{}", request.getParameter("boardId"), e);
@@ -681,7 +699,7 @@ public class BoardControllerImpl implements BoardController {
 
 		if (loginUser != null) {
 			reply.setReplyWriter(loginUser.getNick());
-			reply.setReplyWriterId(loginUser.getId()); 
+			reply.setReplyWriterId(loginUser.getId());
 		} else {
 			log.warn(">> 댓글 작성 실패: 로그인되지 않은 사용자 요청");
 			return "redirect:/board/view?boardId=" + reply.getBoardId() + "&msg=loginRequired";
@@ -726,7 +744,7 @@ public class BoardControllerImpl implements BoardController {
 		} catch (Exception e) {
 			log.error("댓글 삭제 중 오류 발생, replyId:{}", replyId, e);
 			mav.addObject("msg", "댓글 삭제 중 오류가 발생했습니다.");
-			mav.setViewName("errorPage"); // 오류 페이지로 이동
+			// mav.setViewName("errorPage"); // 오류 페이지로 이동
 		}
 		log.info(">>BoardControllerImpl-deleteReply() 호출 종료");
 		return mav;
@@ -919,39 +937,89 @@ public class BoardControllerImpl implements BoardController {
 			return "error"; // 서버 오류
 		}
 	}
-	
+
 	// 게시글 검색
 	@Override
-	@RequestMapping(value = "/board/search", method = RequestMethod.GET)
-	public ModelAndView searchBoard(
-	        @RequestParam("keyword") String keyword,
-	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ModelAndView searchBoard(@RequestParam("keyword") String keyword, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
-	    ModelAndView mav = new ModelAndView("/board/list");
+		ModelAndView mav = new ModelAndView("/board/search");
 
-	    List<BoardVo> boardList = boardService.searchBoardsByKeyword(keyword);
+		try {
+			List<BoardVo> resultList = boardService.searchBoards(keyword);
 
-	    // 작성자 프로필 이미지 세팅
-	    Map<String, MemberVo> memberMap = new HashMap<>();
-	    for (BoardVo board : boardList) {
-	        String writerId = board.getBoardWriterId();
-	        if (!memberMap.containsKey(writerId)) {
-	            MemberVo writerInfo = memberService.selectMemberById(writerId);
-	            if (writerInfo != null) {
-	                memberMap.put(writerId, writerInfo);
-	            }
-	        }
-	        MemberVo writerInfo = memberMap.get(writerId);
-	        if (writerInfo != null) {
-	            board.setBoardWriterImg(writerInfo.getProfileImg());
-	            board.setBoardWriter(writerInfo.getNick()); // 닉네임으로 갱신 (선택사항)
-	        }
-	    }
+			// 작성자 이미지 매핑
+			Map<String, MemberVo> memberCache = new HashMap<>();
+			for (BoardVo board : resultList) {
+				String writerId = board.getBoardWriterId();
+				if (writerId != null && !writerId.isEmpty()) {
+					MemberVo writerInfo = memberCache.containsKey(writerId) ? memberCache.get(writerId)
+							: memberService.selectMemberById(writerId);
+					if (writerInfo != null) {
+						board.setBoardWriterImg(writerInfo.getProfileImg());
+						memberCache.put(writerId, writerInfo);
+					}
+				}
+			}
 
-	    mav.addObject("boardList", boardList);
-	    mav.addObject("keyword", keyword);
+			// 인기 게시글 TOP 5 추가
+			List<BoardVo> top5List = boardService.getTop5BoardsByViews();
+			mav.addObject("top5List", top5List);
 
-	    return mav;
+			mav.addObject("boardList", resultList);
+			mav.addObject("keyword", keyword);
+		} catch (Exception e) {
+			log.error("검색 중 오류 발생", e);
+			mav.setViewName("errorPage");
+			mav.addObject("msg", "검색 중 오류가 발생했습니다.");
+		}
+		return mav;
+	}
+
+	// 카테고리별 게시글 목록 - AJAX 요청 처리
+	@Override
+	@RequestMapping(value = "/listByCategory", method = RequestMethod.GET)
+	public String listByCategory(@RequestParam(value = "category", required = false) String category,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List<BoardVo> boardList;
+		if (category == null || category.isEmpty()) {
+			boardList = boardService.selectBoardList(); // 모든 게시글 목록
+		} else {
+			boardList = boardService.getBoardsByCategory(category); // 특정 카테고리 게시글 목록
+		}
+
+		// boardList 객체를 JSP에 전달하여 게시글 목록을 렌더링
+		request.setAttribute("boardList", boardList);
+
+		return "board/items"; // board/items.jsp에서 게시글 목록만 리턴
+	}
+
+	// 관리자용
+	@Override
+	@RequestMapping("/admin")
+	public ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView mav = new ModelAndView("/board/admMain");
+		mav.addObject("boardList", boardService.getAllBoardsForAdmin());
+		return mav;
+	}
+
+	@RequestMapping(value = "/admin/saveOrDelete", method = RequestMethod.POST)
+	public String saveOrDeleteBoard(@RequestParam("action") String action,
+			@RequestParam(value = "selectedIds", required = false) List<Integer> selectedIds,
+			HttpServletRequest request) throws Exception {
+
+		if ("update".equals(action)) {
+			// 폼에서 boards 배열을 직접 받지 말고, 필요한 값을 request에서 꺼내 처리하거나
+			// 아니면 개별 update용 API를 따로 만드는 게 편합니다.
+		} else if ("delete".equals(action)) {
+			if (selectedIds != null) {
+				for (int boardId : selectedIds) {
+					boardService.deleteBoardFromAdmin(boardId);
+				}
+			}
+		}
+		return "redirect:/board/admin";
 	}
 
 }

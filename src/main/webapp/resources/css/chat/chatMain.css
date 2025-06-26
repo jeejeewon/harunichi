@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 /* 친구추천 */
 #chatMainCon{
 	display: flex;
@@ -15,8 +14,9 @@
 	text-align: center;
 	border: 1px solid #ccc;
 	border-radius: 10px;
-	padding: 20px 0;
+	padding: 20px 10px;
 	margin: 0 10px;
+	height: 360px;
 }
 .profile-con:hover{
 	transform: translateY(-8px); 
@@ -207,11 +207,19 @@
 	justify-content: center;
 	margin: 20px 0;
 }
+
+#imgUpload {
+	display: none;
+}
+
 .open-chat-profile-img{
   	width: 120px;
 	height: 120px;
 	border-radius: 100%;
 	object-fit: cover;
+}
+.adit-profile-img.hidden {
+	display: none;
 }
 .adit-profile-img {
 	position: absolute;
@@ -226,9 +234,7 @@
 	cursor: pointer;
 	right: calc(50% - 60px + 5px);
 }
-#imgUpload{
-	display: none;
-}
+
 .modal-content {
 	background-color: #fff;
 	margin: 10% auto auto;

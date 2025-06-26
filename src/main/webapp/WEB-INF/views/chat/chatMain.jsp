@@ -18,7 +18,7 @@
 <!-- 채팅방 프로필 이미지 경로 -->
 <c:set var="chatImgPath" value="/harunichi/resources/images/chat/" />
 
-	<form id="chatForm" action="<%=request.getContextPath()%>/chat/createChat" method="POST">
+	<form id="chatForm" action="${contextPath}/chat/createChat" method="POST">
 		<input type="hidden" id="receiverId" name="receiverId"> 		
 		<input type="hidden" id="chatType" name="chatType" value="personal">
 	</form>	
@@ -31,7 +31,7 @@
 					<c:forEach var="member" items="${memberList}">						
 						<li>
 							<div class="profile-con">
-								<a href="#"> <!-- 클릭시 상대방 프로필 정보 -->
+								<a href="${contextPath}/mypage?id=${member.id}"> <!-- 클릭시 상대방 프로필 정보 -->
 									<c:choose>
 								    	<c:when test="${not empty member.profileImg}">
 								        	<img class="profile-img" src="${profileImgPath}${member.profileImg}">

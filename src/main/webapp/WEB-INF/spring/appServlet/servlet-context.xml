@@ -42,7 +42,6 @@
 			<mvc:mapping path="/**"/>
 			<beans:bean class="com.harunichi.translate.TranslationInterceptor"/>
 		</mvc:interceptor>
-	
 	</mvc:interceptors>
 	
  	<!-- 파일업로드 기능을 위한 멀티파트 뷰리졸버 설정 -->
@@ -54,7 +53,6 @@
     
     <!-- Spring MVC의 Tiles framework를 구성 -->
 	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-
 		<beans:property name="definitions">
 			<beans:list>
 				<beans:value>classpath:tiles/*.xml</beans:value>
@@ -72,9 +70,11 @@
 	
 	<!-- 프로필이미지 경로 읽어오기 -->
 	<mvc:resources mapping="/images/profile/**" location="file:/C:/harunichi/images/profile/" />
+	<!-- 상품 이미지 경로 읽어오기 -->
+	<mvc:resources mapping="/images/product/**" location="file:/C:/harunichi/images/product/" />
 	
 	<!-- 채팅방 프로필 이미지 경로 읽어오기 -->
 	<mvc:resources mapping="/images/chat/**" location="file:/C:/harunichi/images/chat/" />
 
-</beans:beans>
 
+</beans:beans>

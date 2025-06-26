@@ -91,6 +91,17 @@
 	right: 154px;
 }
 
+/* 대화 검색 */
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+.hidden {
+  display: none;
+}
+#searchNavigation i {
+	font-size: 22px;
+}
 
 /* 채팅방 설정 드롭다운 */
 #chatSettingMenu {
@@ -217,8 +228,6 @@
 	filter: grayscale(100%);	
 }
 
-
-
 /* 대화창 */
 #messageContainer {
 	width: 100%;
@@ -316,8 +325,8 @@
     color: #757575;
 }
 
-/* 모달창 */
-.modal {
+/* 채팅방 정보 모달창 */
+.chat-info-modal {
 	display: none;
 	position: fixed;
 	z-index: 1000;
@@ -325,29 +334,31 @@
 	width: 100%; height: 100%;
 	background-color: rgba(0,0,0,0.4);
 }
-.modal h2 {
+.chat-info-modal h2 {
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 10px;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 	color: #a3daff;
 	text-align: center;
 }
-.open-chat-img-wrap {
+.chat-img-wrap {
 	position: relative;
 	display: flex;
 	justify-content: center;
-	margin: 20px 0;
+	margin: 30px 0 10px 0;
 }
-.open-chat-profile-img{
+.chat-profile-img{
   	width: 120px;
 	height: 120px;
 	border-radius: 100%;
 	object-fit: cover;
 }
+.adit-profile-img.hidden{
+	display: none;
+}
 .adit-profile-img {
 	position: absolute;
 	bottom: 0;
-	right: 115px;
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -357,39 +368,67 @@
 	cursor: pointer;
 	right: calc(50% - 60px + 5px);
 }
-#imgUpload{
-	display: none;
-}
 .modal-content {
 	background-color: #fff;
 	margin: 10% auto auto;
 	padding: 20px;
 	border-radius: 8px;
-	width: 400px;
+	width: 430px;
 	box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
-#newChatForm {
+#updateChatForm {
 	display: block;
 	align-content: center;
 	margin: 0 10px 30px 10px;
 }
-#newChatForm label {
+#chatInfoWrap label {
 	display: flex;
+}
+#chatInfoWrap label.hidden {
+	display: none;
 }
 .modal-input-msg {
 	font-size: 13px;
 	color: #7d7d7d;
 	margin-bottom: 15px;
 }
+.modal-input-msg.hidden {
+	display: none;
+}
 .err {
 	color: red;	
 }
-.open-chat-form {
+.chat-info-wrap {
+	display: block;
+    justify-self: center;
+    margin-bottom: 40px;
+}
+.chat-title {
+	font-size: 23px;
+	font-weight: bold;
+}
+.chat-title.hidden {
+	display: none;
+}
+.chat-persons {
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    position: relative;
+}
+.chat-form {
 	display: block;
 	width: 100%;
-	height: 30px;
+	height: 35px;
 	border: 1px solid #ccc; 
+	position: relative;
+	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
 }	
+.chat-form.hidden {
+	display: none;
+}
 .modal-btn-wrap {
 	display: flex;
 	justify-content: center;
@@ -406,8 +445,43 @@
 .modal-btn:hover {
 	background-color: #53a5dc; 
 }
+#editCancelBtn {
+	background-color: #FFBFA3;
+}
+#editCancelBtn:hover {
+	background-color: #FFA07A;		
+}
 .close {
 	float: right;
 	font-size: 20px;
 	cursor: pointer;
 }
+.user-list {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr); 
+	grid-template-rows: repeat(4, auto);  
+	gap: 10px; 
+	list-style: none;
+	padding: 0;	
+}
+.user-list li {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px;
+	border-radius: 8px;
+}	
+.user-profile-img {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	object-fit: cover;	
+}
+.bi-star-fill {
+	fill: gold !important;
+}
+	
+	
+	
+	
+	
