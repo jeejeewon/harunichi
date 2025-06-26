@@ -68,12 +68,12 @@
 					<div id="productImg">			
 						<c:if test="${productVo.productStatus eq -1}"> <!-- 거래완료 상품은 이미지 흑백으로 처리 -->
 							<a href="${contextPath}/product/view?productId=${productVo.productId}">
-								<img class="product-img sold-out" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+								<img class="product-img sold-out" src="${contextPath}/images/product/${productVo.productImg}" alt="상품 이미지">
 							</a>					
 						</c:if>	
 						<c:if test="${productVo.productStatus != -1}">			
 							<a href="${contextPath}/product/view?productId=${productVo.productId}">
-								<img class="product-img" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+								<img class="product-img" src="${contextPath}/images/product/${productVo.productImg}" alt="상품 이미지">
 							</a>	
 						</c:if>
 					</div>
