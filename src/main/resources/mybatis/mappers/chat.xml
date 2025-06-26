@@ -308,10 +308,22 @@
 	<update id="kickMember" parameterType="map">
 		<![CDATA[
 			UPDATE chatRoom
-			SET isKicked = 1 
+			SET isKicked = 1, isDeleted = 1
 			WHERE roomId = #{roomId} AND userId = #{userId}
 		]]>
 	</update>
+	
+	<!-- 강퇴 당한 채팅방인지 확인 -->
+	<select id="isKicked" parameterType="map" resultType="boolean">
+		<![CDATA[
+			SELECT isKicked
+			FROM chatRoom
+			WHERE roomId = #{roomId} AND userId = #{userId}
+		]]>
+	</select>
+	
+	
+	
 	
 
 

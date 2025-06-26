@@ -264,6 +264,15 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.update(NAMESPACE + "kickMember", map);			
 	}
 
+	//강퇴 당한 채팅방인지 확인
+	@Override
+	public boolean isKicked(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);		
+		return sqlSession.selectOne(NAMESPACE + "isKicked", map);
+	}
+
 
 	
 }

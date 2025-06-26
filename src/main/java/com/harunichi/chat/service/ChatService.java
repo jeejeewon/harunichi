@@ -85,6 +85,9 @@ public interface ChatService {
 	//오픈 채팅방 멤버 강퇴
 	void kickMember(String roomId, String userId);
 
+	//강퇴 당한 채팅방인지 확인
+	boolean isKicked(String roomId, String userId);
+
 
 
 }
