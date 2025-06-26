@@ -1,10 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}" />
-
-<!-- <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
-</c:if> -->
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -17,20 +14,6 @@
 			<a href="javascript:void(0);" onclick="history.back();">
 				<img src="${contextPath}/resources/icon/back_icon.svg" alt="뒤로가기버튼">
 			</a>
-		
-			<!-- 오른쪽: 검색 -->
-			<div class="search-area-wrapper">
-				<button type="button" id="searchToggleBtn" class="search-icon-btn">
-					<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
-				</button>
-		
-				<form id="headerSearchForm" class="header-search-form" method="get">
-					<input type="text" name="query" placeholder="회원 검색">
-					<button type="submit">
-						<img src="${contextPath}/resources/icon/search_icon.svg" alt="검색">
-					</button>
-				</form>
-			</div>
 		</div>
 		<div class="mypage-profile-area">
 			<div class="profile-area-left">
@@ -154,6 +137,10 @@
 	                        .then(response => response.text())
 	                        .then(html => {
 	                            contentCon.innerHTML = html;
+	                         	// DOM 완전히 반영된 후 번역 적용
+	                            requestAnimationFrame(() => {
+	                                translateAJAXContent();
+	                            });
 	                        })
 	                        .catch(() => {
 	                            contentCon.innerHTML = '<p>불러오기 실패</p>';
@@ -171,25 +158,6 @@
 	        if (firstTab) {
 	            firstTab.click();
 	        }
-	        
-	        //검색창 활성화
-	        const toggleBtn = document.getElementById("searchToggleBtn");
-	        const searchForm = document.getElementById("headerSearchForm");
-	     	// 검색창 열기
-	    	toggleBtn.addEventListener("click", function () {
-	    		toggleBtn.style.display = "none";
-	    		searchForm.classList.add("active");
-	    		searchForm.querySelector("input").focus();
-	    	});
-
-	    	// 검색창 이외 클릭 시 닫기
-	    	document.addEventListener("click", function (e) {
-	    		// 검색 폼이나 버튼 내부를 클릭한 게 아니면 닫기
-	    		if (!searchForm.contains(e.target) && !toggleBtn.contains(e.target)) {
-	    			searchForm.classList.remove("active");
-	    			toggleBtn.style.display = "inline-block"; // 다시 돋보기 보이게
-	    		}
-	    	});
 	        
 	    });
 		
@@ -307,6 +275,76 @@
 		}
 	    
 	    
+	    //ajax요소도 번역
+	    let translationCache = {};  // 번역 캐시 초기화
+
+	    function translatePageContent() {
+	        const selectedCountry = "${selectedCountry}"; // 페이지 로딩 시 선택된 국가
+
+	        if (selectedCountry === 'kr' || selectedCountry === 'jp') {
+	            const nodes = [];
+
+	            // 페이지 내용 순회
+	            function traverse(node) {
+	                if (node.nodeType === 3 && node.nodeValue.trim()) {
+	                    nodes.push(node);
+	                } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT') {
+	                    for (let i = 0; i < node.childNodes.length; i++) {
+	                        traverse(node.childNodes[i]);
+	                    }
+	                }
+	            }
+
+	            traverse(document.body);
+
+	            nodes.forEach(function (node) {
+	                const original = node.nodeValue.trim();
+	                if (translationCache[original]) {
+	                    node.nodeValue = translationCache[original];
+	                    return;
+	                }
+
+	                const params = new URLSearchParams({
+	                    text: original,
+	                    lang: selectedCountry
+	                });
+
+	                fetch("${contextPath}/translate", {
+	                    method: "POST",
+	                    headers: {
+	                        "Content-Type": "application/x-www-form-urlencoded"
+	                    },
+	                    body: params
+	                })
+	                .then(res => res.json())
+	                .then(data => {
+	                    if (data.translatedText) {
+	                        translationCache[original] = data.translatedText;
+	                        node.nodeValue = data.translatedText;
+	                    }
+	                })
+	                .catch(err => console.error("번역 실패", err));
+	            });
+	        }
+	    }
+
+	    function translateAJAXContent() {
+	        // 페이지 내용이 로드된 후에 번역을 적용
+	        translatePageContent();
+	    }
+
+	    const observer = new MutationObserver(function(mutations) {
+	        mutations.forEach(function(mutation) {
+	            if (mutation.type === 'childList' && mutation.target.classList.contains('mypage-contents-con')) {
+	                translateAJAXContent(); // .mypage-contents-con 영역에 콘텐츠가 추가될 때만 번역
+	            }
+	        });
+	    });
+
+	    const contentArea = document.querySelector('.mypage-contents-con');
+	    if (contentArea) {
+	        observer.observe(contentArea, { childList: true, subtree: true });
+	    }
 	</script>
 
 </body>

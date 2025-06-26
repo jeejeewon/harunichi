@@ -36,8 +36,10 @@
 }
 
 .select2-container .select2-selection--single {
-	height: auto !important;
-	padding: 6px 12px;
+	height: 33px !important;
+    line-height: 33px !important;
+    display: flex !important;
+    align-items: center;
 	border: 1px solid #ddd;
 	border-radius: 20px;
 	outline: none;
