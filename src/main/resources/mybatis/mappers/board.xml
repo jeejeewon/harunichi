@@ -126,22 +126,42 @@
 	<select id="searchBoards" parameterType="string"
 		resultType="com.harunichi.board.vo.BoardVo">
 		SELECT
-		boardId, boardWriter, boardCont, boardDate, boardLike,
+		boardId, boardWriter, boardCont, boardDate,
+		boardLike,
 		boardCount, boardRe, boardCate, boardImg1, boardImg2,
 		boardImg3, boardImg4, boardWriterId
 		FROM board
-		WHERE boardCont LIKE CONCAT('%', #{keyword}, '%')
-		OR boardWriter LIKE CONCAT('%', #{keyword}, '%')
+		WHERE boardCont LIKE
+		CONCAT('%', #{keyword}, '%')
+		OR boardWriter LIKE CONCAT('%',
+		#{keyword}, '%')
 		OR boardWriterId LIKE CONCAT('%', #{keyword}, '%')
 		ORDER BY boardDate DESC
 	</select>
-	
+
 	<!-- 조회수 높은 상위 5개 게시글 -->
-	<select id="selectTop5ByViews" resultType="com.harunichi.board.vo.BoardVo">
-	    SELECT boardId, boardWriter, boardCont, boardDate, boardCount, boardCate
-	    FROM board
-	    ORDER BY boardCount DESC
-	    LIMIT 5
+	<select id="selectTop5ByViews"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT boardId, boardWriter, boardCont, boardDate,
+		boardCount, boardCate
+		FROM board
+		ORDER BY boardCount DESC
+		LIMIT 5
 	</select>
+
+	<select id="selectBoardsByCategory" parameterType="string"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT * FROM board
+		WHERE boardCate = #{category}
+		ORDER BY
+		boardDate DESC
+	</select>
+
+	<!-- 관리자용 -->
+	<select id="selectAllBoardsForAdmin"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT * FROM board ORDER BY boardDate DESC
+	</select>
+
 
 </mapper>

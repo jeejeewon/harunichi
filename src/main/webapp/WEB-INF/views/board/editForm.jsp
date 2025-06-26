@@ -92,7 +92,7 @@
 				<div class="form-label">첨부 이미지</div>
 				<div class="form-value image-upload-section">
 					<%-- 기존 이미지 목록 및 삭제 체크박스 --%>
-					<c:if test="${board.boardImg1 != null}">
+					<%--<c:if test="${board.boardImg1 != null}">
 						<div class="existing-image-item">
 							<img src="/resources/images/board/${board.boardImg1}"
 								style="max-width: 100px;" /> <label
@@ -127,13 +127,13 @@
 								name="deleteIndices" value="4"> 삭제
 							</label>
 						</div>
-					</c:if>
+					</c:if>--%>
 
 					<%-- 새로운 이미지 업로드 필드 --%>
 					<div class="new-image-upload">
-						<label for="imageFiles">새 이미지 추가:</label> <input type="file"
-							id="imageFiles" name="imageFiles" multiple="multiple"
-							accept="image/*">
+					    <label for="imageFiles">새 이미지 추가:</label>
+					    <input type="file" id="imageFiles" name="imageFiles" multiple="multiple" accept="image/*">
+					    <div id="previewArea" style="margin-top:10px;"></div> <!-- 썸네일 영역 추가 -->
 					</div>
 				</div>
 			</div>
@@ -219,5 +219,68 @@ function validateFileType(input) {
 	}
 
 	console.log("모든 파일 유효성 검사 통과.");
+}
+
+//이미지 선택 시 썸네일 미리보기
+$('#imageFiles').on('change', function() {
+    validateFileType(this);  // 기존 유효성 검사
+    previewImages(this);     // 썸네일 표시 함수
+});
+
+$(document).ready(function() {
+    showExistingThumbnails();  // 기존 이미지 표시
+
+    // 기존 코드 유지
+    $('input[name="imageFiles"]').change(function() {
+        validateFileType(this);
+        previewImages(this);
+    });
+
+    $('input[name="deleteIndices"]').change(function() {
+        const fileInput = $('input[name="imageFiles"]')[0];
+        validateFileType(fileInput);
+    });
+});
+
+// 기존 이미지 미리보기 표시 함수
+function showExistingThumbnails() {
+    const preview = $('#previewArea');
+    preview.empty();
+
+    const existingImages = [];
+
+    <c:if test="${not empty board.boardImg1}">
+        existingImages.push({src: '${contextPath}/resources/images/board/${board.boardImg1}', index: 1});
+    </c:if>
+    <c:if test="${not empty board.boardImg2}">
+        existingImages.push({src: '${contextPath}/resources/images/board/${board.boardImg2}', index: 2});
+    </c:if>
+    <c:if test="${not empty board.boardImg3}">
+        existingImages.push({src: '${contextPath}/resources/images/board/${board.boardImg3}', index: 3});
+    </c:if>
+    <c:if test="${not empty board.boardImg4}">
+        existingImages.push({src: '${contextPath}/resources/images/board/${board.boardImg4}', index: 4});
+    </c:if>
+
+    for (const img of existingImages) {
+        const container = $('<div>').css({ display: 'inline-block', marginRight: '10px' });
+        const imageTag = $('<img>').attr('src', img.src).css({
+            width: '100px',
+            height: '100px',
+            objectFit: 'cover',
+            border: '1px solid #ddd',
+            padding: '2px',
+            display: 'block'
+        });
+        const label = $('<label>').text('삭제').prepend(
+            $('<input>').attr({
+                type: 'checkbox',
+                name: 'deleteIndices',
+                value: img.index
+            })
+        );
+        container.append(imageTag).append(label);
+        preview.append(container);
+    }
 }
 </script>

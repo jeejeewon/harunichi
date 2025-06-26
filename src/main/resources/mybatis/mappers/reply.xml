@@ -14,25 +14,27 @@
 		WHERE boardId = #{boardId}
 	</delete>
 
-	<!-- 댓글 작성 -->
+	<!-- 댓글 작성 (대댓글 포함) -->
 	<insert id="insertReply"
 		parameterType="com.harunichi.board.vo.ReplyVo">
 		INSERT INTO reply (
-		boardId, replyCont, replyWriter, replyWriterId, replyDate, replyLike
+		boardId, replyCont, replyWriter, replyWriterId, replyDate, replyLike, parentId
 		) VALUES (
-		#{boardId}, #{replyCont}, #{replyWriter}, #{replyWriterId}, NOW(), 0
+		#{boardId}, #{replyCont}, #{replyWriter}, #{replyWriterId}, NOW(), 0, #{parentId}
 		)
 	</insert>
 
-	<!-- 특정 게시글의 댓글 목록 조회 -->
+	<!-- 댓글 목록 조회 (일반댓글 + 대댓글 포함, 계층 정렬) -->
 	<select id="selectRepliesByBoardId" parameterType="int"
 		resultType="com.harunichi.board.vo.ReplyVo">
-		SELECT replyId, boardId, replyCont, replyWriter,
-		replyWriterId, replyDate,
-		replyLike
+		SELECT replyId, boardId, replyCont, replyWriter, replyWriterId,
+		replyWriterImg, replyDate, replyLike, parentId
 		FROM reply
-		WHERE boardId=#{boardId}
-		ORDER BY replyDate ASC, replyId ASC
+		WHERE boardId = #{boardId}
+		ORDER BY
+		COALESCE(parentId, replyId),
+		parentId IS NOT NULL,
+		replyDate ASC
 	</select>
 
 	<!-- 특정 게시글의 댓글 갯수 -->

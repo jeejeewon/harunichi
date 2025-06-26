@@ -39,11 +39,11 @@
 			 -->
 		</tr>
 		<tr>
-			<td>첨부 이미지:</td>
-			<%-- 설명을 변경했습니다 --%>
-			<td><input type="file" name="imageFiles" accept="image/*"
-				multiple></td>
-			<%-- multiple 속성 추가 --%>
+			<td>첨부 이미지:</td>			
+			<td>
+			<input type="file" name="imageFiles" accept="image/*" multiple id="imageInput">
+      		<div id="previewArea" style="margin-top:10px;"></div>  <!-- 썸네일 표시 영역 -->
+		
 		</tr>
 	</table>
 	<input type="submit" value="등록">
@@ -127,5 +127,50 @@ function validateForm() {
     
     console.log("필수 필드 유효성 검사 통과.");
     return true; // 모든 필수 필드 유효성 검사 통과
+}
+
+//파일 선택 시 썸네일 미리보기 함수 호출하도록 수정
+$('#imageInput').on('change', function() {
+    validateFileType(this); // 기존 유효성 검사
+    previewImages(this);    // 썸네일 미리보기
+});
+
+// 썸네일 미리보기 함수
+function previewImages(input) {
+    const preview = $('#previewArea');
+    preview.empty(); // 이전 미리보기 초기화
+
+    const files = input.files;
+    if (files.length === 0) {
+        return; // 선택된 파일 없으면 종료
+    }
+
+    const maxFiles = 4;
+    const fileCount = Math.min(files.length, maxFiles);
+
+    for(let i = 0; i < fileCount; i++) {
+        const file = files[i];
+
+        // 이미지 파일만 처리
+        if(!file.type.startsWith('image/')) continue;
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            // 이미지 태그 생성 후 미리보기 영역에 추가
+            const img = $('<img>').attr('src', e.target.result)
+                                  .css({
+                                    width: '100px',
+                                    height: '100px',
+                                    objectFit: 'cover',
+                                    marginRight: '10px',
+                                    border: '1px solid #ddd',
+                                    padding: '2px'
+                                  });
+            preview.append(img);
+        };
+
+        reader.readAsDataURL(file);
+    }
 }
 </script>

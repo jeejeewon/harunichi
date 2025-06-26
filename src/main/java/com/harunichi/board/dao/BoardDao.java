@@ -39,4 +39,14 @@ public interface BoardDao {
 	// 인기글 5개 (사이드용)
 	List<BoardVo> selectTop5ByViews() throws Exception;
 
+	// 카테고리별 게시글 목록
+	List<BoardVo> selectBoardsByCategory(String category) throws Exception;
+
+	// 관리자용
+	List<BoardVo> selectAllBoardsForAdmin() throws Exception;
+	
+	void updateBoardFromAdmin(BoardVo board) throws Exception;
+
+	void deleteBoardFromAdmin(int boardId) throws Exception;
+
 }

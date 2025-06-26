@@ -1,6 +1,8 @@
 package com.harunichi.board.vo;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
@@ -14,4 +16,9 @@ public class ReplyVo {
     private String replyWriter;
     private String replyWriterImg;
     private String replyWriterId;
+    private int parentId;
+    
+    // 자식 댓글 리스트 (대댓글용)
+    private List<ReplyVo> children = new ArrayList<>();
+    
 }
