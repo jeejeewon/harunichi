@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/product.css">
 
 <div class="product-detail-container">
-    <h2 class="product-title">내가 작성한 거래글</h2>
+    <h2 class="product-title">작성한 거래글</h2>
 
     <c:choose>
         <c:when test="${empty myProducts}">

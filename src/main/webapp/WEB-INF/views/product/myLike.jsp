@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="${ctx}/resources/css/product.css" />
 
 <div class="product-detail-container">
-    <h2 class="product-title">내가 좋아요한 상품 목록</h2>
+    <h2 class="product-title">좋아요한 상품 목록</h2>
 
     <c:choose>
         <c:when test="${empty likedProducts}">

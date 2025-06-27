@@ -11,14 +11,14 @@
 
 <!-- 홈 메뉴 active 처리 -->
 <c:set var="homeClass" value="" />
-<c:if test="${fn:endsWith(uriWithoutCtx, '/') || fn:contains(uriWithoutCtx, '/main')}">
+<c:if test="${uriWithoutCtx == '/' || uriWithoutCtx == '/main'}">
   <c:set var="homeClass" value="active" />
 </c:if>
 
 <!-- 일상/교류 메뉴 active 처리 -->
 <c:set var="boardClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/board')}">
-  <c:set var="mypageClass" value="active" />
+  <c:set var="boardClass" value="active" />
 </c:if>
 
 <!-- 중고거래 메뉴 active 처리 -->
@@ -49,7 +49,8 @@
 			  </a>
 			</li>
 			<li>
-				<a href="${contextPath}/board" class="${boardClass}">
+				<a href="${contextPath}/board/list" class="${boardClass}">
+					<i class="fa-solid fa-cloud"></i>
 					<span class="material-symbols-outlined">cloud</span>
 					<span>일상/교류</span>
 				</a>
@@ -78,7 +79,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="${contextPath}/chat" class="${chatClass}">
+				<a href="${contextPath}/chat/main" class="${chatClass}">
 					<span class="material-symbols-outlined">sms</span>
 					<span>채팅</span>
 				</a>
