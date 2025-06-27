@@ -88,7 +88,7 @@
 			</div>
 			
 			<div class="mypage-contents-con">
-			    <!-- AJAX로 list.jsp 내용이 이 영역에 렌더링됨 -->
+			    <!-- AJAX로 내용이 이 영역에 렌더링됨 -->
 			</div>
 		</div>
 	</section>
