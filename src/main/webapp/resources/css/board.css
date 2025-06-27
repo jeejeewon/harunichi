@@ -10,6 +10,7 @@
 
 .board-article {
 	padding: 0;
+	overflow: hidden;
 }
 
 .board.container {
@@ -43,7 +44,7 @@
 
 .board .post-btn {
 	position: fixed;
-	bottom: 5%;
+	bottom: 80px;
 	right: calc(( 100% - ( 1440px))/2);
 	z-index: 999;
 	width: 150px;
