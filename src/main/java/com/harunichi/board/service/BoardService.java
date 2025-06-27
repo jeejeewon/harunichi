@@ -72,4 +72,5 @@ public interface BoardService {
 	// 관리자용 게시글 검색
     public List<BoardVo> searchBoardsForAdmin(String searchType, String keyword) throws Exception;
 
+
 }

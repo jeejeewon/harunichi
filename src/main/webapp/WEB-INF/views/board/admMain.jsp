@@ -342,7 +342,6 @@ table button:hover {
   </div>
 </form>
 
-
 <!-- 페이징 -->
 <div class="pagination">
 	<c:set var="startPage" value="${result.currentPage - (result.currentPage - 1) % 5}" />

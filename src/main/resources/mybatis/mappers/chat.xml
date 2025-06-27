@@ -321,10 +321,7 @@
 			WHERE roomId = #{roomId} AND userId = #{userId}
 		]]>
 	</select>
-	
-	
-	
-	
+
 
 
 </mapper>

@@ -288,3 +288,11 @@ article {
 .board-side {
 	display: none !important;
 }
+/*게시글 이중스크롤 안생기게*/
+.container.board.main,
+.board-list,
+.list-wrap {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}

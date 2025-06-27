@@ -82,7 +82,6 @@ function renderProducts(products) {
             ? ctx + '/images/product/' + p.productImg  // 저장된 경로
             : ctx + '/images/product/no-image.png';    // 기본 이미지도 같은 경로로
 
-		
 		// 프로필 이미지 처리
 		const profileImg = p.writerProfileImg
 		    ? ctx + '/images/profile/' + p.writerProfileImg

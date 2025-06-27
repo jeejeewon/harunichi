@@ -197,4 +197,5 @@
 		ORDER BY boardId DESC
 	</select>
 
+
 </mapper>

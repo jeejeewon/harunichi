@@ -53,4 +53,5 @@ public interface BoardDao {
     public List<BoardVo> searchBoardsFromAdmin(String searchType, String keyword) throws Exception;
 	
 
+
 }

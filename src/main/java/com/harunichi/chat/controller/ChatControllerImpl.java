@@ -346,6 +346,9 @@ public class ChatControllerImpl implements ChatController {
 		//채팅방에서 나갔다가 다시 참여할 경우
 		chatService.changeIsDeleted(userId, roomId);
 		
+		//채팅방에서 나갔다가 다시 참여할 경우
+		chatService.changeIsDeleted(userId, roomId);
+		
 		//오픈 채팅방 정보 조회
 		ChatRoomVo chatRoomVo = chatService.selectOpenChatById(roomId);
 		chatRoomVo.setUserId(userId);

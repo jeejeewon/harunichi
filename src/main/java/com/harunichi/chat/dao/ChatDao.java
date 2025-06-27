@@ -94,4 +94,5 @@ public interface ChatDao {
 	boolean isKicked(String roomId, String userId);
 
 
+
 }
