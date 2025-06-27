@@ -73,7 +73,7 @@
 				  <img src="${ctx}/images/product/${item.productImg}" alt="상품 이미지" />
 				</c:when>
 				<c:otherwise>
-				  <img src="${ctx}/images/product/no_image.png" alt="기본 이미지" />
+				  <img src="${ctx}/images/product/no-image.png" alt="기본 이미지" />
 				</c:otherwise>
 		    </c:choose>
 		    <div class="popular-title">${item.productTitle}</div>

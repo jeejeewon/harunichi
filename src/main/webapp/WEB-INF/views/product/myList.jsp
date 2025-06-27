@@ -21,7 +21,7 @@
                                 <img src="${ctx}/images/product/${product.productImg}" alt="상품 이미지" class="product-thumb" />                                
                             </c:when>
                             <c:otherwise>
-                                <img src="${ctx}/images/product/no_image.png" alt="기본 이미지" class="product-thumb" />
+                                <img src="${ctx}/images/product/no-image.png" alt="기본 이미지" class="product-thumb" />
                             </c:otherwise>
                         </c:choose>
                         <div class="product-info">
