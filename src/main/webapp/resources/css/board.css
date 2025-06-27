@@ -148,7 +148,7 @@
 }
 
 .board-side .side-list li {
-	padding: .5rem 0;
+	padding: .5rem 0 .25rem 0;
 }
 
 .board-side .side-list li a  .item-cate {
