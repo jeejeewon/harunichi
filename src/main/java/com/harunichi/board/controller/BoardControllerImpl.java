@@ -1001,7 +1001,7 @@ public class BoardControllerImpl implements BoardController {
 	@RequestMapping("/admin")
 	public ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		ModelAndView mav = new ModelAndView("/board/admMain");
+		ModelAndView mav = new ModelAndView("/admin/board");
 		
 		// 검색 파라미터 가져오기
 	    String searchType = request.getParameter("searchType");

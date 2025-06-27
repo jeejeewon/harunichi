@@ -32,7 +32,7 @@
 								src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
 						</c:if>
 						<c:if test="${not empty board.boardWriterImg}">
-							<img id="profileImage" src="${board.boardWriterImg}"
+							<img id="profileImage" src="${pageContext.request.contextPath}/images/profile/${board.boardWriterImg}"
 								alt="선택한 프로필 이미지">
 						</c:if>
 					</div>
@@ -110,7 +110,7 @@
 						<div class="comment-profile user-pic">
 							<c:choose>
 						    	<c:when test="${not empty sessionScope.member.profileImg}">
-						        	<img class="profile-image" src="${sessionScope.member.profileImg}">
+						        	<img class="profile-image" src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}">
 						    	</c:when>
 						    	<c:otherwise>
 						        	<img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">
@@ -149,7 +149,7 @@
 			                                    alt="기본 프로필 이미지" width="30" height="30" />
 			                            </c:when>
 			                            <c:otherwise>
-			                                <img src="${reply.replyWriterImg}" alt="프로필 이미지" width="30" height="30" />
+			                                <img src="${pageContext.request.contextPath}/images/profile/${reply.replyWriterImg}" alt="프로필 이미지" width="30" height="30" />
 			                            </c:otherwise>
 			                        </c:choose>
 		                         </div>
@@ -165,14 +165,17 @@
 								</div>
 								<div class="popup">
 								 	<div class="comment-actions">
-										 <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq reply.replyWriter}">	
-									 		<button class="reply-reply-btn" data-parent-id="${reply.replyId}" data-board-id="${board.boardId}">답글쓰기</button>				                       
+								 	 <c:if test="${ empty sessionScope.id}">
+					                     	<button onclick="alert('로그인이 필요한 서비스입니다.');">답글쓰기</button>
+					                     </c:if>		
+					                      <c:if test="${not empty sessionScope.id}">
+				   							<button class="reply-reply-btn" data-parent-id="${reply.replyId}" data-board-id="${board.boardId}">답글쓰기</button>
+					                     </c:if>  
+										 <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq reply.replyWriter}">										 					                       
 				                            <button class="modify-btn" data-reply-id="${reply.replyId}">수정하기</button>
 				                            <button class="delete-btn" data-reply-id="${reply.replyId}" data-board-id="${board.boardId}" style="color:red;">삭제하기</button>	
 					                    </c:if>				                
-					                    <c:if test="${ empty sessionScope.id}">
-					                     	<button onclick="alert('로그인이 필요한 서비스입니다.');">답글쓰기</button>
-					                     </c:if>				                     
+					                                    
 				                     </div>
 								</div>
 							</div>	
@@ -202,7 +205,7 @@
 			                                                alt="기본 프로필 이미지" width="25" height="25" />
 			                                        </c:when>
 			                                        <c:otherwise>
-			                                            <img src="${childReply.replyWriterImg}" alt="프로필 이미지" width="25" height="25" />
+			                                            <img src="${pageContext.request.contextPath}/images/profile/${childReply.replyWriterImg}" alt="프로필 이미지" width="25" height="25" />
 			                                        </c:otherwise>
 			                                    </c:choose>
 		                                    </div>

@@ -52,7 +52,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="${contextPath}/admin/board" class="${boardClass}">
+					<a href="${contextPath}/board/admin" class="${boardClass}">
 						<span>게시글 관리</span>
 					</a>
 				</li>

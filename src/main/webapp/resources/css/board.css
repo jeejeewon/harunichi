@@ -21,12 +21,13 @@
 	display: flex;
 	height: 100%;
 }
-
+.board.home {height: auto;}
 .board .board-list, .board .post-wrap {
 	width: 70%;
 	overflow: hidden;
 }
 
+.board.home .board-list {width: 100%;}
 .board .empty {
 	padding: 2rem;
 }
@@ -44,7 +45,7 @@
 
 .board .post-btn {
 	position: fixed;
-	bottom: 80px;
+	bottom: 100px;
 	right: calc(( 100% - ( 1440px))/2);
 	z-index: 999;
 	width: 150px;
@@ -273,10 +274,12 @@
 }
 
 .board .board-list .list-item .img-wrap .img-thumb img {
-	max-height: 400px;
-	width: auto;
+	max-height: 400px;	
 	max-width: 450px;
-	object-fit: cover;
+	    object-fit: contain;
+    object-position: center;
+    width: 100%;
+    height: 100%;
 }
 
 .board .board-list .list-item .item-info {

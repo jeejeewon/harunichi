@@ -17,8 +17,7 @@
 								src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
 						</c:if>
 						<c:if test="${not empty board.boardWriterImg}">
-							<img id="profileImage" src="${board.boardWriterImg}"
-								alt="선택한 프로필 이미지">
+							<img id="profileImage" src="${pageContext.request.contextPath}/images/profile/${board.boardWriterImg}" alt="선택한 프로필 이미지">
 						</c:if>
 					</div>
 					<div class="user-name">${board.boardWriter} </div>
@@ -30,7 +29,9 @@
 							src="https://img.icons8.com/ios-glyphs/20/more.png" alt="more" />
 					</div>
 					<ul class="popup">
-						<li><a>링크 복사</a></li>
+						<li><a href="javascript:void(0);" class="copyLinkBtn"
+							data-url="${contextPath}/board/view?boardId=${board.boardId}">
+								링크 복사 </a></li>
 						<c:if
 							test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
 							<li><a
@@ -246,5 +247,6 @@ $('.like').on('click', function() {
         }
     });
 });
+
 
 </script>
