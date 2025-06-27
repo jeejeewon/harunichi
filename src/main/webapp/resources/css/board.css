@@ -46,7 +46,7 @@
 .board .post-btn {
 	position: fixed;
 	bottom: 100px;
-	right: calc(( 100% - ( 1440px))/2);
+	right: max(calc((100% - 1440px) / 2 + 20px), 20px);
 	z-index: 999;
 	width: 150px;
 	height: 56px;
