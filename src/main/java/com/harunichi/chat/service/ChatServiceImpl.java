@@ -322,7 +322,27 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.isKicked(roomId, userId);
 	}
 
+	//관리자 페이지 채팅방 검색
+	@Override
+	public Map<String, Object> searchChatRoomList(String searchKeyword, String searchType, int page) {	
+		int pageSize = 7;
+	    int offset = (page - 1) * pageSize;
 
+	    Map<String, Object> result = new HashMap<>();
+	    List<ChatRoomVo> chatRoomList = chatDao.searchChatRoomList(searchKeyword, searchType, offset, pageSize);
+	    	    
+	    for(ChatRoomVo chatRoom : chatRoomList) {
+	    	int count = chatDao.selectUserCount(chatRoom.getRoomId());
+	    	chatRoom.setUserCount(count);
+	    }
+	    
+	    result.put("list", chatRoomList);
+	    result.put("totalCount", chatRoomList.size());    
+	    result.put("currentPage", page);
+	    result.put("pageSize", pageSize);	
+	    
+		return result;
+	}
 
 	
 }
