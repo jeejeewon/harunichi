@@ -114,7 +114,7 @@
      </details>
 
   * 중고상품
-  * <details>
+     <details>
         <summary>메인 화면</summary>
         <img src="./harunichi/01productMain.png">
      </details>
