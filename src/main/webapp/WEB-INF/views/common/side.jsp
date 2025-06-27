@@ -17,7 +17,7 @@
 
 <!-- 일상/교류 메뉴 active 처리 -->
 <c:set var="boardClass" value="" />
-<c:if test="${fn:contains(uriWithoutCtx, '/board')}">
+<c:if test="${fn:contains(uriWithoutCtx, '/board') and not fn:contains(uriWithoutCtx, '/board/hots')}">
   <c:set var="boardClass" value="active" />
 </c:if>
 
@@ -25,6 +25,12 @@
 <c:set var="productClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/product')}">
   <c:set var="productClass" value="active" />
+</c:if>
+
+<!-- 인기글 메뉴 active 처리 -->
+<c:set var="hotsClass" value="" />
+<c:if test="${fn:contains(uriWithoutCtx, '/board/hots')}">
+  <c:set var="hotsClass" value="active" />
 </c:if>
 
 <!-- 마이페이지 메뉴 active 처리 -->
@@ -62,17 +68,12 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<span class="material-symbols-outlined">local_fire_department</span>
-					<span>인기글</span>
+				<a href="${contextPath}/board/hots" class="${hotsClass}">				
+				    <span class="material-symbols-outlined">local_fire_department</span>
+				    <span>인기글</span>
 				</a>
 			</li>
 			<li>
-	<!-- 		<a href="#">
-					<span class="material-symbols-outlined">notifications</span>
-					<span>내소식</span>
-				</a>
-				 -->
 				<a href="${contextPath}/mypage" class="${mypageClass}">
 					<span class="material-symbols-outlined">account_circle</span>
 					<span>마이페이지</span>

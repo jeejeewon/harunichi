@@ -264,6 +264,30 @@ public class ChatDaoImpl implements ChatDao {
 		sqlSession.update(NAMESPACE + "kickMember", map);			
 	}
 
+	//강퇴 당한 채팅방인지 확인
+	@Override
+	public boolean isKicked(String roomId, String userId) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomId", roomId);
+		map.put("userId", userId);		
+		return sqlSession.selectOne(NAMESPACE + "isKicked", map);
+	}
+
+	//관리자 페이지 채팅방 검색
+	@Override
+	public List<ChatRoomVo> searchChatRoomList(String searchKeyword, String searchType, int offset, int pageSize) {	
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
+	    params.put("offset", offset);
+	    params.put("pageSize", pageSize);
+	    return sqlSession.selectList(NAMESPACE + "searchChatRoomList", params);
+	}
+
+
+
+	
+	
 
 	
 }

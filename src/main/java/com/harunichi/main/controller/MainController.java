@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.harunichi.product.service.ProductService;
 import com.harunichi.product.vo.ProductVo;
+import com.harunichi.board.service.BoardService;
+import com.harunichi.board.vo.BoardVo;
 import com.harunichi.chat.service.ChatService;
 import com.harunichi.member.vo.MemberVo;
 import com.harunichi.visit.service.VisitService;
@@ -32,6 +34,10 @@ public class MainController {
 		
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private BoardService boardService;
+	
 	
 	//메인 페이지를 보여주는 메서드
 	//http://localhost:8090/harunichi 요청시 메인페이지, 또는
@@ -40,6 +46,10 @@ public class MainController {
 	public String showMainPage(Locale locale, Model model, HttpServletRequest request) throws Exception {
 		
 		logger.info("메인페이지입니다.", locale);
+		
+		// 인기 게시글 TOP 100 (5개만 출력됨)
+		List<BoardVo> top100List = boardService.getTop100BoardsByViews();
+		 model.addAttribute("top100List", top100List);
 		
 	    // 인기 상품 조회
 	    List<ProductVo> topProducts = productService.getTopViewedProducts();

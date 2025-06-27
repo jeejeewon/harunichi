@@ -90,5 +90,12 @@ public interface ChatDao {
 	//오픈 채팅방 멤버 강퇴
 	void kickMember(String roomId, String userId);
 
+	//강퇴 당한 채팅방인지 확인
+	boolean isKicked(String roomId, String userId);
+
+	//관리자 페이지 채팅방 검색
+	List<ChatRoomVo> searchChatRoomList(String searchKeyword, String searchType, int offset, int pageSize);
+
+
 
 }

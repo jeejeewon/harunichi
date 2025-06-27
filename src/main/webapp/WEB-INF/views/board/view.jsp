@@ -11,166 +11,266 @@
 
 <div class="post-wrap">
 
-	<div class="post-info">
-		<div class="user-profile">
-			<div class="user-pic">
-				<%-- member 프로필 사진 가져오기 --%>
-				<c:if test="${empty board.boardWriterImg}">
-					<img
-						src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
-				</c:if>
-				<c:if test="${not empty board.boardWriterImg}">
-					<img id="profileImage" src="${board.boardWriterImg}"
-						alt="선택한 프로필 이미지">
-				</c:if>
+		<div class="post-head">
+			<button onclick="location.href='${contextPath}/board/list'">
+				<img width="24" height="24"
+					src="https://img.icons8.com/material-rounded/24/left.png"
+					alt="left" />
+			</button>
+			<p>게시물</p>
+		</div>
+		<div class="post-info">
+			<div class="item-cate">
+				<span>${board.boardCate}</span>
 			</div>
-			<div class="user-name">${board.boardWriter}</div>
+			<div class="user-profile">
+				<div class="user-info-wrap">
+					<div class="user-pic">
+						<%-- member 프로필 사진 가져오기 --%>
+						<c:if test="${empty board.boardWriterImg}">
+							<img
+								src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg">
+						</c:if>
+						<c:if test="${not empty board.boardWriterImg}">
+							<img id="profileImage" src="${pageContext.request.contextPath}/images/profile/${board.boardWriterImg}"
+								alt="선택한 프로필 이미지">
+						</c:if>
+					</div>
+					<div class="user-name">${board.boardWriter}</div>
+				</div>
+				
+				<div class="item-more">
+					<div class="btn-more">
+						<img width="20" height="20"
+							src="https://img.icons8.com/ios-glyphs/20/more.png" alt="more" />
+					</div>
+					<ul class="popup">
+						<li><a>링크 복사</a></li>
+						<c:if
+							test="${not empty sessionScope.member and sessionScope.member.nick eq board.boardWriter}">
+							<li><a
+								href="${contextPath}/board/editForm?boardId=${board.boardId}">수정하기</a>
+							</li>
+							<li>
+								<form action="${contextPath}/board/delete" method="post"
+									style="display: inline;">
+									<input type="hidden" name="boardId" value="${board.boardId}">
+									<button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+								</form>
+							</li>
+						</c:if>
+					</ul>
+				</div>				
+				
+			</div>
+		</div>
+
+		<div class="post-content">
+			<p>${board.boardCont}</p>
+		</div>
+
+		<div class="post-images">
+			<c:forEach var="imageFileName" items="${board.imageFiles}">
+				<c:if test="${not empty imageFileName}">
+					<div class="post-img-thumb">
+						<img src="${contextPath}/resources/images/board/${imageFileName}"
+							alt="게시글 이미지">
+					</div>
+				</c:if>
+			</c:forEach>
 		</div>
 		<div class="post-meta">
-			<span class="item-date" data-date="${board.boardDate}"></span> | <span>조회수
-				${board.boardCount}</span> | <span>댓글 수 ${board.boardRe}</span>
+			<p class="item-date" data-date="${board.boardDate}"></p>
+			<p>·</p>
+			<p>
+				<span>${board.boardCount}</span> 조회수
+			</p>
 		</div>
-	</div>
 
-	<div class="post-content">
-		<p>${board.boardCont}</p>
-	</div>
+		<div class="post-actions">
+			<p class="comment-count">
+				댓글 <span>${board.boardRe}</span>
+			</p>
+			<div class="like  ${isLiked ? 'liked' : ''}"
+				data-board-id="${board.boardId}">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							    <path
+						d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z" />
+							  </svg>
+				<p class="like-count">${board.boardLike}</p>
+			</div>
 
-	<div class="post-images">
-		<c:forEach var="imageFileName" items="${board.imageFiles}">
-			<c:if test="${not empty imageFileName}">
-				<div class="post-img-thumb">
-					<img src="${contextPath}/resources/images/board/${imageFileName}"
-						alt="게시글 이미지">
+		</div>
+
+		<div class="comment-section">
+			<c:if test="${not empty sessionScope.id}">
+				<%-- 댓글 작성 폼 추가 --%>
+				<div class="comment-form">	
+					<div class="comment-input-area user-profile">
+						<div class="comment-profile user-pic">
+							<c:choose>
+						    	<c:when test="${not empty sessionScope.member.profileImg}">
+						        	<img class="profile-image" src="${pageContext.request.contextPath}/images/profile/${sessionScope.member.profileImg}">
+						    	</c:when>
+						    	<c:otherwise>
+						        	<img class="profile-image" src="${contextPath}/resources/icon/basic_profile.jpg">
+						    	</c:otherwise>
+							</c:choose>
+						</div>
+						<form action="${contextPath}/board/reply/write" method="post">
+							<input type="hidden" name="replyWriter"
+								value="${sessionScope.member.nick}"> <input type="hidden"
+								name="boardId" value="${board.boardId}">
+							<textarea name="replyCont" placeholder="댓글을 남겨주세요" required></textarea>
+							<button type="submit">등록</button>
+						</form>
+					</div>	
+				</div>
+			</c:if>			
+			<c:if test="${empty sessionScope.id}">
+				<div class="comment-info comment-info-empty">
+					<img width="50" height="50" src="https://img.icons8.com/ios/50/speech-bubble-with-dots--v1.png" alt="speech-bubble-with-dots--v1"/>
+					<p class="comment-info">로그인 후 댓글 작성이 가능합니다</p>
 				</div>
 			</c:if>
-		</c:forEach>
-	</div>
-
-	<div class="post-actions">
-		<div class="like  ${isLiked ? 'liked' : ''}"
-			data-board-id="${board.boardId}">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-							    <path
-					d="M12 20a1 1 0 0 1-.437-.1C11.214 19.73 3 15.671 3 9a5 5 0 0 1 8.535-3.536l.465.465.465-.465A5 5 0 0 1 21 9c0 6.646-8.212 10.728-8.562 10.9A1 1 0 0 1 12 20z" />
-							  </svg>
-		</div>
-		<button>좋아요 (${board.boardLike})</button>
-		<button onclick="location.href='${contextPath}/board/list'">목록으로</button>
-	</div>
-
-	<div class="comment-section">
-		<p>댓글(${board.boardRe})</p>
-
-		<p>댓글 목록</p>
-		<div class="comment-list">
-        <c:forEach var="reply" items="${replyList}">
-            <c:if test="${reply.parentId == 0}">
-                <div class="comment" id="reply-${reply.replyId}" style="margin-left: 0;">
-                    <!-- 댓글 기본 내용 -->
-                    <div class="comment-author">
-                        <c:choose>
-                            <c:when test="${empty reply.replyWriterImg}">
-                                <img src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
-                                    alt="기본 프로필 이미지" width="30" height="30" />
-                            </c:when>
-                            <c:otherwise>
-                                <img src="${reply.replyWriterImg}" alt="프로필 이미지" width="30" height="30" />
-                            </c:otherwise>
-                        </c:choose>
-                        ${reply.replyWriter}
-                    </div>
-                    <div class="comment-content">${reply.replyCont}</div>
-                    <div class="comment-date">${reply.replyDate}</div>
-
-                    <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq reply.replyWriter}">
-                        <div class="comment-actions">
-                            <button class="modify-btn" data-reply-id="${reply.replyId}">수정</button>
-                            <button class="delete-btn" data-reply-id="${reply.replyId}" data-board-id="${board.boardId}">삭제</button>
-                        </div>
-                    </c:if>
-
-                    <!-- 댓글 수정 폼 -->
-                    <div class="modify-form" style="display: none;">
-                        <textarea class="modify-textarea">${reply.replyCont}</textarea>
-                        <button class="save-modify-btn" data-reply-id="${reply.replyId}">저장</button>
-                        <button class="cancel-modify-btn">취소</button>
-                    </div>
-
-                    <!-- 대댓글 리스트 (부모 댓글 ID가 현재 댓글 ID와 같은 것만 출력) -->
-                    <c:forEach var="childReply" items="${replyList}">
-                        <c:if test="${childReply.parentId == reply.replyId}">
-                            <div class="comment reply" id="reply-${childReply.replyId}" style="margin-left: 30px; border-left: 2px solid #ccc; padding-left: 10px;">
-                                <div class="comment-author">
-                                    <c:choose>
-                                        <c:when test="${empty childReply.replyWriterImg}">
-                                            <img src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
-                                                alt="기본 프로필 이미지" width="25" height="25" />
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="${childReply.replyWriterImg}" alt="프로필 이미지" width="25" height="25" />
-                                        </c:otherwise>
-                                    </c:choose>
-                                    ${childReply.replyWriter}
-                                </div>
-                                <div class="comment-content">${childReply.replyCont}</div>
-                                <div class="comment-date">${childReply.replyDate}</div>
-
-                                <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq childReply.replyWriter}">
-                                    <div class="comment-actions">
-                                        <button class="modify-btn" data-reply-id="${childReply.replyId}">수정</button>
-                                        <button class="delete-btn" data-reply-id="${childReply.replyId}" data-board-id="${board.boardId}">삭제</button>
-                                    </div>
-                                </c:if>
-
-                                <div class="modify-form" style="display: none;">
-                                    <textarea class="modify-textarea">${childReply.replyCont}</textarea>
-                                    <button class="save-modify-btn" data-reply-id="${childReply.replyId}">저장</button>
-                                    <button class="cancel-modify-btn">취소</button>
-                                </div>
-                            </div>
-                        </c:if>
-                    </c:forEach>
-
-                    <!-- 대댓글 작성 버튼 -->
-                    <c:if test="${not empty sessionScope.id}">
-                        <button class="reply-reply-btn" data-parent-id="${reply.replyId}" data-board-id="${board.boardId}">답글쓰기</button>
-                        <!-- 대댓글 작성 폼 (숨김) -->
-                        <div class="reply-reply-form" data-parent-id="${reply.replyId}" style="display:none; margin-left: 30px; margin-top: 5px;">
-                            <form action="${contextPath}/board/reply/write" method="post" class="reply-reply-post-form">
-                                <input type="hidden" name="boardId" value="${board.boardId}" />
-                                <input type="hidden" name="parentId" value="${reply.replyId}" />
-                                <input type="hidden" name="replyWriter" value="${sessionScope.member.nick}" />
-                                <textarea name="replyCont" placeholder="답글을 입력하세요." required></textarea>
-                                <button type="submit">등록</button>
-                                <button type="button" class="cancel-reply-reply-btn">취소</button>
-                            </form>
-                        </div>
-                    </c:if>
-                </div>
-            </c:if>
-        </c:forEach>
-    </div>
-
-		<c:if test="${not empty sessionScope.id}">
-			<%-- 댓글 작성 폼 추가 --%>
-			<div class="comment-form">
-				<h3>댓글 작성</h3>
-				<form action="${contextPath}/board/reply/write" method="post">
-					<input type="hidden" name="replyWriter"
-						value="${sessionScope.member.nick}"> <input type="hidden"
-						name="boardId" value="${board.boardId}">
-					<textarea name="replyCont" placeholder="댓글을 입력하세요." required></textarea>
-					<button type="submit">등록</button>
-				</form>
-			</div>
-		</c:if>
-		<c:if test="${empty sessionScope.id}">
-			<p>로그인 후 댓글 작성 가능합니다.</p>
-		</c:if>
+			
+			<div class="comment-list">
+	        <c:forEach var="reply" items="${replyList}">
+	            <c:if test="${reply.parentId == 0}">
+	                <div class="comment" id="reply-${reply.replyId}" style="margin-left: 0;">
+	                    <!-- 댓글 기본 내용 -->
+	                    
+	                    <div class="comment-author">
+	                   		<div class="comment-author-wrap">
+		                    	<div class="comment-author-img">
+			                        <c:choose>
+			                            <c:when test="${empty reply.replyWriterImg}">
+			                                <img src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
+			                                    alt="기본 프로필 이미지" width="30" height="30" />
+			                            </c:when>
+			                            <c:otherwise>
+			                                <img src="${pageContext.request.contextPath}/images/profile/${reply.replyWriterImg}" alt="프로필 이미지" width="30" height="30" />
+			                            </c:otherwise>
+			                        </c:choose>
+		                         </div>
+		                        <div class="comment-writer-info">
+			                        <div class="comment-writer"> ${reply.replyWriter}</div>	                       
+			                        <div class="comment-date item-date" data-date="${reply.replyDate}">${reply.replyDate}</div>
+		                        </div>
+	                        </div>	                        
+	                        <div class="item-more">
+								<div class="btn-more">
+									<img width="20" height="20"
+										src="https://img.icons8.com/ios-glyphs/20/more.png" alt="more" />
+								</div>
+								<div class="popup">
+								 	<div class="comment-actions">
+								 	 <c:if test="${ empty sessionScope.id}">
+					                     	<button onclick="alert('로그인이 필요한 서비스입니다.');">답글쓰기</button>
+					                     </c:if>		
+					                      <c:if test="${not empty sessionScope.id}">
+				   							<button class="reply-reply-btn" data-parent-id="${reply.replyId}" data-board-id="${board.boardId}">답글쓰기</button>
+					                     </c:if>  
+										 <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq reply.replyWriter}">										 					                       
+				                            <button class="modify-btn" data-reply-id="${reply.replyId}">수정하기</button>
+				                            <button class="delete-btn" data-reply-id="${reply.replyId}" data-board-id="${board.boardId}" style="color:red;">삭제하기</button>	
+					                    </c:if>				                
+					                                    
+				                     </div>
+								</div>
+							</div>	
+	                    </div>
+	                    <div class="comment-content-wrap">
+		                    <div class="comment-content">${reply.replyCont}</div>   
+		                    <!-- 댓글 수정 폼 -->
+		                    <div class="modify-form" style="display: none;">
+		                        <textarea class="modify-textarea">${reply.replyCont}</textarea>
+		                        <div class="btn-wrap">
+			                        <button class="cancel-modify-btn">취소</button>
+			                        <button class="save-modify-btn" data-reply-id="${reply.replyId}">수정</button>
+		                        </div>
+		                    </div>
+	                    </div>
+	
+	                    <!-- 대댓글 리스트 (부모 댓글 ID가 현재 댓글 ID와 같은 것만 출력) -->
+	                    <c:forEach var="childReply" items="${replyList}">
+	                        <c:if test="${childReply.parentId == reply.replyId}">
+	                            <div class="comment reply" id="reply-${childReply.replyId}" style="margin-left: 20px;">
+	                                <div class="comment-author">
+		                                <div class="comment-author-wrap">
+			                                <div class="comment-author-img">
+			                                    <c:choose>
+			                                        <c:when test="${empty childReply.replyWriterImg}">
+			                                            <img src="https://ca-fe.pstatic.net/web-mobile/static/default-image/user/profile-80-x-80.svg"
+			                                                alt="기본 프로필 이미지" width="25" height="25" />
+			                                        </c:when>
+			                                        <c:otherwise>
+			                                            <img src="${pageContext.request.contextPath}/images/profile/${childReply.replyWriterImg}" alt="프로필 이미지" width="25" height="25" />
+			                                        </c:otherwise>
+			                                    </c:choose>
+		                                    </div>
+		                                    <div class="comment-writer-info">
+						                        <div class="comment-writer">   ${childReply.replyWriter}</div>	                       
+						                        <div class="comment-date item-date" data-date="${childReply.replyDate}">${childReply.replyDate}</div>
+					                        </div>	                                    
+	                                  </div>	
+	                                  <div class="item-more">
+											<div class="btn-more">
+												<img width="20" height="20"
+													src="https://img.icons8.com/ios-glyphs/20/more.png" alt="more" />
+											</div>
+											<div class="popup">
+											 	<div class="comment-actions">
+													 <c:if test="${not empty sessionScope.member and sessionScope.member.nick eq childReply.replyWriter}">	                                 
+				                                        <button class="modify-btn" data-reply-id="${childReply.replyId}">수정하기</button>
+				                                        <button class="delete-btn" data-reply-id="${childReply.replyId}" data-board-id="${board.boardId}" style="color:red;">삭제하기</button>					                                   
+					                                </c:if>			                
+								                    <c:if test="${ empty sessionScope.id}">
+								                     	<button onclick="alert('로그인이 필요한 서비스입니다.');">답글쓰기</button>
+								                     </c:if>				                     
+							                     </div>
+											</div>
+										</div>	
+	                                </div>
+	                                 <div class="comment-content-wrap reply">
+	                                	<div class="comment-content">${childReply.replyCont}</div>	         
+	                                	 <div class="modify-form" style="display: none;">
+		                                    <textarea class="modify-textarea">${childReply.replyCont}</textarea>
+		                                     <div class="btn-wrap">
+			                                    <button class="save-modify-btn" data-reply-id="${childReply.replyId}">저장</button>
+			                                    <button class="cancel-modify-btn">취소</button>
+		                                      </div>   
+		                                </div>                       
+									</div>	
+	                            </div>
+	                        </c:if>
+	                    </c:forEach>
+	
+	                    <!-- 대댓글 작성 버튼 -->
+	                    <c:if test="${not empty sessionScope.id}">
+	                       
+	                        <!-- 대댓글 작성 폼 (숨김) -->
+	                        <div class="reply-reply-form" data-parent-id="${reply.replyId}" style="display:none; margin-left: 20px; margin-top: 1rem;">
+	                            <form action="${contextPath}/board/reply/write" method="post" class="reply-reply-post-form">
+	                                <input type="hidden" name="boardId" value="${board.boardId}" />
+	                                <input type="hidden" name="parentId" value="${reply.replyId}" />
+	                                <input type="hidden" name="replyWriter" value="${sessionScope.member.nick}" />
+	                                <textarea name="replyCont" placeholder="답글을 입력하세요." required></textarea>
+	                                <div class="btn-wrap">
+		                                <button type="submit">등록</button>
+		                                <button type="button" class="cancel-reply-reply-btn">취소</button>
+	                                </div>   
+	                            </form>
+	                        </div>
+	                    </c:if>
+	                </div>
+	            </c:if>
+	        </c:forEach>
+	    </div>		
 	</div>
 
 </div>
+
 <jsp:include page="side.jsp" />
 </div>
 
@@ -194,6 +294,20 @@ document.querySelectorAll('.item-date').forEach(
 		}
 	}
 );
+$('.btn-more').on('click', function(e) {
+	e.stopPropagation(); // 이벤트 버블링 방지
+	var $popup = $(this).siblings('.popup');
+	$('.popup').not($popup).hide(); // 다른 popup은 닫기
+	$popup.toggle(); // 현재 popup toggle
+});
+
+$('.popup').on('click', function(e) {
+	e.stopPropagation();
+});
+
+$(document).on('click', function() {
+	$('.popup').hide();
+});
 </script>
 <script>
     // 임시 member_id 설정 (JSP 변수와 동일하게)
@@ -241,9 +355,13 @@ document.querySelectorAll('.item-date').forEach(
 
             // 현재 내용을 textarea에 설정하고 수정 폼을 보이게 함
             modifyTextarea.value = contentDiv.innerText.trim();
-            contentDiv.style.display = 'none'; 
-            actionsDiv.style.display = 'none'; 
+            //contentDiv.style.display = 'none'; 
+            //actionsDiv.style.display = 'none'; 
             modifyFormDiv.style.display = 'block';
+            
+            var $popup = $(this).siblings('.popup');
+        	$('.popup').hide(); // 다른 popup은 닫기
+        	
         });
     });
 
@@ -284,7 +402,7 @@ document.querySelectorAll('.item-date').forEach(
                     var actionsDiv = commentDiv.querySelector('.comment-actions');
                     contentDiv.style.display = 'block';
                     actionsDiv.style.display = 'block';
-                    modifyFormDiv.style.display = 'none';
+                   	modifyFormDiv.style.display = 'none';
                 }
             })
             .catch((error) => {
@@ -315,7 +433,7 @@ document.querySelectorAll('.item-date').forEach(
         });
     });
     
-    // 답글쓰기 버튼 클릭 시 해당 부모 댓글 밑에 폼 표시
+    // 답글쓰기 버튼 클릭 시 해당 부모 댓글 밑에 폼 표시 
     $('.reply-reply-btn').click(function() {
         var parentId = $(this).data('parent-id');
         var formDiv = $('.reply-reply-form[data-parent-id="' + parentId + '"]');
@@ -327,11 +445,11 @@ document.querySelectorAll('.item-date').forEach(
         $(this).closest('.reply-reply-form').hide();
     });
     
-    // 좋아요 버튼 클릭 이벤트 (AJAX)
+    // 좋아요 버튼 클릭 이벤트 (AJAX) 
     $('.like').on('click', function() {
         var $likeBtn = $(this);
         var boardId = $likeBtn.data('board-id');
-        
+         
         // 로그인 상태 확인
         var isLoggedIn = ${not empty sessionScope.member};
         
@@ -364,12 +482,13 @@ document.querySelectorAll('.item-date').forEach(
                 } else if (response === 'error') {
                     alert('처리 중 오류가 발생했습니다.');
                 } else {
-                    // 성공 시 좋아요 수 업데이트 및 클래스 토글
-                    $('#likeCount').text(response); // 좋아요 수 업데이트
-                    $likeBtn.toggleClass('liked'); // .like 요소에 liked 클래스 토글
-                    
-                    // 좋아요 버튼 텍스트 업데이트
-                    $('button:contains("좋아요")').text('좋아요 (' + response + ')');
+                	// 성공 시 좋아요 수 업데이트 및 클래스 토글
+                    var $likeCountElement = $likeBtn.find('.like-count');
+                    // 해당 요소의 텍스트를 업데이트합니다.
+                    $likeCountElement.text(response);
+
+                    // .like 요소에 liked 클래스 토글
+                    $likeBtn.toggleClass('liked');
                 }
             },
             error: function(xhr, status, error) {

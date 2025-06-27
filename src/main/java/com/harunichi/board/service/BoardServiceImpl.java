@@ -241,16 +241,29 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVo> getAllBoardsForAdmin() throws Exception {
 		return boardDao.selectAllBoardsForAdmin();
 	}
-	
+
 	@Override
 	public void updateBoardFromAdmin(BoardVo board) throws Exception {
-	    boardDao.updateBoardFromAdmin(board);
+		boardDao.updateBoardFromAdmin(board);
 	}
 
 	@Override
 	public void deleteBoardFromAdmin(int boardId) throws Exception {
+		replyDao.deleteRepliesByBoardId(boardId);
 		boardDao.deleteLikesByBoardId(boardId);
-	    boardDao.deleteBoard(boardId);
+		boardDao.deleteBoard(boardId);
 	}
+
+	@Override
+	public List<BoardVo> searchBoardsForAdmin(String searchType, String keyword) throws Exception {
+		return boardDao.searchBoardsFromAdmin(searchType, keyword);
+	}
+	
+	@Override
+	public List<BoardVo> getTop100BoardsByViews() throws Exception {
+		return boardDao.selectTop100ByViews();
+	}
+
+
 	
 }

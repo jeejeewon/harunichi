@@ -68,12 +68,12 @@
 					<div id="productImg">			
 						<c:if test="${productVo.productStatus eq -1}"> <!-- 거래완료 상품은 이미지 흑백으로 처리 -->
 							<a href="${contextPath}/product/view?productId=${productVo.productId}">
-								<img class="product-img sold-out" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+								<img class="product-img sold-out" src="${contextPath}/images/product/${productVo.productImg}" alt="상품 이미지">
 							</a>					
 						</c:if>	
 						<c:if test="${productVo.productStatus != -1}">			
 							<a href="${contextPath}/product/view?productId=${productVo.productId}">
-								<img class="product-img" src="${contextPath}/resources/images/product/${productVo.productImg}" alt="상품 이미지">
+								<img class="product-img" src="${contextPath}/images/product/${productVo.productImg}" alt="상품 이미지">
 							</a>	
 						</c:if>
 					</div>
@@ -302,8 +302,11 @@
 			//개인 채팅방에서 상대방이 나갔을 경우 알림 메세지 출력
 			if (sender === "SYSTEM") {
 				chatWindow.innerHTML += "<p class='server-mag'>" + message[1] + "</p><br/>";
-				document.getElementById("chatMessage").disabled = true;
-				document.getElementById("sendBtn").disabled = true;			
+				
+				if(chatType === "personal"){
+					document.getElementById("chatMessage").disabled = true;
+					document.getElementById("sendBtn").disabled = true;	
+				}	
 				chatWindow.scrollTop = chatWindow.scrollHeight;
 				return;
 			}
@@ -519,7 +522,7 @@
 	function leaveChatRoom() {
 
 		//방장은 채팅방 못 나가게 설정		
-		if(senderId === leader){
+		if(senderId === leader && count > 1){
 			alert("방장은 채팅방을 나갈 수 없습니다. 권한을 다른 멤버에게 위임해주세요.");			
 			return;
 		}	
@@ -575,9 +578,10 @@
 						   ["#chatTitle", "#chatPersons", ".modal-input-msg", 
 							".selected-user-id", "#changeRoomLeader", "#kickMemberFromRoom"]);
 			
-			toggleDisplay(["editBtn", "chatMemberBtn"], "");	
+			toggleDisplay(["editBtn", "chatMemberBtn"], "");
+			document.querySelector('.chat-profile-img').src =  "${contextPath}/images/chat/${profileImg}";
 		}	
-		toggleDisplay(["chatInfoModal"], "none");
+		toggleDisplay(["chatInfoModal"], "none");	
 	}
 
 	//채팅방 수정 버튼 클릭시 호출

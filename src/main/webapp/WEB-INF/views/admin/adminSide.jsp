@@ -14,16 +14,10 @@
   <c:set var="homeClass" value="active" />
 </c:if>
 
-<!-- 일상/교류 메뉴 active -->
+<!-- 게시글 메뉴 active -->
 <c:set var="boardClass" value="" />
 <c:if test="${fn:contains(uriWithoutCtx, '/board')}">
   <c:set var="memberClass" value="active" />
-</c:if>
-
-<!-- 중고거래 관리 메뉴 active -->
-<c:set var="productClass" value="" />
-<c:if test="${fn:contains(uriWithoutCtx, '/product')}">
-  <c:set var="productClass" value="active" />
 </c:if>
 
 <!-- 회원 관리 메뉴 active -->
@@ -52,18 +46,8 @@
 					</a>
 				</li>
 				<li>
-					<a href="${contextPath}/admin/board" class="${boardClass}">
+					<a href="${contextPath}/board/admin" class="${boardClass}">
 						<span>게시글 관리</span>
-					</a>
-				</li>
-				<li>
-					<a href="${contextPath}/admin/product" class="${productClass}">
-						<span>중고거래 관리</span>
-					</a>
-				</li>
-				<li>
-					<a href="${contextPath}/admin/인기글">
-						<span>인기글 관리</span>
 					</a>
 				</li>
 				<li>

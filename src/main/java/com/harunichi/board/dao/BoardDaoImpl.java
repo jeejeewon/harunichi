@@ -105,13 +105,31 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
 	}
 
 	@Override
-	public void updateBoardFromAdmin(BoardVo board) throws Exception {
-		sqlSession.update(NAMESPACE + "updateBoardFromAdmin", board);
+	public void updateBoardFromAdmin(BoardVo boardVo) throws Exception {
+		sqlSession.update(NAMESPACE + "updateBoardForAdmin", boardVo);
 	}
 
 	@Override
 	public void deleteBoardFromAdmin(int boardId) throws Exception {
 		sqlSession.delete(NAMESPACE + "deleteBoard", boardId);
 	}
+	
+	// 게시글 검색
+    @Override
+    public List<BoardVo> searchBoardsFromAdmin(String searchType, String keyword) throws Exception {      
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("searchType", searchType);
+        params.put("keyword", keyword);
+        
+        return sqlSession.selectList(NAMESPACE + "searchBoardsForAdmin", params);
+    }
+    
+    // 인기글 100개
+ 	@Override
+ 	public List<BoardVo> selectTop100ByViews() throws Exception {
+ 		return sqlSession.selectList(NAMESPACE + "selectTop100ByViews");
+ 	}
+	
 
 }

@@ -74,12 +74,12 @@
 											<%-- 거래 채팅방 --%>
 											<c:when test="${myChat.productId != 0}">
 												<c:choose>
-													<c:when test="${not empty myChat.profileImg}">
-														<img data-product-id="${myChat.productId}" class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="거래채팅방 프로필사진">
-														<%-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> --%>
+													<c:when test="${empty profile.profileImg}">
+														<img data-product-id="${myChat.productId}" class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="거래채팅방 기본 프로필사진">															
 													</c:when>
 													<c:otherwise>
-														<img data-product-id="${myChat.productId}" class="open-chat-img" src="../resources/icon/basic_profile.jpg" alt="거래채팅방 기본 프로필사진">	
+														<img data-product-id="${myChat.productId}" class="open-chat-img" src="${profileImgPath}${profile.profileImg}" alt="거래채팅방 프로필사진">
+														<%-- <img class="open-chat-img" src="${profile.profileImg}" alt="개인채팅방 프로필사진"> --%>
 													</c:otherwise>
 												</c:choose>																		
 											</c:when>

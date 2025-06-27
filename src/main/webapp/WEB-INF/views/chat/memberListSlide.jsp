@@ -22,7 +22,7 @@
 </form>	
 	
 <div style="margin-bottom: 80px;">
-	<p id="recText">채팅친구추천</p>
+	<p id="mainChatTitle">채팅 친구 추천 ✨</p>
 	<div id="chatMainCon">		
 		<a href="#" class="btn pre"><i class="bi bi-arrow-left"></i></a>
 		<div class="chat-slider-container">
