@@ -29,7 +29,7 @@
 				<img src="${ctx}/images/product/${product.productImg}" class="product-image" alt="상품 이미지" />
 			</c:when>
 			<c:otherwise>
-				<img src="${ctx}/images/product/no_image.png" class="product-image" alt="기본 이미지" />
+				<img src="${ctx}/images/product/no-image.png" class="product-image" alt="기본 이미지" />
 			</c:otherwise>
 		</c:choose>
 
