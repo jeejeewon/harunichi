@@ -124,6 +124,12 @@ public class BoardDaoImpl implements BoardDao { // BoardDao 인터페이스 구�
         
         return sqlSession.selectList(NAMESPACE + "searchBoardsForAdmin", params);
     }
+    
+    // 인기글 100개
+ 	@Override
+ 	public List<BoardVo> selectTop100ByViews() throws Exception {
+ 		return sqlSession.selectList(NAMESPACE + "selectTop100ByViews");
+ 	}
 	
 
 }

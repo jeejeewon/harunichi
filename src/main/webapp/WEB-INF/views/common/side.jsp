@@ -30,7 +30,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">				
+				<a href="${contextPath}/board/hots">				
 					<span class="material-symbols-outlined">local_fire_department</span>
 					<span>인기글</span>
 				</a>

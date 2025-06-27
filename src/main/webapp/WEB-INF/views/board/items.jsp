@@ -21,7 +21,7 @@
 								alt="선택한 프로필 이미지">
 						</c:if>
 					</div>
-					<div class="user-name">${board.boardWriter}</div>
+					<div class="user-name">${board.boardWriter} </div>
 					<div class="item-date" data-date="${board.boardDate}"></div>
 				</div>
 				<div class="item-more">
@@ -74,7 +74,7 @@
 							  </svg>
 					<p class="like-count">${board.boardLike}</p>
 				</div>
-				<div class="reply">
+				<div class="reply-icon">
 					<img width="25" height="25"
 						src="https://img.icons8.com/material-outlined/25/speech-bubble-with-dots.png"
 						alt="speech-bubble-with-dots" />
@@ -105,6 +105,7 @@ $('.popup').on('click', function(e) {
 $(document).on('click', function() {
 	$('.popup').hide();
 });
+
 function formatTimeAgo(timestamp) {
     const now = new Date();
     const postDate = new Date(timestamp);

@@ -7,7 +7,7 @@
 <div class="form-head">게시물 작성</div>
 <form action="${contextPath}/board/post" method="post" enctype="multipart/form-data" id="postForm" class="post-form">
   <div class="form-container"> 
-     <div class="form-group">     
+     <div class="form-group select-area">     
       <div class="form-input">
         <select name="boardCate" class="category-select">
           <option value="" disabled selected>주제를 선택해주세요</option>
@@ -28,22 +28,24 @@
         -->
       </div>
     </div>
-    <div class="form-group">    
+    <div class="form-group text-area">    
       <div class="form-input">
         <textarea name="boardCont" class="content-textarea"></textarea>
       </div>
     </div> 
-    <div class="form-group">
-      <div class="form-label">첨부 이미지:</div>
-      <div class="form-input">
-        <input type="file" name="imageFiles" accept="image/*" multiple id="imageInput" class="file-input">
-        <div id="previewArea" class="image-preview-area"></div>
-      </div>
-    </div>
-    
-    <div class="submit-btn">
-      <button type="submit" class="submit-button">등록</button>
-    </div>
+    <div id="previewArea" class="image-preview-area"></div>  
+     
+   <div class="form-group">      
+	  <div class="form-input">
+	    <label for="imageInput" class="file-upload-label">
+	     <img width="25" height="25" src="https://img.icons8.com/fluency-systems-regular/48/image--v1.png" alt="image--v1"/>
+	    </label>
+	    <input type="file" name="imageFiles" accept="image/*" multiple id="imageInput" class="file-input">
+	  </div>
+	    <div class="submit-btn">
+	      <button type="submit" class="submit-button">게시하기</button>
+	    </div>
+	</div>  
   </div>
 </form>
 

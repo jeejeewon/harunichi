@@ -69,5 +69,7 @@ public interface BoardController {
     
     // 관리자 게시글 수정 처리
     public String updateInAdminBoard(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+	ModelAndView top100List(HttpServletRequest request, HttpServletResponse response) throws Exception;
     
 }

@@ -258,5 +258,10 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVo> searchBoardsForAdmin(String searchType, String keyword) throws Exception {
 		return boardDao.searchBoardsFromAdmin(searchType, keyword);
 	}
+	
+	@Override
+	public List<BoardVo> getTop100BoardsByViews() throws Exception {
+		return boardDao.selectTop100ByViews();
+	}
 
 }
