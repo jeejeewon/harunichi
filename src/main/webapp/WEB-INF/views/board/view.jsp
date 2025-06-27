@@ -479,12 +479,13 @@ $(document).on('click', function() {
                 } else if (response === 'error') {
                     alert('처리 중 오류가 발생했습니다.');
                 } else {
-                    // 성공 시 좋아요 수 업데이트 및 클래스 토글
-                    $('#likeCount').text(response); // 좋아요 수 업데이트
-                    $likeBtn.toggleClass('liked'); // .like 요소에 liked 클래스 토글
-                    
-                    // 좋아요 버튼 텍스트 업데이트
-                    $('button:contains("좋아요")').text('좋아요 (' + response + ')');
+                	// 성공 시 좋아요 수 업데이트 및 클래스 토글
+                    var $likeCountElement = $likeBtn.find('.like-count');
+                    // 해당 요소의 텍스트를 업데이트합니다.
+                    $likeCountElement.text(response);
+
+                    // .like 요소에 liked 클래스 토글
+                    $likeBtn.toggleClass('liked');
                 }
             },
             error: function(xhr, status, error) {

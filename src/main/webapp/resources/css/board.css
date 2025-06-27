@@ -326,109 +326,52 @@
 	display: flex;
 }
 
-.board .like { -
-	-fuschia: #EF2B7C;
+.board .like {
 	width: 38px;
 	height: 24px;
 	cursor: pointer;
 	color: transparent;
 	fill: #fff;
 	display: flex;
-	line-height: 0;
 	align-items: center;
-	gap: 5px; svg { height : 100%;
+	line-height: 0;
+	gap: 5px;
+}
+
+.board .like svg {
 	width: 100%;
+	height: 100%;
 	stroke: rgba(0, 0, 0, 0.25);
 	stroke-width: 2px;
 }
 
-}
 .board .like.liked svg {
-	color: var(- -fuschia);
-	fill: var(- -fuschia);
-	stroke: var(- -fuschia);
+	color: #EF2B7C;
+	fill: #EF2B7C;
+	stroke: #EF2B7C;
 	animation: beat_on 400ms forwards;
 }
 
 .board .like.liked p {
-	color: var(- -fuschia);
+	color: #EF2B7C;
 }
 
-@
-keyframes beat_on { 0% {
-	transform: scale(1);
+@keyframes beat_on {
+	0%   { transform: scale(1); }
+	20%  { transform: scale(1.1); }
+	50%  { transform: scale(0.5); }
+	80%  { transform: scale(1.1); }
+	100% { transform: scale(1); }
 }
 
-20
-%
-{
-transform
-:
-scale(
-1.1
-);
-}
-50
-%
-{
-transform
-:
-scale(
-0.5
-);
-}
-80
-%
-{
-transform
-:
-scale(
-1.1
-);
-}
-100
-%
-{
-transform
-:
-scale(
-1
-);
-}
-}
-@
-keyframes beat_off { 0% {
-	transform: scale(1);
+/* 좋아요 취소 애니메이션 */
+@keyframes beat_off {
+	0%   { transform: scale(1); }
+	50%  { transform: scale(1.4); }
+	80%  { transform: scale(0.9); }
+	100% { transform: scale(1); }
 }
 
-50
-%
-{
-transform
-:
-scale(
-1.4
-);
-}
-80
-%
-{
-transform
-:
-scale(
-0.9
-);
-}
-100
-%
-{
-transform
-:
-scale(
-1
-);
-}
-}
 #closePostModal {
 	position: fixed;
 	top: 10px;
