@@ -149,6 +149,16 @@
 		LIMIT 5
 	</select>
 
+	<!-- 조회수 높은 상위 100개 게시글 -->
+	<select id="selectTop100ByViews"
+		resultType="com.harunichi.board.vo.BoardVo">
+		SELECT boardId, boardWriter, boardCont, boardDate,
+		boardCount, boardCate, boardLike, boardImg1, boardRe
+		FROM board
+		ORDER BY boardCount DESC
+		LIMIT 100
+	</select>
+
 	<select id="selectBoardsByCategory" parameterType="string"
 		resultType="com.harunichi.board.vo.BoardVo">
 		SELECT * FROM board
@@ -168,7 +178,8 @@
 		parameterType="com.harunichi.board.vo.BoardVo">
 		UPDATE board
 		SET boardWriter = #{boardWriter},
-		boardCont = #{boardCont},
+		boardCont =
+		#{boardCont},
 		boardCate = #{boardCate}
 		WHERE boardId = #{boardId}
 	</update>
@@ -180,8 +191,10 @@
 			<choose>
 				<when test="searchType == 'all'">
 					(boardWriter LIKE CONCAT('%', #{keyword}, '%')
-					OR boardCont LIKE CONCAT('%', #{keyword}, '%')
-					OR boardCate LIKE CONCAT('%', #{keyword}, '%'))
+					OR
+					boardCont LIKE CONCAT('%', #{keyword}, '%')
+					OR boardCate LIKE
+					CONCAT('%', #{keyword}, '%'))
 				</when>
 				<when test="searchType == 'writer'">
 					boardWriter LIKE CONCAT('%', #{keyword}, '%')
