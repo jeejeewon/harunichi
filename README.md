@@ -131,12 +131,12 @@
 
      <details>
         <summary>글 등록</summary>
-        <img src="./harunichi/04productEdit.png">
+        <img src="./harunichi/04productWrite.png">
      </details>
 
      <details>
         <summary>글 수정</summary>
-        <img src="./harunichi/04productWrite.png">
+        <img src="./harunichi/05productEdit.png">
      </details>
 
      <details>
