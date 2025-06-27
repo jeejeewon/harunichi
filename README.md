@@ -112,6 +112,47 @@
         <summary>상품 리뷰 게시판</summary>
         <img src="./booktopia/reviewBoard.png">
      </details>
+
+  * 중고상품
+  * <details>
+        <summary>메인 화면</summary>
+        <img src="./harunichi/01productMain.png">
+     </details>
+     
+     <details>
+        <summary>중고상품 리스트</summary>
+        <img src="./harunichi/02productList.png">
+     </details>
+     
+     <details>
+        <summary>중고상품 상세</summary>
+        <img src="./harunichi/03producDetail.png">
+     </details>
+
+     <details>
+        <summary>글 등록</summary>
+        <img src="./harunichi/04productEdit.png">
+     </details>
+
+     <details>
+        <summary>글 수정</summary>
+        <img src="./harunichi/04productWrite.png">
+     </details>
+
+     <details>
+        <summary>KG이니시스 결제</summary>
+        <img src="./harunichi/05producKGinisis.png">
+     </details>
+
+     <details>
+        <summary>엑심베이 결제</summary>
+        <img src="./harunichi/06producEximbay.png">
+     </details> 
+
+     <details>
+        <summary>내 주문 내역</summary>
+        <img src="./harunichi/07producMyOrder.png">
+     </details> 
         
   * API
     <details>
@@ -120,8 +161,13 @@
     </details>  
     
     <details>
-       <summary>아임포트 카카오 결제 API</summary>
-       <img src="./booktopia/kakaoPay.png">
+       <summary>포트원 KG이니시스 결제 API</summary>
+       <img src="./harunichi/08producEximbayPay.png">
+    </details>
+
+    <details>
+       <summary>포트원 엑심베이 결제 API</summary>
+       <img src="./harunichi/08producKGinisisPay.png">
     </details> 
    
   * 크롤링
