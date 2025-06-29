@@ -98,8 +98,8 @@
 			</tbody>
 		</table>
 		<div class="submit-btn-class">
-			<button type="submit" onclick="save();">저장</button>
-			<button type="submit" onclick="delete();">삭제</button>
+			<button type="submit" onclick="saveBtn();">저장</button>
+			<button type="submit" onclick="deleteBtn();">삭제</button>
 		</div>
 	</form>
 
@@ -127,10 +127,10 @@
 			  const urlParams = new URLSearchParams(window.location.search);
 			  if (urlParams.get('result') === 'updateSuccess') {
 			    alert("채팅방 정보 수정이 완료되었습니다.");
-	
-			    // 히스토리에서 쿼리스트링 제거
-			    history.replaceState({}, '', window.location.pathname);
-			  }
+			  }else if(urlParams.get('result') === 'deleteSuccess'){
+				 alert("채팅방이 성공적으로 삭제되었습니다.");
+			  }		  
+			  history.replaceState({}, '', window.location.pathname);
 			});
 	
 		const contextPath = "${contextPath}";
@@ -152,8 +152,8 @@
 		    inputTag.value = "";
 		}
 		
-		function save(){
-			
+		//채팅방 수정
+		function saveBtn(){			
 			if (!confirm("해당 채팅방의 정보를 수정하시겠습니까?")){ return; }
 
 			const selected = document.querySelectorAll('input[name="selectedIds"]:checked');
@@ -182,6 +182,35 @@
 			  document.body.appendChild(form);
 			  form.submit();
 		}
+		
+		//채팅방 삭제
+		function deleteBtn(){
+			if (!confirm("해당 채팅방을 삭제하시겠습니까?")){ return; }
+
+			const selected = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+			if (selected.length === 0) {
+				alert("삭제할 채팅방을 선택해주세요.");
+				return;
+			}
+			
+			form.action = contextPath + "/admin/chat/delete";
+			
+			  selected.forEach((checkbox) => {
+				  const index = checkbox.value;
+				  const roomIdInput = document.querySelector("input[name=roomId_" + index + "]");
+				  if (roomIdInput) {
+				    const input = document.createElement('input');
+				    input.type = 'hidden';
+				    input.name = 'roomId';
+				    input.value = roomIdInput.value;
+				    form.appendChild(input);
+				  }
+			  });
+			  document.body.appendChild(form);
+			  form.submit();
+		}
+		
 		
 	</script>
 </body>

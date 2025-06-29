@@ -38,11 +38,10 @@ public class AdminChatController {
 		return "/admin/chat";
 	}
 	
+	//관리자 채팅방 수정
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String updateChatRoom(HttpServletRequest request) {
 	
-		System.out.println("updateChatRoom -----------------------");
-		
 		String[] roomIds = request.getParameterValues("roomId");
 	    String[] titles = request.getParameterValues("title");
 	    String[] imgResets = request.getParameterValues("imgReset");
@@ -55,9 +54,22 @@ public class AdminChatController {
 
 	        chatService.updateChatRoomAdmin(vo);
 	    }
-
 	    return "redirect:/admin/chat?result=updateSuccess";
 	}
+	
+	//관리자 채팅방 삭제
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteChatRoom(HttpServletRequest request) {
+		
+		String[] roomIds = request.getParameterValues("roomId");
+		
+	    for (String roomId : roomIds) {
+	        chatService.deleteChatRoomAdmin(roomId);
+	    }		
+		return "redirect:/admin/chat?result=deleteSuccess";
+	}
+	
+	
 	
 
 	

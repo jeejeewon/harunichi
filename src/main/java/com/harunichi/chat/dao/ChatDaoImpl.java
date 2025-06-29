@@ -289,6 +289,12 @@ public class ChatDaoImpl implements ChatDao {
 	public void updateChatRoomAdmin(ChatRoomVo vo) {
 		sqlSession.update(NAMESPACE + "updateChatRoomAdmin", vo);
 	}
+	
+	//관리자 채팅방 삭제
+	@Override
+	public void deleteChatRoomAdmin(String roomId) {
+		sqlSession.delete(NAMESPACE + "deleteChatRoom", roomId);
+	}
 
 	
 	

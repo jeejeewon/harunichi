@@ -99,6 +99,9 @@ public interface ChatDao {
 	//관리자 채팅방 정보 수정
 	void updateChatRoomAdmin(ChatRoomVo vo);
 
+	//관리자 채팅방 삭제
+	void deleteChatRoomAdmin(String roomId);
+
 	
 
 

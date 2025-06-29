@@ -349,10 +349,13 @@ public class ChatServiceImpl implements ChatService {
 	public void updateChatRoomAdmin(ChatRoomVo vo) {
 		chatDao.updateChatRoomAdmin(vo);
 	}
+	
+	//관리자 채팅방 삭제
+	@Override
+	public void deleteChatRoomAdmin(String roomId) {
+		chatDao.deleteChatRoomAdmin(roomId);		
+	}
 
-	
-	
-	
-	
+
 }
 
