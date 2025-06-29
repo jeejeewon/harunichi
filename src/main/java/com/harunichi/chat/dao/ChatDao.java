@@ -96,6 +96,11 @@ public interface ChatDao {
 	//관리자 페이지 채팅방 검색
 	List<ChatRoomVo> searchChatRoomList(String searchKeyword, String searchType, int offset, int pageSize);
 
+	//관리자 채팅방 정보 수정
+	void updateChatRoomAdmin(ChatRoomVo vo);
+
+	
+
 
 
 }

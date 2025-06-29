@@ -37,7 +37,7 @@
 	</form>
 	
 	<!-- 채팅방 목록 테이블 -->
-	<form action="${contextPath}/admin/chat/saveOrDelete" method="post">
+	<form id="chatForm" method="post">
 		<table>
 			<thead>
 				<tr>
@@ -46,10 +46,7 @@
 					<th>타입</th>
 					<th>타이틀</th>
 					<th>인원</th>
-					<th>참여 유저</th>
 					<th>방장</th>
-					<th>삭제여부</th>
-					<th>강퇴여부</th>
 					<th>프로필 이미지</th>
 					<th>활동일자</th>
 					<th>생성일자</th>
@@ -58,13 +55,13 @@
 			<tbody>
 				<c:forEach var="chatRoom" items="${result.list}" varStatus="loop">
 					<tr>
-						<td><input type="checkbox" name="selectedIds" value="${chatRoom.roomId}" /></td>
-						<td>${chatRoom.roomId}<input type="hidden" value="${chatRoom.roomId}" /></td>
+						<td><input type="checkbox" name="selectedIds" value="${loop.index}" /></td>
+						<td>${chatRoom.roomId}<input type="hidden" name="roomId_${loop.index}" value="${chatRoom.roomId}" /></td>
 						<td>${chatRoom.chatType}<input type="hidden" value="${chatRoom.chatType}" /></td>
 						<td>
 							<c:choose>
 								<c:when test="${chatRoom.chatType eq 'group'}">
-									<input type="text" value="${chatRoom.title}" />
+									<input type="text" name="title_${loop.index}" value="${chatRoom.title}" />
 								</c:when>
 								<c:otherwise>
 									<input type="text" value="${chatRoom.title}" disabled />
@@ -72,10 +69,7 @@
 							</c:choose>					
 						</td>
 						<td>${chatRoom.userCount} / ${chatRoom.persons}<input type="hidden" value="${chatRoom.persons}" /></td>
-						<td>${chatRoom.userId}<input type="hidden" value="${chatRoom.userId}" /></td>
-						<td>${chatRoom.leader eq 1 ? '방장' : ''}<input type="hidden" value="${chatRoom.leader}" /></td>
-						<td>${chatRoom.deleted ? 'Y' : ''}<input type="hidden" value="${chatRoom.deleted}" /></td>
-						<td>${chatRoom.kicked ? 'Y' : ''}<input type="hidden" value="${chatRoom.kicked}" /></td>
+						<td>${chatRoom.leader eq 1 ? chatRoom.userId : ''}<input type="hidden" value="${chatRoom.leader}" /></td>
 						<td>
 							<div class="profile-cell">
 								<div class="table-img">
@@ -89,7 +83,7 @@
 									</c:choose>
 								</div>
 								<button type="button" onclick="resetProfileImg('${chatRoom.roomId}')">초기화</button>
-								<input type="hidden" value="${chatRoom.profileImg}" id="profileImgInput_${chatRoom.roomId}" />
+								<input type="hidden" value="${chatRoom.profileImg}" name="imgReset_${loop.index}" id="profileImgInput_${chatRoom.roomId}" />
 							</div>
 						</td>
 						<td><fmt:formatDate value="${chatRoom.lastMessageTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -104,8 +98,8 @@
 			</tbody>
 		</table>
 		<div class="submit-btn-class">
-			<button type="submit" name="action" value="update" onclick="return confirm('변경한 사항을 저장하시겠습니까?');">저장</button>
-			<button type="submit" name="action" value="delete" onclick="return confirm('선택한 채팅방을 삭제하시겠습니까?');">삭제</button>
+			<button type="submit" onclick="save();">저장</button>
+			<button type="submit" onclick="delete();">삭제</button>
 		</div>
 	</form>
 
@@ -129,7 +123,18 @@
 
 	<script>
 	
+		window.addEventListener("DOMContentLoaded", () => {
+			  const urlParams = new URLSearchParams(window.location.search);
+			  if (urlParams.get('result') === 'updateSuccess') {
+			    alert("채팅방 정보 수정이 완료되었습니다.");
+	
+			    // 히스토리에서 쿼리스트링 제거
+			    history.replaceState({}, '', window.location.pathname);
+			  }
+			});
+	
 		const contextPath = "${contextPath}";
+		const form = document.getElementById("chatForm");
 		
 		function toggleAll(source) {
 		    const checkboxes = document.querySelectorAll('input[name="selectedIds"]');
@@ -146,7 +151,38 @@
 		
 		    inputTag.value = "";
 		}
+		
+		function save(){
+			
+			if (!confirm("해당 채팅방의 정보를 수정하시겠습니까?")){ return; }
 
+			const selected = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+			if (selected.length === 0) {
+				alert("수정할 채팅방을 선택해주세요.");
+				return;
+			}
+			form.action = contextPath + "/admin/chat/update";
+			
+			  selected.forEach((checkbox) => {
+			    const index = checkbox.value;
+
+			    // 선택된 roomId, title, imgReset 값 복사
+			    ['roomId', 'title', 'imgReset'].forEach((key) => {
+			      const original = document.querySelector("input[name=" + key + "_" + index + "]");
+			      if (original) {
+			        const input = document.createElement('input');
+			        input.type = 'hidden';
+			        input.name = key;
+			        input.value = original.value;
+			        form.appendChild(input);
+			      }
+			    });
+			  });
+			  document.body.appendChild(form);
+			  form.submit();
+		}
+		
 	</script>
 </body>
 </html>

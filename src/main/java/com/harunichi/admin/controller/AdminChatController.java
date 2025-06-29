@@ -2,25 +2,17 @@ package com.harunichi.admin.controller;
 
 
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.harunichi.admin.controller.AdminMemberController.MemberListWrapper;
 import com.harunichi.chat.service.ChatService;
-import com.harunichi.member.vo.MemberVo;
-
+import com.harunichi.chat.vo.ChatRoomVo;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Controller
 @RequestMapping("/admin/chat")
 public class AdminChatController {
@@ -29,7 +21,7 @@ public class AdminChatController {
 	ChatService chatService;
 
 	//채팅방 검색
-	@RequestMapping(value = "")
+	@RequestMapping(value = {"", "/chatRoomSearch"})
 	public String searchChatRoomList(HttpServletRequest request, Model model,
 									 @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 									 @RequestParam(value = "searchType", defaultValue = "all") String searchType,
@@ -46,11 +38,28 @@ public class AdminChatController {
 		return "/admin/chat";
 	}
 	
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String updateChatRoom(HttpServletRequest request) {
+	
+		System.out.println("updateChatRoom -----------------------");
+		
+		String[] roomIds = request.getParameterValues("roomId");
+	    String[] titles = request.getParameterValues("title");
+	    String[] imgResets = request.getParameterValues("imgReset");
 
+	    for (int i = 0; i < roomIds.length; i++) {
+	        ChatRoomVo vo = new ChatRoomVo();
+	        vo.setRoomId(roomIds[i]);
+	        vo.setTitle(titles[i]);
+	        vo.setProfileImg("".equals(imgResets[i]) ? null : imgResets[i]);
+
+	        chatService.updateChatRoomAdmin(vo);
+	    }
+
+	    return "redirect:/admin/chat?result=updateSuccess";
+	}
 	
-	
-	
-	
+
 	
 }
     

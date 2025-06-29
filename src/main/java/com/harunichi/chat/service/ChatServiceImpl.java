@@ -344,6 +344,15 @@ public class ChatServiceImpl implements ChatService {
 		return result;
 	}
 
+	//관리자 채팅방 정보 수정
+	@Override
+	public void updateChatRoomAdmin(ChatRoomVo vo) {
+		chatDao.updateChatRoomAdmin(vo);
+	}
+
+	
+	
+	
 	
 }
 

@@ -169,7 +169,7 @@
 			SELECT *
 			FROM chatRoom
 			WHERE chatType = 'group'
-			LIMIT 1
+			GROUP BY roomId
 		]]>
 	</select>
 
@@ -352,10 +352,19 @@
 			</if>
 		</where>
 		<![CDATA[
+			GROUP BY roomId
 			ORDER BY roomId 
 			LIMIT #{offset}, #{pageSize}
 		]]>
 	</select>
 
+	<!-- 관리자 채팅방 정보 수정 -->
+	<update id="updateChatRoomAdmin" parameterType="ChatRoomVo">
+		<![CDATA[
+			UPDATE chatRoom
+			SET	title = #{title}, profileImg = #{profileImg}
+			WHERE roomId = #{roomId}
+		]]>	
+	</update>
 
 </mapper>

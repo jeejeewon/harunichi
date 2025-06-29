@@ -284,5 +284,13 @@ public class ChatDaoImpl implements ChatDao {
 	    return sqlSession.selectList(NAMESPACE + "searchChatRoomList", params);
 	}
 
+	//관리자 채팅방 정보 수정
+	@Override
+	public void updateChatRoomAdmin(ChatRoomVo vo) {
+		sqlSession.update(NAMESPACE + "updateChatRoomAdmin", vo);
+	}
+
+	
+	
 	
 }
