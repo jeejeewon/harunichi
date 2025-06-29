@@ -1168,7 +1168,6 @@ public class BoardControllerImpl implements BoardController {
 			// 인기 게시글 TOP 100 추가
 			List<BoardVo> top100List = boardService.getTop100BoardsByViews();
 			mav.addObject("top100List", top100List);
-
 			mav.addObject("boardList", boardList);
 
 		} catch (Exception e) {

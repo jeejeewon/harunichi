@@ -307,7 +307,7 @@
 					document.getElementById("chatMessage").disabled = true;
 					document.getElementById("sendBtn").disabled = true;	
 				}
-	
+
 				chatWindow.scrollTop = chatWindow.scrollHeight;
 				return;
 			}

@@ -14,7 +14,6 @@
 	</div>
 
 	<div class="side-list">
-
 		<h3>추천 게시글</h3>
 		<ul>
 		<c:forEach var="top" items="${top5List}">

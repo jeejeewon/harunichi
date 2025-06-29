@@ -75,4 +75,5 @@ public interface BoardService {
     // 인기글 100개 (사이드용)
  	List<BoardVo> getTop100BoardsByViews() throws Exception;
 
+
 }

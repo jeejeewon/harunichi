@@ -97,4 +97,5 @@ public interface ChatDao {
 	List<ChatRoomVo> searchChatRoomList(String searchKeyword, String searchType, int offset, int pageSize);
 
 
+
 }

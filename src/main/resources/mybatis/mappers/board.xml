@@ -178,7 +178,8 @@
 		parameterType="com.harunichi.board.vo.BoardVo">
 		UPDATE board
 		SET boardWriter = #{boardWriter},
-		boardCont = #{boardCont},
+		boardCont =
+		#{boardCont},
 		boardCate = #{boardCate}
 		WHERE boardId = #{boardId}
 	</update>
@@ -190,8 +191,10 @@
 			<choose>
 				<when test="searchType == 'all'">
 					(boardWriter LIKE CONCAT('%', #{keyword}, '%')
-					OR boardCont LIKE CONCAT('%', #{keyword}, '%')
-					OR boardCate LIKE CONCAT('%', #{keyword}, '%'))
+					OR
+					boardCont LIKE CONCAT('%', #{keyword}, '%')
+					OR boardCate LIKE
+					CONCAT('%', #{keyword}, '%'))
 				</when>
 				<when test="searchType == 'writer'">
 					boardWriter LIKE CONCAT('%', #{keyword}, '%')

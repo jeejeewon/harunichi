@@ -284,6 +284,5 @@ public class ChatDaoImpl implements ChatDao {
 	    return sqlSession.selectList(NAMESPACE + "searchChatRoomList", params);
 	}
 
-
 	
 }
