@@ -32,7 +32,9 @@
 	<!-- 추천 친구 조회 -->
 	<select id="selectMembers" parameterType="map" resultType="memberVo">
 		<![CDATA[
-			SELECT * FROM member WHERE id != #{id}
+			SELECT * 
+			FROM member 
+			WHERE id != #{id} AND id != 'admin'
 			AND FLOOR((YEAR(CURDATE()) - year) / 10) = 
 				(SELECT FLOOR((YEAR(CURDATE()) - year) / 10) FROM member WHERE id = #{id})
 		]]>	
@@ -54,7 +56,7 @@
 		<![CDATA[
 			SELECT *
 		  	FROM member
-		  	WHERE id != #{id}
+		  	WHERE id != #{id} AND id != 'admin'
 	  	]]>	
 	    <if test="alreadySelectedIds != null and alreadySelectedIds.size() > 0">
 	      AND id NOT IN
@@ -73,6 +75,7 @@
 		<![CDATA[
 			SELECT * 
 			FROM member
+			WHERE id != 'admin'
 			ORDER BY RAND()
 			LIMIT 10
 		]]>
@@ -322,9 +325,37 @@
 		]]>
 	</select>
 	
-	
-	
-	
+	<!-- 관리자 페이지 채팅방 검색 -->
+	<select id="searchChatRoomList" parameterType="map" resultType="ChatRoomVo">
+		<![CDATA[
+			SELECT *
+			FROM chatRoom	
+		]]>
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				<choose>
+					<when test="searchType == 'userId'">
+						userId LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'roomId'">
+						roomId LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'chatType'">
+						chatType LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<otherwise>
+						(userId LIKE CONCAT('%', #{searchKeyword}, '%')
+						OR roomId LIKE CONCAT('%', #{searchKeyword}, '%')
+						OR chatType LIKE CONCAT('%', #{searchKeyword}, '%'))
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		<![CDATA[
+			ORDER BY roomId 
+			LIMIT #{offset}, #{pageSize}
+		]]>
+	</select>
 
 
 </mapper>

@@ -51,6 +51,9 @@ public interface BoardDao {
 	
 	// 게시글 검색
     public List<BoardVo> searchBoardsFromAdmin(String searchType, String keyword) throws Exception;
+    
+    // 인기글 100개
+	List<BoardVo> selectTop100ByViews() throws Exception;
 	
 
 }

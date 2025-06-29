@@ -13,7 +13,8 @@
 		</form>
 	</div>
 
-	<div class="side-list hots-list">
+	<div class="side-list">
+
 		<h3>추천 게시글</h3>
 		<ul>
 		<c:forEach var="top" items="${top5List}">
@@ -32,6 +33,10 @@
 		    <!-- <button class="category-btn active" data-cate="">전체</button> -->
 		    <button class="category-btn" data-cate="생활정보">#생활정보</button>
 		    <button class="category-btn" data-cate="일상">#일상</button>
+		    <button class="category-btn" data-cate="맛집, 카페">#맛집_카페</button>
+		    <button class="category-btn" data-cate="찾습니다">#찾습니다</button>
+		    <button class="category-btn" data-cate="건강, 운동">#건강_운동</button>
+		    <button class="category-btn" data-cate="육아, 교육">#육아_교육</button>
    		</div>
 	</div>
 </div>
@@ -68,6 +73,5 @@ $(function(){
         });
     });
 });
-
 
 </script>

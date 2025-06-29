@@ -72,4 +72,7 @@ public interface BoardService {
 	// 관리자용 게시글 검색
     public List<BoardVo> searchBoardsForAdmin(String searchType, String keyword) throws Exception;
 
+    // 인기글 100개 (사이드용)
+ 	List<BoardVo> getTop100BoardsByViews() throws Exception;
+
 }

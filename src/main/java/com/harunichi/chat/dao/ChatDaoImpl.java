@@ -273,6 +273,17 @@ public class ChatDaoImpl implements ChatDao {
 		return sqlSession.selectOne(NAMESPACE + "isKicked", map);
 	}
 
+	//관리자 페이지 채팅방 검색
+	@Override
+	public List<ChatRoomVo> searchChatRoomList(String searchKeyword, String searchType, int offset, int pageSize) {	
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("searchKeyword", searchKeyword);
+	    params.put("searchType", searchType);
+	    params.put("offset", offset);
+	    params.put("pageSize", pageSize);
+	    return sqlSession.selectList(NAMESPACE + "searchChatRoomList", params);
+	}
+
 
 	
 }

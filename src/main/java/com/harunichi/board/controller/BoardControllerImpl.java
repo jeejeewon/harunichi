@@ -202,7 +202,7 @@ public class BoardControllerImpl implements BoardController {
 		} catch (Exception e) {
 			log.error("게시글 등록 중 오류 발생", e);
 			mav.addObject("msg", "게시글 등록 중 오류가 발생했습니다.");
-			mav.setViewName("errorPage");
+			mav.setViewName("/board/errorPage");
 		}
 
 		return mav;
@@ -296,7 +296,7 @@ public class BoardControllerImpl implements BoardController {
 		} catch (Exception e) {
 			log.error("게시글 상세 조회 중 오류 발생, boardId:{}", boardId, e);
 			mav.addObject("msg", "게시글 상세 조회 중 오류가 발생했습니다.");
-			mav.setViewName("errorPage");
+			mav.setViewName("/board/errorPage");
 		}
 		log.info(">>BoardControllerImpl-viewBoard() 호출 종료");
 		return mav;
@@ -972,7 +972,7 @@ public class BoardControllerImpl implements BoardController {
 			mav.addObject("keyword", keyword);
 		} catch (Exception e) {
 			log.error("검색 중 오류 발생", e);
-			mav.setViewName("errorPage");
+			mav.setViewName("/board/errorPage");
 			mav.addObject("msg", "검색 중 오류가 발생했습니다.");
 		}
 		return mav;
@@ -1001,7 +1001,7 @@ public class BoardControllerImpl implements BoardController {
 	@RequestMapping("/admin")
 	public ModelAndView boardManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		ModelAndView mav = new ModelAndView("/board/admMain");
+		ModelAndView mav = new ModelAndView("/admin/board");
 		
 		// 검색 파라미터 가져오기
 	    String searchType = request.getParameter("searchType");
@@ -1099,4 +1099,83 @@ public class BoardControllerImpl implements BoardController {
 
 		return "redirect:/board/admin";
 	}
+	
+	// 게시글 목록
+	@Override
+	@RequestMapping(value = "/hots", method = RequestMethod.GET)
+	public ModelAndView top100List(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		ModelAndView mav = new ModelAndView("/board/hots");
+		try {
+			// 로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+
+			List<BoardVo> boardList = boardService.selectBoardList();
+			Map<String, MemberVo> memberMap = new HashMap<>(); // 닉네임 → MemberVo 캐싱
+
+			if (boardList != null && !boardList.isEmpty()) {
+				for (BoardVo board : boardList) {
+					int boardId = board.getBoardId();
+					// boardService의 getReplyCountByBoardId 메서드를 호출하여 실제 댓글 수를 가져옴
+					int actualReplyCount = boardService.getReplyCountByBoardId(boardId);
+					board.setBoardRe(actualReplyCount);
+					// 좋아요 수 업데이트 (이미 DB에서 가져온 값이 있을 수 있지만, 최신 상태 보장)
+					int likeCount = boardService.getBoardLikeCount(boardId);
+					board.setBoardLike(likeCount);
+
+					// 로그인한 사용자가 있는 경우 좋아요 상태 확인
+					if (loginUser != null) {
+						BoardLikeVo likeVo = new BoardLikeVo();
+						likeVo.setBoardLikeUser(loginUser.getId());
+						likeVo.setBoardLikePost(boardId);
+
+						boolean isLiked = boardService.checkBoardLikeStatus(likeVo);
+
+						// 각 게시글의 좋아요 상태를 Map에 저장
+						if (mav.getModel().get("likedPosts") == null) {
+							mav.addObject("likedPosts", new HashMap<Integer, Boolean>());
+						}
+						((Map<Integer, Boolean>) mav.getModel().get("likedPosts")).put(boardId, isLiked);
+					}
+
+					// 작성자 프로필 이미지 설정
+					String writerId = board.getBoardWriterId();
+					if (writerId != null && !writerId.isEmpty()) {
+						MemberVo writerInfo = memberMap.get(writerId);
+						if (writerInfo == null) {
+							writerInfo = memberService.selectMemberById(writerId);
+							if (writerInfo != null) {
+								memberMap.put(writerId, writerInfo);
+							}
+						}
+						if (writerInfo != null) {
+							board.setBoardWriterImg(writerInfo.getProfileImg());
+						}
+					}
+					// 줄바꿈 문자 -> <br />로 변환
+					if (board.getBoardCont() != null) {
+						String convertedContent = board.getBoardCont().replaceAll("(\r\n|\r|\n)", "<br />");
+						board.setBoardCont(convertedContent);
+					}
+				}
+			}
+			
+			// 인기 게시글 TOP 5 추가
+			List<BoardVo> top5List = boardService.getTop5BoardsByViews();
+			mav.addObject("top5List", top5List);
+
+			// 인기 게시글 TOP 100 추가
+			List<BoardVo> top100List = boardService.getTop100BoardsByViews();
+			mav.addObject("top100List", top100List);
+
+			mav.addObject("boardList", boardList);
+
+		} catch (Exception e) {
+			log.error("게시글 목록 조회 및 댓글 수 업데이트 중 오류 발생", e);
+			mav.addObject("msg", "게시글 목록을 불러오는 중 오류가 발생했습니다.");
+		}
+		return mav;
+	}
+	
 }

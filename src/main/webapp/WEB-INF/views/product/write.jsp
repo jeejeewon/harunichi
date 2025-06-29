@@ -13,14 +13,14 @@
             <label for="productTitle">상품명</label>
             <input type="text" id="productTitle" name="productTitle" required />
         </div>
-
+        
         <div class="form-row">
-            <label for="uploadFile">이미지</label>
-            <input type="file" id="uploadFile" name="uploadFile" accept="image/*" onchange="previewImage(event)" />
-            <div class="preview-container">
-                <img id="preview" src="#" alt="미리보기" style="display:none;" />
-            </div>
-        </div>
+		    <label for="uploadFile">이미지</label>
+		    <input type="file" id="uploadFile" name="uploadFile" accept="image/*" onchange="previewImage(event)" />
+		    <div class="preview-container">
+		        <img id="preview" src="#" alt="미리보기" style="display:none; width:100px; border:1px solid #ccc; border-radius:4px;" />
+		    </div>
+		</div>
 
         <div class="form-row">
             <label for="productPrice">가격</label>

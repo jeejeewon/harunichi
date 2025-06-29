@@ -45,6 +45,16 @@
 		<put-attribute name="body" value="/WEB-INF/views/board/searchResult.jsp" />
 	</definition>
 	
+	<definition name="/board/hots" extends="baseLayout">
+		<put-attribute name="title" value="인기글" />
+		<put-attribute name="body" value="/WEB-INF/views/board/hots.jsp" />
+	</definition>
+	
+	<definition name="/board/errorPage" extends="baseLayout">
+		<put-attribute name="title" value="오류페이지" />
+		<put-attribute name="body" value="/WEB-INF/views/board/errorPage.jsp" />
+	</definition>
+	
 </tiles-definitions>
 
 
