@@ -12,7 +12,7 @@
 		FROM
 		board
 		ORDER BY
-		boardDate DESC
+		boardDate DESC 
 	</select>
 
 	<insert id="insertBoard"

@@ -161,7 +161,7 @@ public class BoardControllerImpl implements BoardController {
 
 			// boardVo.setBoardWriter(boardWriter);
 			HttpSession session = request.getSession();
-			MemberVo loginUser = (MemberVo) session.getAttribute("member");
+			MemberVo loginUser = (MemberVo) session.getAttribute("member"); 
 
 			if (loginUser != null) {
 
