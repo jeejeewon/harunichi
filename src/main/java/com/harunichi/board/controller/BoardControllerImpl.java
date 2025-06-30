@@ -114,6 +114,7 @@ public class BoardControllerImpl implements BoardController {
 							board.setBoardWriterImg(writerInfo.getProfileImg());
 						}
 					}
+					
 					// 줄바꿈 문자 -> <br />로 변환
 					if (board.getBoardCont() != null) {
 						String convertedContent = board.getBoardCont().replaceAll("(\r\n|\r|\n)", "<br />");
@@ -166,6 +167,8 @@ public class BoardControllerImpl implements BoardController {
 
 				boardVo.setBoardWriter(loginUser.getNick());
 				boardVo.setBoardWriterId(loginUser.getId());
+				 // 사용자의 프로필 이미지 설정 추가
+	            boardVo.setBoardWriterImg(loginUser.getProfileImg());
 
 			} else {
 				log.warn(">> 게시글 작성 실패: 로그인되지 않은 사용자 요청");

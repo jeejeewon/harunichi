@@ -20,14 +20,16 @@
 		INSERT INTO board (
 		boardWriter, boardCont, boardCate,
 		boardImg1,
-		boardImg2, boardImg3, boardImg4, boardDate, boardWriterId
+		boardImg2, boardImg3, boardImg4, boardDate,
+		boardWriterId,boardWriterImg
 		)
 		VALUES (
 		#{boardWriter},
-		#{boardCont}, #{boardCate}, #{boardImg1},
+		#{boardCont},
+		#{boardCate}, #{boardImg1},
 		#{boardImg2},
 		#{boardImg3}, #{boardImg4},
-		#{boardDate}, #{boardWriterId}
+		#{boardDate}, #{boardWriterId}, #{boardWriterImg}
 		)
 	</insert>
 
