@@ -344,6 +344,7 @@
 			MAX(c.chatType) AS chatType,
 			MAX(c.title) AS title,
 			MAX(c.profileImg) AS profileImg,
+			MAX(c.admissionTime) AS admissionTime,
 			MAX(c.lastMessageTime) AS lastMessageTime,
 			MAX(CASE WHEN c.leader = 1 THEN c.userId ELSE NULL END) AS leader,
 			COUNT(c.userId) AS userCount
