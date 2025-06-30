@@ -68,8 +68,8 @@
 								</c:otherwise>
 							</c:choose>					
 						</td>
-						<td>${chatRoom.userCount} / ${chatRoom.persons}<input type="hidden" value="${chatRoom.persons}" /></td>
-						<td>${chatRoom.leader eq 1 ? chatRoom.userId : ''}<input type="hidden" value="${chatRoom.leader}" /></td>
+						<td>${chatRoom.userCount}<input type="hidden" value="${chatRoom.userCount}" /></td>
+						<td>${chatRoom.leader}<input type="hidden" value="${chatRoom.leader}" /></td>
 						<td>
 							<div class="profile-cell">
 								<div class="table-img">

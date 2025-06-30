@@ -166,7 +166,18 @@
 	<!-- 오픈 채팅방 조회 -->
 	<select id="selectOpenChat" resultType="ChatRoomVo">
 		<![CDATA[
-			SELECT *
+			SELECT roomId,
+					MAX(userId) AS userId,
+					MAX(chatType) AS chatType,
+					MAX(title) AS title,
+					MAX(leader) AS leader,
+					MAX(persons) AS persons,
+					MAX(admissionTime) AS admissionTime,
+					MAX(profileImg) AS profileImg,
+					MAX(lastMessageTime) AS lastMessageTime,
+					MAX(productId) AS productId,
+					MAX(isDeleted) AS isDeleted,
+					MAX(isKicked) AS isKicked
 			FROM chatRoom
 			WHERE chatType = 'group'
 			GROUP BY roomId
@@ -327,35 +338,42 @@
 	
 	<!-- 관리자 페이지 채팅방 검색 -->
 	<select id="searchChatRoomList" parameterType="map" resultType="ChatRoomVo">
-		<![CDATA[
-			SELECT *
-			FROM chatRoom	
-		]]>
-		<where>
-			<if test="searchKeyword != null and searchKeyword != ''">
-				<choose>
-					<when test="searchType == 'userId'">
-						userId LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'roomId'">
-						roomId LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'chatType'">
-						chatType LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<otherwise>
-						(userId LIKE CONCAT('%', #{searchKeyword}, '%')
-						OR roomId LIKE CONCAT('%', #{searchKeyword}, '%')
-						OR chatType LIKE CONCAT('%', #{searchKeyword}, '%'))
-					</otherwise>
-				</choose>
-			</if>
-		</where>
-		<![CDATA[
-			GROUP BY roomId
-			ORDER BY roomId 
-			LIMIT #{offset}, #{pageSize}
-		]]>
+	<![CDATA[
+		SELECT 
+			c.roomId,
+			MAX(c.chatType) AS chatType,
+			MAX(c.title) AS title,
+			MAX(c.profileImg) AS profileImg,
+			MAX(c.lastMessageTime) AS lastMessageTime,
+			MAX(CASE WHEN c.leader = 1 THEN c.userId ELSE NULL END) AS leader,
+			COUNT(c.userId) AS userCount
+		FROM chatRoom c
+	]]>
+	<where>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchType == 'userId'">
+					c.userId LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType == 'roomId'">
+					c.roomId LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchType == 'chatType'">
+					c.chatType LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					(c.userId LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR c.roomId LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR c.chatType LIKE CONCAT('%', #{searchKeyword}, '%'))
+				</otherwise>
+			</choose>
+		</if>
+	</where>
+	<![CDATA[
+		GROUP BY c.roomId
+		ORDER BY c.roomId
+		LIMIT #{offset}, #{pageSize}
+	]]>
 	</select>
 
 	<!-- 관리자 채팅방 정보 수정 -->
