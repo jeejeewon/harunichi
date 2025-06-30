@@ -9,7 +9,7 @@
     
   * 기간
 
-     2025.05.26 ~ 2025.06.26
+     2025.05.26 ~ 2025.06.30
     
   * 팀원
      * Member : 강혜미(<https://github.com/hyeming-way>)
@@ -62,15 +62,6 @@
      ** 엑심베이 : 카드(비자/마스터/JCB/AMEX) / 유니온페이 / 위챗페이 / 알리페이플러스 / 일본편의점 결제 가능
      
        <https://developers.portone.io/api/rest-v1/pg>
-     
- <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rainbow.png" alt="Rainbow" width="1.5%" /> 크롤링
-
-   * 교보문고
-
-       <https://www.kyobobook.co.kr>
-   * Naver
-
-       <https://www.naver.com>
            
 ***
 
@@ -112,6 +103,53 @@
         <summary>상품 리뷰 게시판</summary>
         <img src="./booktopia/reviewBoard.png">
      </details>
+
+   * 채팅
+     <details>
+        <summary>채팅 친구 추천</summary>
+        <img src="./harunichi/chat1_chatMemberList.PNG">
+     </details>
+     
+     <details>
+        <summary>개인채팅</summary>
+        <img src="./harunichi/chat2_personalChat.PNG">
+     </details>
+
+     <details>
+        <summary>오픈채팅</summary>
+        <img src="./harunichi/chat3_openChat.PNG">
+     </details>     
+
+     <details>
+        <summary>대화 내역 검색</summary>
+        <img src="./harunichi/chat4_searchMessage.PNG">
+     </details>          
+
+     <details>
+        <summary>채팅방 정보 확인</summary>
+        <img src="./harunichi/chat5_chatRoomInfo.PNG">
+     </details>        
+
+     <details>
+        <summary>채팅방 나가기</summary>
+        <img src="./harunichi/chat6_chatLeave1.PNG">
+        <img src="./harunichi/chat7_chatLeave2.PNG">
+     </details>       
+
+     <details>
+        <summary>오픈 채팅 방장 권한</summary>
+        <img src="./harunichi/chat8_chatLeader.PNG">
+     </details>    
+
+     <details>
+        <summary>중고거래 채팅</summary>
+        <img src="./harunichi/chat9_productChat.PNG">
+     </details>   
+
+     <details>
+        <summary>채팅 관리 페이지</summary>
+        <img src="./harunichi/chat10_chatAdmin.PNG">
+     </details>        
 
   * 중고상품
      <details>
@@ -162,40 +200,14 @@
     
     <details>
        <summary>포트원 KG이니시스 결제 API</summary>
-       <img src="./harunichi/09producEximbayPay.png">
+       <img src="./harunichi/09producKGinisisPay.png">
     </details>
 
     <details>
        <summary>포트원 엑심베이 결제 API</summary>
-       <img src="./harunichi/10producKGinisisPay.png">
+       <img src="./harunichi/10producEximbayPay.png">
     </details> 
-   
-  * 크롤링
-    <details>
-       <summary>교보문고 / Naver</summary>
-       <img src="./booktopia/crawling.png">
-    </details>
-     
-   * <details>
-        <summary>검색 기능</summary>
-        <img src="./booktopia/search.png">
-     </details>
   
-  * <details>
-       <summary>주문 배송</summary>
-       <img src="./booktopia/order.png">
-    </details>
-  
-  * <details>
-       <summary>관리자</summary>
-       <img src="./booktopia/adminPage.png">
-    </details>
-  
-  * <details>
-       <summary>마이페이지</summary>
-       <img src="./booktopia/myPage.png">
-    </details>   
-
 ***
 
 # :shaved_ice:DB 구성
