@@ -104,6 +104,53 @@
         <img src="./booktopia/reviewBoard.png">
      </details>
 
+   * 채팅
+     <details>
+        <summary>채팅 친구 추천</summary>
+        <img src="./harunichi/chat1_chatMemberList.PNG">
+     </details>
+     
+     <details>
+        <summary>개인채팅</summary>
+        <img src="./harunichi/chat2_personalChat.PNG">
+     </details>
+
+     <details>
+        <summary>오픈채팅</summary>
+        <img src="./harunichi/chat3_openChat.PNG">
+     </details>     
+
+     <details>
+        <summary>대화 내역 검색</summary>
+        <img src="./harunichi/chat4_searchMessage.PNG">
+     </details>          
+
+     <details>
+        <summary>채팅방 정보 확인</summary>
+        <img src="./harunichi/chat5_chatRoomInfo.PNG">
+     </details>        
+
+     <details>
+        <summary>채팅방 나가기</summary>
+        <img src="./harunichi/chat6_chatLeave1.PNG">
+        <img src="./harunichi/chat7_chatLeave2.PNG">
+     </details>       
+
+     <details>
+        <summary>오픈 채팅 방장 권한</summary>
+        <img src="./harunichi/chat8_chatLeader.PNG">
+     </details>    
+
+     <details>
+        <summary>중고거래 채팅</summary>
+        <img src="./harunichi/chat9_productChat.PNG">
+     </details>   
+
+     <details>
+        <summary>채팅 관리 페이지</summary>
+        <img src="./harunichi/chat10_chatAdmin.PNG">
+     </details>        
+
   * 중고상품
      <details>
         <summary>메인 화면</summary>
