@@ -153,12 +153,12 @@
     
     <details>
        <summary>포트원 KG이니시스 결제 API</summary>
-       <img src="./harunichi/09producEximbayPay.png">
+       <img src="./harunichi/09producKGinisisPay.png">
     </details>
 
     <details>
        <summary>포트원 엑심베이 결제 API</summary>
-       <img src="./harunichi/10producKGinisisPay.png">
+       <img src="./harunichi/10producEximbayPay.png">
     </details> 
   
 ***
