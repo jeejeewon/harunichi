@@ -239,6 +239,8 @@
 .board .user-profile .user-pic img {
 	border-radius: 100%;
 	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .board .user-profile .item-date {
