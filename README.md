@@ -9,7 +9,7 @@
     
   * 기간
 
-     2025.05.26 ~ 2025.06.26
+     2025.05.26 ~ 2025.06.30
     
   * 팀원
      * Member : 강혜미(<https://github.com/hyeming-way>)
@@ -62,15 +62,6 @@
      ** 엑심베이 : 카드(비자/마스터/JCB/AMEX) / 유니온페이 / 위챗페이 / 알리페이플러스 / 일본편의점 결제 가능
      
        <https://developers.portone.io/api/rest-v1/pg>
-     
- <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rainbow.png" alt="Rainbow" width="1.5%" /> 크롤링
-
-   * 교보문고
-
-       <https://www.kyobobook.co.kr>
-   * Naver
-
-       <https://www.naver.com>
            
 ***
 
@@ -169,33 +160,7 @@
        <summary>포트원 엑심베이 결제 API</summary>
        <img src="./harunichi/10producKGinisisPay.png">
     </details> 
-   
-  * 크롤링
-    <details>
-       <summary>교보문고 / Naver</summary>
-       <img src="./booktopia/crawling.png">
-    </details>
-     
-   * <details>
-        <summary>검색 기능</summary>
-        <img src="./booktopia/search.png">
-     </details>
   
-  * <details>
-       <summary>주문 배송</summary>
-       <img src="./booktopia/order.png">
-    </details>
-  
-  * <details>
-       <summary>관리자</summary>
-       <img src="./booktopia/adminPage.png">
-    </details>
-  
-  * <details>
-       <summary>마이페이지</summary>
-       <img src="./booktopia/myPage.png">
-    </details>   
-
 ***
 
 # :shaved_ice:DB 구성
