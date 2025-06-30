@@ -7,11 +7,11 @@
 	type="text/css">
 
 <div class="container board main search-result">
-	<c:if test="${not empty sessionScope.id}">
+	<!-- <c:if test="${not empty sessionScope.id}">
 		<div class="post-btn">
 			<a href="${contextPath}/board/postForm">새 게시글 작성</a>
 		</div>
-	</c:if>
+	</c:if> -->
 	<div class="board-list">		
 		<!-- 게시글 목록 영역 -->
 		<div id="ListContainer" class="list-wrap">
