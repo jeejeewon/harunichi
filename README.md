@@ -47,58 +47,38 @@ Java Spring Framework 기반으로 개발된 한일 소셜 커뮤니티 플랫�
 
 ---
 
-## 👩‍💻 담당 업무 (윤지원)
+## 👩‍💻 담당 업무 (이지원)
 
-### 🔷 Tiles 기반 공통 레이아웃 설계
-- `layout.jsp`, `header.jsp`, `footer.jsp` 등 공통 구조 모듈화  
-<img width="1372" height="769" src="https://github.com/user-attachments/assets/8a3d143b-5436-43aa-abce-e9618ca73f22" />
-
+### 🔷 게시판 전반 기능
+- 게시물 작성, 수정, 조회, 삭제
 ---
 
-### 🔷 회원 기능 구현
-- 로그인, 로그아웃, 회원가입, 정보 수정 기능  
-- Spring MVC + MyBatis + JSP 연동  
-<img width="1370" height="765" src="https://github.com/user-attachments/assets/f4094220-1a75-4819-abe1-20ebcbc85a66" />
-<img width="1375" height="770" src="https://github.com/user-attachments/assets/14765f9f-d2f2-4738-9ce4-4e568e34f022" />
-
+### 🔷 첨부 파일 업로드
+- 이미지 등록 최대 4개로 설정
+- 게시글 작성 시 실시간 삭제, 추가 가능
+- 등록 이미지 현황 실시간 반영
 ---
 
-### 🔷 다국어 UX 흐름 개선
-- 언어 조건 분기 및 세션 기반 출력 최적화  
-<img width="1365" height="769" alt="image" src="https://github.com/user-attachments/assets/efb25290-cc82-410b-96e2-f2d8d797311c" />
-
+### 🔷 게시물 좋아요 기능
+- 좋아요 수 실시간 반영
+- 중복없이 게시글 당 한번씩만 가능하도록 구현
 ---
 
-### 🔷 번역 기능 구현
-- 선택 언어에 따른 콘텐츠 실시간 변환  
-- Google Cloud Translation API 연동 (한국어 ⇄ 일본어)  
-<img width="1372" height="765" alt="image" src="https://github.com/user-attachments/assets/c2aed8a6-b9b9-47f7-86ec-63b51e6e03ce" />
-
+### 🔷 댓글 기능
+- 댓글 수 실시간 반영
+- 대댓글 기능
+- 댓글, 대댓글 수정 및 삭제
 ---
 
-### 🔷 마이페이지 구현
-- 사용자 정보 조회, 수정 및 선호 설정 기능  
-<img width="1362" height="766" src="https://github.com/user-attachments/assets/750e0a94-58b6-404a-8485-9cb1438e96fd" />
-
+### 🔷 기타 기능
+- 게시물 조회수 높은 순으로 인기글 조회
+- 아이디, 닉네임, 내용 조회
+- 카테고리별 게시글 조회
 ---
-
-### 🔷 팔로우 / 언팔로우 기능
-- DB 연동 및 AJAX 기반 비동기 처리  
-<img width="1369" height="765" src="https://github.com/user-attachments/assets/511a679b-2cb8-42e4-b7e6-c5b5d85a01e9" />
-
----
-
-### 🔷 관리자 대시보드 설계 및 구현
-- 회원 목록 및 상태 관리 UI 구성  
-<img width="1362" height="767" src="https://github.com/user-attachments/assets/a37c7c67-de88-4689-a473-87eb4d6f23e4" />
-
----
-
-### 🔷 소셜 로그인 기능 구현
-- OAuth 2.0 기반 **카카오 로그인 API**, **네이버 로그인 API** 연동  
-- 사용자 정보 수신 및 자동 로그인 처리  
-<img width="1366" height="762" src="https://github.com/user-attachments/assets/9fdc07cd-7673-4233-a39e-7ee2fe0ebc3e" />
-
+### 🔷 게시글 관리자
+- 작성자, 내용, 카테고리로 조회
+- 관리자 페이지에서 게시글 수정
+- 체크박스를 이용한 다중 삭제 기능
 ---
 
 ## 📄 프로젝트 소개서
