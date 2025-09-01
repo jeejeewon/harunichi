@@ -29,7 +29,7 @@ Java Spring Framework 기반으로 개발된 한일 소셜 커뮤니티 플랫�
   ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
 
 ### 개발 도구
-  ![STS3](https://img.shields.io/badge/STS4-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+  ![STS3](https://img.shields.io/badge/STS3-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
   ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
   ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
   ![Apache Tomcat](https://img.shields.io/badge/Tomcat-005571?style=for-the-badge&logo=apachetomcat&logoColor=white)  
