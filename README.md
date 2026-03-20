@@ -17,7 +17,7 @@
 ## 2. 기술 스택
 
 ### UI/UX & Frontend
-- HTML5 / CSS3 / JavaScript / jQuery
+- HTML5 / CSS3 / JavaScript
 
 ### Backend & Server
 - Java / Spring Framework / MyBatis / JSP / JSTL
