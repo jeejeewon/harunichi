@@ -1,85 +1,72 @@
 # Harunichi (한일 소셜미디어 사이트 제작 프로젝트)
+**Spring Framework 기반의 한일 양국 소셜 커뮤니티 플랫폼**
 
-Spring Framework 기반으로 개발된 한일 소셜 커뮤니티 플랫폼입니다.  
-한국과 일본 사용자가 함께 소통하고, 중고거래, 실시간 채팅, 다국어 기능을 사용할 수 있는  
-글로벌 소셜 미디어 웹사이트입니다.
+본 프로젝트는 한국과 일본 사용자가 소통할 수 있는 글로벌 커뮤니티 서비스를 목표로 개발했습니다. Spring과 MyBatis를 활용하여 대량의 게시글 데이터와 실시간 상호작용(좋아요, 댓글 등)을 안정적으로 처리할 수 있도록 설계했습니다.
 
-## 프로젝트 개요
+---
+
+## 1. 프로젝트 개요
 
 - **프로젝트명**: Harunichi (한일 소셜미디어 사이트)  
 - **개발 기간**: 2025.05.26 ~ 2025.06.26 (1개월)  
-- **팀원 수**: 4명  
+- **참여 인원**: 4명  
+- **핵심 목표**: 다국어 소통 환경 제공 및 실시간 데이터 반영이 포함된 커뮤니티 기능 구현  
 
-## 사용 언어 및 개발 환경
+---
 
-### Frontend
-  ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-  ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)  
+## 2. 기술 스택
 
-### Backend
-  ![Apache Tomcat](https://img.shields.io/badge/Tomcat-005571?style=for-the-badge&logo=apachetomcat&logoColor=white)
-  ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=openjdk&logoColor=white)
-  ![Spring Framework](https://img.shields.io/badge/Spring_Framework-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-  ![MyBatis](https://img.shields.io/badge/MyBatis-ED8B00?style=for-the-badge)
-  ![JSP](https://img.shields.io/badge/JSP-007396?style=for-the-badge&logo=java&logoColor=white)
-  ![JSTL](https://img.shields.io/badge/JSTL-003B57?style=for-the-badge)  
+### UI/UX & Frontend
+- HTML5 / CSS3 / JavaScript / jQuery
 
-### Database
-  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
+### Backend & Server
+- Java / Spring Framework / MyBatis / JSP / JSTL
+- Apache Tomcat / Maven
 
-### 개발 도구
-  ![STS3](https://img.shields.io/badge/STS3-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-  ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
-  ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-  ![Apache Tomcat](https://img.shields.io/badge/Tomcat-005571?style=for-the-badge&logo=apachetomcat&logoColor=white)  
+### Database & Tools
+- MySQL
+- STS3 / Git
 
-## DB 구성
+---
 
-아래는 프로젝트에서 사용된 테이블 간의 ERD(Entity Relationship Diagram)입니다.  
-<img width="962" height="741" alt="ERD" src="https://github.com/user-attachments/assets/dcc257dc-96d3-430c-bdc2-7d31e82e628b" />
+## 3. 데이터베이스 설계 (ERD)
 
+커뮤니티 내 다양한 상호작용(게시글, 댓글, 좋아요 등)의 관계를 정의한 데이터 모델입니다.
 
-## 담당 업무
+![ERD](https://github.com/user-attachments/assets/dcc257dc-96d3-430c-bdc2-7d31e82e628b)
 
-### 게시판 전반 기능
-- 게시물 작성, 수정, 조회, 삭제
-<img width="635" height="548" alt="k6VfZxt" src="https://github.com/user-attachments/assets/4035a0bf-f7a9-4d0a-840c-f196fbaec721" />
+---
 
+## 4. 담당 업무 및 UI 구현 상세
 
-### 첨부 파일 업로드
-- 이미지 등록 최대 4개로 설정
-- 게시글 작성 시 실시간 삭제, 추가 가능
-- 등록 이미지 현황 실시간 반영
-<img width="1199" height="655" alt="Z91LWeB" src="https://github.com/user-attachments/assets/e7b50c41-5714-4cf4-9cfb-6e96c67122ca" />
+### 커뮤니티 비즈니스 로직 구현
+- **CRUD 프로세스**: 소셜 미디어의 핵심인 게시물 작성, 수정, 조회, 삭제 기능을 안정적인 트랜잭션 처리를 통해 구현했습니다.
+- **다차원 검색 시스템**: 작성자, 닉네임, 내용 등 다양한 조건에 따른 검색과 카테고리별 필터링 기능을 구현해서 정보 접근성을 높였습니다.
 
-### 게시물 좋아요 기능
-- 좋아요 수 실시간 반영
-- 중복없이 게시글 당 한번씩만 가능하도록 구현
+### 멀티미디어 및 실시간 상호작용 시스템
+- **동적 파일 핸들링**: 최대 4개의 이미지를 업로드할 수 있는 모듈을 구축했습니다. 게시글 작성 시 실시간으로 이미지를 추가하거나 삭제할 수 있는 인터페이스를 구현해서 사용자 편의성을 개선했습니다.
+- **인터랙션 기능**: 중복 방지 로직이 포함된 게시물 좋아요 기능과 계층형 댓글(대댓글) 시스템을 구현했습니다. 좋아요 및 댓글 수가 화면에 즉각 반영되도록 설계 했습니다.
 
-### 댓글 기능
-- 댓글 수 실시간 반영
-- 대댓글 기능
-- 댓글, 대댓글 수정 및 삭제
-<img width="730" height="930" alt="HONJwwD" src="https://github.com/user-attachments/assets/f09cd140-c8e1-4a15-8974-13cc99531491" />
+### 데이터 큐레이션 및 관리자 모듈
+- **인기 콘텐츠 노출**: 조회수 기반의 알고리즘을 적용해서 인기 게시글을 상단에 노출하는 기능을 구현했습니다.
+- **통합 관리자 인터페이스**: 관리자 페이지 내에서 게시글의 상세 수정 및 체크박스를 활용한 다중 삭제 기능을 구축해서 대규모 데이터 관리의 효율성을 높였습니다.
 
-### 기타 기능
-- 게시물 조회수 높은 순으로 인기글 조회
-- 아이디, 닉네임, 내용 조회
-- 카테고리별 게시글 조회
-  
-### 게시글 관리자
-- 작성자, 내용, 카테고리로 조회
-- 관리자 페이지에서 게시글 수정
-- 체크박스를 이용한 다중 삭제 기능
-<img width="1408" height="497" alt="tPMPD5I" src="https://github.com/user-attachments/assets/fe45b995-b73e-43cb-b599-8e7d80598057" />
+---
 
-  
-## 프로젝트 소개서
+## 5. 주요 구현 화면
 
-팀원별 기능, DB 설계, 전체 흐름 등을 정리한 프로젝트 발표 자료입니다.  
-아래 버튼을 눌러 PDF 파일을 다운로드할 수 있습니다.
+| 게시판 인터페이스 | 파일 업로드 시스템 |
+| :--- | :--- |
+| ![게시판](https://github.com/user-attachments/assets/4035a0bf-f7a9-4d0a-840c-f196fbaec721) | ![업로드](https://github.com/user-attachments/assets/e7b50c41-5714-4cf4-9cfb-6e96c67122ca) |
 
-[PDF 다운로드](https://raw.githubusercontent.com/YOON-J11/harunichi/main/harunichi_ppt.pdf)
+| 계층형 댓글 시스템 | 관리자 전용 제어 페이지 |
+| :--- | :--- |
+| ![댓글](https://github.com/user-attachments/assets/f09cd140-c8e1-4a15-8974-13cc99531491) | ![관리자](https://github.com/user-attachments/assets/fe45b995-b73e-43cb-b599-8e7d80598057) |
 
+---
 
+## 6. 프로젝트 소개서
+
+팀원별 상세 역할 분담과 시스템 구조는 아래 발표 자료에서 확인하실 수 있습니다.
+
+[프로젝트 소개서(PDF) 다운로드](https://raw.githubusercontent.com/YOON-J11/harunichi/main/harunichi_ppt.pdf)
